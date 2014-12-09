@@ -1,16 +1,10 @@
-Pixel Dungeon
+Pixel Dungeon - Holy Quest
 =============
 
-Traditional roguelike game with pixel-art graphics and simple interface.
+Traditional roguelike game with pixel-art graphics and simple interface. The game based on Watabou's Pixel Dungeon game.
 
-Pixel Dungeon on GooglePlay: 
-https://play.google.com/store/apps/details?id=com.watabou.pixeldungeon
-
-Official web-site: 
+The original Official web-site: 
 http://pixeldungeon.watabou.ru/
 
-Developer's blog: 
-http://pixeldungeon.tumblr.com/
-
-To build the game you will need my unnamed game library:
+To build the game you will need Watabou unnamed game library:
 https://github.com/watabou/PD-classes
