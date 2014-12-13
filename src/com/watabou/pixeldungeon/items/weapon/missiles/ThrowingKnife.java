@@ -24,7 +24,7 @@ import com.watabou.utils.Random;
 public class ThrowingKnife extends MissileWeapon {
 
     {
-        name = "throwingknife";
+        name = "Throwing knife";
         image = ItemSpriteSheet.THROWINGKNIFE;
 
         STR = 12;

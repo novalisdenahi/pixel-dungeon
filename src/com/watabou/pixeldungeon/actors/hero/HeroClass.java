@@ -20,6 +20,7 @@ package com.watabou.pixeldungeon.actors.hero;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.Badges;
 import com.watabou.pixeldungeon.Dungeon;
+import com.watabou.pixeldungeon.items.SymbolOfEstera;
 import com.watabou.pixeldungeon.items.TomeOfMastery;
 import com.watabou.pixeldungeon.items.armor.ClothArmor;
 import com.watabou.pixeldungeon.items.food.Food;
@@ -34,7 +35,6 @@ import com.watabou.pixeldungeon.items.weapon.melee.Knuckles;
 import com.watabou.pixeldungeon.items.weapon.melee.ShortSword;
 import com.watabou.pixeldungeon.items.weapon.missiles.Boomerang;
 import com.watabou.pixeldungeon.items.weapon.missiles.Dart;
-import com.watabou.pixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.watabou.utils.Bundle;
 
 public enum HeroClass {
@@ -115,9 +115,11 @@ public enum HeroClass {
 
         (hero.belongings.weapon = new Knuckles()).identify();
 
-        new ThrowingKnife(5).identify().collect();
-        Dungeon.quickslot = ThrowingKnife.class;
-        // TODO add new priest item
+        new Dart(5).identify().collect();
+        Dungeon.quickslot = Dart.class;
+
+        SymbolOfEstera symbolOfEstera = new SymbolOfEstera();
+        symbolOfEstera.identify().collect();
 
         new PotionOfHealing().setKnown();
     }

@@ -42,6 +42,8 @@ public class Wraith extends Mob {
 		name = "wraith";
 		spriteClass = WraithSprite.class;
 		
+		mobType = MobType.UNDEAD;
+		
 		HP = HT = 1;
 		EXP = 0;
 		
