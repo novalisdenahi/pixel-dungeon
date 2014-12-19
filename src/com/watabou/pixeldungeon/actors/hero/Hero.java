@@ -33,6 +33,7 @@ import com.watabou.pixeldungeon.actors.Actor;
 import com.watabou.pixeldungeon.actors.Char;
 import com.watabou.pixeldungeon.actors.buffs.Barkskin;
 import com.watabou.pixeldungeon.actors.buffs.Bleeding;
+import com.watabou.pixeldungeon.actors.buffs.Bless;
 import com.watabou.pixeldungeon.actors.buffs.Blindness;
 import com.watabou.pixeldungeon.actors.buffs.Buff;
 import com.watabou.pixeldungeon.actors.buffs.Burning;
@@ -53,6 +54,7 @@ import com.watabou.pixeldungeon.actors.buffs.SnipersMark;
 import com.watabou.pixeldungeon.actors.buffs.Vertigo;
 import com.watabou.pixeldungeon.actors.buffs.Weakness;
 import com.watabou.pixeldungeon.actors.mobs.Mob;
+import com.watabou.pixeldungeon.actors.mobs.MobType;
 import com.watabou.pixeldungeon.actors.mobs.npcs.NPC;
 import com.watabou.pixeldungeon.effects.CheckedCell;
 import com.watabou.pixeldungeon.effects.Flare;
@@ -109,6 +111,8 @@ public class Hero extends Char {
     public static interface Doom {
         public void onDeath();
     }
+
+    private static final float BLESS_BUFF_BONUS = 1.2f;
 
     private static final String TXT_LEAVE = "One does not simply leave Pixel Dungeon.";
     private static final String TXT_LEVEL_UP = "level up!";
@@ -676,11 +680,23 @@ public class Hero extends Char {
         if (wep != null) {
 
             wep.proc(this, enemy, damage);
+            if ((heroClass == HeroClass.PRIEST) && (((Mob) enemy).mobType == MobType.UNDEAD)) {
+                if (wep instanceof MeleeWeapon) {
+                    float priestLvlModifier = 1 + (lvl / 3);
+                    damage += ((Math.pow(priestLvlModifier, 2) - priestLvlModifier) + 10) / 4;
+                }
+            }
 
             switch (subClass) {
             case GLADIATOR:
                 if (wep instanceof MeleeWeapon) {
                     damage += Buff.affect(this, Combo.class).hit(enemy, damage);
+                }
+                break;
+            case PALADIN:
+                if ((wep instanceof MeleeWeapon) && (((Mob) enemy).mobType == MobType.DEMON)) {
+                    float priestLvlModifier = 1 + (lvl / 3);
+                    damage += ((Math.pow(priestLvlModifier, 2) - priestLvlModifier) + 10) / 4;
                 }
                 break;
             case BATTLEMAGE:
@@ -711,16 +727,25 @@ public class Hero extends Char {
 
     @Override
     public int attackSkill(final Char target) {
-        // TODO add priest vs. undead
         int bonus = 0;
         for (Buff buff : buffs(RingOfAccuracy.Accuracy.class)) {
             bonus += ((RingOfAccuracy.Accuracy) buff).level;
         }
         float accuracy = (bonus == 0) ? 1 : (float) Math.pow(1.4, bonus);
+
+        if ((heroClass == HeroClass.PRIEST) && (((Mob) target).mobType == MobType.UNDEAD)) {
+            accuracy += 0.5f; // TODO nerf? Math.sqrt(lvl) -
+        }
+        if ((subClass == HeroSubClass.PALADIN) && (((Mob) target).mobType == MobType.DEMON)) {
+            accuracy += 0.5f; // TODO nerf? Math.sqrt(lvl) -
+        }
+        if (buff(Bless.class) != null) {
+            accuracy *= BLESS_BUFF_BONUS;
+        }
+
         if ((rangedWeapon != null) && (Level.distance(pos, target.pos) == 1)) {
             accuracy *= 0.5f;
         }
-
         KindOfWeapon wep = rangedWeapon != null ? rangedWeapon : belongings.weapon;
         if (wep != null) {
             return (int) (attackSkill * accuracy * wep.acuracyFactor(this));
@@ -761,7 +786,6 @@ public class Hero extends Char {
 
     @Override
     public void damage(final int dmg, final Object src) {
-        // TODO add priest vs. undead
         restoreHealth = false;
         super.damage(dmg, src);
 
@@ -807,17 +831,32 @@ public class Hero extends Char {
 
     @Override
     public int defenseSkill(final Char enemy) {
-        // TODO add priest vs. undead
         int bonus = 0;
         for (Buff buff : buffs(RingOfEvasion.Evasion.class)) {
             bonus += ((RingOfEvasion.Evasion) buff).level;
         }
         float evasion = bonus == 0 ? 1 : (float) Math.pow(1.2, bonus);
+
+        if ((heroClass == HeroClass.PRIEST) && (((Mob) enemy).mobType == MobType.UNDEAD)) {
+            evasion += 0.5f; // TODO nerf? Math.sqrt(lvl) -
+        }
+        if ((subClass == HeroSubClass.PALADIN) && (((Mob) enemy).mobType == MobType.DEMON)) {
+            evasion += 0.5f; // TODO nerf? Math.sqrt(lvl) -
+        }
+
+        if (buff(Bless.class) != null) {
+            evasion *= BLESS_BUFF_BONUS;
+        }
+
         if (paralysed) {
             evasion /= 2;
         }
 
         int aEnc = belongings.armor != null ? belongings.armor.STR - STR() : 0;
+
+        if (subClass == HeroSubClass.PALADIN) {
+            aEnc--;
+        }
 
         if (aEnc > 0) {
             return (int) ((defenseSkill * evasion) / Math.pow(1.5, aEnc));

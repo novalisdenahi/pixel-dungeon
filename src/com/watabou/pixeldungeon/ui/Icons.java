@@ -34,6 +34,7 @@ public enum Icons {
     MAGE,
     ROGUE,
     HUNTRESS,
+    PRIEST,
     CLOSE,
     DEPTH,
     SLEEP,
@@ -61,7 +62,7 @@ public enum Icons {
         case HUNTRESS:
             return get(HUNTRESS);
         case PRIEST:
-            return get(HUNTRESS); // TODO create priest icon based priest unique item
+            return get(PRIEST); // TODO create priest icon based priest unique item
         default:
             return null;
         }
@@ -102,6 +103,9 @@ public enum Icons {
             break;
         case HUNTRESS:
             icon.frame(icon.texture.uvRect(48, 29, 64, 45));
+            break;
+        case PRIEST:
+            icon.frame(icon.texture.uvRect(65, 46, 81, 62));
             break;
         case CLOSE:
             icon.frame(icon.texture.uvRect(0, 45, 13, 58));

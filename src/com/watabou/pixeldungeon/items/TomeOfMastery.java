@@ -98,7 +98,6 @@ public class TomeOfMastery extends Item {
 
             HeroSubClass way1 = null;
             HeroSubClass way2 = null;
-            // TODO add priest - and add check if hero have subclass!
             switch (hero.heroClass) {
             case WARRIOR:
                 way1 = HeroSubClass.GLADIATOR;
@@ -115,6 +114,10 @@ public class TomeOfMastery extends Item {
             case HUNTRESS:
                 way1 = HeroSubClass.SNIPER;
                 way2 = HeroSubClass.WARDEN;
+                break;
+            case PRIEST:
+                way1 = HeroSubClass.PALADIN;
+                way2 = HeroSubClass.HIGHPRIEST;
                 break;
             }
             GameScene.show(new WndChooseWay(this, way1, way2));

@@ -17,48 +17,46 @@
  */
 package com.watabou.pixeldungeon.items.armor;
 
-import java.util.HashMap;
-
 import com.watabou.pixeldungeon.Dungeon;
+import com.watabou.pixeldungeon.actors.Actor;
+import com.watabou.pixeldungeon.actors.buffs.Blindness;
+import com.watabou.pixeldungeon.actors.buffs.Buff;
+import com.watabou.pixeldungeon.actors.buffs.Burning;
 import com.watabou.pixeldungeon.actors.hero.Hero;
 import com.watabou.pixeldungeon.actors.hero.HeroClass;
 import com.watabou.pixeldungeon.actors.mobs.Mob;
-import com.watabou.pixeldungeon.items.Item;
-import com.watabou.pixeldungeon.items.weapon.missiles.Shuriken;
+import com.watabou.pixeldungeon.actors.mobs.MobType;
+import com.watabou.pixeldungeon.effects.CellEmitter;
+import com.watabou.pixeldungeon.effects.Speck;
+import com.watabou.pixeldungeon.effects.particles.HolyParticle;
 import com.watabou.pixeldungeon.levels.Level;
 import com.watabou.pixeldungeon.sprites.ItemSpriteSheet;
-import com.watabou.pixeldungeon.sprites.MissileSprite;
 import com.watabou.pixeldungeon.utils.GLog;
-import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 public class PriestArmor extends ClassArmor {
-    // TODO FIXME this class just renamed. not implemented
-    private static final String TXT_NO_ENEMIES = "No enemies in sight";
-    private static final String TXT_NOT_HUNTRESS = "Only huntresses can use this armor!";
+    private static final String TXT_NOT_PRIEST = "Only priest can use this armor!";
 
-    private static final String AC_SPECIAL = "SPECTRAL BLADES";
+    private static final String AC_SPECIAL = "HOLY STRIKE";
 
     {
         name = "priest armor";
         image = ItemSpriteSheet.ARMOR_PRIEST;
     }
 
-    private HashMap<Callback, Mob> targets = new HashMap<Callback, Mob>();
-
     @Override
     public String desc() {
         return
-                "A huntress in such cloak can create a fan of spectral blades. Each of these blades " +
-                "will target a single enemy in the huntress's field of view, inflicting damage depending " +
-                "on her currently equipped melee weapon.";
+        "This shining iron armor bears Estera's blessing. Only A Priest of Estera capable to use the armor power. "
+                + "The priest then release the power of the holy armor. Blinded the unbelievers , the wicked will ignite.";
     }
 
     @Override
     public boolean doEquip(final Hero hero) {
-        if (hero.heroClass == HeroClass.HUNTRESS) {
+        if (hero.heroClass == HeroClass.PRIEST) {
             return super.doEquip(hero);
         } else {
-            GLog.w(TXT_NOT_HUNTRESS);
+            GLog.w(TXT_NOT_PRIEST);
             return false;
         }
     }
@@ -66,38 +64,25 @@ public class PriestArmor extends ClassArmor {
     @Override
     public void doSpecial() {
 
-        Item proto = new Shuriken();
+        curUser.HP -= (curUser.HP / 3);
 
         for (Mob mob : Dungeon.level.mobs) {
             if (Level.fieldOfView[mob.pos]) {
 
-                Callback callback = new Callback() {
-                    @Override
-                    public void call() {
-                        curUser.attack(targets.get(this));
-                        targets.remove(this);
-                        if (targets.isEmpty()) {
-                            curUser.spendAndNext(curUser.attackDelay());
-                        }
-                    }
-                };
+                Buff.prolong(mob, Blindness.class, Random.Int(3, 6));
+                mob.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 4);
+                if ((mob.mobType == MobType.UNDEAD)
+                        || (mob.mobType == MobType.DEMON)) {
+                    Buff.affect(mob, Burning.class).reignite(mob);
+                }
 
-                ((MissileSprite) curUser.sprite.parent.recycle(MissileSprite.class)).
-                reset(curUser.pos, mob.pos, proto, callback);
-
-                targets.put(callback, mob);
             }
         }
-
-        if (targets.size() == 0) {
-            GLog.w(TXT_NO_ENEMIES);
-            return;
-        }
-
-        curUser.HP -= (curUser.HP / 3);
-
+        CellEmitter.get(curUser.pos).burst(HolyParticle.FACTORY, 6);
         curUser.sprite.zap(curUser.pos);
-        curUser.busy();
+        // curUser.spend(Actor.TICK);
+        curUser.spendAndNext(Actor.TICK);
+
     }
 
     @Override

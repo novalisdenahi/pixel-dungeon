@@ -46,13 +46,12 @@ public enum HeroSubClass {
     WARDEN("warden",
             "Having a strong connection with forces of nature gives _Wardens_ an ability to gather dewdrops and " +
                     "seeds from plants. Also trampling a high grass grants them a temporary armor buff."),
-    // TODO fix the text
     PALADIN("paladin",
-            "_Snipers_ are able to detect weak points in an enemy's armor, " +
-                    "effectively ignoring it when using a missile weapon."),
-    HIGHPRIEST("highpriest",
-            "Having a strong connection with forces of nature gives _Wardens_ an ability to gather dewdrops and " +
-                    "seeds from plants. Also trampling a high grass grants them a temporary armor buff.");
+            "_Paladin_ is the ordained kinght of Estera. The Paladin gains a bonus against demons. " +
+                    "Knights of Estera feel less the weight of the weapons and armor."),
+    HIGHPRIEST("high priest",
+            "_High Priest_ of Estera have really strong connection with the goddes. A High Priest can use other ways " +
+                    "the sacred symbols. The High Priest of Estera sense the undead and the demons. ");
 
     public static HeroSubClass restoreInBundle(final Bundle bundle) {
         String value = bundle.getString(SUBCLASS);

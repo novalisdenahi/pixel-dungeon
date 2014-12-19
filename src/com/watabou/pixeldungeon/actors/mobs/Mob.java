@@ -233,7 +233,9 @@ public abstract class Mob extends Char {
     public AiState state = SLEEPEING;
 
     public Class<? extends CharSprite> spriteClass;
+
     public MobType mobType = MobType.NONE;
+
     protected int target = -1;
 
     protected int defenseSkill = 0;

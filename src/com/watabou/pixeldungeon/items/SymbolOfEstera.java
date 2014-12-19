@@ -23,6 +23,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.actors.Char;
 import com.watabou.pixeldungeon.actors.buffs.Bleeding;
+import com.watabou.pixeldungeon.actors.buffs.Bless;
 import com.watabou.pixeldungeon.actors.buffs.Buff;
 import com.watabou.pixeldungeon.actors.buffs.Cripple;
 import com.watabou.pixeldungeon.actors.buffs.Weakness;
@@ -30,6 +31,7 @@ import com.watabou.pixeldungeon.actors.hero.Hero;
 import com.watabou.pixeldungeon.actors.hero.HeroClass;
 import com.watabou.pixeldungeon.actors.hero.HeroSubClass;
 import com.watabou.pixeldungeon.effects.Speck;
+import com.watabou.pixeldungeon.items.bags.Bag;
 import com.watabou.pixeldungeon.sprites.ItemSprite.Glowing;
 import com.watabou.pixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.pixeldungeon.utils.GLog;
@@ -38,7 +40,7 @@ import com.watabou.utils.Bundle;
 public class SymbolOfEstera extends Item {
     protected class Charger extends Buff {
         // TODO this Charger can be refactored to normal class. ! in that case the delay change!
-        private static final float TIME_TO_CHARGE = 50f;
+        private static final float TIME_TO_CHARGE = 55f;
 
         @Override
         public boolean act() {
@@ -68,6 +70,8 @@ public class SymbolOfEstera extends Item {
         }
     }
 
+    private static final int INITIAL_CHARGES = 3;
+
     private static final String AC_BLESS = "BLESS";
     private static final String AC_HEALING = "HEALING PRAY";
 
@@ -83,7 +87,7 @@ public class SymbolOfEstera extends Item {
         name = "Symbol Of Estera";
         image = ItemSpriteSheet.SYMBOLOFESTERA;
 
-        // defaultAction = AC_BLESS;
+        defaultAction = AC_BLESS;
 
         unique = true;
     }
@@ -112,11 +116,28 @@ public class SymbolOfEstera extends Item {
         return actions;
     }
 
+    public void charge(final Char owner) {
+        (charger = new Charger()).attachTo(owner);
+    }
+
+    @Override
+    public boolean collect(final Bag container) {
+        if (super.collect(container)) {
+            if (container.owner != null) {
+                charge(container.owner);
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public void execute(final Hero hero, final String action) {
         if (action.equals(AC_BLESS)) {
             if (curCharges > 0) {
-                // TODO implement add bless buff
+
+                Buff.affect(hero, Bless.class).initialize(level);
 
                 curCharges--;
 
@@ -168,19 +189,17 @@ public class SymbolOfEstera extends Item {
     @Override
     public Glowing glowing() {
         return isFull() ? WHITE : null;
-    }
+    };
 
     @Override
     public String info() {
-        // TODO add good info
-        return
-        "You can store excess dew in this tiny vessel for drinking it later. " +
-                "If the vial is full, in a moment of deadly peril the dew will be " +
-                "consumed automatically.";
+        return "This is the Symbol of Estera. Estera is a kind and merciful goddess. "
+                + "The symbol can store a fraction of the Estera power, but only the priest of Estera can use this power"
+                + " You can feel the look of Estera in the symbol emerald eye.";
     }
 
     protected int initialCharges() {
-        return 3;
+        return INITIAL_CHARGES;
     }
 
     public boolean isFull() {
@@ -198,6 +217,11 @@ public class SymbolOfEstera extends Item {
     }
 
     @Override
+    public void onDetach() {
+        stopCharging();
+    }
+
+    @Override
     public void restoreFromBundle(final Bundle bundle) {
         super.restoreFromBundle(bundle);
         maxCharges = bundle.getInt(MAX_CHARGES);
@@ -207,6 +231,13 @@ public class SymbolOfEstera extends Item {
     @Override
     public String status() {
         return curCharges + "/" + maxCharges;
+    }
+
+    public void stopCharging() {
+        if (charger != null) {
+            charger.detach();
+            charger = null;
+        }
     }
 
     @Override
