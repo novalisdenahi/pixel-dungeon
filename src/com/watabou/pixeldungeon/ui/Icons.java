@@ -62,7 +62,7 @@ public enum Icons {
         case HUNTRESS:
             return get(HUNTRESS);
         case PRIEST:
-            return get(PRIEST); // TODO create priest icon based priest unique item
+            return get(PRIEST);
         default:
             return null;
         }

@@ -31,8 +31,6 @@ public class Rat extends Mob {
         HP = HT = 8;
         defenseSkill = 3;
 
-        mobType = MobType.UNDEAD;
-
         maxLvl = 5;
     }
 

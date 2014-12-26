@@ -20,7 +20,6 @@ package com.watabou.pixeldungeon.actors.hero;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.Badges;
 import com.watabou.pixeldungeon.Dungeon;
-import com.watabou.pixeldungeon.items.ArmorKit;
 import com.watabou.pixeldungeon.items.SymbolOfEstera;
 import com.watabou.pixeldungeon.items.TomeOfMastery;
 import com.watabou.pixeldungeon.items.armor.ClothArmor;
@@ -123,9 +122,6 @@ public enum HeroClass {
 
         SymbolOfEstera symbolOfEstera = new SymbolOfEstera();
         symbolOfEstera.identify().collect();
-
-        ArmorKit armorKit = new ArmorKit();
-        armorKit.identify().collect();
 
         new PotionOfHealing().setKnown();
     }

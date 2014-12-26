@@ -26,9 +26,8 @@ import com.watabou.pixeldungeon.actors.hero.Hero;
 import com.watabou.pixeldungeon.actors.hero.HeroClass;
 import com.watabou.pixeldungeon.actors.mobs.Mob;
 import com.watabou.pixeldungeon.actors.mobs.MobType;
-import com.watabou.pixeldungeon.effects.CellEmitter;
+import com.watabou.pixeldungeon.effects.Flare;
 import com.watabou.pixeldungeon.effects.Speck;
-import com.watabou.pixeldungeon.effects.particles.HolyParticle;
 import com.watabou.pixeldungeon.levels.Level;
 import com.watabou.pixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.pixeldungeon.utils.GLog;
@@ -78,9 +77,7 @@ public class PriestArmor extends ClassArmor {
 
             }
         }
-        CellEmitter.get(curUser.pos).burst(HolyParticle.FACTORY, 6);
-        curUser.sprite.zap(curUser.pos);
-        // curUser.spend(Actor.TICK);
+        new Flare(6, 32).show(curUser.sprite, 2f);
         curUser.spendAndNext(Actor.TICK);
 
     }

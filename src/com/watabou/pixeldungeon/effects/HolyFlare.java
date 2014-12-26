@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2014  Tóth Dániel
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,10 @@ import com.watabou.gltextures.SmartTexture;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.NoosaScript;
 import com.watabou.noosa.Visual;
+import com.watabou.pixeldungeon.actors.Char;
+import com.watabou.utils.PointF;
 
-public class Flare extends Visual {
+public class HolyFlare extends Visual {
 
     private float duration = 0;
     private float lifespan;
@@ -46,12 +48,11 @@ public class Flare extends Visual {
     private FloatBuffer vertices;
     private ShortBuffer indices;
 
-    private int nRays;
+    final int nRays;
 
     @SuppressLint("FloatMath")
-    public Flare(final int nRays, final float radius) {
-
-        super(0, 0, 0, 0);
+    public HolyFlare(final int rayRitm, final float radius) {
+        super(0, 0, 16, 16);
 
         // FIXME
         // Texture is incorrectly created every time we need
@@ -60,18 +61,18 @@ public class Flare extends Visual {
         int gradient[] = { 0xFFFFFFFF, 0x00FFFFFF };
         texture = new Gradient(gradient);
 
-        this.nRays = nRays;
+        nRays = 1;
 
-        angle = 45;
-        angularSpeed = 180;
+        angle = 64;
+        angularSpeed = 0;
 
         vertices = ByteBuffer.
-                allocateDirect(((nRays * 2) + 1) * 4 * (Float.SIZE / 8)).
+                allocateDirect(((rayRitm * 2) + 1) * 4 * (Float.SIZE / 8)).
                 order(ByteOrder.nativeOrder()).
                 asFloatBuffer();
 
         indices = ByteBuffer.
-                allocateDirect((nRays * 3 * Short.SIZE) / 8).
+                allocateDirect((rayRitm * 3 * Short.SIZE) / 8).
                 order(ByteOrder.nativeOrder()).
                 asShortBuffer();
 
@@ -86,14 +87,14 @@ public class Flare extends Visual {
         v[2] = 0.75f;
         v[3] = 0;
 
-        for (int i = 0; i < nRays; i++) {
+        for (int i = 0; i < rayRitm; i++) {
 
-            float a = (i * 3.1415926f * 2) / nRays;
+            float a = (i * 3.1415926f * 2) / rayRitm;
             v[0] = FloatMath.cos(a) * radius;
             v[1] = FloatMath.sin(a) * radius;
             vertices.put(v);
 
-            a += (3.1415926f * 2) / nRays / 2;
+            a += (3.1415926f * 2) / rayRitm / 2;
             v[0] = FloatMath.cos(a) * radius;
             v[1] = FloatMath.sin(a) * radius;
             vertices.put(v);
@@ -106,7 +107,18 @@ public class Flare extends Visual {
         indices.position(0);
     }
 
-    public Flare color(final int color, final boolean lightMode) {
+    @Override
+    public PointF center(final PointF p) {
+        x = p.x - (width / 2);
+        y = p.y - (height / 2);
+        return p;
+    }
+
+    public PointF centerVertivalHighTop(final PointF p) {
+        return new PointF(p.x, p.y - height);
+    }
+
+    public HolyFlare color(final int color, final boolean lightMode) {
         this.lightMode = lightMode;
         hardlight(color);
 
@@ -142,9 +154,10 @@ public class Flare extends Visual {
         script.drawElements(vertices, indices, nRays * 3);
     }
 
-    public Flare show(final Visual visual, final float duration) {
-        point(visual.center());
-        visual.parent.addToBack(this);
+    public HolyFlare show(final Char character, final float duration) {
+        SpellSprite.show(character, SpellSprite.EMERALD);
+        point(centerVertivalHighTop(character.sprite.center()));
+        character.sprite.parent.addToBack(this);
 
         lifespan = this.duration = duration;
 
@@ -153,7 +166,6 @@ public class Flare extends Visual {
 
     @Override
     public void update() {
-        super.update();
 
         if (duration > 0) {
             if ((lifespan -= Game.elapsed) > 0) {

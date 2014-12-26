@@ -30,6 +30,7 @@ import com.watabou.pixeldungeon.actors.buffs.Weakness;
 import com.watabou.pixeldungeon.actors.hero.Hero;
 import com.watabou.pixeldungeon.actors.hero.HeroClass;
 import com.watabou.pixeldungeon.actors.hero.HeroSubClass;
+import com.watabou.pixeldungeon.effects.HolyFlare;
 import com.watabou.pixeldungeon.effects.Speck;
 import com.watabou.pixeldungeon.items.bags.Bag;
 import com.watabou.pixeldungeon.sprites.ItemSprite.Glowing;
@@ -64,7 +65,7 @@ public class SymbolOfEstera extends Item {
         }
 
         protected void delay() {
-            float time2charge = TIME_TO_CHARGE / (float) Math.sqrt(1 + level);
+            float time2charge = TIME_TO_CHARGE / (float) Math.sqrt(1 + (level / 3)); // nerfer with /3 chech out
 
             spend(time2charge);
         }
@@ -144,6 +145,7 @@ public class SymbolOfEstera extends Item {
                 hero.spend(TIME_TO_USE_SYMBOL);
                 hero.busy();
 
+                new HolyFlare(4, 32).show(hero, 1f);
                 Sample.INSTANCE.play(Assets.SND_LEVELUP); // TODO bless sound
                 hero.sprite.operate(hero.pos);
 
@@ -168,6 +170,7 @@ public class SymbolOfEstera extends Item {
                 hero.spend(TIME_TO_USE_SYMBOL);
                 hero.busy();
 
+                new HolyFlare(4, 32).show(hero, 1f);
                 Sample.INSTANCE.play(Assets.SND_LEVELUP); // TODO bless sound
                 hero.sprite.operate(hero.pos);
                 hero.sprite.emitter().start(Speck.factory(Speck.HEALING), 0.4f, 4);
