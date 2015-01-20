@@ -30,7 +30,6 @@ import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.ui.Button;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.Badges;
-import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.GamesInProgress;
 import com.watabou.pixeldungeon.PixelDungeon;
 import com.watabou.pixeldungeon.actors.hero.HeroClass;
@@ -400,16 +399,7 @@ public class StartScene extends PixelScene {
     }
 
     private void startNewGame() {
-
-        Dungeon.hero = null;
-        InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
-
-        if (PixelDungeon.intro()) {
-            PixelDungeon.intro(false);
-            Game.switchScene(IntroScene.class);
-        } else {
-            Game.switchScene(InterlevelScene.class);
-        }
+        PixelDungeon.switchNoFade(QuestChooseScene.class);
     }
 
     private void updateClass(final HeroClass cl) {

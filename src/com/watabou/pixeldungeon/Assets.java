@@ -22,6 +22,7 @@ public class Assets {
     public static final String ARCS_BG = "arcs1.png";
     public static final String ARCS_FG = "arcs2.png";
     public static final String DASHBOARD = "dashboard.png";
+    public static final String QUESTBOARD = "questboard.png";
 
     public static final String BANNERS = "banners.png";
     public static final String BADGES = "badges.png";
@@ -85,6 +86,12 @@ public class Assets {
     public static final String IMP = "demon.png";
     public static final String RATKING = "ratking.png";
 
+    // new mobs
+    public static final String GOBLIN = "goblin.png";
+    public static final String WOLF = "wolf.png";
+    public static final String GOBLIN_KEEPER = "goblinkeeper.png";
+    public static final String PIRATE = "goblinpirate.png";
+
     public static final String ITEMS = "items.png";
     public static final String PLANTS = "plants.png";
 
@@ -93,6 +100,8 @@ public class Assets {
     public static final String TILES_CAVES = "tiles2.png";
     public static final String TILES_CITY = "tiles3.png";
     public static final String TILES_HALLS = "tiles4.png";
+
+    public static final String TILES_GOBLIN_SEWERS = "title_hq0.png";
 
     public static final String WATER_SEWERS = "water0.png";
     public static final String WATER_PRISON = "water1.png";

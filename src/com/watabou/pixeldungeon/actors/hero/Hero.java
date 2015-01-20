@@ -40,6 +40,7 @@ import com.watabou.pixeldungeon.actors.buffs.Burning;
 import com.watabou.pixeldungeon.actors.buffs.Charm;
 import com.watabou.pixeldungeon.actors.buffs.Combo;
 import com.watabou.pixeldungeon.actors.buffs.Cripple;
+import com.watabou.pixeldungeon.actors.buffs.Drunk;
 import com.watabou.pixeldungeon.actors.buffs.Fury;
 import com.watabou.pixeldungeon.actors.buffs.GasesImmunity;
 import com.watabou.pixeldungeon.actors.buffs.Hunger;
@@ -112,7 +113,7 @@ public class Hero extends Char {
         public void onDeath();
     }
 
-    private static final float BLESS_BUFF_BONUS = 1.2f;
+    private static final float BLESS_BUFF_BONUS = 1.4f;
 
     private static final String TXT_LEAVE = "One does not simply leave Pixel Dungeon.";
     private static final String TXT_LEVEL_UP = "level up!";
@@ -732,12 +733,13 @@ public class Hero extends Char {
             bonus += ((RingOfAccuracy.Accuracy) buff).level;
         }
         float accuracy = (bonus == 0) ? 1 : (float) Math.pow(1.4, bonus);
-
-        if ((heroClass == HeroClass.PRIEST) && (((Mob) target).mobType == MobType.UNDEAD)) {
-            accuracy += 0.5f; // TODO nerf? Math.sqrt(lvl) -
-        }
-        if ((subClass == HeroSubClass.PALADIN) && (((Mob) target).mobType == MobType.DEMON)) {
-            accuracy += 0.5f; // TODO nerf? Math.sqrt(lvl) -
+        if (target instanceof Mob) {
+            if ((heroClass == HeroClass.PRIEST) && (((Mob) target).mobType == MobType.UNDEAD)) {
+                accuracy += 0.5f; // TODO nerf? Math.sqrt(lvl) -
+            }
+            if ((subClass == HeroSubClass.PALADIN) && (((Mob) target).mobType == MobType.DEMON)) {
+                accuracy += 0.5f; // TODO nerf? Math.sqrt(lvl) -
+            }
         }
         if (buff(Bless.class) != null) {
             accuracy *= BLESS_BUFF_BONUS;
@@ -745,6 +747,10 @@ public class Hero extends Char {
 
         if ((rangedWeapon != null) && (Level.distance(pos, target.pos) == 1)) {
             accuracy *= 0.5f;
+        }
+        // DRUNK
+        for (Buff buff : buffs(Drunk.class)) {
+            accuracy = (accuracy <= 1) ? accuracy - 0.3f : accuracy - 1;
         }
         KindOfWeapon wep = rangedWeapon != null ? rangedWeapon : belongings.weapon;
         if (wep != null) {
@@ -848,12 +854,16 @@ public class Hero extends Char {
             evasion *= BLESS_BUFF_BONUS;
         }
 
+        // DRUNK
+        for (Buff buff : buffs(Drunk.class)) {
+            evasion = (evasion <= 1) ? evasion - 0.3f : evasion - 1;
+        }
         if (paralysed) {
             evasion /= 2;
         }
 
         int aEnc = belongings.armor != null ? belongings.armor.STR - STR() : 0;
-
+        // TODO sure about this
         if (subClass == HeroSubClass.PALADIN) {
             aEnc--;
         }
@@ -1036,8 +1046,8 @@ public class Hero extends Char {
             case FOR_SALE:
                 curAction = (heap.size() == 1) && (heap.peek().price() > 0) ?
                         new HeroAction.Buy(cell) :
-                        new HeroAction.PickUp(cell);
-                break;
+                            new HeroAction.PickUp(cell);
+                        break;
             default:
                 curAction = new HeroAction.OpenChest(cell);
             }

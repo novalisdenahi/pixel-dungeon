@@ -214,7 +214,7 @@ public class Weapon extends KindOfWeapon {
         if ((this instanceof MissileWeapon) && (hero.heroClass == HeroClass.HUNTRESS)) {
             encumrance -= 2;
         }
-        if (hero.subClass == HeroSubClass.PALADIN) {
+        if (hero.subClass == HeroSubClass.PALADIN) { // TODO check this. paladin STR bonus kick out. add shields!!!
             encumrance--;
         }
 

@@ -17,31 +17,58 @@
  */
 package com.watabou.pixeldungeon.scenes;
 
+import hu.denahi.pixeldungeon.holy.quest.DungeonType;
+
 import com.watabou.noosa.Game;
 import com.watabou.pixeldungeon.windows.WndStory;
 
 public class IntroScene extends PixelScene {
+    private static final String TEXT =
+            "Many heroes of all kinds ventured into the Dungeon before you. Some of them have returned with treasures and magical "
+                    +
+                    "artifacts, most have never been heard of since. But none have succeeded in retrieving the Amulet of Yendor, "
+                    +
+                    "which is told to be hidden in the depths of the Dungeon.\n\n"
+                    +
+                    ""
+                    +
+                    "You consider yourself ready for the challenge, but most importantly, you feel that fortune smiles on you. "
+                    +
+                    "It's time to start your own adventure!";
 
-	private static final String TEXT = 	
-		"Many heroes of all kinds ventured into the Dungeon before you. Some of them have returned with treasures and magical " +
-		"artifacts, most have never been heard of since. But none have succeeded in retrieving the Amulet of Yendor, " +
-		"which is told to be hidden in the depths of the Dungeon.\n\n" +
-		"" +
-		"You consider yourself ready for the challenge, but most importantly, you feel that fortune smiles on you. " +
-		"It's time to start your own adventure!";
-	
-	@Override
-	public void create() {
-		super.create();
-		
-		add( new WndStory( TEXT ) {
-			@Override
-			public void hide() {
-				super.hide();
-				Game.switchScene( InterlevelScene.class );
-			}
-		} );
-		
-		fadeIn();
-	}
+    private static final String TEXT_GOBLIN =
+            "You was passing the Temple of Estera when a priestess running out. She told you the temple was attacked by goblins. "
+                    + "The goblins not left empty-handed the palce. They captured one of the High Priest Of Estera. "
+                    + "";
+
+    @Override
+    public void create() {
+        super.create();
+        // TODO ADD MAD MAGE
+        switch (QuestChooseScene.curDungeonType) {
+        case DungeonType.YOG:
+            add(createDungeonWndStory(TEXT));
+            break;
+        case DungeonType.GOBLIN:
+            add(createDungeonWndStory(TEXT_GOBLIN));
+            break;
+
+        default:
+            // Default is YOG
+            add(createDungeonWndStory(TEXT));
+            break;
+        }
+
+        fadeIn();
+    }
+
+    private WndStory createDungeonWndStory(final String wndStoryText) {
+        return new WndStory(wndStoryText) {
+            @Override
+            public void hide() {
+                super.hide();
+                Game.switchScene(InterlevelScene.class);
+            }
+        };
+    }
 }

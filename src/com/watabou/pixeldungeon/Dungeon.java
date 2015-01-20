@@ -17,6 +17,9 @@
  */
 package com.watabou.pixeldungeon;
 
+import hu.denahi.pixeldungeon.holy.quest.DungeonTips;
+import hu.denahi.pixeldungeon.holy.quest.DungeonType;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -47,6 +50,7 @@ import com.watabou.pixeldungeon.levels.CavesLevel;
 import com.watabou.pixeldungeon.levels.CityBossLevel;
 import com.watabou.pixeldungeon.levels.CityLevel;
 import com.watabou.pixeldungeon.levels.DeadEndLevel;
+import com.watabou.pixeldungeon.levels.GoblinSewerLevel;
 import com.watabou.pixeldungeon.levels.HallsBossLevel;
 import com.watabou.pixeldungeon.levels.HallsLevel;
 import com.watabou.pixeldungeon.levels.LastLevel;
@@ -58,6 +62,7 @@ import com.watabou.pixeldungeon.levels.Room;
 import com.watabou.pixeldungeon.levels.SewerBossLevel;
 import com.watabou.pixeldungeon.levels.SewerLevel;
 import com.watabou.pixeldungeon.scenes.GameScene;
+import com.watabou.pixeldungeon.scenes.QuestChooseScene;
 import com.watabou.pixeldungeon.scenes.StartScene;
 import com.watabou.pixeldungeon.utils.BArray;
 import com.watabou.pixeldungeon.utils.Utils;
@@ -69,43 +74,6 @@ import com.watabou.utils.Random;
 public class Dungeon {
 
     private static final String NO_TIPS = "The text  is indecipherable...";
-    private static final String[] TIPS = {
-            "Don't overestimate your strength, use weapons and armor you can handle.",
-            "Not all doors in the dungeon are visible at first sight. If you are stuck, search for hidden doors.",
-            "Remember, that raising your strength is not the only way to access better equipment, you can go " +
-                    "the other way lowering its strength requirement with Scrolls of Upgrade.",
-            "You can spend your gold in shops on deeper levels of the dungeon. The first one is on the 6th level.",
-
-            "Beware of Goo!",
-
-            "Pixel-Mart - all you need for successful adventure!",
-            "Identify your potions and scrolls as soon as possible. Don't put it off to the moment " +
-                    "when you actually need them.",
-            "Being hungry doesn't hurt, but starving does hurt.",
-            "Surprise attack has a better chance to hit. For example, you can ambush your enemy behind " +
-                    "a closed door when you know it is approaching.",
-
-            "Don't let The Tengu out!",
-
-            "Pixel-Mart. Spend money. Live longer.",
-            "When you're attacked by several monsters at the same time, try to retreat behind a door.",
-            "If you are burning, you can't put out the fire in the water while levitating.",
-            "There is no sense in possessing more than one Ankh at the same time, because you will lose them upon resurrecting.",
-
-            "DANGER! Heavy machinery can cause injury, loss of limbs or death!",
-
-            "Pixel-Mart. A safer life in dungeon.",
-            "When you upgrade an enchanted weapon, there is a chance to destroy that enchantment.",
-            "In a Well of Transmutation you can get an item, that cannot be obtained otherwise.",
-            "The only way to enchant a weapon is by upgrading it with a Scroll of Weapon Upgrade.",
-
-            "No weapons allowed in the presence of His Majesty!",
-
-            "Pixel-Mart. Special prices for demon hunters!",
-            "The text is written in demonic language.",
-            "The text is written in demonic language.",
-            "The text is written in demonic language."
-    };
 
     private static final String TXT_DEAD_END =
             "What are you doing here?!";
@@ -120,6 +88,8 @@ public class Dungeon {
 
     public static Hero hero;
     public static Level level;
+
+    public static int dungeonType;
 
     // Either Item or Class<? extends Item>
     public static Object quickslot;
@@ -164,6 +134,7 @@ public class Dungeon {
 
     private static final String GOLD = "gold";
     private static final String DEPTH = "depth";
+    private static final String DUNGEON_TYPE = "dungeonType";
 
     private static final String QUICKSLOT = "quickslot";
     private static final String LEVEL = "level";
@@ -180,6 +151,8 @@ public class Dungeon {
     private static final String QUESTS = "quests";
     private static final String BADGES = "badges";
     private static boolean[] passable = new boolean[Level.LENGTH];
+
+    private static String[] tips;
 
     public static boolean asNeeded() {
         return Random.Int(12 * (1 + arcaneStyli)) < depth;
@@ -354,6 +327,10 @@ public class Dungeon {
         Badges.reset();
 
         StartScene.curClass.initHero(hero);
+
+        dungeonType = QuestChooseScene.curDungeonType;
+        tips = DungeonTips.getTips(dungeonType);
+
     }
 
     public static boolean isChallenged(final int mask) {
@@ -442,6 +419,7 @@ public class Dungeon {
 
         gold = bundle.getInt(GOLD);
         depth = bundle.getInt(DEPTH);
+        dungeonType = bundle.getInt(DUNGEON_TYPE);
 
         Statistics.restoreFromBundle(bundle);
         Journal.restoreFromBundle(bundle);
@@ -459,8 +437,26 @@ public class Dungeon {
         return (Level) bundle.get("level");
     }
 
-    public static Level newLevel() {
+    private static Level newGoblinLevel() {
+        Level level;
+        switch (depth) {
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+            level = new GoblinSewerLevel();
+            break;
+        case 5:
+            level = new LastLevel();
+            break;
+        default:
+            level = new DeadEndLevel();
+            Statistics.deepestFloor--;
+        }
+        return level;
+    }
 
+    public static Level newLevel() {
         Dungeon.level = null;
         Actor.clear();
 
@@ -477,6 +473,32 @@ public class Dungeon {
 
         Arrays.fill(visible, false);
 
+        Level level;
+        // int dungeonType = DungeonType.YOG; // DEFAULT
+        switch (dungeonType) { // TODO add value
+        case DungeonType.YOG:
+            level = newYogLevel();
+            break;
+        case DungeonType.GOBLIN:
+            level = newGoblinLevel();
+            break;
+        case DungeonType.MAD_MAGE:
+            level = newYogLevel(); // TODO replace with mad_mage
+            break;
+        default:
+            // DEFAULT is YOG
+            level = newYogLevel();
+            break;
+        }
+
+        level.create();
+
+        Statistics.qualifiedForNoKilling = !bossLevel();
+
+        return level;
+    }
+
+    private static Level newYogLevel() {
         Level level;
         switch (depth) {
         case 1:
@@ -533,11 +555,6 @@ public class Dungeon {
             level = new DeadEndLevel();
             Statistics.deepestFloor--;
         }
-
-        level.create();
-
-        Statistics.qualifiedForNoKilling = !bossLevel();
-
         return level;
     }
 
@@ -605,6 +622,8 @@ public class Dungeon {
             bundle.put(GOLD, gold);
             bundle.put(DEPTH, depth);
 
+            bundle.put(DUNGEON_TYPE, dungeonType);
+
             bundle.put(POS, potionOfStrength);
             bundle.put(SOU, scrollsOfUpgrade);
             bundle.put(AS, arcaneStyli);
@@ -656,7 +675,6 @@ public class Dungeon {
     public static void saveLevel() throws IOException {
         Bundle bundle = new Bundle();
         bundle.put(LEVEL, level);
-
         OutputStream output = Game.instance.openFileOutput(Utils.format(depthFile(hero.heroClass), depth),
                 Context.MODE_PRIVATE);
         Bundle.write(bundle, output);
@@ -664,6 +682,7 @@ public class Dungeon {
     }
 
     public static boolean shopOnLevel() {
+        // TODO add dungeon type too
         return (depth == 6) || (depth == 11) || (depth == 16);
     }
 
@@ -703,8 +722,8 @@ public class Dungeon {
 
             int index = depth - 1;
 
-            if (index < TIPS.length) {
-                return TIPS[index];
+            if (index < tips.length) {
+                return tips[index];
             } else {
                 return NO_TIPS;
             }

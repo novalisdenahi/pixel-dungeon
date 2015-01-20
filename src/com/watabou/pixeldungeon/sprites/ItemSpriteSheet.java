@@ -154,6 +154,7 @@ public class ItemSpriteSheet {
     public static final int STEAK = 114;
     public static final int OVERPRICED = 115;
     public static final int CARPACCIO = 116;
+    public static final int RUM = 131;
 
     // Bags
     public static final int POUCH = 83;
