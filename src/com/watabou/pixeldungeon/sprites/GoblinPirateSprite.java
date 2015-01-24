@@ -27,7 +27,7 @@ public class GoblinPirateSprite extends MobSprite {
 
         texture(Assets.PIRATE);
 
-        TextureFilm frames = new TextureFilm(texture, 13, 16);
+        TextureFilm frames = new TextureFilm(texture, 14, 16);
 
         idle = new Animation(10, true);
         idle.frames(frames, 1, 1, 1, 1, 1, 0, 0, 0, 0);
