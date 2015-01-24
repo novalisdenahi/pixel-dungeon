@@ -17,6 +17,8 @@
  */
 package com.watabou.pixeldungeon.actors.mobs.npcs;
 
+import android.util.Log;
+
 import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.Journal;
 import com.watabou.pixeldungeon.actors.Actor;
@@ -32,8 +34,10 @@ import com.watabou.pixeldungeon.items.rings.RingOfShadows;
 import com.watabou.pixeldungeon.items.wands.Wand;
 import com.watabou.pixeldungeon.items.weapon.Weapon.Enchantment;
 import com.watabou.pixeldungeon.items.weapon.melee.Dagger;
+import com.watabou.pixeldungeon.items.weapon.melee.Falchion;
 import com.watabou.pixeldungeon.items.weapon.melee.Mace;
 import com.watabou.pixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.watabou.pixeldungeon.items.weapon.melee.Rapier;
 import com.watabou.pixeldungeon.items.weapon.melee.Sword;
 import com.watabou.pixeldungeon.levels.GoblinSewerLevel;
 import com.watabou.pixeldungeon.levels.Room;
@@ -41,6 +45,7 @@ import com.watabou.pixeldungeon.levels.Terrain;
 import com.watabou.pixeldungeon.scenes.GameScene;
 import com.watabou.pixeldungeon.sprites.GoblinPirateSprite;
 import com.watabou.pixeldungeon.utils.Utils;
+import com.watabou.pixeldungeon.windows.WndGoblinPirate;
 import com.watabou.pixeldungeon.windows.WndQuest;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -110,7 +115,8 @@ public class GoblinPirate extends NPC {
         public static void spawn(final GoblinSewerLevel level, final Room room) {
             // always spawn Goblin dungeon level 6 next to the shop
             // TODO set back to 6
-            if (!spawned && (Dungeon.depth == 3)) {
+            Log.i("GOBLIN_PIRATE", "depht: " + Dungeon.depth);
+            if (!spawned && (Dungeon.depth == 1)) {
 
                 GoblinPirate npc = new GoblinPirate();
                 // TODO where to put! not next to the sign... Pirate room?
@@ -155,15 +161,15 @@ public class GoblinPirate extends NPC {
                     item2 = new Mace();
                     break;
                 case 3:
-                    item2 = new Mace(); // TODO add new weapon
+                    item2 = new Rapier();
                     break;
                 case 4:
-                    item2 = new Mace(); // TODO add new weapon
+                    item2 = new Falchion();
                     break;
                 }
                 item2.upgrade(Random.Int(2, 4));
 
-                // lucky day bonus
+                // lucky day bonus - maybe the random shuold be 365 :)
                 if (Random.Int(10) == 0) {
                     item1.upgrade(2);
                     ((MeleeWeapon) (item2)).enchant(Enchantment.random());
@@ -198,10 +204,10 @@ public class GoblinPirate extends NPC {
     private static final String TXT_RUM =
             "Yo Ho Ho! Come closer and don't be afraid. Yeah! I'm a Pirate Capt'n and a Goblin but not your enemy adventurer. "
                     + " My bloody crew sailling out without me! Arrgh! Maybe I was drunk. But I never said am a perfect Capt'n, "
-                    + "therefore they will walk the plank!"
+                    + "therefore they will walk the plank! "
                     + "Maybe we could be partnets too. Aye! You don't have to do nothing else, just bring me "
                     + Quest.RUM_NECCESARY
-                    + " bottles of_Goblin Rum_. I will pay the price. Just hurry! This old bones really thirsty. ";
+                    + " bottles of _Goblin Rum_. I will pay the price. Just hurry! This old bones really thirsty. ";
 
     private static final String TXT_RUM_1 = "Aaarrgghh! Matey it's not enough! But it will be enough until you bring more.";
 
@@ -209,15 +215,15 @@ public class GoblinPirate extends NPC {
             "What are you doing here without my _Rum_?! You will feed the fish!";
 
     private static final String TXT_RUM_3 =
-            "I need more or no business! Don't come here empty handed you land lubber!";
+            "I need more _Rum_ or no business! Don't come here empty handed you land lubber!";
 
     private static final String TXT_RUM_4 =
             "Aaarrgghh! *hic* Yo Ho *hic-hic* Ho Sailor!";
 
     private static final String TXT_RUM_5 =
-            "The King and his men stole the queen from her bed/n and bound her in her bones/n "
-                    + "The seas be ours and by the powers/n Where we will...we'll roam *hic* /n"
-                    + "Yo, Ho haul together, hoist the colours high/n Heave ho, thieves and beggars, never shall we die";
+            "The King and his men stole the queen from *hic* her bed\n and bound her in her bones\n "
+                    + "The seas be ours and by the powers\n Where we will...we'll roam *hic* \n"
+                    + "Yo, Ho haul together, hoist the colours high\n Heave ho, *hic* thieves and beggars, never shall we die! *hic* ";
 
     @Override
     protected boolean act() {
@@ -253,7 +259,13 @@ public class GoblinPirate extends NPC {
     public void interact() {
 
         sprite.turnTo(pos, Dungeon.hero.pos);
-        if (Quest.given) {
+        if (Quest.completed) {
+            if (Random.Int(3) == 0) {
+                tell(TXT_RUM_5);
+            } else {
+                tell(TXT_RUM_4);
+            }
+        } else if (Quest.given) {
 
             Item item = Dungeon.hero.belongings.getItem(Rum.class);
 
@@ -261,7 +273,7 @@ public class GoblinPirate extends NPC {
                 if ((item.quantity() + Quest.counter) >= Quest.RUM_NECCESARY) {
                     item.detach(Dungeon.hero.belongings.backpack);
 
-                    // GameScene.show( new WndWandmaker( this, item ) );
+                    GameScene.show(new WndGoblinPirate(this, item));
 
                 } else {
                     tell(TXT_RUM_1);
@@ -271,16 +283,11 @@ public class GoblinPirate extends NPC {
             } else {
                 if (Quest.counter == 0) {
                     tell(TXT_RUM_2);
+                } else {
+                    tell(TXT_RUM_3);
                 }
-                tell(TXT_RUM_3);
             }
 
-        } else if (Quest.completed) {
-            if (Random.Int(3) == 0) {
-                tell(TXT_RUM_5);
-            } else {
-                tell(TXT_RUM_4);
-            }
         } else {
             tell(TXT_RUM);
             Quest.given = true;

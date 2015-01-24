@@ -24,7 +24,6 @@ import com.watabou.pixeldungeon.items.SymbolOfEstera;
 import com.watabou.pixeldungeon.items.TomeOfMastery;
 import com.watabou.pixeldungeon.items.armor.ClothArmor;
 import com.watabou.pixeldungeon.items.food.Food;
-import com.watabou.pixeldungeon.items.food.Rum;
 import com.watabou.pixeldungeon.items.potions.PotionOfHealing;
 import com.watabou.pixeldungeon.items.potions.PotionOfStrength;
 import com.watabou.pixeldungeon.items.rings.RingOfShadows;
@@ -144,9 +143,6 @@ public enum HeroClass {
 
         (hero.belongings.weapon = new ShortSword()).identify();
         new Dart(8).identify().collect();
-        // TODO test rum
-        new Rum().collect();
-        new Rum().collect();
         Dungeon.quickslot = Dart.class;
 
         new PotionOfStrength().setKnown();

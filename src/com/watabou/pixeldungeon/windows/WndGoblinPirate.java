@@ -93,9 +93,10 @@ public class WndGoblinPirate extends Window {
             Dungeon.level.drop(reward, goblinPirate.pos).sprite.drop();
         }
 
-        goblinPirate.yell(Utils.format(TXT_FARAWELL));
-
         // GoblinPirate don't die. Stay and being drunk.
         GoblinPirate.Quest.complete();
+
+        goblinPirate.yell(Utils.format(TXT_FARAWELL));
+
     }
 }

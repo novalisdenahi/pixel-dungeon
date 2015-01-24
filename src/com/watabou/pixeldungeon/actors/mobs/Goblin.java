@@ -52,7 +52,7 @@ public class Goblin extends Mob {
     @Override
     public String description() {
         return
-                "Goblins are small goblinoids. They organized in tribes living under the surface. If you see one goblin "
+        "Goblins are small goblinoids. They organized in tribes living under the surface. If you see one goblin "
                 + "you can be sure there are more of them.  The goblins sneaking into  villages and towns by night to take what they can. ";
     }
 
@@ -68,12 +68,13 @@ public class Goblin extends Mob {
     }
 
     private void lootGenerator() {
-        if (Random.Int(1) > 0) {
+        if (Random.Int(2) == 0) {
             loot = Gold.class;
+            lootChance = 0.5f;
         } else {
             loot = Rum.class;
+            lootChance = 0.3f;
         }
 
-        lootChance = 0.5f;
     }
 }
