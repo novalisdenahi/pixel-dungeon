@@ -29,33 +29,34 @@ import com.watabou.utils.Callback;
 
 public class WandOfSlowness extends Wand {
 
-	{
-		name = "Wand of Slowness";
-	}
+    {
+        name = "Wand of Slowness";
+    }
 
-	@Override
-	protected void onZap( int cell ) {
-		Char ch = Actor.findChar( cell );
-		if (ch != null) {
-			
-			Buff.affect( ch, Slow.class, Slow.duration( ch ) / 3 + level() );
+    @Override
+    public String desc() {
+        return
+        "This wand will cause a creature to move and attack " +
+                "at half its ordinary speed until the effect ends";
+    }
 
-		} else {
-			
-			GLog.i( "nothing happened" );
-			
-		}
-	}
-	
-	protected void fx( int cell, Callback callback ) {
-		MagicMissile.slowness( curUser.sprite.parent, curUser.pos, cell, callback );
-		Sample.INSTANCE.play( Assets.SND_ZAP );
-	}
-	
-	@Override
-	public String desc() {
-		return 
-			"This wand will cause a creature to move and attack " +
-			"at half its ordinary speed until the effect ends";
-	}
+    @Override
+    protected void fx(final int cell, final Callback callback) {
+        MagicMissile.slowness(curUser.sprite.parent, curUser.pos, cell, callback);
+        Sample.INSTANCE.play(Assets.SND_ZAP);
+    }
+
+    @Override
+    protected void onZap(final int cell) {
+        Char ch = Actor.findChar(cell);
+        if (ch != null) {
+
+            Buff.affect(ch, Slow.class, (Slow.duration(ch) / 3) + level());
+
+        } else {
+
+            GLog.i("nothing happened");
+
+        }
+    }
 }

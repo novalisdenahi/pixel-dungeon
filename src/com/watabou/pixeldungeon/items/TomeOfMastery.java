@@ -132,7 +132,7 @@ public class TomeOfMastery extends Item {
     @Override
     public String info() {
         return
-                "This worn leather book is not that thick, but you feel somehow, " +
+        "This worn leather book is not that thick, but you feel somehow, " +
                 "that you can gather a lot from it. Remember though that reading " +
                 "this tome may require some time.";
     }

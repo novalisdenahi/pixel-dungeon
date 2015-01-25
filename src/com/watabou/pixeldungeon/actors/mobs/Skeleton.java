@@ -23,6 +23,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.ResultDescriptions;
+import com.watabou.pixeldungeon.actors.Actor;
 import com.watabou.pixeldungeon.actors.Char;
 import com.watabou.pixeldungeon.items.Generator;
 import com.watabou.pixeldungeon.items.Item;
@@ -86,7 +87,7 @@ public class Skeleton extends Mob {
 
         boolean heroKilled = false;
         for (int element : Level.NEIGHBOURS8) {
-            Char ch = findChar(pos + element);
+            Char ch = Actor.findChar(pos + element);
             if ((ch != null) && ch.isAlive()) {
                 int damage = Math.max(0, damageRoll() - Random.IntRange(0, ch.dr() / 2));
                 ch.damage(damage, this);

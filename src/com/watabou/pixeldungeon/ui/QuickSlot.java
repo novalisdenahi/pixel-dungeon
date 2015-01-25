@@ -30,182 +30,187 @@ import com.watabou.pixeldungeon.windows.WndBag;
 
 public class QuickSlot extends Button implements WndBag.Listener {
 
-	private static final String TXT_SELECT_ITEM = "Select an item for the quickslot";
-	
-	private static QuickSlot instance;
-	
-	private Item itemInSlot;
-	private ItemSlot slot;
-	
-	private Image crossB;
-	private Image crossM;
-	
-	private boolean targeting = false;
-	private Item lastItem = null;
-	private Char lastTarget= null;
-	
-	public QuickSlot() {
-		super();
-		item( select() );
-		
-		instance = this;
-	}
-	
-	@Override
-	public void destroy() {
-		super.destroy();
-		
-		instance = null;
-		
-		lastItem = null;
-		lastTarget = null;
-	}
-	
-	@Override
-	protected void createChildren() {
-		super.createChildren();
-		
-		slot = new ItemSlot() {
-			@Override
-			protected void onClick() {
-				if (targeting) {
-					GameScene.handleCell( lastTarget.pos );
-				} else {
-					Item item = select();
-					if (item == lastItem) {
-						useTargeting();
-					} else {
-						lastItem = item;
-					}
-					item.execute( Dungeon.hero );
-				}
-			}
-			@Override
-			protected boolean onLongClick() {
-				return QuickSlot.this.onLongClick();
-			}
-			@Override
-			protected void onTouchDown() {
-				icon.lightness( 0.7f );
-			}
-			@Override
-			protected void onTouchUp() {
-				icon.resetColor();
-			}
-		};
-		add( slot );
-		
-		crossB = Icons.TARGET.get();
-		crossB.visible = false;
-		add( crossB );
-		
-		crossM = new Image();
-		crossM.copy( crossB );
-	}
-	
-	@Override
-	protected void layout() {
-		super.layout();
-		
-		slot.fill( this );
-		
-		crossB.x = PixelScene.align( x + (width - crossB.width) / 2 );
-		crossB.y = PixelScene.align( y + (height - crossB.height) / 2 );
-	}
-	
-	@Override
-	protected void onClick() {
-		GameScene.selectItem( this, WndBag.Mode.QUICKSLOT, TXT_SELECT_ITEM );
-	}
-	
-	@Override
-	protected boolean onLongClick() {
-		GameScene.selectItem( this, WndBag.Mode.QUICKSLOT, TXT_SELECT_ITEM );
-		return true;
-	}
-	
-	@SuppressWarnings("unchecked")
-	private static Item select() {
-		if (Dungeon.quickslot instanceof Item) {
-			
-			return (Item)Dungeon.quickslot;
-			
-		} else if (Dungeon.quickslot != null) {
-			
-			Item item = Dungeon.hero.belongings.getItem( (Class<? extends Item>)Dungeon.quickslot );			
-			return item != null ? item : Item.virtual( (Class<? extends Item>)Dungeon.quickslot );
-			
-		} else {
-			
-			return null;
-			
-		}
-	}
+    private static final String TXT_SELECT_ITEM = "Select an item for the quickslot";
 
-	@Override
-	public void onSelect( Item item ) {
-		if (item != null) {
-			Dungeon.quickslot = item.stackable ? item.getClass() : item;
-			refresh();
-		}
-	}
-	
-	public void item( Item item ) {
-		slot.item( item );
-		itemInSlot = item;
-		enableSlot();
-	}
-	
-	public void enable( boolean value ) {
-		active = value;
-		if (value) {
-			enableSlot();
-		} else {
-			slot.enable( false );
-		}
-	}
-	
-	private void enableSlot() {
-		slot.enable( 
-			itemInSlot != null && 
-			itemInSlot.quantity() > 0 && 
-			(Dungeon.hero.belongings.backpack.contains( itemInSlot ) || itemInSlot.isEquipped( Dungeon.hero )));
-	}
-	
-	private void useTargeting() {
-		
-		targeting = lastTarget != null && lastTarget.isAlive() && Dungeon.visible[lastTarget.pos];
-		
-		if (targeting) {
-			if (Actor.all().contains( lastTarget )) {
-				lastTarget.sprite.parent.add( crossM );
-				crossM.point( DungeonTilemap.tileToWorld( lastTarget.pos ) );
-				crossB.visible = true;
-			} else {
-				lastTarget = null;
-			}
-		}
-	}
-	
-	public static void refresh() {
-		if (instance != null) {
-			instance.item( select() );
-		}
-	}
-	
-	public static void target( Item item, Char target ) {
-		if (item == instance.lastItem && target != Dungeon.hero) {
-			instance.lastTarget = target;
-			
-			HealthIndicator.instance.target( target );
-		}
-	}
-	
-	public static void cancel() {
-		if (instance != null && instance.targeting) {
-			instance.crossB.visible = false;
-			instance.crossM.remove();
-			instance.targeting = false;
-		}
-	}
+    private static QuickSlot instance;
+
+    public static void cancel() {
+        if ((instance != null) && instance.targeting) {
+            instance.crossB.visible = false;
+            instance.crossM.remove();
+            instance.targeting = false;
+        }
+    }
+
+    public static void refresh() {
+        if (instance != null) {
+            instance.item(QuickSlot.select());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Item select() {
+        if (Dungeon.quickslot instanceof Item) {
+
+            return (Item) Dungeon.quickslot;
+
+        } else if (Dungeon.quickslot != null) {
+
+            Item item = Dungeon.hero.belongings.getItem((Class<? extends Item>) Dungeon.quickslot);
+            return item != null ? item : Item.virtual((Class<? extends Item>) Dungeon.quickslot);
+
+        } else {
+
+            return null;
+
+        }
+    }
+
+    public static void target(final Item item, final Char target) {
+        if ((item == instance.lastItem) && (target != Dungeon.hero)) {
+            instance.lastTarget = target;
+
+            HealthIndicator.instance.target(target);
+        }
+    }
+
+    private Item itemInSlot;
+    private ItemSlot slot;
+    private Image crossB;
+
+    private Image crossM;
+
+    private boolean targeting = false;
+
+    private Item lastItem = null;
+
+    private Char lastTarget = null;
+
+    public QuickSlot() {
+        super();
+        item(QuickSlot.select());
+
+        instance = this;
+    }
+
+    @Override
+    protected void createChildren() {
+        super.createChildren();
+
+        slot = new ItemSlot() {
+            @Override
+            protected void onClick() {
+                if (targeting) {
+                    GameScene.handleCell(lastTarget.pos);
+                } else {
+                    Item item = QuickSlot.select();
+                    if (item == lastItem) {
+                        useTargeting();
+                    } else {
+                        lastItem = item;
+                    }
+                    item.execute(Dungeon.hero);
+                }
+            }
+
+            @Override
+            protected boolean onLongClick() {
+                return QuickSlot.this.onLongClick();
+            }
+
+            @Override
+            protected void onTouchDown() {
+                icon.lightness(0.7f);
+            }
+
+            @Override
+            protected void onTouchUp() {
+                icon.resetColor();
+            }
+        };
+        add(slot);
+
+        crossB = Icons.TARGET.get();
+        crossB.visible = false;
+        add(crossB);
+
+        crossM = new Image();
+        crossM.copy(crossB);
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+
+        instance = null;
+
+        lastItem = null;
+        lastTarget = null;
+    }
+
+    public void enable(final boolean value) {
+        active = value;
+        if (value) {
+            enableSlot();
+        } else {
+            slot.enable(false);
+        }
+    }
+
+    private void enableSlot() {
+        slot.enable(
+                (itemInSlot != null) &&
+                        (itemInSlot.quantity() > 0) &&
+                        (Dungeon.hero.belongings.backpack.contains(itemInSlot) || itemInSlot.isEquipped(Dungeon.hero)));
+    }
+
+    public void item(final Item item) {
+        slot.item(item);
+        itemInSlot = item;
+        enableSlot();
+    }
+
+    @Override
+    protected void layout() {
+        super.layout();
+
+        slot.fill(this);
+
+        crossB.x = PixelScene.align(x + ((width - crossB.width) / 2));
+        crossB.y = PixelScene.align(y + ((height - crossB.height) / 2));
+    }
+
+    @Override
+    protected void onClick() {
+        GameScene.selectItem(this, WndBag.Mode.QUICKSLOT, TXT_SELECT_ITEM);
+    }
+
+    @Override
+    protected boolean onLongClick() {
+        GameScene.selectItem(this, WndBag.Mode.QUICKSLOT, TXT_SELECT_ITEM);
+        return true;
+    }
+
+    @Override
+    public void onSelect(final Item item) {
+        if (item != null) {
+            Dungeon.quickslot = item.stackable ? item.getClass() : item;
+            QuickSlot.refresh();
+        }
+    }
+
+    private void useTargeting() {
+
+        targeting = (lastTarget != null) && lastTarget.isAlive() && Dungeon.visible[lastTarget.pos];
+
+        if (targeting) {
+            if (Actor.all().contains(lastTarget)) {
+                lastTarget.sprite.parent.add(crossM);
+                crossM.point(DungeonTilemap.tileToWorld(lastTarget.pos));
+                crossB.visible = true;
+            } else {
+                lastTarget = null;
+            }
+        }
+    }
 }

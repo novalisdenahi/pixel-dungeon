@@ -107,7 +107,7 @@ public class GoblinPirate extends NPC {
                 item1 = (Wand) node.get(ITEM1);
                 item2 = (Wand) node.get(ITEM2);
             } else {
-                reset();
+                Quest.reset();
             }
         }
 

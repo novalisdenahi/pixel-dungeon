@@ -902,7 +902,7 @@ public class Hero extends Char {
         Ankh ankh = belongings.getItem(Ankh.class);
         if (ankh == null) {
 
-            reallyDie(cause);
+            Hero.reallyDie(cause);
 
         } else {
 
@@ -1046,8 +1046,8 @@ public class Hero extends Char {
             case FOR_SALE:
                 curAction = (heap.size() == 1) && (heap.peek().price() > 0) ?
                         new HeroAction.Buy(cell) :
-                            new HeroAction.PickUp(cell);
-                        break;
+                        new HeroAction.PickUp(cell);
+                break;
             default:
                 curAction = new HeroAction.OpenChest(cell);
             }

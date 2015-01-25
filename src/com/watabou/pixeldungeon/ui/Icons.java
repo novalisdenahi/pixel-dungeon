@@ -54,15 +54,15 @@ public enum Icons {
     public static Image get(final HeroClass cl) {
         switch (cl) {
         case WARRIOR:
-            return get(WARRIOR);
+            return Icons.get(WARRIOR);
         case MAGE:
-            return get(MAGE);
+            return Icons.get(MAGE);
         case ROGUE:
-            return get(ROGUE);
+            return Icons.get(ROGUE);
         case HUNTRESS:
-            return get(HUNTRESS);
+            return Icons.get(HUNTRESS);
         case PRIEST:
-            return get(PRIEST);
+            return Icons.get(PRIEST);
         default:
             return null;
         }
@@ -157,6 +157,6 @@ public enum Icons {
     }
 
     public Image get() {
-        return get(this);
+        return Icons.get(this);
     }
 }

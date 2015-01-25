@@ -131,8 +131,8 @@ public class Generator {
         GOLD(50, Gold.class);
 
         public static int order(final Item item) {
-            for (int i = 0; i < values().length; i++) {
-                if (values()[i].superClass.isInstance(item)) {
+            for (int i = 0; i < Category.values().length; i++) {
+                if (Category.values()[i].superClass.isInstance(item)) {
                     return i;
                 }
             }
@@ -273,7 +273,7 @@ public class Generator {
     }
 
     public static Item random() {
-        return random(Random.chances(categoryProbs));
+        return Generator.random(Random.chances(categoryProbs));
     }
 
     public static Item random(final Category cat) {
@@ -283,9 +283,9 @@ public class Generator {
 
             switch (cat) {
             case ARMOR:
-                return randomArmor();
+                return Generator.randomArmor();
             case WEAPON:
-                return randomWeapon();
+                return Generator.randomWeapon();
             default:
                 return ((Item) cat.classes[Random.chances(cat.probs)].newInstance()).random();
             }

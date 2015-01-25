@@ -32,7 +32,7 @@ public class Bestiary {
 
     public static Mob mob(final int depth) {
         @SuppressWarnings("unchecked")
-        Class<? extends Mob> cl = (Class<? extends Mob>) mobClass(depth);
+        Class<? extends Mob> cl = (Class<? extends Mob>) Bestiary.mobClass(depth);
         try {
             return cl.newInstance();
         } catch (Exception e) {
@@ -43,11 +43,11 @@ public class Bestiary {
     private static Class<?> mobClass(final int depth) {
         switch (Dungeon.dungeonType) {
         case DungeonType.YOG:
-            return mobClassYog(depth);
+            return Bestiary.mobClassYog(depth);
         case DungeonType.GOBLIN:
-            return mobClassGoblin(depth); // TODO add mad_mage
+            return Bestiary.mobClassGoblin(depth); // TODO add mad_mage
         default:
-            return mobClassYog(depth); // as always Yog_dungeon is the default
+            return Bestiary.mobClassYog(depth); // as always Yog_dungeon is the default
         }
     }
 
@@ -207,7 +207,7 @@ public class Bestiary {
 
     public static Mob mutable(final int depth) {
         @SuppressWarnings("unchecked")
-        Class<? extends Mob> cl = (Class<? extends Mob>) mobClass(depth);
+        Class<? extends Mob> cl = (Class<? extends Mob>) Bestiary.mobClass(depth);
 
         if (Random.Int(30) == 0) {
             if (cl == Rat.class) {

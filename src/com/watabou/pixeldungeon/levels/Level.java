@@ -501,7 +501,7 @@ public abstract class Level implements Bundlable {
             if (Dungeon.visible[cell]) {
                 Sample.INSTANCE.play(Assets.SND_TRAP);
             }
-            set(cell, Terrain.INACTIVE_TRAP);
+            Level.set(cell, Terrain.INACTIVE_TRAP);
             GameScene.updateMap(cell);
         }
 
@@ -625,7 +625,7 @@ public abstract class Level implements Bundlable {
             if (ch == Dungeon.hero) {
                 Dungeon.hero.interrupt();
             }
-            set(cell, Terrain.INACTIVE_TRAP);
+            Level.set(cell, Terrain.INACTIVE_TRAP);
             GameScene.updateMap(cell);
         }
 
@@ -958,7 +958,7 @@ public abstract class Level implements Bundlable {
             } else if ((c == Dungeon.hero) && (((Hero) c).heroClass == HeroClass.HUNTRESS)) {
                 for (Mob mob : mobs) {
                     int p = mob.pos;
-                    if (distance(c.pos, p) == 2) {
+                    if (Level.distance(c.pos, p) == 2) {
                         fieldOfView[p] = true;
                         fieldOfView[p + 1] = true;
                         fieldOfView[p - 1] = true;
@@ -974,7 +974,7 @@ public abstract class Level implements Bundlable {
                 for (Mob mob : mobs) {
                     if ((mob.mobType == MobType.DEMON) || (mob.mobType == MobType.UNDEAD)) {
                         int p = mob.pos;
-                        if (distance(c.pos, p) == 4) {
+                        if (Level.distance(c.pos, p) == 4) {
                             fieldOfView[p] = true;
                             fieldOfView[p + 1] = true;
                             fieldOfView[p - 1] = true;

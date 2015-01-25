@@ -24,30 +24,31 @@ import com.watabou.utils.Bundle;
 
 public class Terror extends FlavourBuff {
 
-	public static final float DURATION = 10f;
-	public Char source;
-	
-	@Override
-	public int icon() {
-		return BuffIndicator.TERROR;
-	}
-	
-	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle( bundle );
-		// It's not really correct...
-		source = Dungeon.hero;
-	}
-	
-	@Override
-	public String toString() {
-		return "Terror";
-	}
-	
-	public static void recover( Char target ) {
-		Terror terror = target.buff( Terror.class );
-		if (terror != null && terror.cooldown() < DURATION) {
-			target.remove( terror );
-		}
-	}
+    public static final float DURATION = 10f;
+
+    public static void recover(final Char target) {
+        Terror terror = target.buff(Terror.class);
+        if ((terror != null) && (terror.cooldown() < DURATION)) {
+            target.remove(terror);
+        }
+    }
+
+    public Char source;
+
+    @Override
+    public int icon() {
+        return BuffIndicator.TERROR;
+    }
+
+    @Override
+    public void restoreFromBundle(final Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        // It's not really correct...
+        source = Dungeon.hero;
+    }
+
+    @Override
+    public String toString() {
+        return "Terror";
+    }
 }

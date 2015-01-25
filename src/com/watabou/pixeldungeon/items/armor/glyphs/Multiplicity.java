@@ -34,48 +34,48 @@ import com.watabou.utils.Random;
 
 public class Multiplicity extends Glyph {
 
-	private static final String TXT_MULTIPLICITY	= "%s of multiplicity";
-	
-	private static ItemSprite.Glowing PINK = new ItemSprite.Glowing( 0xCCAA88 );
-	
-	@Override
-	public int proc( Armor armor, Char attacker, Char defender, int damage) {
+    private static final String TXT_MULTIPLICITY = "%s of multiplicity";
 
-		int level = Math.max( 0, armor.level );
-		
-		if (Random.Int( level / 2 + 6 ) >= 5) {
-			
-			ArrayList<Integer> respawnPoints = new ArrayList<Integer>();
-			
-			for (int i=0; i < Level.NEIGHBOURS8.length; i++) {
-				int p = defender.pos + Level.NEIGHBOURS8[i];
-				if (Actor.findChar( p ) == null && (Level.passable[p] || Level.avoid[p])) {
-					respawnPoints.add( p );
-				}
-			}
-			
-			if (respawnPoints.size() > 0) {
-				MirrorImage mob = new MirrorImage();
-				mob.duplicate( (Hero)defender );
-				GameScene.add( mob );
-				WandOfBlink.appear( mob, Random.element( respawnPoints ) );
-				
-				defender.damage( Random.IntRange( 1, defender.HT / 6 ), /*attacker*/ this );
-				checkOwner( defender );
-			}
-			
-		}
-		
-		return damage;
-	}
-	
-	@Override
-	public String name( String weaponName) {
-		return String.format( TXT_MULTIPLICITY, weaponName );
-	}
+    private static ItemSprite.Glowing PINK = new ItemSprite.Glowing(0xCCAA88);
 
-	@Override
-	public Glowing glowing() {
-		return PINK;
-	}
+    @Override
+    public Glowing glowing() {
+        return PINK;
+    }
+
+    @Override
+    public String name(final String weaponName) {
+        return String.format(TXT_MULTIPLICITY, weaponName);
+    }
+
+    @Override
+    public int proc(final Armor armor, final Char attacker, final Char defender, final int damage) {
+
+        int level = Math.max(0, armor.level);
+
+        if (Random.Int((level / 2) + 6) >= 5) {
+
+            ArrayList<Integer> respawnPoints = new ArrayList<Integer>();
+
+            for (int i = 0; i < Level.NEIGHBOURS8.length; i++) {
+                int p = defender.pos + Level.NEIGHBOURS8[i];
+                if ((Actor.findChar(p) == null) && (Level.passable[p] || Level.avoid[p])) {
+                    respawnPoints.add(p);
+                }
+            }
+
+            if (respawnPoints.size() > 0) {
+                MirrorImage mob = new MirrorImage();
+                mob.duplicate((Hero) defender);
+                GameScene.add(mob);
+                WandOfBlink.appear(mob, Random.element(respawnPoints));
+
+                defender.damage(Random.IntRange(1, defender.HT / 6), /* attacker */this);
+                checkOwner(defender);
+            }
+
+        }
+
+        return damage;
+    }
 }

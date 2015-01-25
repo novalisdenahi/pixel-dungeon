@@ -44,43 +44,43 @@ public enum HeroClass {
     private String title;
 
     public static final String[] WAR_PERKS = {
-        "Warriors start with 11 points of Strength.",
-        "Warriors start with a unique short sword. This sword can be later \"reforged\" to upgrade another melee weapon.",
-        "Warriors are less proficient with missile weapons.",
-        "Any piece of food restores some health when eaten.",
-        "Potions of Strength are identified from the beginning.",
+            "Warriors start with 11 points of Strength.",
+            "Warriors start with a unique short sword. This sword can be later \"reforged\" to upgrade another melee weapon.",
+            "Warriors are less proficient with missile weapons.",
+            "Any piece of food restores some health when eaten.",
+            "Potions of Strength are identified from the beginning.",
     };
 
     public static final String[] MAG_PERKS = {
-        "Mages start with a unique Wand of Magic Missile. This wand can be later \"disenchanted\" to upgrade another wand.",
-        "Mages recharge their wands faster.",
-        "When eaten, any piece of food restores 1 charge for all wands in the inventory.",
-        "Mages can use wands as a melee weapon.",
-        "Scrolls of Identify are identified from the beginning."
+            "Mages start with a unique Wand of Magic Missile. This wand can be later \"disenchanted\" to upgrade another wand.",
+            "Mages recharge their wands faster.",
+            "When eaten, any piece of food restores 1 charge for all wands in the inventory.",
+            "Mages can use wands as a melee weapon.",
+            "Scrolls of Identify are identified from the beginning."
     };
 
     public static final String[] ROG_PERKS = {
-        "Rogues start with a Ring of Shadows+1.",
-        "Rogues identify a type of a ring on equipping it.",
-        "Rogues are proficient with light armor, dodging better while wearing one.",
-        "Rogues are proficient in detecting hidden doors and traps.",
-        "Rogues can go without food longer.",
-        "Scrolls of Magic Mapping are identified from the beginning."
+            "Rogues start with a Ring of Shadows+1.",
+            "Rogues identify a type of a ring on equipping it.",
+            "Rogues are proficient with light armor, dodging better while wearing one.",
+            "Rogues are proficient in detecting hidden doors and traps.",
+            "Rogues can go without food longer.",
+            "Scrolls of Magic Mapping are identified from the beginning."
     };
 
     public static final String[] HUN_PERKS = {
-        "Huntresses start with 15 points of Health.",
-        "Huntresses start with a unique upgradeable boomerang.",
-        "Huntresses are proficient with missile weapons and get damage bonus for excessive strength when using them.",
-        "Huntresses gain more health from dewdrops.",
-        "Huntresses sense neighbouring monsters even if they are hidden behind obstacles."
+            "Huntresses start with 15 points of Health.",
+            "Huntresses start with a unique upgradeable boomerang.",
+            "Huntresses are proficient with missile weapons and get damage bonus for excessive strength when using them.",
+            "Huntresses gain more health from dewdrops.",
+            "Huntresses sense neighbouring monsters even if they are hidden behind obstacles."
     };
 
     public static final String[] PRIEST_PERK = {
-        "Priest start with a unique upgradeable item the Symbol of Estera.",
-        "Priest have better chance to hit undead creatures.",
-        "Priest can deal more damage to undead creatures.",
-        "Potions of Healing are identified from the beginning."
+            "Priest start with a unique upgradeable item the Symbol of Estera.",
+            "Priest have better chance to hit undead creatures.",
+            "Priest can deal more damage to undead creatures.",
+            "Potions of Healing are identified from the beginning."
     };// TODO add holy water bonus?
 
     private static final String CLASS = "class";
@@ -150,7 +150,7 @@ public enum HeroClass {
 
     public static HeroClass restoreInBundle(final Bundle bundle) {
         String value = bundle.getString(CLASS);
-        return value.length() > 0 ? valueOf(value) : ROGUE;
+        return value.length() > 0 ? HeroClass.valueOf(value) : ROGUE;
     }
 
     private HeroClass(final String title) {
@@ -161,27 +161,27 @@ public enum HeroClass {
 
         hero.heroClass = this;
 
-        initCommon(hero);
+        HeroClass.initCommon(hero);
 
         switch (this) {
         case WARRIOR:
-            initWarrior(hero);
+            HeroClass.initWarrior(hero);
             break;
 
         case MAGE:
-            initMage(hero);
+            HeroClass.initMage(hero);
             break;
 
         case ROGUE:
-            initRogue(hero);
+            HeroClass.initRogue(hero);
             break;
 
         case HUNTRESS:
-            initHuntress(hero);
+            HeroClass.initHuntress(hero);
             break;
 
         case PRIEST:
-            initPriest(hero);
+            HeroClass.initPriest(hero);
             break;
         }
 

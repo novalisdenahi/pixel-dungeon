@@ -24,50 +24,50 @@ import com.watabou.utils.Bundle;
 
 public class GamesInProgress {
 
-	private static HashMap<HeroClass, Info> state = new HashMap<HeroClass, Info>();
-	
-	public static Info check( HeroClass cl ) {
-		
-		if (state.containsKey( cl )) {
-			
-			return state.get( cl );
-			
-		} else {
-			
-			Info info;
-			try {
-				
-				Bundle bundle = Dungeon.gameBundle( Dungeon.gameFile( cl ) );
-				info = new Info();
-				Dungeon.preview( info, bundle );
+    public static class Info {
+        public int depth;
+        public int level;
+    }
 
-			} catch (Exception e) {
-				info = null;
-			}
-			
-			state.put( cl, info );
-			return info;
-			
-		}
-	}
-	
-	public static void set( HeroClass cl, int depth, int level ) {
-		Info info = new Info();
-		info.depth = depth;
-		info.level = level;
-		state.put( cl, info );
-	}
-	
-	public static void setUnknown( HeroClass cl ) {
-		state.remove( cl );
-	}
-	
-	public static void delete( HeroClass cl ) {
-		state.put( cl, null );
-	}
-	
-	public static class Info {
-		public int depth;
-		public int level;
-	}
+    private static HashMap<HeroClass, Info> state = new HashMap<HeroClass, Info>();
+
+    public static Info check(final HeroClass cl) {
+
+        if (state.containsKey(cl)) {
+
+            return state.get(cl);
+
+        } else {
+
+            Info info;
+            try {
+
+                Bundle bundle = Dungeon.gameBundle(Dungeon.gameFile(cl));
+                info = new Info();
+                Dungeon.preview(info, bundle);
+
+            } catch (Exception e) {
+                info = null;
+            }
+
+            state.put(cl, info);
+            return info;
+
+        }
+    }
+
+    public static void delete(final HeroClass cl) {
+        state.put(cl, null);
+    }
+
+    public static void set(final HeroClass cl, final int depth, final int level) {
+        Info info = new Info();
+        info.depth = depth;
+        info.level = level;
+        state.put(cl, info);
+    }
+
+    public static void setUnknown(final HeroClass cl) {
+        state.remove(cl);
+    }
 }

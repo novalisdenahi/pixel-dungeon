@@ -75,8 +75,8 @@ public class StartScene extends PixelScene {
 
             super.layout();
 
-            image.x = align(x);
-            image.y = align(y);
+            image.x = PixelScene.align(x);
+            image.y = PixelScene.align(y);
         }
 
         @Override
@@ -164,10 +164,10 @@ public class StartScene extends PixelScene {
 
             super.layout();
 
-            avatar.x = align(x + ((width - avatar.width()) / 2));
-            avatar.y = align(y + ((height - avatar.height() - name.height()) / 2));
+            avatar.x = PixelScene.align(x + ((width - avatar.width()) / 2));
+            avatar.y = PixelScene.align(y + ((height - avatar.height() - name.height()) / 2));
 
-            name.x = align(x + ((width - name.width()) / 2));
+            name.x = PixelScene.align(x + ((width - name.width()) / 2));
             name.y = avatar.y + avatar.height() + SCALE;
 
             emitter.pos(avatar.x, avatar.y, avatar.width(), avatar.height());
@@ -216,7 +216,7 @@ public class StartScene extends PixelScene {
         protected void createChildren() {
             super.createChildren();
 
-            secondary = createText(6);
+            secondary = PixelScene.createText(6);
             secondary.hardlight(SECONDARY_COLOR);
             add(secondary);
         }
@@ -226,12 +226,12 @@ public class StartScene extends PixelScene {
             super.layout();
 
             if (secondary.text().length() > 0) {
-                text.y = align(y + ((height - text.height() - secondary.baseLine()) / 2));
+                text.y = PixelScene.align(y + ((height - text.height() - secondary.baseLine()) / 2));
 
-                secondary.x = align(x + ((width - secondary.width()) / 2));
-                secondary.y = align(text.y + text.height());
+                secondary.x = PixelScene.align(x + ((width - secondary.width()) / 2));
+                secondary.y = PixelScene.align(text.y + text.height());
             } else {
-                text.y = align(y + ((height - text.baseLine()) / 2));
+                text.y = PixelScene.align(y + ((height - text.baseLine()) / 2));
             }
         }
 
@@ -296,7 +296,7 @@ public class StartScene extends PixelScene {
         add(archs);
 
         Image title = BannerSprites.get(Type.SELECT_YOUR_HERO);
-        title.x = align((w - title.width()) / 2);
+        title.x = PixelScene.align((w - title.width()) / 2);
         title.y = top;
         add(title);
 

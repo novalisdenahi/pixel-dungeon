@@ -112,7 +112,7 @@ public class GoblinSewerLevel extends RegularLevel {
     @Override
     public void addVisuals(final Scene scene) {
         super.addVisuals(scene);
-        addVisuals(this, scene);
+        GoblinSewerLevel.addVisuals(this, scene);
     }
 
     @Override
@@ -161,9 +161,9 @@ public class GoblinSewerLevel extends RegularLevel {
 
                 int count =
                         (map[i + 1] == Terrain.WALL ? 1 : 0) +
-                        (map[i - 1] == Terrain.WALL ? 1 : 0) +
-                        (map[i + WIDTH] == Terrain.WALL ? 1 : 0) +
-                        (map[i - WIDTH] == Terrain.WALL ? 1 : 0);
+                                (map[i - 1] == Terrain.WALL ? 1 : 0) +
+                                (map[i + WIDTH] == Terrain.WALL ? 1 : 0) +
+                                (map[i - WIDTH] == Terrain.WALL ? 1 : 0);
 
                 if (Random.Int(16) < (count * count)) {
                     map[i] = Terrain.EMPTY_DECO;

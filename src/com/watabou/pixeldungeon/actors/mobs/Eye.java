@@ -89,7 +89,7 @@ public class Eye extends Mob {
                 continue;
             }
 
-            if (hit(this, ch, true)) {
+            if (Char.hit(this, ch, true)) {
                 ch.damage(Random.NormalIntRange(14, 20), this);
 
                 if (Dungeon.visible[pos]) {

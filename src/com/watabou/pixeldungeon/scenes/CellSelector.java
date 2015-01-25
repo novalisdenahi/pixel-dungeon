@@ -26,133 +26,135 @@ import com.watabou.utils.PointF;
 
 public class CellSelector extends TouchArea {
 
-	public Listener listener = null;
-	
-	public boolean enabled;
-	
-	private float dragThreshold;
-	
-	public CellSelector( DungeonTilemap map ) {
-		super( map );
-		camera = map.camera();
-		
-		dragThreshold = PixelScene.defaultZoom * DungeonTilemap.SIZE / 2;
-	}
-	
-	@Override
-	protected void onClick( Touch touch ) {
-		if (dragging) {
-			
-			dragging = false;
-			
-		} else {
-			
-			select( ((DungeonTilemap)target).screenToTile( 
-				(int)touch.current.x, 
-				(int)touch.current.y ) );
-		}
-	}
-	
-	public void select( int cell ) {
-		if (enabled && listener != null && cell != -1) {
-			
-			listener.onSelect( cell );
-			GameScene.ready();
-			
-		} else {
-			
-			GameScene.cancel();
-			
-		}
-	}
-	
-	private boolean pinching = false;
-	private Touch another;
-	private float startZoom;
-	private float startSpan;
-	
-	@Override
-	protected void onTouchDown( Touch t ) {
+    public interface Listener {
+        void onSelect(Integer cell);
 
-		if (t != touch && another == null) {
-					
-			if (!touch.down) {
-				touch = t;
-				onTouchDown( t );
-				return;
-			}
-			
-			pinching = true;
-			
-			another = t;
-			startSpan = PointF.distance( touch.current, another.current );
-			startZoom = camera.zoom;
+        String prompt();
+    }
 
-			dragging = false;
-		}
-	}
-	
-	@Override
-	protected void onTouchUp( Touch t ) {
-		if (pinching && (t == touch || t == another)) {
-			
-			pinching = false;
-			
-			int zoom = Math.round( camera.zoom );
-			camera.zoom( zoom );
-			PixelDungeon.zoom( (int)(zoom - PixelScene.defaultZoom) );
+    public Listener listener = null;
 
-			dragging = true;
-			if (t == touch) {
-				touch = another;
-			}
-			another = null;
-			lastPos.set( touch.current );
-		}
-	}	
-	
-	private boolean dragging = false;
-	private PointF lastPos = new PointF();
-	
-	@Override
-	protected void onDrag( Touch t ) {
-		 
-		camera.target = null;
+    public boolean enabled;
 
-		if (pinching) {
+    private float dragThreshold;
 
-			float curSpan = PointF.distance( touch.current, another.current );
-			camera.zoom( GameMath.gate( 
-				PixelScene.minZoom, 
-				startZoom * curSpan / startSpan, 
-				PixelScene.maxZoom ) );
+    private boolean pinching = false;
 
-		} else {
-		
-			if (!dragging && PointF.distance( t.current, t.start ) > dragThreshold) {
-				
-				dragging = true;
-				lastPos.set( t.current );
-				
-			} else if (dragging) {
-				camera.scroll.offset( PointF.diff( lastPos, t.current ).invScale( camera.zoom ) );
-				lastPos.set( t.current );	
-			}	
-		}
-		
-	}	
-	
-	public void cancel() {
-		
-		if (listener != null) {
-			listener.onSelect( null );
-		}
-		
-		GameScene.ready();
-	}
-	
-	public interface Listener {
-		void onSelect( Integer cell );
-		String prompt();
-	}
+    private Touch another;
+
+    private float startZoom;
+    private float startSpan;
+    private boolean dragging = false;
+    private PointF lastPos = new PointF();
+
+    public CellSelector(final DungeonTilemap map) {
+        super(map);
+        camera = map.camera();
+
+        dragThreshold = (PixelScene.defaultZoom * DungeonTilemap.SIZE) / 2;
+    }
+
+    public void cancel() {
+
+        if (listener != null) {
+            listener.onSelect(null);
+        }
+
+        GameScene.ready();
+    }
+
+    @Override
+    protected void onClick(final Touch touch) {
+        if (dragging) {
+
+            dragging = false;
+
+        } else {
+
+            select(((DungeonTilemap) target).screenToTile(
+                    (int) touch.current.x,
+                    (int) touch.current.y));
+        }
+    }
+
+    @Override
+    protected void onDrag(final Touch t) {
+
+        camera.target = null;
+
+        if (pinching) {
+
+            float curSpan = PointF.distance(touch.current, another.current);
+            camera.zoom(GameMath.gate(
+                    PixelScene.minZoom,
+                    (startZoom * curSpan) / startSpan,
+                    PixelScene.maxZoom));
+
+        } else {
+
+            if (!dragging && (PointF.distance(t.current, t.start) > dragThreshold)) {
+
+                dragging = true;
+                lastPos.set(t.current);
+
+            } else if (dragging) {
+                camera.scroll.offset(PointF.diff(lastPos, t.current).invScale(camera.zoom));
+                lastPos.set(t.current);
+            }
+        }
+
+    }
+
+    @Override
+    protected void onTouchDown(final Touch t) {
+
+        if ((t != touch) && (another == null)) {
+
+            if (!touch.down) {
+                touch = t;
+                onTouchDown(t);
+                return;
+            }
+
+            pinching = true;
+
+            another = t;
+            startSpan = PointF.distance(touch.current, another.current);
+            startZoom = camera.zoom;
+
+            dragging = false;
+        }
+    }
+
+    @Override
+    protected void onTouchUp(final Touch t) {
+        if (pinching && ((t == touch) || (t == another))) {
+
+            pinching = false;
+
+            int zoom = Math.round(camera.zoom);
+            camera.zoom(zoom);
+            PixelDungeon.zoom((int) (zoom - PixelScene.defaultZoom));
+
+            dragging = true;
+            if (t == touch) {
+                touch = another;
+            }
+            another = null;
+            lastPos.set(touch.current);
+        }
+    }
+
+    public void select(final int cell) {
+        if (enabled && (listener != null) && (cell != -1)) {
+
+            listener.onSelect(cell);
+            GameScene.ready();
+
+        } else {
+
+            GameScene.cancel();
+
+        }
+    }
 }

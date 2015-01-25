@@ -48,8 +48,8 @@ public class Weapon extends KindOfWeapon {
     public static abstract class Enchantment implements Bundlable {
 
         private static final Class<?>[] enchants = new Class<?>[] {
-            Fire.class, Poison.class, Death.class, Paralysis.class, Leech.class,
-            Slow.class, Swing.class, Piercing.class, Instability.class, Horror.class, Luck.class };
+                Fire.class, Poison.class, Death.class, Paralysis.class, Leech.class,
+                Slow.class, Swing.class, Piercing.class, Instability.class, Horror.class, Luck.class };
         private static final float[] chances = new float[] { 10, 10, 1, 2, 1, 2, 3, 3, 3, 2, 2 };
 
         @SuppressWarnings("unchecked")

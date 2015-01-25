@@ -23,45 +23,45 @@ import com.watabou.utils.Bundle;
 
 public class Key extends Item {
 
-	public static final float TIME_TO_UNLOCK = 1f;
-	
-	{
-		stackable = false;
-	}
-	
-	public int depth;
-	
-	public Key() {
-		super();
-		depth = Dungeon.depth;
-	}
-	
-	private static final String DEPTH = "depth";
-	
-	@Override
-	public void storeInBundle( Bundle bundle ) {
-		super.storeInBundle( bundle );
-		bundle.put( DEPTH, depth );
-	}
-	
-	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle( bundle );
-		depth = bundle.getInt( DEPTH );
-	}
-	
-	@Override
-	public boolean isUpgradable() {
-		return false;
-	}
-	
-	@Override
-	public boolean isIdentified() {
-		return true;
-	}
-	
-	@Override
-	public String status() {
-		return depth + "*";
-	}
+    public static final float TIME_TO_UNLOCK = 1f;
+
+    {
+        stackable = false;
+    }
+
+    public int depth;
+
+    private static final String DEPTH = "depth";
+
+    public Key() {
+        super();
+        depth = Dungeon.depth;
+    }
+
+    @Override
+    public boolean isIdentified() {
+        return true;
+    }
+
+    @Override
+    public boolean isUpgradable() {
+        return false;
+    }
+
+    @Override
+    public void restoreFromBundle(final Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        depth = bundle.getInt(DEPTH);
+    }
+
+    @Override
+    public String status() {
+        return depth + "*";
+    }
+
+    @Override
+    public void storeInBundle(final Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(DEPTH, depth);
+    }
 }

@@ -28,71 +28,71 @@ import com.watabou.pixeldungeon.utils.Utils;
 
 public class IconTitle extends Component {
 
-	private static final float FONT_SIZE = 9;
-	
-	private static final float GAP = 2;
-	
-	protected Image imIcon;
-	protected BitmapTextMultiline tfLabel;
-	
-	public IconTitle() {
-		super();
-	}
-	
-	public IconTitle( Item item ) {
-		this( 
-			new ItemSprite( item.image(), item.glowing() ), 
-			Utils.capitalize( item.toString() ) );
-	}
-	
-	public IconTitle( Image icon, String label ) {
-		super();
-		
-		icon( icon );
-		label( label );
-	}
-	
-	@Override
-	protected void createChildren() {
-		imIcon = new Image();
-		add( imIcon );
-		
-		tfLabel = PixelScene.createMultiline( FONT_SIZE );
-		tfLabel.hardlight( Window.TITLE_COLOR );
-		add( tfLabel );
-	}
-	
-	@Override
-	protected void layout() {
-		imIcon.x = 0;
-		imIcon.y = 0;
-		
-		tfLabel.x = PixelScene.align( PixelScene.uiCamera, imIcon.x + imIcon.width() + GAP );
-		tfLabel.maxWidth = (int)(width - tfLabel.x);
-		tfLabel.measure();
-		tfLabel.y =  PixelScene.align( PixelScene.uiCamera,
-			imIcon.height > tfLabel.height() ?
-				(imIcon.height() - tfLabel.baseLine()) / 2 :
-				imIcon.y );
-				
-		height = Math.max( imIcon.y + imIcon.height(), tfLabel.y + tfLabel.height() );
-	}
-	
-	public void icon( Image icon ) {
-		remove( imIcon );
-		add( imIcon = icon );
-	}
-	
-	public void label( String label ) {
-		tfLabel.text( label );
-	}
-	
-	public void label( String label, int color ) {
-		tfLabel.text( label );
-		tfLabel.hardlight( color );
-	}
-	
-	public void color( int color ) {
-		tfLabel.hardlight( color );
-	}
+    private static final float FONT_SIZE = 9;
+
+    private static final float GAP = 2;
+
+    protected Image imIcon;
+    protected BitmapTextMultiline tfLabel;
+
+    public IconTitle() {
+        super();
+    }
+
+    public IconTitle(final Image icon, final String label) {
+        super();
+
+        icon(icon);
+        label(label);
+    }
+
+    public IconTitle(final Item item) {
+        this(
+                new ItemSprite(item.image(), item.glowing()),
+                Utils.capitalize(item.toString()));
+    }
+
+    public void color(final int color) {
+        tfLabel.hardlight(color);
+    }
+
+    @Override
+    protected void createChildren() {
+        imIcon = new Image();
+        add(imIcon);
+
+        tfLabel = PixelScene.createMultiline(FONT_SIZE);
+        tfLabel.hardlight(Window.TITLE_COLOR);
+        add(tfLabel);
+    }
+
+    public void icon(final Image icon) {
+        remove(imIcon);
+        add(imIcon = icon);
+    }
+
+    public void label(final String label) {
+        tfLabel.text(label);
+    }
+
+    public void label(final String label, final int color) {
+        tfLabel.text(label);
+        tfLabel.hardlight(color);
+    }
+
+    @Override
+    protected void layout() {
+        imIcon.x = 0;
+        imIcon.y = 0;
+
+        tfLabel.x = PixelScene.align(PixelScene.uiCamera, imIcon.x + imIcon.width() + GAP);
+        tfLabel.maxWidth = (int) (width - tfLabel.x);
+        tfLabel.measure();
+        tfLabel.y = PixelScene.align(PixelScene.uiCamera,
+                imIcon.height > tfLabel.height() ?
+                        (imIcon.height() - tfLabel.baseLine()) / 2 :
+                        imIcon.y);
+
+        height = Math.max(imIcon.y + imIcon.height(), tfLabel.y + tfLabel.height());
+    }
 }

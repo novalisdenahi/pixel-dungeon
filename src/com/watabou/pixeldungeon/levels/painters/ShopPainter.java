@@ -83,19 +83,19 @@ public class ShopPainter extends Painter {
 
     public static void paint(final Level level, final Room room) {
 
-        fill(level, room, Terrain.WALL);
-        fill(level, room, 1, Terrain.EMPTY_SP);
+        Painter.fill(level, room, Terrain.WALL);
+        Painter.fill(level, room, 1, Terrain.EMPTY_SP);
 
         pasWidth = room.width() - 2;
         pasHeight = room.height() - 2;
         int per = (pasWidth * 2) + (pasHeight * 2);
 
-        Item[] range = range();
+        Item[] range = ShopPainter.range();
 
-        int pos = xy2p(room, room.entrance()) + ((per - range.length) / 2);
+        int pos = ShopPainter.xy2p(room, room.entrance()) + ((per - range.length) / 2);
         for (int i = 0; i < range.length; i++) {
 
-            Point xy = p2xy(room, (pos + per) % per);
+            Point xy = ShopPainter.p2xy(room, (pos + per) % per);
             int cell = xy.x + (xy.y * Level.WIDTH);
 
             if (level.heaps.get(cell) != null) {
@@ -109,7 +109,7 @@ public class ShopPainter extends Painter {
             pos++;
         }
 
-        placeShopkeeper(level, room);
+        ShopPainter.placeShopkeeper(level, room);
 
         for (Room.Door door : room.connected.values()) {
             door.set(Room.Door.Type.REGULAR);

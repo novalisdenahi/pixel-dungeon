@@ -108,7 +108,7 @@ public class Yog extends Mob {
             if (!Level.adjacent(pos, enemy.pos)) {
                 spend(attackDelay());
 
-                if (hit(this, enemy, true)) {
+                if (Char.hit(this, enemy, true)) {
 
                     int dmg = damageRoll();
                     enemy.damage(dmg, this);

@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import android.content.Context;
+
 import com.watabou.noosa.Game;
 import com.watabou.pixeldungeon.actors.hero.HeroClass;
 import com.watabou.pixeldungeon.utils.Utils;
@@ -32,164 +34,164 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.SystemTime;
 
 public enum Rankings {
-	
-	INSTANCE;
-	
-	public static final int TABLE_SIZE	= 6;
-	
-	public static final String RANKINGS_FILE = "rankings.dat";
-	public static final String DETAILS_FILE = "game_%d.dat";
-	
-	public ArrayList<Record> records;
-	public int lastRecord;
-	public int totalNumber;
-	
-	public void submit( boolean win ) {
-		
-		load();
-		
-		Record rec = new Record();
-		
-		rec.info	= Dungeon.resultDescription;
-		rec.win		= win;
-		rec.heroClass	= Dungeon.hero.heroClass;
-		rec.armorTier	= Dungeon.hero.tier();
-		rec.score	= score( win );
-		
-		String gameFile = Utils.format( DETAILS_FILE, SystemTime.now );
-		try {
-			Dungeon.saveGame( gameFile );
-			rec.gameFile = gameFile;
-		} catch (IOException e) {
-			rec.gameFile = "";
-		}
-		
-		records.add( rec );
-		
-		Collections.sort( records, scoreComparator );
-		
-		lastRecord = records.indexOf( rec );
-		int size = records.size();
-		if (size > TABLE_SIZE) {
-			
-			Record removedGame;
-			if (lastRecord == size - 1) {
-				removedGame = records.remove( size - 2 );
-				lastRecord--;
-			} else {
-				removedGame = records.remove( size - 1 );
-			}
-			
-			if (removedGame.gameFile.length() > 0) {
-				Game.instance.deleteFile( removedGame.gameFile );
-			}
-		}
-		
-		totalNumber++;
-		
-		Badges.validateGamesPlayed();
-		
-		save();
-	}
-	
-	private int score( boolean win ) {
-		return (Statistics.goldCollected + Dungeon.hero.lvl * Dungeon.depth * 100) * (win ? 2 : 1);
-	}
-	
-	private static final String RECORDS	= "records";
-	private static final String LATEST	= "latest";
-	private static final String TOTAL	= "total";
-	
-	public void save() {
-		Bundle bundle = new Bundle();
-		bundle.put( RECORDS, records );
-		bundle.put( LATEST, lastRecord );
-		bundle.put( TOTAL, totalNumber );
-		
-		try {
-			OutputStream output = Game.instance.openFileOutput( RANKINGS_FILE, Game.MODE_PRIVATE );
-			Bundle.write( bundle, output );
-			output.close();
-		} catch (Exception e) {
-		}
-	}
-	
-	public void load() {
-		
-		if (records != null) {
-			return;
-		}
-		
-		records = new ArrayList<Rankings.Record>();
-		
-		try {
-			InputStream input = Game.instance.openFileInput( RANKINGS_FILE );
-			Bundle bundle = Bundle.read( input );
-			input.close();
-			
-			for (Bundlable record : bundle.getCollection( RECORDS )) {
-				records.add( (Record)record );
-			}			
-			lastRecord = bundle.getInt( LATEST );
-			
-			totalNumber = bundle.getInt( TOTAL );
-			if (totalNumber == 0) {
-				totalNumber = records.size();
-			}
-			
-		} catch (Exception e) {
-		}
-	}
-	
-	public static class Record implements Bundlable {
-		
-		private static final String REASON	= "reason";
-		private static final String WIN		= "win";
-		private static final String SCORE	= "score";
-		private static final String TIER	= "tier";
-		private static final String GAME	= "gameFile";
-		
-		public String info;
-		public boolean win;
-		
-		public HeroClass heroClass;
-		public int armorTier;
-		
-		public int score;
-		
-		public String gameFile;
-		
-		@Override
-		public void restoreFromBundle( Bundle bundle ) {
-			
-			info	= bundle.getString( REASON );
-			win		= bundle.getBoolean( WIN );
-			score	= bundle.getInt( SCORE );
-			
-			heroClass	= HeroClass.restoreInBundle( bundle );
-			armorTier	= bundle.getInt( TIER );
-			
-			gameFile	= bundle.getString( GAME );
-		}
-		
-		@Override
-		public void storeInBundle( Bundle bundle ) {
-			
-			bundle.put( REASON, info );
-			bundle.put( WIN, win );
-			bundle.put( SCORE, score );
-			
-			heroClass.storeInBundle( bundle );
-			bundle.put( TIER, armorTier );
-			
-			bundle.put( GAME, gameFile );
-		}
-	}
 
-	private static final Comparator<Record> scoreComparator = new Comparator<Rankings.Record>() {
-		@Override
-		public int compare( Record lhs, Record rhs ) {
-			return (int)Math.signum( rhs.score - lhs.score );
-		}
-	};
+    INSTANCE;
+
+    public static class Record implements Bundlable {
+
+        private static final String REASON = "reason";
+        private static final String WIN = "win";
+        private static final String SCORE = "score";
+        private static final String TIER = "tier";
+        private static final String GAME = "gameFile";
+
+        public String info;
+        public boolean win;
+
+        public HeroClass heroClass;
+        public int armorTier;
+
+        public int score;
+
+        public String gameFile;
+
+        @Override
+        public void restoreFromBundle(final Bundle bundle) {
+
+            info = bundle.getString(REASON);
+            win = bundle.getBoolean(WIN);
+            score = bundle.getInt(SCORE);
+
+            heroClass = HeroClass.restoreInBundle(bundle);
+            armorTier = bundle.getInt(TIER);
+
+            gameFile = bundle.getString(GAME);
+        }
+
+        @Override
+        public void storeInBundle(final Bundle bundle) {
+
+            bundle.put(REASON, info);
+            bundle.put(WIN, win);
+            bundle.put(SCORE, score);
+
+            heroClass.storeInBundle(bundle);
+            bundle.put(TIER, armorTier);
+
+            bundle.put(GAME, gameFile);
+        }
+    }
+
+    public static final int TABLE_SIZE = 6;
+    public static final String RANKINGS_FILE = "rankings.dat";
+
+    public static final String DETAILS_FILE = "game_%d.dat";
+    public ArrayList<Record> records;
+    public int lastRecord;
+
+    public int totalNumber;
+
+    private static final String RECORDS = "records";
+
+    private static final String LATEST = "latest";
+    private static final String TOTAL = "total";
+    private static final Comparator<Record> scoreComparator = new Comparator<Rankings.Record>() {
+        @Override
+        public int compare(final Record lhs, final Record rhs) {
+            return (int) Math.signum(rhs.score - lhs.score);
+        }
+    };
+
+    public void load() {
+
+        if (records != null) {
+            return;
+        }
+
+        records = new ArrayList<Rankings.Record>();
+
+        try {
+            InputStream input = Game.instance.openFileInput(RANKINGS_FILE);
+            Bundle bundle = Bundle.read(input);
+            input.close();
+
+            for (Bundlable record : bundle.getCollection(RECORDS)) {
+                records.add((Record) record);
+            }
+            lastRecord = bundle.getInt(LATEST);
+
+            totalNumber = bundle.getInt(TOTAL);
+            if (totalNumber == 0) {
+                totalNumber = records.size();
+            }
+
+        } catch (Exception e) {
+        }
+    }
+
+    public void save() {
+        Bundle bundle = new Bundle();
+        bundle.put(RECORDS, records);
+        bundle.put(LATEST, lastRecord);
+        bundle.put(TOTAL, totalNumber);
+
+        try {
+            OutputStream output = Game.instance.openFileOutput(RANKINGS_FILE, Context.MODE_PRIVATE);
+            Bundle.write(bundle, output);
+            output.close();
+        } catch (Exception e) {
+        }
+    }
+
+    private int score(final boolean win) {
+        return (Statistics.goldCollected + (Dungeon.hero.lvl * Dungeon.depth * 100)) * (win ? 2 : 1);
+    }
+
+    public void submit(final boolean win) {
+
+        load();
+
+        Record rec = new Record();
+
+        rec.info = Dungeon.resultDescription;
+        rec.win = win;
+        rec.heroClass = Dungeon.hero.heroClass;
+        rec.armorTier = Dungeon.hero.tier();
+        rec.score = score(win);
+
+        String gameFile = Utils.format(DETAILS_FILE, SystemTime.now);
+        try {
+            Dungeon.saveGame(gameFile);
+            rec.gameFile = gameFile;
+        } catch (IOException e) {
+            rec.gameFile = "";
+        }
+
+        records.add(rec);
+
+        Collections.sort(records, scoreComparator);
+
+        lastRecord = records.indexOf(rec);
+        int size = records.size();
+        if (size > TABLE_SIZE) {
+
+            Record removedGame;
+            if (lastRecord == (size - 1)) {
+                removedGame = records.remove(size - 2);
+                lastRecord--;
+            } else {
+                removedGame = records.remove(size - 1);
+            }
+
+            if (removedGame.gameFile.length() > 0) {
+                Game.instance.deleteFile(removedGame.gameFile);
+            }
+        }
+
+        totalNumber++;
+
+        Badges.validateGamesPlayed();
+
+        save();
+    }
 }

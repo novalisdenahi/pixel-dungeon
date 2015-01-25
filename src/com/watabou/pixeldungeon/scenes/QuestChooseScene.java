@@ -62,7 +62,7 @@ public class QuestChooseScene extends PixelScene {
             image = new Image(Assets.QUESTBOARD);
             add(image);
 
-            label = createText(9);
+            label = PixelScene.createText(9);
             add(label);
         }
 
@@ -70,11 +70,11 @@ public class QuestChooseScene extends PixelScene {
         protected void layout() {
             super.layout();
 
-            image.x = align(x + ((width - image.width()) / 2));
-            image.y = align(y);
+            image.x = PixelScene.align(x + ((width - image.width()) / 2));
+            image.y = PixelScene.align(y);
 
-            label.x = align(x + ((width - label.width()) / 2));
-            label.y = align(image.y + image.height() + 2);
+            label.x = PixelScene.align(x + ((width - label.width()) / 2));
+            label.y = PixelScene.align(image.y + image.height() + 2);
         }
 
         @Override

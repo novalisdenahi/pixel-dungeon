@@ -159,7 +159,7 @@ public class Dungeon {
     }
 
     public static boolean bossLevel() {
-        return bossLevel(depth);
+        return Dungeon.bossLevel(depth);
     }
 
     public static boolean bossLevel(final int depth) {
@@ -181,11 +181,11 @@ public class Dungeon {
 
     public static void deleteGame(final HeroClass cl, final boolean deleteLevels) {
 
-        Game.instance.deleteFile(gameFile(cl));
+        Game.instance.deleteFile(Dungeon.gameFile(cl));
 
         if (deleteLevels) {
             int depth = 1;
-            while (Game.instance.deleteFile(Utils.format(depthFile(cl), depth))) {
+            while (Game.instance.deleteFile(Utils.format(Dungeon.depthFile(cl), depth))) {
                 depth++;
             }
         }
@@ -338,16 +338,16 @@ public class Dungeon {
     }
 
     public static void loadGame(final HeroClass cl) throws IOException {
-        loadGame(gameFile(cl), true);
+        Dungeon.loadGame(Dungeon.gameFile(cl), true);
     }
 
     public static void loadGame(final String fileName) throws IOException {
-        loadGame(fileName, false);
+        Dungeon.loadGame(fileName, false);
     }
 
     public static void loadGame(final String fileName, final boolean fullLoad) throws IOException {
 
-        Bundle bundle = gameBundle(fileName);
+        Bundle bundle = Dungeon.gameBundle(fileName);
 
         Dungeon.challenges = bundle.getInt(CHALLENGES);
 
@@ -430,7 +430,7 @@ public class Dungeon {
         Dungeon.level = null;
         Actor.clear();
 
-        InputStream input = Game.instance.openFileInput(Utils.format(depthFile(cl), depth));
+        InputStream input = Game.instance.openFileInput(Utils.format(Dungeon.depthFile(cl), depth));
         Bundle bundle = Bundle.read(input);
         input.close();
 
@@ -477,23 +477,23 @@ public class Dungeon {
         // int dungeonType = DungeonType.YOG; // DEFAULT
         switch (dungeonType) { // TODO add value
         case DungeonType.YOG:
-            level = newYogLevel();
+            level = Dungeon.newYogLevel();
             break;
         case DungeonType.GOBLIN:
-            level = newGoblinLevel();
+            level = Dungeon.newGoblinLevel();
             break;
         case DungeonType.MAD_MAGE:
-            level = newYogLevel(); // TODO replace with mad_mage
+            level = Dungeon.newYogLevel(); // TODO replace with mad_mage
             break;
         default:
             // DEFAULT is YOG
-            level = newYogLevel();
+            level = Dungeon.newYogLevel();
             break;
         }
 
         level.create();
 
-        Statistics.qualifiedForNoKilling = !bossLevel();
+        Statistics.qualifiedForNoKilling = !Dungeon.bossLevel();
 
         return level;
     }
@@ -574,7 +574,7 @@ public class Dungeon {
 
     public static boolean posNeeded() {
         int[] quota = { 4, 2, 9, 4, 14, 6, 19, 8, 24, 9 };
-        return chance(quota, potionOfStrength);
+        return Dungeon.chance(quota, potionOfStrength);
     }
 
     public static void preview(final GamesInProgress.Info info, final Bundle bundle) {
@@ -592,15 +592,15 @@ public class Dungeon {
         Arrays.fill(visible, false);
 
         level.reset();
-        switchLevel(level, level.entrance);
+        Dungeon.switchLevel(level, level.entrance);
     }
 
     public static void saveAll() throws IOException {
         if (hero.isAlive()) {
 
             Actor.fixTime();
-            saveGame(gameFile(hero.heroClass));
-            saveLevel();
+            Dungeon.saveGame(Dungeon.gameFile(hero.heroClass));
+            Dungeon.saveLevel();
 
             GamesInProgress.set(hero.heroClass, depth, hero.lvl);
 
@@ -675,7 +675,7 @@ public class Dungeon {
     public static void saveLevel() throws IOException {
         Bundle bundle = new Bundle();
         bundle.put(LEVEL, level);
-        OutputStream output = Game.instance.openFileOutput(Utils.format(depthFile(hero.heroClass), depth),
+        OutputStream output = Game.instance.openFileOutput(Utils.format(Dungeon.depthFile(hero.heroClass), depth),
                 Context.MODE_PRIVATE);
         Bundle.write(bundle, output);
         output.close();
@@ -688,7 +688,7 @@ public class Dungeon {
 
     public static boolean soeNeeded() {
         int[] quota = { 5, 3, 10, 6, 15, 9, 20, 12, 25, 13 };
-        return chance(quota, scrollsOfUpgrade);
+        return Dungeon.chance(quota, scrollsOfUpgrade);
     }
 
     @SuppressWarnings("deprecation")
@@ -709,7 +709,7 @@ public class Dungeon {
         Light light = hero.buff(Light.class);
         hero.viewDistance = light == null ? level.viewDistance : Math.max(Light.DISTANCE, level.viewDistance);
 
-        observe();
+        Dungeon.observe();
     }
 
     public static String tip() {

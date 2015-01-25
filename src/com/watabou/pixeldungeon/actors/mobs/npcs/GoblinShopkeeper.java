@@ -46,7 +46,7 @@ public class GoblinShopkeeper extends Shopkeeper {
     @Override
     public String description() {
         return
-                "This goblin looks frendly and smart. Maybe a little bit looks too smart. He is a sly boots. "
+        "This goblin looks frendly and smart. Maybe a little bit looks too smart. He is a sly boots. "
                 + " Watch out for your purse.";
     }
 
