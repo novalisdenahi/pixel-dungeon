@@ -19,19 +19,20 @@ package com.watabou.pixeldungeon.items.weapon.enchantments;
 
 import com.watabou.pixeldungeon.actors.Char;
 import com.watabou.pixeldungeon.items.weapon.Weapon;
+import com.watabou.pixeldungeon.items.weapon.Weapon.Enchantment;
 
 public class Instability extends Weapon.Enchantment {
 
-	private static final String TXT_UNSTABLE	= "Unstable %s";
-	
-	@Override
-	public boolean proc( Weapon weapon, Char attacker, Char defender, int damage ) {
-		return random().proc( weapon, attacker, defender, damage );
-	}
-	
-	@Override
-	public String name( String weaponName) {
-		return String.format( TXT_UNSTABLE, weaponName );
-	}
+    private static final String TXT_UNSTABLE = "Unstable %s";
+
+    @Override
+    public String name(final String weaponName) {
+        return String.format(TXT_UNSTABLE, weaponName);
+    }
+
+    @Override
+    public boolean proc(final Weapon weapon, final Char attacker, final Char defender, final int damage) {
+        return Enchantment.random().proc(weapon, attacker, defender, damage);
+    }
 
 }

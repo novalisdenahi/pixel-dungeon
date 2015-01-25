@@ -21,31 +21,31 @@ import com.watabou.pixeldungeon.ui.BuffIndicator;
 import com.watabou.utils.Bundle;
 
 public class SnipersMark extends FlavourBuff {
-	
-public int object = 0;
-	
-	private static final String OBJECT	= "object";
-	
-	@Override
-	public void storeInBundle( Bundle bundle ) {
-		super.storeInBundle( bundle );
-		bundle.put( OBJECT, object );
-		
-	}
-	
-	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle( bundle );
-		object = bundle.getInt( OBJECT );
-	}
-	
-	@Override
-	public int icon() {
-		return BuffIndicator.MARK;
-	}
-	
-	@Override
-	public String toString() {
-		return "Zeroed in";
-	}
+
+    public int object = 0;
+
+    private static final String OBJECT = "object";
+
+    @Override
+    public int icon() {
+        return BuffIndicator.MARK;
+    }
+
+    @Override
+    public void restoreFromBundle(final Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        object = bundle.getInt(OBJECT);
+    }
+
+    @Override
+    public void storeInBundle(final Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(OBJECT, object);
+
+    }
+
+    @Override
+    public String toString() {
+        return "Zeroed in";
+    }
 }

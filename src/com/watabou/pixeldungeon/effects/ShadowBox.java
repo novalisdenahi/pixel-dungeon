@@ -17,30 +17,30 @@
  */
 package com.watabou.pixeldungeon.effects;
 
-import com.watabou.gltextures.SmartTexture;
+import com.watabou.glwrap.Texture;
 import com.watabou.noosa.NinePatch;
 import com.watabou.pixeldungeon.Assets;
 
 public class ShadowBox extends NinePatch {
 
-	public static final float SIZE	= 16;
-	
-	public ShadowBox() {
-		super( Assets.SHADOW, 1 );
-		
-		texture.filter( SmartTexture.LINEAR, SmartTexture.LINEAR );
-		
-		scale.set( SIZE, SIZE );
-	}
-	
-	@Override
-	public void size(float width, float height) {
-		super.size( width / SIZE, height / SIZE );
-	}
+    public static final float SIZE = 16;
 
-	public void boxRect( float x, float y, float width, float height ) {
-		this.x = x - SIZE;
-		this.y = y - SIZE;
-		size( width + SIZE * 2, height + SIZE * 2 );
-	}
+    public ShadowBox() {
+        super(Assets.SHADOW, 1);
+
+        texture.filter(Texture.LINEAR, Texture.LINEAR);
+
+        scale.set(SIZE, SIZE);
+    }
+
+    public void boxRect(final float x, final float y, final float width, final float height) {
+        this.x = x - SIZE;
+        this.y = y - SIZE;
+        size(width + (SIZE * 2), height + (SIZE * 2));
+    }
+
+    @Override
+    public void size(final float width, final float height) {
+        super.size(width / SIZE, height / SIZE);
+    }
 }

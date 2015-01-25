@@ -31,155 +31,156 @@ import com.watabou.utils.Bundle;
 
 public class Bag extends Item implements Iterable<Item> {
 
-	public static final String AC_OPEN	= "OPEN";
-	
-	{
-		image = 11;
-		
-		defaultAction = AC_OPEN;
-	}
-	
-	public Char owner;
-	
-	public ArrayList<Item> items = new ArrayList<Item>();	
-	
-	public int size = 1;
-	
-	@Override
-	public ArrayList<String> actions( Hero hero ) {
-		ArrayList<String> actions = super.actions( hero );
-		return actions;
-	}
-	
-	@Override
-	public void execute( Hero hero, String action ) {
-		if (action.equals( AC_OPEN )) {
-			
-			GameScene.show( new WndBag( this, null, WndBag.Mode.ALL, null ) );
-			
-		} else {
-		
-			super.execute( hero, action );
-			
-		}
-	}
-	
-	@Override
-	public boolean collect( Bag container ) {
-		if (super.collect( container )) {	
-			
-			owner = container.owner;
-			
-			for (Item item : container.items.toArray( new Item[0] )) {
-				if (grab( item )) {
-					item.detachAll( container );
-					item.collect( this );
-				}
-			}
-			
-			Badges.validateAllBagsBought( this );
-			
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	@Override
-	public void onDetach( ) {
-		this.owner = null;
-	}
-	
-	@Override
-	public boolean isUpgradable() {
-		return false;
-	}
-	
-	@Override
-	public boolean isIdentified() {
-		return true;
-	}
-	
-	public void clear() {
-		items.clear();
-	}
-	
-	private static final String ITEMS	= "inventory";
-	
-	@Override
-	public void storeInBundle( Bundle bundle ) {
-		super.storeInBundle( bundle );
-		bundle.put( ITEMS, items );
-	}
-	
-	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle( bundle );
-		for (Bundlable item : bundle.getCollection( ITEMS )) {
-			((Item)item).collect( this );
-		};
-	}
-	
-	public boolean contains( Item item ) {
-		for (Item i : items) {
-			if (i == item) {
-				return true;
-			} else if (i instanceof Bag && ((Bag)i).contains( item )) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public boolean grab( Item item ) {
-		return false;
-	}
+    private class ItemIterator implements Iterator<Item> {
 
-	@Override
-	public Iterator<Item> iterator() {
-		return new ItemIterator();
-	}
-	
-	private class ItemIterator implements Iterator<Item> {
+        private int index = 0;
+        private Iterator<Item> nested = null;
 
-		private int index = 0;
-		private Iterator<Item> nested = null;
-		
-		@Override
-		public boolean hasNext() {
-			if (nested != null) {
-				return nested.hasNext() || index < items.size();
-			} else {
-				return index < items.size();
-			}
-		}
+        @Override
+        public boolean hasNext() {
+            if (nested != null) {
+                return nested.hasNext() || (index < items.size());
+            } else {
+                return index < items.size();
+            }
+        }
 
-		@Override
-		public Item next() {
-			if (nested != null && nested.hasNext()) {
-				
-				return nested.next();
-				
-			} else {
-				
-				nested = null;
-				
-				Item item = items.get( index++ );
-				if (item instanceof Bag) {
-					nested = ((Bag)item).iterator();
-				}
-				
-				return item;
-			}
-		}
+        @Override
+        public Item next() {
+            if ((nested != null) && nested.hasNext()) {
 
-		@Override
-		public void remove() {
-			if (nested != null) {
-				nested.remove();
-			} else {
-				items.remove( index );
-			}
-		}	
-	}
+                return nested.next();
+
+            } else {
+
+                nested = null;
+
+                Item item = items.get(index++);
+                if (item instanceof Bag) {
+                    nested = ((Bag) item).iterator();
+                }
+
+                return item;
+            }
+        }
+
+        @Override
+        public void remove() {
+            if (nested != null) {
+                nested.remove();
+            } else {
+                items.remove(index);
+            }
+        }
+    }
+
+    public static final String AC_OPEN = "OPEN";
+
+    {
+        image = 11;
+
+        defaultAction = AC_OPEN;
+    }
+
+    public Char owner;
+
+    public ArrayList<Item> items = new ArrayList<Item>();
+
+    public int size = 1;
+
+    private static final String ITEMS = "inventory";
+
+    @Override
+    public ArrayList<String> actions(final Hero hero) {
+        ArrayList<String> actions = super.actions(hero);
+        return actions;
+    }
+
+    public void clear() {
+        items.clear();
+    }
+
+    @Override
+    public boolean collect(final Bag container) {
+        if (super.collect(container)) {
+
+            owner = container.owner;
+
+            for (Item item : container.items.toArray(new Item[0])) {
+                if (grab(item)) {
+                    item.detachAll(container);
+                    item.collect(this);
+                }
+            }
+
+            Badges.validateAllBagsBought(this);
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean contains(final Item item) {
+        for (Item i : items) {
+            if (i == item) {
+                return true;
+            } else if ((i instanceof Bag) && ((Bag) i).contains(item)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void execute(final Hero hero, final String action) {
+        if (action.equals(AC_OPEN)) {
+
+            GameScene.show(new WndBag(this, null, WndBag.Mode.ALL, null));
+
+        } else {
+
+            super.execute(hero, action);
+
+        }
+    }
+
+    public boolean grab(final Item item) {
+        return false;
+    }
+
+    @Override
+    public boolean isIdentified() {
+        return true;
+    }
+
+    @Override
+    public boolean isUpgradable() {
+        return false;
+    }
+
+    @Override
+    public Iterator<Item> iterator() {
+        return new ItemIterator();
+    }
+
+    @Override
+    public void onDetach() {
+        owner = null;
+    }
+
+    @Override
+    public void restoreFromBundle(final Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        for (Bundlable item : bundle.getCollection(ITEMS)) {
+            ((Item) item).collect(this);
+        }
+        ;
+    }
+
+    @Override
+    public void storeInBundle(final Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(ITEMS, items);
+    }
 }
