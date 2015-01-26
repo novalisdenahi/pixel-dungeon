@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,13 +30,16 @@ public class Identification extends Group {
 
     public static class Speck extends PixelParticle {
 
+        private static final int COLOR = 0x4488CC;
+        private static final int SIZE = 3;
+
         public Speck(float x0, float y0, final int mx, final int my) {
 
             super();
-            color(0x4488CC);
+            color(COLOR);
 
-            float x1 = x0 + (mx * 3);
-            float y1 = y0 + (my * 3);
+            float x1 = x0 + (mx * SIZE);
+            float y1 = y0 + (my * SIZE);
 
             PointF p = new PointF().polar(Random.Float(2 * PointF.PI), 8);
             x0 += p.x;
@@ -59,21 +62,21 @@ public class Identification extends Group {
 
             am = 1 - (Math.abs((left / lifespan) - 0.5f) * 2);
             am *= am;
-            size(am * 2);
+            size(am * SIZE);
         }
     }
 
     private static int[] DOTS = {
-            -1, -3,
-            0, -3,
-            +1, -3,
-            -1, -2,
-            +1, -2,
-            +1, -1,
-            0, 0,
-            +1, 0,
-            0, +1,
-            0, +3
+        -1, -3,
+        0, -3,
+        +1, -3,
+        -1, -2,
+        +1, -2,
+        +1, -1,
+        0, 0,
+        +1, 0,
+        0, +1,
+        0, +3
     };
 
     public Identification(final PointF p) {

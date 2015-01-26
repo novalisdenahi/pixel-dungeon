@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
  */
 package com.watabou.pixeldungeon.actors.buffs;
 
-import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.actors.Char;
 import com.watabou.pixeldungeon.ui.BuffIndicator;
 import com.watabou.utils.Bundle;
@@ -33,7 +32,9 @@ public class Terror extends FlavourBuff {
         }
     }
 
-    public Char source;
+    public int object = 0;
+
+    private static final String OBJECT = "object";
 
     @Override
     public int icon() {
@@ -43,8 +44,13 @@ public class Terror extends FlavourBuff {
     @Override
     public void restoreFromBundle(final Bundle bundle) {
         super.restoreFromBundle(bundle);
-        // It's not really correct...
-        source = Dungeon.hero;
+        object = bundle.getInt(OBJECT);
+    }
+
+    @Override
+    public void storeInBundle(final Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(OBJECT, object);
     }
 
     @Override

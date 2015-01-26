@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -117,7 +117,6 @@ public class ShopPainter extends Painter {
     }
 
     private static void placeShopkeeper(final Level level, final Room room) {
-        // TODO add dungeon Type here
         int pos;
         do {
             pos = room.random();
@@ -138,7 +137,7 @@ public class ShopPainter extends Painter {
     }
 
     private static Item[] range() {
-        // TODO add dungeon type
+
         ArrayList<Item> items = new ArrayList<Item>();
 
         switch (Dungeon.depth) {
@@ -215,8 +214,7 @@ public class ShopPainter extends Painter {
 
             return (room.right - xy.x - 1) + pasWidth + pasHeight;
 
-        } else {
-
+        } else /* if (xy.x == room.left) */{
             if (xy.y == (room.top + 1)) {
                 return 0;
             } else {

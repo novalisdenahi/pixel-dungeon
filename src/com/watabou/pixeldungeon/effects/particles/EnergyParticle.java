@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ public class EnergyParticle extends PixelParticle {
         lifespan = 1f;
         color(0xFFFFAA);
 
-        speed.polar(Random.Float(2 * PointF.PI), Random.Float(24, 32));
+        speed.polar(Random.Float(PointF.PI2), Random.Float(24, 32));
     }
 
     public void reset(final float x, final float y) {

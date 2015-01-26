@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,18 +28,28 @@ public class Buff extends Actor {
         if (buff != null) {
             return buff;
         } else {
-            try {
-                buff = buffClass.newInstance();
-                buff.attachTo(target);
-                return buff;
-            } catch (Exception e) {
-                return null;
-            }
+            return Buff.append(target, buffClass);
         }
     }
 
     public static <T extends FlavourBuff> T affect(final Char target, final Class<T> buffClass, final float duration) {
         T buff = Buff.affect(target, buffClass);
+        buff.spend(duration);
+        return buff;
+    }
+
+    public static <T extends Buff> T append(final Char target, final Class<T> buffClass) {
+        try {
+            T buff = buffClass.newInstance();
+            buff.attachTo(target);
+            return buff;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static <T extends FlavourBuff> T append(final Char target, final Class<T> buffClass, final float duration) {
+        T buff = Buff.append(target, buffClass);
         buff.spend(duration);
         return buff;
     }

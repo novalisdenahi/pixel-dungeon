@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,8 +57,8 @@ public class Multiplicity extends Glyph {
 
             ArrayList<Integer> respawnPoints = new ArrayList<Integer>();
 
-            for (int i = 0; i < Level.NEIGHBOURS8.length; i++) {
-                int p = defender.pos + Level.NEIGHBOURS8[i];
+            for (int element : Level.NEIGHBOURS8) {
+                int p = defender.pos + element;
                 if ((Actor.findChar(p) == null) && (Level.passable[p] || Level.avoid[p])) {
                     respawnPoints.add(p);
                 }
@@ -70,7 +70,7 @@ public class Multiplicity extends Glyph {
                 GameScene.add(mob);
                 WandOfBlink.appear(mob, Random.element(respawnPoints));
 
-                defender.damage(Random.IntRange(1, defender.HT / 6), /* attacker */this);
+                defender.damage(Random.IntRange(1, defender.HT / 6), this);
                 checkOwner(defender);
             }
 

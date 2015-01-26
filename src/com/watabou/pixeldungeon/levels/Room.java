@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -142,7 +142,8 @@ public class Room extends Rect implements Graph.Node, Bundlable {
     public int price = 1;
 
     public static final ArrayList<Type> SPECIALS = new ArrayList<Type>(Arrays.asList(
-            Type.WEAK_FLOOR, Type.MAGIC_WELL, Type.CRYPT, Type.POOL, Type.GARDEN, Type.LIBRARY, Type.ARMORY,
+
+            Type.ARMORY, Type.WEAK_FLOOR, Type.MAGIC_WELL, Type.CRYPT, Type.POOL, Type.GARDEN, Type.LIBRARY,
             Type.TREASURY, Type.TRAPS, Type.STORAGE, Type.STATUE, Type.LABORATORY, Type.VAULT
             ));
 
@@ -216,6 +217,8 @@ public class Room extends Rect implements Graph.Node, Bundlable {
     public Collection<Room> edges() {
         return neigbours;
     }
+
+    // FIXME: use proper string constants
 
     public Door entrance() {
         return connected.values().iterator().next();

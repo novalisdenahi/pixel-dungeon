@@ -34,6 +34,7 @@ public class Rum extends Item {
 
     public static final String AC_DRINK = "DRINK";
 
+    // TODO add throw and shutter effect
     public String message = "Ahh! This is strong! You feel yourself brave enough to fight with anything.";
 
     {
@@ -73,7 +74,7 @@ public class Rum extends Item {
     @Override
     public String info() {
         return
-        "Not smells good, and the quality of this rum is much worse than you hope. "
+                "Not smells good, and the quality of this rum is much worse than you hope. "
                 + "Remember! Drink responsibly!";
     }
 

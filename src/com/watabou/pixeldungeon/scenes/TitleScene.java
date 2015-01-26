@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -106,8 +106,6 @@ public class TitleScene extends PixelScene {
         int w = Camera.main.width;
         int h = Camera.main.height;
 
-        float height = 180;
-
         Archs archs = new Archs();
         archs.setSize(w, h);
         add(archs);
@@ -115,11 +113,16 @@ public class TitleScene extends PixelScene {
         Image title = BannerSprites.get(BannerSprites.Type.PIXEL_DUNGEON);
         add(title);
 
+        float height = title.height +
+                (PixelDungeon.landscape() ? DashboardItem.SIZE : DashboardItem.SIZE * 2);
+
         title.x = (w - title.width()) / 2;
         title.y = (h - height) / 2;
 
         placeTorch(title.x + 18, title.y + 20);
         placeTorch((title.x + title.width) - 18, title.y + 20);
+
+        // PIXEL_DUNGEON_SIGN was removed from here
 
         DashboardItem btnBadges = new DashboardItem(TXT_BADGES, 3) {
             @Override
@@ -127,7 +130,6 @@ public class TitleScene extends PixelScene {
                 PixelDungeon.switchNoFade(BadgesScene.class);
             }
         };
-        btnBadges.setPos((w / 2) - btnBadges.width(), ((h + height) / 2) - DashboardItem.SIZE);
         add(btnBadges);
 
         DashboardItem btnAbout = new DashboardItem(TXT_ABOUT, 1) {
@@ -136,7 +138,6 @@ public class TitleScene extends PixelScene {
                 PixelDungeon.switchNoFade(AboutScene.class);
             }
         };
-        btnAbout.setPos(w / 2, ((h + height) / 2) - DashboardItem.SIZE);
         add(btnAbout);
 
         DashboardItem btnPlay = new DashboardItem(TXT_PLAY, 0) {
@@ -145,7 +146,6 @@ public class TitleScene extends PixelScene {
                 PixelDungeon.switchNoFade(StartScene.class);
             }
         };
-        btnPlay.setPos((w / 2) - btnPlay.width(), btnAbout.top() - DashboardItem.SIZE);
         add(btnPlay);
 
         DashboardItem btnHighscores = new DashboardItem(TXT_HIGHSCORES, 2) {
@@ -154,8 +154,20 @@ public class TitleScene extends PixelScene {
                 PixelDungeon.switchNoFade(RankingsScene.class);
             }
         };
-        btnHighscores.setPos(w / 2, btnPlay.top());
         add(btnHighscores);
+
+        if (PixelDungeon.landscape()) {
+            float y = ((h + height) / 2) - DashboardItem.SIZE;
+            btnHighscores.setPos((w / 2) - btnHighscores.width(), y);
+            btnBadges.setPos(w / 2, y);
+            btnPlay.setPos(btnHighscores.left() - btnPlay.width(), y);
+            btnAbout.setPos(btnBadges.right(), y);
+        } else {
+            btnBadges.setPos((w / 2) - btnBadges.width(), ((h + height) / 2) - DashboardItem.SIZE);
+            btnAbout.setPos(w / 2, ((h + height) / 2) - DashboardItem.SIZE);
+            btnPlay.setPos((w / 2) - btnPlay.width(), btnAbout.top() - DashboardItem.SIZE);
+            btnHighscores.setPos(w / 2, btnPlay.top());
+        }
 
         BitmapText version = new BitmapText("v " + Game.version, font1x);
         version.measure();

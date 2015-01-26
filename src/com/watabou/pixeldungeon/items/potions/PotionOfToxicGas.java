@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ package com.watabou.pixeldungeon.items.potions;
 
 import com.watabou.noosa.audio.Sample;
 import com.watabou.pixeldungeon.Assets;
-import com.watabou.pixeldungeon.actors.Actor;
+import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.actors.blobs.Blob;
 import com.watabou.pixeldungeon.actors.blobs.ToxicGas;
 import com.watabou.pixeldungeon.scenes.GameScene;
@@ -33,7 +33,7 @@ public class PotionOfToxicGas extends Potion {
     @Override
     public String desc() {
         return
-        "Uncorking or shattering this pressurized glass will cause " +
+                "Uncorking or shattering this pressurized glass will cause " +
                 "its contents to explode into a deadly cloud of toxic green gas. " +
                 "You might choose to fling this potion at distant enemies " +
                 "instead of uncorking it by hand.";
@@ -45,15 +45,14 @@ public class PotionOfToxicGas extends Potion {
     }
 
     @Override
-    protected void shatter(final int cell) {
+    public void shatter(final int cell) {
+        if (Dungeon.visible[cell]) {
+            setKnown();
 
-        setKnown();
+            splash(cell);
+            Sample.INSTANCE.play(Assets.SND_SHATTER);
+        }
 
-        splash(cell);
-        Sample.INSTANCE.play(Assets.SND_SHATTER);
-
-        ToxicGas gas = Blob.seed(cell, 1000, ToxicGas.class);
-        Actor.add(gas);
-        GameScene.add(gas);
+        GameScene.add(Blob.seed(cell, 1000, ToxicGas.class));
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ public class Toolbar extends Component {
 
             active =
                     visible =
-                            false;
+                    false;
         }
 
         public void reset(final Item item, final float dstX, final float dstY) {
@@ -70,7 +70,7 @@ public class Toolbar extends Component {
 
             active =
                     visible =
-                            true;
+                    true;
 
             this.dstX = dstX - (ItemSprite.SIZE / 2);
             this.dstY = dstY - (ItemSprite.SIZE / 2);
@@ -89,7 +89,7 @@ public class Toolbar extends Component {
 
                 visible =
                         active =
-                                false;
+                        false;
 
             } else {
                 float p = left / DURATION;
@@ -105,8 +105,13 @@ public class Toolbar extends Component {
 
         private QuickSlot slot;
 
-        public QuickslotTool(final int x, final int y, final int width, final int height) {
+        public QuickslotTool(final int x, final int y, final int width, final int height, final boolean primary) {
             super(x, y, width, height);
+            if (primary) {
+                slot.primary();
+            } else {
+                slot.secondary();
+            }
         }
 
         @Override
@@ -120,7 +125,7 @@ public class Toolbar extends Component {
         @Override
         public void enable(final boolean value) {
             slot.enable(value);
-            active = value;
+            super.enable(value);
         }
 
         @Override
@@ -134,7 +139,7 @@ public class Toolbar extends Component {
 
         private static final int BGCOLOR = 0x7B8073;
 
-        private Image base;
+        protected Image base;
 
         public Tool(final int x, final int y, final int width, final int height) {
             super();
@@ -187,19 +192,34 @@ public class Toolbar extends Component {
         }
     }
 
-    private Tool btnWait;
-    private Tool btnSearch;
-    private Tool btnInfo;
+    public static boolean secondQuickslot() {
+        return instance.btnQuick2.visible;
+    }
 
-    private Tool btnResume;
+    public static void secondQuickslot(final boolean value) {
+        instance.btnQuick2.visible =
+                instance.btnQuick2.active =
+                value;
+        instance.layout();
+    }
+
+    private Tool btnWait;
+
+    private Tool btnSearch;
+
+    private Tool btnInfo;
 
     private Tool btnInventory;
 
-    private Tool btnQuick;
+    private Tool btnQuick1;
+
+    private Tool btnQuick2;
 
     private PickedUpItem pickedUp;
 
     private boolean lastEnabled = true;
+
+    private static Toolbar instance;
 
     private static CellSelector.Listener informer = new CellSelector.Listener() {
         @Override
@@ -258,6 +278,8 @@ public class Toolbar extends Component {
     public Toolbar() {
         super();
 
+        instance = this;
+
         height = btnInventory.height();
     }
 
@@ -291,14 +313,7 @@ public class Toolbar extends Component {
             }
         });
 
-        add(btnResume = new Tool(61, 7, 21, 24) {
-            @Override
-            protected void onClick() {
-                Dungeon.hero.resume();
-            }
-        });
-
-        add(btnInventory = new Tool(82, 7, 23, 24) {
+        add(btnInventory = new Tool(60, 7, 23, 24) {
             private GoldIndicator gold;
 
             @Override
@@ -326,7 +341,9 @@ public class Toolbar extends Component {
             };
         });
 
-        add(btnQuick = new QuickslotTool(105, 7, 22, 24));
+        add(btnQuick1 = new QuickslotTool(83, 7, 22, 24, true));
+        add(btnQuick2 = new QuickslotTool(83, 7, 22, 24, false));
+        btnQuick2.visible = (QuickSlot.secondaryValue != null);
 
         add(pickedUp = new PickedUpItem());
     }
@@ -336,9 +353,13 @@ public class Toolbar extends Component {
         btnWait.setPos(x, y);
         btnSearch.setPos(btnWait.right(), y);
         btnInfo.setPos(btnSearch.right(), y);
-        btnResume.setPos(btnInfo.right(), y);
-        btnQuick.setPos(width - btnQuick.width(), y);
-        btnInventory.setPos(btnQuick.left() - btnInventory.width(), y);
+        btnQuick1.setPos(width - btnQuick1.width(), y);
+        if (btnQuick2.visible) {
+            btnQuick2.setPos(btnQuick1.left() - btnQuick2.width(), y);
+            btnInventory.setPos(btnQuick2.left() - btnInventory.width(), y);
+        } else {
+            btnInventory.setPos(btnQuick1.left() - btnInventory.width(), y);
+        }
     }
 
     public void pickup(final Item item) {
@@ -350,7 +371,6 @@ public class Toolbar extends Component {
     @Override
     public void update() {
         super.update();
-
         if (lastEnabled != Dungeon.hero.ready) {
             lastEnabled = Dungeon.hero.ready;
 
@@ -360,9 +380,6 @@ public class Toolbar extends Component {
                 }
             }
         }
-
-        btnResume.visible = Dungeon.hero.lastAction != null;
-
         if (!Dungeon.hero.isAlive()) {
             btnInventory.enable(true);
         }

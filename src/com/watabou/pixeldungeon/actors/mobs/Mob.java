@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ import com.watabou.pixeldungeon.Badges;
 import com.watabou.pixeldungeon.Challenges;
 import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.Statistics;
+import com.watabou.pixeldungeon.actors.Actor;
 import com.watabou.pixeldungeon.actors.Char;
 import com.watabou.pixeldungeon.actors.buffs.Amok;
 import com.watabou.pixeldungeon.actors.buffs.Buff;
@@ -37,6 +38,7 @@ import com.watabou.pixeldungeon.items.Item;
 import com.watabou.pixeldungeon.levels.Level;
 import com.watabou.pixeldungeon.sprites.CharSprite;
 import com.watabou.pixeldungeon.utils.GLog;
+import com.watabou.pixeldungeon.utils.Utils;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
@@ -79,7 +81,7 @@ public abstract class Mob extends Char {
 
         @Override
         public String status() {
-            return String.format("This %s is fleeing", name);
+            return Utils.format("This %s is fleeing", name);
         }
     }
 
@@ -118,7 +120,7 @@ public abstract class Mob extends Char {
 
         @Override
         public String status() {
-            return String.format("This %s is hunting", name);
+            return Utils.format("This %s is hunting", name);
         }
     }
 
@@ -135,7 +137,7 @@ public abstract class Mob extends Char {
 
         @Override
         public String status() {
-            return String.format("This %s is passive", name);
+            return Utils.format("This %s is passive", name);
         }
     }
 
@@ -175,7 +177,7 @@ public abstract class Mob extends Char {
 
         @Override
         public String status() {
-            return String.format("This %s is sleeping", name);
+            return Utils.format("This %s is sleeping", name);
         }
     }
 
@@ -212,11 +214,14 @@ public abstract class Mob extends Char {
 
         @Override
         public String status() {
-            return String.format("This %s is wandering", name);
+            return Utils.format("This %s is wandering", name);
         }
     }
 
+    public MobType mobType = MobType.NONE;
+
     private static final String TXT_DIED = "You hear something died in the distance";
+    protected static final String TXT_ECHO = "echo of ";
     protected static final String TXT_NOTICE1 = "?!";
     protected static final String TXT_RAGE = "#$%^";
     protected static final String TXT_EXP = "%+dEXP";
@@ -228,14 +233,10 @@ public abstract class Mob extends Char {
     public AiState WANDERING = new Wandering();
 
     public AiState FLEEING = new Fleeing();
-
     public AiState PASSIVE = new Passive();
+
     public AiState state = SLEEPEING;
-
     public Class<? extends CharSprite> spriteClass;
-
-    public MobType mobType = MobType.NONE;
-
     protected int target = -1;
 
     protected int defenseSkill = 0;
@@ -243,8 +244,8 @@ public abstract class Mob extends Char {
     protected int EXP = 1;
 
     protected int maxLvl = 30;
-
     protected Char enemy;
+
     protected boolean enemySeen;
 
     protected boolean alerted = false;
@@ -252,13 +253,6 @@ public abstract class Mob extends Char {
     protected static final float TIME_TO_WAKE_UP = 1f;
 
     public boolean hostile = true;
-
-    // Unreachable target
-    public static final Mob DUMMY = new Mob() {
-        {
-            pos = -1;
-        }
-    };
 
     private static final String STATE = "state";
 
@@ -286,7 +280,9 @@ public abstract class Mob extends Char {
 
         enemy = chooseEnemy();
 
-        boolean enemyInFOV = enemy.isAlive() && Level.fieldOfView[enemy.pos] && (enemy.invisible <= 0);
+        boolean enemyInFOV =
+                (enemy != null) && enemy.isAlive() &&
+                Level.fieldOfView[enemy.pos] && (enemy.invisible <= 0);
 
         return state.act(enemyInFOV, justAlerted);
     }
@@ -310,6 +306,10 @@ public abstract class Mob extends Char {
         }
     }
 
+    public void aggro(final Char ch) {
+        enemy = ch;
+    }
+
     protected float attackDelay() {
         return 1f;
     }
@@ -325,7 +325,7 @@ public abstract class Mob extends Char {
     }
 
     protected boolean canAttack(final Char enemy) {
-        return Level.adjacent(pos, enemy.pos) && !pacified;
+        return Level.adjacent(pos, enemy.pos) && !isCharmedBy(enemy);
     }
 
     protected Char chooseEnemy() {
@@ -343,17 +343,18 @@ public abstract class Mob extends Char {
                     return Random.element(enemies);
                 }
 
-            } else {
-                return enemy;
             }
         }
 
         Terror terror = buff(Terror.class);
         if (terror != null) {
-            return terror.source;
+            Char source = (Char) Actor.findById(terror.object);
+            if (source != null) {
+                return source;
+            }
         }
 
-        return Dungeon.hero;
+        return (enemy != null) && enemy.isAlive() ? enemy : Dungeon.hero;
     }
 
     @Override

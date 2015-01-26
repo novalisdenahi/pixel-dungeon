@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ import com.watabou.utils.Random;
 
 public class Bestiary {
 
-    public static boolean isUnique(final Char mob) {
+    public static boolean isBoss(final Char mob) {
         return (mob instanceof Goo) || (mob instanceof Tengu) || (mob instanceof DM300) || (mob instanceof King)
                 || (mob instanceof Yog);
     }

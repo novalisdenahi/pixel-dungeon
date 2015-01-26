@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,9 +54,6 @@ public class WndClass extends WndTabbed {
                 break;
             case HUNTRESS:
                 text = HeroSubClass.SNIPER.desc() + "\n\n" + HeroSubClass.WARDEN.desc();
-                break;
-            case PRIEST:
-                text = HeroSubClass.PALADIN.desc() + "\n\n" + HeroSubClass.HIGHPRIEST.desc();
                 break;
             }
 
@@ -199,5 +196,4 @@ public class WndClass extends WndTabbed {
 
         select(0);
     }
-
 }

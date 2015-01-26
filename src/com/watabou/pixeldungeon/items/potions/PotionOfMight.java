@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
  */
 package com.watabou.pixeldungeon.items.potions;
 
+import com.watabou.pixeldungeon.Badges;
 import com.watabou.pixeldungeon.actors.hero.Hero;
 import com.watabou.pixeldungeon.sprites.CharSprite;
 import com.watabou.pixeldungeon.utils.GLog;
@@ -36,12 +37,14 @@ public class PotionOfMight extends PotionOfStrength {
         hero.HP += 5;
         hero.sprite.showStatus(CharSprite.POSITIVE, "+1 str, +5 ht");
         GLog.p("Newfound strength surges through your body.");
+
+        Badges.validateStrengthAttained();
     }
 
     @Override
     public String desc() {
         return
-        "This powerful liquid will course through your muscles, permanently " +
+                "This powerful liquid will course through your muscles, permanently " +
                 "increasing your strength by one point and health by five points.";
     }
 

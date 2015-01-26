@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 package com.watabou.pixeldungeon.actors.hero;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 
 import com.watabou.noosa.Camera;
@@ -73,6 +74,8 @@ import com.watabou.pixeldungeon.items.keys.GoldenKey;
 import com.watabou.pixeldungeon.items.keys.IronKey;
 import com.watabou.pixeldungeon.items.keys.Key;
 import com.watabou.pixeldungeon.items.keys.SkeletonKey;
+import com.watabou.pixeldungeon.items.potions.Potion;
+import com.watabou.pixeldungeon.items.potions.PotionOfMight;
 import com.watabou.pixeldungeon.items.potions.PotionOfStrength;
 import com.watabou.pixeldungeon.items.rings.RingOfAccuracy;
 import com.watabou.pixeldungeon.items.rings.RingOfDetection;
@@ -80,7 +83,8 @@ import com.watabou.pixeldungeon.items.rings.RingOfElements;
 import com.watabou.pixeldungeon.items.rings.RingOfEvasion;
 import com.watabou.pixeldungeon.items.rings.RingOfHaste;
 import com.watabou.pixeldungeon.items.rings.RingOfShadows;
-import com.watabou.pixeldungeon.items.rings.RingOfThorns;
+import com.watabou.pixeldungeon.items.scrolls.Scroll;
+import com.watabou.pixeldungeon.items.scrolls.ScrollOfEnchantment;
 import com.watabou.pixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.watabou.pixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.watabou.pixeldungeon.items.scrolls.ScrollOfUpgrade;
@@ -91,7 +95,7 @@ import com.watabou.pixeldungeon.levels.Level;
 import com.watabou.pixeldungeon.levels.Terrain;
 import com.watabou.pixeldungeon.levels.features.AlchemyPot;
 import com.watabou.pixeldungeon.levels.features.Chasm;
-import com.watabou.pixeldungeon.plants.Earthroot;
+import com.watabou.pixeldungeon.levels.features.Sign;
 import com.watabou.pixeldungeon.scenes.GameScene;
 import com.watabou.pixeldungeon.scenes.InterlevelScene;
 import com.watabou.pixeldungeon.scenes.SurfaceScene;
@@ -99,7 +103,6 @@ import com.watabou.pixeldungeon.sprites.CharSprite;
 import com.watabou.pixeldungeon.sprites.HeroSprite;
 import com.watabou.pixeldungeon.ui.AttackIndicator;
 import com.watabou.pixeldungeon.ui.BuffIndicator;
-import com.watabou.pixeldungeon.ui.QuickSlot;
 import com.watabou.pixeldungeon.utils.GLog;
 import com.watabou.pixeldungeon.windows.WndMessage;
 import com.watabou.pixeldungeon.windows.WndResurrect;
@@ -112,8 +115,6 @@ public class Hero extends Char {
     public static interface Doom {
         public void onDeath();
     }
-
-    private static final float BLESS_BUFF_BONUS = 1.4f;
 
     private static final String TXT_LEAVE = "One does not simply leave Pixel Dungeon.";
     private static final String TXT_LEVEL_UP = "level up!";
@@ -142,6 +143,7 @@ public class Hero extends Char {
     private int attackSkill = 10;
 
     private int defenseSkill = 5;
+
     public boolean ready = false;
     public HeroAction curAction = null;
 
@@ -174,6 +176,7 @@ public class Hero extends Char {
     private static final String STRENGTH = "STR";
     private static final String LEVEL = "lvl";
     private static final String EXPERIENCE = "exp";
+    private static final float BLESS_BUFF_BONUS = 1.4f;
 
     public static void preview(final GamesInProgress.Info info, final Bundle bundle) {
         info.level = bundle.getInt(LEVEL);
@@ -205,6 +208,28 @@ public class Hero extends Char {
         Dungeon.observe();
 
         Dungeon.hero.belongings.identify();
+
+        int pos = Dungeon.hero.pos;
+
+        ArrayList<Integer> passable = new ArrayList<Integer>();
+        for (Integer ofs : Level.NEIGHBOURS8) {
+            int cell = pos + ofs;
+            if ((Level.passable[cell] || Level.avoid[cell]) && (Dungeon.level.heaps.get(cell) == null)) {
+                passable.add(cell);
+            }
+        }
+        Collections.shuffle(passable);
+
+        ArrayList<Item> items = new ArrayList<Item>(Dungeon.hero.belongings.backpack.items);
+        for (Integer cell : passable) {
+            if (items.isEmpty()) {
+                break;
+            }
+
+            Item item = Random.element(items);
+            Dungeon.level.drop(item, cell).sprite.drop(pos);
+            items.remove(item);
+        }
 
         GameScene.gameOver();
 
@@ -355,7 +380,7 @@ public class Hero extends Char {
 
         enemy = action.target;
 
-        if (Level.adjacent(pos, enemy.pos) && enemy.isAlive() && !pacified) {
+        if (Level.adjacent(pos, enemy.pos) && enemy.isAlive() && !isCharmedBy(enemy)) {
 
             spend(attackDelay());
             sprite.attack(enemy.pos);
@@ -476,9 +501,10 @@ public class Hero extends Char {
 
         } else {
             if (Dungeon.level.map[pos] == Terrain.SIGN) {
-                GameScene.show(new WndMessage(Dungeon.tip()));
+                Sign.read(pos);
             }
             ready();
+
             return false;
         }
     }
@@ -488,9 +514,7 @@ public class Hero extends Char {
         if (Level.adjacent(pos, dst) || (pos == dst)) {
 
             Heap heap = Dungeon.level.heaps.get(dst);
-            if ((heap != null) &&
-                    ((heap.type == Type.CHEST) || (heap.type == Type.TOMB) || (heap.type == Type.SKELETON) ||
-                            (heap.type == Type.LOCKED_CHEST) || (heap.type == Type.CRYSTAL_CHEST))) {
+            if ((heap != null) && ((heap.type != Type.HEAP) && (heap.type != Type.FOR_SALE))) {
 
                 theKey = null;
 
@@ -545,10 +569,15 @@ public class Hero extends Char {
                 if (item.doPickUp(this)) {
 
                     if (item instanceof Dewdrop) {
-
+                        // Do nothing
                     } else {
-                        if (((item instanceof ScrollOfUpgrade) && ((ScrollOfUpgrade) item).isKnown()) ||
-                                ((item instanceof PotionOfStrength) && ((PotionOfStrength) item).isKnown())) {
+                        boolean important =
+                                (((item instanceof ScrollOfUpgrade) || (item instanceof ScrollOfEnchantment)) && ((Scroll) item)
+                                        .isKnown())
+                                        ||
+                                        (((item instanceof PotionOfStrength) || (item instanceof PotionOfMight)) && ((Potion) item)
+                                                .isKnown());
+                        if (important) {
                             GLog.p(TXT_YOU_NOW_HAVE, item.name());
                         } else {
                             GLog.i(TXT_YOU_NOW_HAVE, item.name());
@@ -618,7 +647,7 @@ public class Hero extends Char {
             ready();
             return false;
         }
-    }
+    };
 
     @Override
     public void add(final Buff buff) {
@@ -662,7 +691,7 @@ public class Hero extends Char {
         }
 
         BuffIndicator.refreshHero();
-    };
+    }
 
     public float attackDelay() {
         KindOfWeapon wep = rangedWeapon != null ? rangedWeapon : belongings.weapon;
@@ -703,12 +732,14 @@ public class Hero extends Char {
             case BATTLEMAGE:
                 if (wep instanceof Wand) {
                     Wand wand = (Wand) wep;
-                    if ((wand.curCharges < wand.maxCharges) && (damage > 0)) {
+                    if (wand.curCharges >= wand.maxCharges) {
+
+                        wand.use();
+
+                    } else if (damage > 0) {
 
                         wand.curCharges++;
-                        if (Dungeon.quickslot == wand) {
-                            QuickSlot.refresh();
-                        }
+                        wand.updateQuickslot();
 
                         ScrollOfRecharging.charge(this);
                     }
@@ -716,7 +747,7 @@ public class Hero extends Char {
                 }
             case SNIPER:
                 if (rangedWeapon != null) {
-                    Buff.prolong(enemy, SnipersMark.class, attackDelay() * 1.1f);
+                    Buff.prolong(this, SnipersMark.class, attackDelay() * 1.1f).object = enemy.id();
                 }
                 break;
             default:
@@ -813,29 +844,6 @@ public class Hero extends Char {
     }
 
     @Override
-    public int defenseProc(final Char enemy, int damage) {
-
-        RingOfThorns.Thorns thorns = buff(RingOfThorns.Thorns.class);
-        if (thorns != null) {
-            int dmg = Random.IntRange(0, damage);
-            if (dmg > 0) {
-                enemy.damage(dmg, thorns);
-            }
-        }
-
-        Earthroot.Armor armor = buff(Earthroot.Armor.class);
-        if (armor != null) {
-            damage = armor.absorb(damage);
-        }
-
-        if (belongings.armor != null) {
-            damage = belongings.armor.proc(enemy, this, damage);
-        }
-
-        return damage;
-    }
-
-    @Override
     public int defenseSkill(final Char enemy) {
         int bonus = 0;
         for (Buff buff : buffs(RingOfEvasion.Evasion.class)) {
@@ -902,7 +910,7 @@ public class Hero extends Char {
         Ankh ankh = belongings.getItem(Ankh.class);
         if (ankh == null) {
 
-            Hero.reallyDie(cause);
+            reallyDie(cause);
 
         } else {
 
@@ -967,6 +975,7 @@ public class Hero extends Char {
     private boolean getCloser(final int target) {
 
         if (rooted) {
+            Camera.main.shake(1, 1f);
             return false;
         }
 
@@ -1037,7 +1046,7 @@ public class Hero extends Char {
                 curAction = new HeroAction.Attack(ch);
             }
 
-        } else if ((heap = Dungeon.level.heaps.get(cell)) != null) {
+        } else if (Level.fieldOfView[cell] && ((heap = Dungeon.level.heaps.get(cell)) != null)) {
 
             switch (heap.type) {
             case HEAP:
@@ -1046,8 +1055,8 @@ public class Hero extends Char {
             case FOR_SALE:
                 curAction = (heap.size() == 1) && (heap.peek().price() > 0) ?
                         new HeroAction.Buy(cell) :
-                        new HeroAction.PickUp(cell);
-                break;
+                            new HeroAction.PickUp(cell);
+                        break;
             default:
                 curAction = new HeroAction.OpenChest(cell);
             }
@@ -1081,7 +1090,7 @@ public class Hero extends Char {
     }
 
     public void interrupt() {
-        if ((curAction != null) && (curAction.dst != pos)) {
+        if (isAlive() && (curAction != null) && (curAction.dst != pos)) {
             lastAction = curAction;
         }
         curAction = null;
@@ -1113,6 +1122,11 @@ public class Hero extends Char {
             }
             Dungeon.level.press(pos, this);
         }
+    }
+
+    @Override
+    public void next() {
+        super.next();
     }
 
     @Override

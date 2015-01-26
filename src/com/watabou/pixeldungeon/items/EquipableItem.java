@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ public abstract class EquipableItem extends Item {
 
     public abstract boolean doEquip(Hero hero);
 
-    public boolean doUnequip(final Hero hero, final boolean collect) {
+    public final boolean doUnequip(final Hero hero, final boolean collect) {
         return doUnequip(hero, collect, true);
     }
 

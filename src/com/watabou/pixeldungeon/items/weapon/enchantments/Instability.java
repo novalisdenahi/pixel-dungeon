@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@ package com.watabou.pixeldungeon.items.weapon.enchantments;
 import com.watabou.pixeldungeon.actors.Char;
 import com.watabou.pixeldungeon.items.weapon.Weapon;
 import com.watabou.pixeldungeon.items.weapon.Weapon.Enchantment;
-import com.watabou.pixeldungeon.items.weapon.missiles.Boomerang;
 
 public class Instability extends Weapon.Enchantment {
 
@@ -33,13 +32,7 @@ public class Instability extends Weapon.Enchantment {
 
     @Override
     public boolean proc(final Weapon weapon, final Char attacker, final Char defender, final int damage) {
-        Enchantment ench = Enchantment.random();
-        if (weapon instanceof Boomerang) {
-            while ((ench instanceof Piercing) || (ench instanceof Swing)) {
-                ench = Enchantment.random();
-            }
-        }
-        return ench.proc(weapon, attacker, defender, damage);
+        return Enchantment.random().proc(weapon, attacker, defender, damage);
     }
 
 }

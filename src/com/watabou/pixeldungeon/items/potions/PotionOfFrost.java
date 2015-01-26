@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,8 +37,8 @@ public class PotionOfFrost extends Potion {
     @Override
     public String desc() {
         return
-        "Upon exposure to open air this chemical will evaporate into a freezing cloud, causing " +
-                "any creature that contacts it to be frozen in place unable to act and move.";
+        "Upon exposure to open air, this chemical will evaporate into a freezing cloud, causing " +
+                "any creature that contacts it to be frozen in place, unable to act and move.";
     }
 
     @Override
@@ -47,21 +47,24 @@ public class PotionOfFrost extends Potion {
     }
 
     @Override
-    protected void shatter(final int cell) {
+    public void shatter(final int cell) {
 
         PathFinder.buildDistanceMap(cell, BArray.not(Level.losBlocking, null), DISTANCE);
 
         Fire fire = (Fire) Dungeon.level.blobs.get(Fire.class);
 
+        boolean visible = false;
         for (int i = 0; i < Level.LENGTH; i++) {
             if (PathFinder.distance[i] < Integer.MAX_VALUE) {
-                Freezing.affect(i, fire);
+                visible = Freezing.affect(i, fire) || visible;
             }
         }
 
-        splash(cell);
-        Sample.INSTANCE.play(Assets.SND_SHATTER);
+        if (visible) {
+            splash(cell);
+            Sample.INSTANCE.play(Assets.SND_SHATTER);
 
-        setKnown();
+            setKnown();
+        }
     }
 }

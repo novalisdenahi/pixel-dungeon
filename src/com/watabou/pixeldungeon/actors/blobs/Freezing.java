@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,9 +29,8 @@ import com.watabou.utils.Random;
 
 public class Freezing {
 
-    // It's not really a blob...
-
-    public static void affect(final int cell, final Fire fire) {
+    // Returns true, if this cell is visible
+    public static boolean affect(final int cell, final Fire fire) {
 
         Char ch = Actor.findChar(cell);
         if (ch != null) {
@@ -49,7 +48,9 @@ public class Freezing {
 
         if (Dungeon.visible[cell]) {
             CellEmitter.get(cell).start(SnowParticle.FACTORY, 0.2f, 6);
+            return true;
+        } else {
+            return false;
         }
-
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -205,7 +205,6 @@ public abstract class RegularLevel extends Level {
             Room cr = Random.element(connected);
             Room or = Random.element(cr.neigbours);
             if (!connected.contains(or)) {
-
                 cr.connect(or);
                 connected.add(or);
             }
@@ -246,7 +245,7 @@ public abstract class RegularLevel extends Level {
     protected void createItems() {
 
         int nItems = 3;
-        while (Random.Float() < 0.3f) {
+        while (Random.Float() < 0.4f) {
             nItems++;
         }
 
@@ -262,6 +261,9 @@ public abstract class RegularLevel extends Level {
             case 4:
                 type = Heap.Type.CHEST;
                 break;
+            case 5:
+                type = Dungeon.depth > 1 ? Heap.Type.MIMIC : Heap.Type.CHEST;
+                break;
             default:
                 type = Heap.Type.HEAP;
             }
@@ -271,12 +273,10 @@ public abstract class RegularLevel extends Level {
         for (Item item : itemsToSpawn) {
             int cell = randomDropCell();
             if (item instanceof ScrollOfUpgrade) {
-
                 while ((map[cell] == Terrain.FIRE_TRAP) || (map[cell] == Terrain.SECRET_FIRE_TRAP)) {
                     cell = randomDropCell();
                 }
             }
-
             drop(item, cell).type = Heap.Type.HEAP;
         }
 
@@ -290,7 +290,6 @@ public abstract class RegularLevel extends Level {
     protected void createMobs() {
         int nMobs = nMobs();
         for (int i = 0; i < nMobs; i++) {
-            // TODO add Dungeon type
             Mob mob = Bestiary.mob(Dungeon.depth);
             do {
                 mob.pos = randomRespawnCell();
@@ -303,7 +302,6 @@ public abstract class RegularLevel extends Level {
     protected abstract boolean[] grass();
 
     protected boolean initRooms() {
-
         rooms = new HashSet<Room>();
         split(new Rect(0, 0, WIDTH - 1, HEIGHT - 1));
 

@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,11 +39,11 @@ public class RingOfHaggler extends Ring {
     public String desc() {
         return isKnown() ?
                 "In fact this ring doesn't provide any magic effect, but it demonstrates " +
-                        "to shopkeepers and vendors, that the owner of the ring is a member of " +
-                        "The Thieves' Guild. Usually they are glad to give a discount in exchange " +
-                        "for temporary immunity guarantee. Upgrading this ring won't give any additional " +
-                        "bonuses." :
-                super.desc();
+                "to shopkeepers and vendors, that the owner of the ring is a member of " +
+                "The Thieves' Guild. Usually they are glad to give a discount in exchange " +
+                "for temporary immunity guarantee. Upgrading this ring won't give any additional " +
+                "bonuses." :
+                    super.desc();
     }
 
     @Override
@@ -63,5 +63,10 @@ public class RingOfHaggler extends Ring {
     public Item random() {
         level = +1;
         return this;
+    }
+
+    @Override
+    public void use() {
+        // Do nothing (it can't degrade)
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@ package com.watabou.pixeldungeon.items.potions;
 
 import com.watabou.noosa.audio.Sample;
 import com.watabou.pixeldungeon.Assets;
+import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.actors.blobs.Blob;
 import com.watabou.pixeldungeon.actors.blobs.ParalyticGas;
 import com.watabou.pixeldungeon.scenes.GameScene;
@@ -32,7 +33,7 @@ public class PotionOfParalyticGas extends Potion {
     @Override
     public String desc() {
         return
-        "Upon exposure to open air, the liquid in this flask will vaporize " +
+                "Upon exposure to open air, the liquid in this flask will vaporize " +
                 "into a numbing yellow haze. Anyone who inhales the cloud will be paralyzed " +
                 "instantly, unable to move for some time after the cloud dissipates. This " +
                 "item can be thrown at distant enemies to catch them within the effect of the gas.";
@@ -44,12 +45,13 @@ public class PotionOfParalyticGas extends Potion {
     }
 
     @Override
-    protected void shatter(final int cell) {
+    public void shatter(final int cell) {
+        if (Dungeon.visible[cell]) {
+            setKnown();
 
-        setKnown();
-
-        splash(cell);
-        Sample.INSTANCE.play(Assets.SND_SHATTER);
+            splash(cell);
+            Sample.INSTANCE.play(Assets.SND_SHATTER);
+        }
 
         GameScene.add(Blob.seed(cell, 1000, ParalyticGas.class));
     }

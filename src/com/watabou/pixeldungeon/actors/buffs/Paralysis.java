@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,14 @@ public class Paralysis extends FlavourBuff {
         return r != null ? r.durationFactor() * DURATION : DURATION;
     }
 
+    public static void unfreeze(final Char ch) {
+        if ((ch.buff(Paralysis.class) == null) &&
+                (ch.buff(Frost.class) == null)) {
+
+            ch.paralysed = false;
+        }
+    }
+
     @Override
     public boolean attachTo(final Char target) {
         if (super.attachTo(target)) {
@@ -42,8 +50,8 @@ public class Paralysis extends FlavourBuff {
 
     @Override
     public void detach() {
-        target.paralysed = false;
         super.detach();
+        Paralysis.unfreeze(target);
     }
 
     @Override

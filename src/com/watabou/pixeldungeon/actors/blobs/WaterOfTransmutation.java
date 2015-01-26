@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,10 +29,9 @@ import com.watabou.pixeldungeon.items.potions.PotionOfMight;
 import com.watabou.pixeldungeon.items.potions.PotionOfStrength;
 import com.watabou.pixeldungeon.items.rings.Ring;
 import com.watabou.pixeldungeon.items.scrolls.Scroll;
+import com.watabou.pixeldungeon.items.scrolls.ScrollOfEnchantment;
 import com.watabou.pixeldungeon.items.scrolls.ScrollOfUpgrade;
-import com.watabou.pixeldungeon.items.scrolls.ScrollOfWeaponUpgrade;
 import com.watabou.pixeldungeon.items.wands.Wand;
-import com.watabou.pixeldungeon.items.weapon.Weapon.Enchantment;
 import com.watabou.pixeldungeon.items.weapon.melee.BattleAxe;
 import com.watabou.pixeldungeon.items.weapon.melee.Dagger;
 import com.watabou.pixeldungeon.items.weapon.melee.Falchion;
@@ -51,40 +50,29 @@ import com.watabou.pixeldungeon.plants.Plant;
 public class WaterOfTransmutation extends WellWater {
 
     @Override
-    protected Item affectItem(final Item item) {
+    protected Item affectItem(Item item) {
 
         if (item instanceof MeleeWeapon) {
-
-            return changeWeapon((MeleeWeapon) item);
-
+            item = changeWeapon((MeleeWeapon) item);
         } else if (item instanceof Scroll) {
-
-            Journal.remove(Feature.WELL_OF_TRANSMUTATION);
-            return changeScroll((Scroll) item);
-
+            item = changeScroll((Scroll) item);
         } else if (item instanceof Potion) {
-
-            Journal.remove(Feature.WELL_OF_TRANSMUTATION);
-            return changePotion((Potion) item);
-
+            item = changePotion((Potion) item);
         } else if (item instanceof Ring) {
-
-            Journal.remove(Feature.WELL_OF_TRANSMUTATION);
-            return changeRing((Ring) item);
-
+            item = changeRing((Ring) item);
         } else if (item instanceof Wand) {
-
-            Journal.remove(Feature.WELL_OF_TRANSMUTATION);
-            return changeWand((Wand) item);
-
+            item = changeWand((Wand) item);
         } else if (item instanceof Plant.Seed) {
-
-            Journal.remove(Feature.WELL_OF_TRANSMUTATION);
-            return changeSeed((Plant.Seed) item);
-
+            item = changeSeed((Plant.Seed) item);
         } else {
-            return null;
+            item = null;
         }
+
+        if (item != null) {
+            Journal.remove(Feature.WELL_OF_TRANSMUTATION);
+        }
+
+        return item;
     }
 
     private Potion changePotion(final Potion p) {
@@ -131,9 +119,9 @@ public class WaterOfTransmutation extends WellWater {
     private Scroll changeScroll(final Scroll s) {
         if (s instanceof ScrollOfUpgrade) {
 
-            return new ScrollOfWeaponUpgrade();
+            return new ScrollOfEnchantment();
 
-        } else if (s instanceof ScrollOfWeaponUpgrade) {
+        } else if (s instanceof ScrollOfEnchantment) {
 
             return new ScrollOfUpgrade();
 
@@ -203,16 +191,16 @@ public class WaterOfTransmutation extends WellWater {
             n = new Longsword();
         }
 
-        else if (w instanceof Glaive) {
-            n = new WarHammer();
-        } else if (w instanceof WarHammer) {
-            n = new Glaive();
-        }
-
         else if (w instanceof Falchion) {
             n = new Rapier();
         } else if (w instanceof Rapier) {
             n = new Falchion();
+        }
+
+        else if (w instanceof Glaive) {
+            n = new WarHammer();
+        } else if (w instanceof WarHammer) {
+            n = new Glaive();
         }
 
         if (n != null) {
@@ -225,7 +213,7 @@ public class WaterOfTransmutation extends WellWater {
             }
 
             if (w.isEnchanted()) {
-                n.enchant(Enchantment.random());
+                n.enchant();
             }
 
             n.levelKnown = w.levelKnown;

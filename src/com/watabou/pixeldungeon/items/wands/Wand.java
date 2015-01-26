@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,10 +75,12 @@ public abstract class Wand extends KindOfWeapon {
         protected void delay() {
             float time2charge = ((Hero) target).heroClass == HeroClass.MAGE ?
                     TIME_TO_CHARGE / (float) Math.sqrt(1 + level) :
-                    TIME_TO_CHARGE;
-            spend(time2charge);
+                        TIME_TO_CHARGE;
+                    spend(time2charge);
         }
     }
+
+    private static final int USAGES_TO_KNOW = 40;
 
     public static final String AC_ZAP = "ZAP";
     private static final String TXT_WOOD = "This thin %s wand is warm to the touch. Who knows what it will do when used?";
@@ -88,6 +90,8 @@ public abstract class Wand extends KindOfWeapon {
     private static final String TXT_FIZZLES = "your wand fizzles; it must be out of charges for now";
 
     private static final String TXT_SELF_TARGET = "You can't target yourself";
+
+    private static final String TXT_IDENTIFY = "You are now familiar enough with your %s.";
 
     private static final float TIME_TO_ZAP = 1f;
 
@@ -108,44 +112,48 @@ public abstract class Wand extends KindOfWeapon {
     public int maxCharges = initialCharges();
 
     public int curCharges = maxCharges;
+
     protected Charger charger;
     private boolean curChargeKnown = false;
+    private int usagesToKnow = USAGES_TO_KNOW;
 
     protected boolean hitChars = true;
 
     private static final Class<?>[] wands = {
-            WandOfTeleportation.class,
-            WandOfSlowness.class,
-            WandOfFirebolt.class,
-            WandOfPoison.class,
-            WandOfRegrowth.class,
-            WandOfBlink.class,
-            WandOfLightning.class,
-            WandOfAmok.class,
-            WandOfTelekinesis.class,
-            WandOfFlock.class,
-            WandOfDisintegration.class,
-            WandOfAvalanche.class
+        WandOfTeleportation.class,
+        WandOfSlowness.class,
+        WandOfFirebolt.class,
+        WandOfPoison.class,
+        WandOfRegrowth.class,
+        WandOfBlink.class,
+        WandOfLightning.class,
+        WandOfAmok.class,
+        WandOfTelekinesis.class,
+        WandOfFlock.class,
+        WandOfDisintegration.class,
+        WandOfAvalanche.class
     };
 
     private static final String[] woods =
-    { "holly", "yew", "ebony", "cherry", "teak", "rowan", "willow", "mahogany", "bamboo", "purpleheart", "oak", "birch" };
+        { "holly", "yew", "ebony", "cherry", "teak", "rowan", "willow", "mahogany", "bamboo", "purpleheart", "oak", "birch" };
 
     private static final Integer[] images = {
-            ItemSpriteSheet.WAND_HOLLY,
-            ItemSpriteSheet.WAND_YEW,
-            ItemSpriteSheet.WAND_EBONY,
-            ItemSpriteSheet.WAND_CHERRY,
-            ItemSpriteSheet.WAND_TEAK,
-            ItemSpriteSheet.WAND_ROWAN,
-            ItemSpriteSheet.WAND_WILLOW,
-            ItemSpriteSheet.WAND_MAHOGANY,
-            ItemSpriteSheet.WAND_BAMBOO,
-            ItemSpriteSheet.WAND_PURPLEHEART,
-            ItemSpriteSheet.WAND_OAK,
-            ItemSpriteSheet.WAND_BIRCH };
+        ItemSpriteSheet.WAND_HOLLY,
+        ItemSpriteSheet.WAND_YEW,
+        ItemSpriteSheet.WAND_EBONY,
+        ItemSpriteSheet.WAND_CHERRY,
+        ItemSpriteSheet.WAND_TEAK,
+        ItemSpriteSheet.WAND_ROWAN,
+        ItemSpriteSheet.WAND_WILLOW,
+        ItemSpriteSheet.WAND_MAHOGANY,
+        ItemSpriteSheet.WAND_BAMBOO,
+        ItemSpriteSheet.WAND_PURPLEHEART,
+        ItemSpriteSheet.WAND_OAK,
+        ItemSpriteSheet.WAND_BIRCH };
 
     private static ItemStatusHandler<Wand> handler;
+
+    private static final String UNFAMILIRIARITY = "unfamiliarity";
 
     private static final String MAX_CHARGES = "maxCharges";
 
@@ -214,7 +222,7 @@ public abstract class Wand extends KindOfWeapon {
 
     {
         defaultAction = AC_ZAP;
-    }
+    };
 
     public Wand() {
         super();
@@ -227,7 +235,7 @@ public abstract class Wand extends KindOfWeapon {
         } catch (Exception e) {
             // Wand of Magic Missile
         }
-    };
+    }
 
     @Override
     public ArrayList<String> actions(final Hero hero) {
@@ -254,7 +262,9 @@ public abstract class Wand extends KindOfWeapon {
     }
 
     public void charge(final Char owner) {
-        (charger = new Charger()).attachTo(owner);
+        if (charger == null) {
+            (charger = new Charger()).attachTo(owner);
+        }
     }
 
     @Override
@@ -280,9 +290,9 @@ public abstract class Wand extends KindOfWeapon {
     }
 
     @Override
-    public boolean doUnequip(final Hero hero, final boolean collect) {
+    public boolean doUnequip(final Hero hero, final boolean collect, final boolean single) {
         onDetach();
-        return super.doUnequip(hero, collect);
+        return super.doUnequip(hero, collect, single);
     }
 
     @Override
@@ -354,6 +364,11 @@ public abstract class Wand extends KindOfWeapon {
     }
 
     @Override
+    public int maxDurability(final int lvl) {
+        return 5 * (lvl < 16 ? 16 - lvl : 1);
+    }
+
+    @Override
     public String name() {
         return isKnown() ? name : wood + " wand";
     }
@@ -399,6 +414,9 @@ public abstract class Wand extends KindOfWeapon {
     @Override
     public void restoreFromBundle(final Bundle bundle) {
         super.restoreFromBundle(bundle);
+        if ((usagesToKnow = bundle.getInt(UNFAMILIRIARITY)) == 0) {
+            usagesToKnow = USAGES_TO_KNOW;
+        }
         maxCharges = bundle.getInt(MAX_CHARGES);
         curCharges = bundle.getInt(CUR_CHARGES);
         curChargeKnown = bundle.getBoolean(CUR_CHARGE_KNOWN);
@@ -431,6 +449,7 @@ public abstract class Wand extends KindOfWeapon {
     @Override
     public void storeInBundle(final Bundle bundle) {
         super.storeInBundle(bundle);
+        bundle.put(UNFAMILIRIARITY, usagesToKnow);
         bundle.put(MAX_CHARGES, maxCharges);
         bundle.put(CUR_CHARGES, curCharges);
         bundle.put(CUR_CHARGE_KNOWN, curChargeKnown);
@@ -469,8 +488,16 @@ public abstract class Wand extends KindOfWeapon {
     }
 
     protected void wandUsed() {
+
         curCharges--;
-        updateQuickslot();
+        if (!isIdentified() && (--usagesToKnow <= 0)) {
+            identify();
+            GLog.w(TXT_IDENTIFY, name());
+        } else {
+            updateQuickslot();
+        }
+
+        use();
 
         curUser.spendAndNext(TIME_TO_ZAP);
     }

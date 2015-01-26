@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -132,7 +132,7 @@ public class TomeOfMastery extends Item {
     @Override
     public String info() {
         return
-        "This worn leather book is not that thick, but you feel somehow, " +
+                "This worn leather book is not that thick, but you feel somehow, " +
                 "that you can gather a lot from it. Remember though that reading " +
                 "this tome may require some time.";
     }

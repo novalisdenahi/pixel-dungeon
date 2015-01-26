@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,6 @@ import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Scene;
 import com.watabou.noosa.Visual;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.Badges;
 import com.watabou.pixeldungeon.PixelDungeon;
@@ -107,15 +106,18 @@ public class PixelScene extends Scene {
         }
     }
 
-    public static final float MIN_WIDTH = 128;
-    public static final float MIN_HEIGHT = 224;
+    // Minimum virtual display size for portrait orientation
+    public static final float MIN_WIDTH_P = 128;
+    public static final float MIN_HEIGHT_P = 224;
+
+    // Minimum virtual display size for landscape orientation
+    public static final float MIN_WIDTH_L = 224;
+    public static final float MIN_HEIGHT_L = 160;
     public static float defaultZoom = 0;
 
     public static float minZoom;
 
     public static float maxZoom;
-
-    public static boolean landscapeAvailable;
     public static Camera uiCamera;
     public static BitmapText.Font font1x;
     public static BitmapText.Font font15x;
@@ -134,6 +136,7 @@ public class PixelScene extends Scene {
         return ((int) (pos * camera.zoom)) / camera.zoom;
     }
 
+    // This one should be used for UI elements
     public static float align(final float pos) {
         return ((int) (pos * defaultZoom)) / defaultZoom;
     }
@@ -145,8 +148,12 @@ public class PixelScene extends Scene {
     }
 
     public static void chooseFont(final float size) {
+        PixelScene.chooseFont(size, defaultZoom);
+    }
 
-        float pt = size * defaultZoom;
+    public static void chooseFont(final float size, final float zoom) {
+
+        float pt = size * zoom;
 
         if (pt >= 19) {
 
@@ -199,7 +206,7 @@ public class PixelScene extends Scene {
 
         }
 
-        scale /= defaultZoom;
+        scale /= zoom;
     }
 
     public static BitmapTextMultiline createMultiline(final float size) {
@@ -245,21 +252,28 @@ public class PixelScene extends Scene {
 
         GameScene.scene = null;
 
+        float minWidth, minHeight;
+        if (PixelDungeon.landscape()) {
+            minWidth = MIN_WIDTH_L;
+            minHeight = MIN_HEIGHT_L;
+        } else {
+            minWidth = MIN_WIDTH_P;
+            minHeight = MIN_HEIGHT_P;
+        }
+
         defaultZoom = (int) Math.ceil(Game.density * 2.5);
         while ((
-                ((Game.width / defaultZoom) < MIN_WIDTH) ||
-                ((Game.height / defaultZoom) < MIN_HEIGHT)
+                ((Game.width / defaultZoom) < minWidth) ||
+                ((Game.height / defaultZoom) < minHeight)
                 ) && (defaultZoom > 1)) {
 
             defaultZoom--;
         }
 
-        landscapeAvailable =
-                ((Game.height / defaultZoom) >= MIN_WIDTH) &&
-                        ((Game.width / defaultZoom) >= MIN_HEIGHT);
-
         if (PixelDungeon.scaleUp()) {
-            while ((((Game.width / (defaultZoom + 1)) >= MIN_WIDTH) && ((Game.height / (defaultZoom + 1)) >= MIN_HEIGHT))) {
+            while (((Game.width / (defaultZoom + 1)) >= minWidth) &&
+                    ((Game.height / (defaultZoom + 1)) >= minHeight)) {
+
                 defaultZoom++;
             }
         }
@@ -304,11 +318,6 @@ public class PixelScene extends Scene {
             font3x.baseLine = 17;
             font3x.tracking = -2;
         }
-
-        Sample.INSTANCE.load(
-                Assets.SND_CLICK,
-                Assets.SND_BADGE,
-                Assets.SND_GOLD);
     }
 
     @Override

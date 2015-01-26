@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,21 +41,22 @@ import com.watabou.pixeldungeon.actors.buffs.MindVision;
 import com.watabou.pixeldungeon.actors.buffs.Shadows;
 import com.watabou.pixeldungeon.actors.hero.Hero;
 import com.watabou.pixeldungeon.actors.hero.HeroClass;
-import com.watabou.pixeldungeon.actors.hero.HeroSubClass;
 import com.watabou.pixeldungeon.actors.mobs.Bestiary;
 import com.watabou.pixeldungeon.actors.mobs.Mob;
-import com.watabou.pixeldungeon.actors.mobs.MobType;
 import com.watabou.pixeldungeon.effects.particles.FlowParticle;
 import com.watabou.pixeldungeon.effects.particles.WindParticle;
 import com.watabou.pixeldungeon.items.Generator;
 import com.watabou.pixeldungeon.items.Gold;
 import com.watabou.pixeldungeon.items.Heap;
 import com.watabou.pixeldungeon.items.Item;
-import com.watabou.pixeldungeon.items.Stylus;
 import com.watabou.pixeldungeon.items.armor.Armor;
+import com.watabou.pixeldungeon.items.bags.ScrollHolder;
+import com.watabou.pixeldungeon.items.bags.SeedPouch;
 import com.watabou.pixeldungeon.items.food.Food;
 import com.watabou.pixeldungeon.items.potions.PotionOfHealing;
 import com.watabou.pixeldungeon.items.potions.PotionOfStrength;
+import com.watabou.pixeldungeon.items.scrolls.Scroll;
+import com.watabou.pixeldungeon.items.scrolls.ScrollOfEnchantment;
 import com.watabou.pixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.watabou.pixeldungeon.levels.features.Chasm;
 import com.watabou.pixeldungeon.levels.features.Door;
@@ -100,8 +101,6 @@ public abstract class Level implements Bundlable {
     private static final String TXT_HIDDEN_PLATE_CLICKS = "A hidden pressure plate clicks!";
 
     public static boolean resizingNeeded;
-    // This one can be different from resizingNeeded if the level
-    // was created in the older version of the game
     public static int loadedMapSize;
 
     public int[] map;
@@ -197,7 +196,7 @@ public abstract class Level implements Bundlable {
     }
 
     private void adjustMapSize() {
-        // For levels from older saves
+        // For levels saved before 1.6.3
         if (map.length < LENGTH) {
 
             resizingNeeded = true;
@@ -338,13 +337,13 @@ public abstract class Level implements Bundlable {
                 addItemToSpawn(new PotionOfStrength());
                 Dungeon.potionOfStrength++;
             }
-            if (Dungeon.soeNeeded()) {
+            if (Dungeon.souNeeded()) {
                 addItemToSpawn(new ScrollOfUpgrade());
                 Dungeon.scrollsOfUpgrade++;
             }
-            if (Dungeon.asNeeded()) {
-                addItemToSpawn(new Stylus());
-                Dungeon.arcaneStyli++;
+            if (Dungeon.soeNeeded()) {
+                addItemToSpawn(new ScrollOfEnchantment());
+                Dungeon.scrollsOfEnchantment++;
             }
 
             if (Dungeon.depth > 1) {
@@ -396,6 +395,15 @@ public abstract class Level implements Bundlable {
             item = new Gold(item.price());
         } else if (Dungeon.isChallenged(Challenges.NO_HEALING) && (item instanceof PotionOfHealing)) {
             item = new Gold(item.price());
+        } else if (Dungeon.isChallenged(Challenges.NO_HERBALISM) && (item instanceof SeedPouch)) {
+            item = new Gold(item.price());
+        } else if (Dungeon.isChallenged(Challenges.NO_SCROLLS)
+                && ((item instanceof Scroll) || (item instanceof ScrollHolder))) {
+            if (item instanceof ScrollOfUpgrade) {
+                // These scrolls still can be found
+            } else {
+                item = new Gold(item.price());
+            }
         }
 
         if ((map[cell] == Terrain.ALCHEMY) && !(item instanceof Plant.Seed)) {
@@ -412,6 +420,7 @@ public abstract class Level implements Bundlable {
             heap = new Heap();
             heap.pos = cell;
             if ((map[cell] == Terrain.CHASM) || ((Dungeon.level != null) && pit[cell])) {
+                Dungeon.dropToChasm(item);
                 GameScene.discard(heap);
             } else {
                 heaps.put(cell, heap);
@@ -520,7 +529,6 @@ public abstract class Level implements Bundlable {
     }
 
     public Plant plant(final Plant.Seed seed, final int pos) {
-
         Plant plant = plants.get(pos);
         if (plant != null) {
             plant.wither();
@@ -970,25 +978,7 @@ public abstract class Level implements Bundlable {
                         fieldOfView[p - WIDTH] = true;
                     }
                 }
-            } else if ((c == Dungeon.hero) && (((Hero) c).subClass == HeroSubClass.HIGHPRIEST)) {
-                for (Mob mob : mobs) {
-                    if ((mob.mobType == MobType.DEMON) || (mob.mobType == MobType.UNDEAD)) {
-                        int p = mob.pos;
-                        if (Level.distance(c.pos, p) == 4) {
-                            fieldOfView[p] = true;
-                            fieldOfView[p + 1] = true;
-                            fieldOfView[p - 1] = true;
-                            fieldOfView[p + WIDTH + 1] = true;
-                            fieldOfView[(p + WIDTH) - 1] = true;
-                            fieldOfView[(p - WIDTH) + 1] = true;
-                            fieldOfView[p - WIDTH - 1] = true;
-                            fieldOfView[p + WIDTH] = true;
-                            fieldOfView[p - WIDTH] = true;
-                        }
-                    }
-                }
             }
-
             if (c.buff(Awareness.class) != null) {
                 for (Heap heap : heaps.values()) {
                     int p = heap.pos;

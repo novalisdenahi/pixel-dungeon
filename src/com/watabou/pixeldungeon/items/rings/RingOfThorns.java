@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,9 +39,9 @@ public class RingOfThorns extends Ring {
     public String desc() {
         return isKnown() ?
                 "Though this ring doesn't provide real thorns, an enemy that attacks you " +
-                        "will itself be wounded by a fraction of the damage that it inflicts. " +
-                        "Upgrading this ring won't give any additional bonuses." :
-                super.desc();
+                "will itself be wounded by a fraction of the damage that it inflicts. " +
+                "Upgrading this ring won't give any additional bonuses." :
+                    super.desc();
     }
 
     @Override
@@ -61,5 +61,10 @@ public class RingOfThorns extends Ring {
     public Item random() {
         level = +1;
         return this;
+    }
+
+    @Override
+    public void use() {
+        // Do nothing (it can't degrade)
     }
 }

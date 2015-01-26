@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,10 +19,10 @@ package com.watabou.pixeldungeon.actors.hero;
 
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.Badges;
-import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.items.SymbolOfEstera;
 import com.watabou.pixeldungeon.items.TomeOfMastery;
 import com.watabou.pixeldungeon.items.armor.ClothArmor;
+import com.watabou.pixeldungeon.items.bags.Keyring;
 import com.watabou.pixeldungeon.items.food.Food;
 import com.watabou.pixeldungeon.items.potions.PotionOfHealing;
 import com.watabou.pixeldungeon.items.potions.PotionOfStrength;
@@ -35,6 +35,7 @@ import com.watabou.pixeldungeon.items.weapon.melee.Knuckles;
 import com.watabou.pixeldungeon.items.weapon.melee.ShortSword;
 import com.watabou.pixeldungeon.items.weapon.missiles.Boomerang;
 import com.watabou.pixeldungeon.items.weapon.missiles.Dart;
+import com.watabou.pixeldungeon.ui.QuickSlot;
 import com.watabou.utils.Bundle;
 
 public enum HeroClass {
@@ -88,6 +89,7 @@ public enum HeroClass {
     private static void initCommon(final Hero hero) {
         (hero.belongings.armor = new ClothArmor()).identify();
         new Food().identify().collect();
+        new Keyring().collect();
     }
 
     private static void initHuntress(final Hero hero) {
@@ -98,8 +100,7 @@ public enum HeroClass {
         Boomerang boomerang = new Boomerang();
         boomerang.identify().collect();
 
-        Dungeon.quickslot = boomerang;
-
+        QuickSlot.primaryValue = boomerang;
     }
 
     private static void initMage(final Hero hero) {
@@ -108,7 +109,7 @@ public enum HeroClass {
         WandOfMagicMissile wand = new WandOfMagicMissile();
         wand.identify().collect();
 
-        Dungeon.quickslot = wand;
+        QuickSlot.primaryValue = wand;
 
         new ScrollOfIdentify().setKnown();
     }
@@ -118,7 +119,7 @@ public enum HeroClass {
         (hero.belongings.weapon = new Knuckles()).identify();
 
         new Dart(5).identify().collect();
-        Dungeon.quickslot = Dart.class;
+        QuickSlot.primaryValue = Dart.class;
 
         SymbolOfEstera symbolOfEstera = new SymbolOfEstera();
         symbolOfEstera.identify().collect();
@@ -133,7 +134,7 @@ public enum HeroClass {
 
         hero.belongings.ring1.activate(hero);
 
-        Dungeon.quickslot = Dart.class;
+        QuickSlot.primaryValue = Dart.class;
 
         new ScrollOfMagicMapping().setKnown();
     }
@@ -143,7 +144,8 @@ public enum HeroClass {
 
         (hero.belongings.weapon = new ShortSword()).identify();
         new Dart(8).identify().collect();
-        Dungeon.quickslot = Dart.class;
+
+        QuickSlot.primaryValue = Dart.class;
 
         new PotionOfStrength().setKnown();
     }
@@ -239,9 +241,9 @@ public enum HeroClass {
             return Assets.HUNTRESS;
         case PRIEST:
             return Assets.PRIEST;
+        default:
+            return null;
         }
-
-        return null;
     }
 
     public void storeInBundle(final Bundle bundle) {

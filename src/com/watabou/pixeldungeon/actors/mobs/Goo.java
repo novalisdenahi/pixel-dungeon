@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@ package com.watabou.pixeldungeon.actors.mobs;
 
 import java.util.HashSet;
 
-import com.watabou.noosa.Camera;
 import com.watabou.pixeldungeon.Badges;
 import com.watabou.pixeldungeon.Dungeon;
+import com.watabou.pixeldungeon.Statistics;
 import com.watabou.pixeldungeon.actors.Char;
 import com.watabou.pixeldungeon.actors.blobs.ToxicGas;
 import com.watabou.pixeldungeon.actors.buffs.Buff;
@@ -33,10 +33,12 @@ import com.watabou.pixeldungeon.items.scrolls.ScrollOfPsionicBlast;
 import com.watabou.pixeldungeon.items.weapon.enchantments.Death;
 import com.watabou.pixeldungeon.levels.Level;
 import com.watabou.pixeldungeon.levels.SewerBossLevel;
+import com.watabou.pixeldungeon.mechanics.Ballistica;
 import com.watabou.pixeldungeon.scenes.GameScene;
 import com.watabou.pixeldungeon.sprites.CharSprite;
 import com.watabou.pixeldungeon.sprites.GooSprite;
 import com.watabou.pixeldungeon.utils.GLog;
+import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 public class Goo extends Mob {
@@ -44,7 +46,8 @@ public class Goo extends Mob {
     private static final float PUMP_UP_DELAY = 2f;
 
     {
-        name = "Goo";
+        name = Dungeon.depth == Statistics.deepestFloor ? "Goo" : "spawn of Goo";
+
         HP = HT = 80;
         EXP = 10;
         defenseSkill = 12;
@@ -55,6 +58,7 @@ public class Goo extends Mob {
     }
 
     private boolean pumpedUp = false;
+    private boolean jumped = false;
 
     private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
 
@@ -89,16 +93,12 @@ public class Goo extends Mob {
             enemy.sprite.burst(0x000000, 5);
         }
 
-        if (pumpedUp) {
-            Camera.main.shake(3, 0.2f);
-        }
-
         return damage;
     }
 
     @Override
     public int attackSkill(final Char target) {
-        return pumpedUp ? 30 : 15;
+        return pumpedUp && !jumped ? 30 : 15;
     }
 
     @Override
@@ -118,7 +118,7 @@ public class Goo extends Mob {
     @Override
     public String description() {
         return
-        "Little known about The Goo. It's quite possible that it is not even a creature, but rather a " +
+                "Little known about The Goo. It's quite possible that it is not even a creature, but rather a " +
                 "conglomerate of substances from the sewers that gained rudiments of free will.";
     }
 
@@ -139,12 +139,57 @@ public class Goo extends Mob {
 
     @Override
     protected boolean doAttack(final Char enemy) {
-        if (pumpedUp || (Random.Int(3) > 0)) {
+        if (pumpedUp) {
 
+            if (Level.adjacent(pos, enemy.pos)) {
+
+                // Pumped up attack WITHOUT accuracy penalty
+                jumped = false;
+                return super.doAttack(enemy);
+
+            } else {
+
+                // Pumped up attack WITH accuracy penalty
+                jumped = true;
+                if (Ballistica.cast(pos, enemy.pos, false, true) == enemy.pos) {
+                    final int dest = Ballistica.trace[Ballistica.distance - 2];
+
+                    Callback afterJump = new Callback() {
+                        @Override
+                        public void call() {
+                            move(dest);
+                            Dungeon.level.mobPress(Goo.this);
+                            Goo.super.doAttack(enemy);
+                        }
+                    };
+
+                    if (Dungeon.visible[pos] || Dungeon.visible[dest]) {
+
+                        sprite.jump(pos, dest, afterJump);
+                        return false;
+
+                    } else {
+
+                        afterJump.call();
+                        return true;
+
+                    }
+                } else {
+
+                    sprite.idle();
+                    pumpedUp = false;
+                    return true;
+                }
+            }
+
+        } else if (Random.Int(3) > 0) {
+
+            // Normal attack
             return super.doAttack(enemy);
 
         } else {
 
+            // Pumping up
             pumpedUp = true;
             spend(PUMP_UP_DELAY);
 

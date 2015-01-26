@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,7 @@ import com.watabou.pixeldungeon.items.wands.Wand;
 import com.watabou.pixeldungeon.scenes.PixelScene;
 import com.watabou.pixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 
 public class Badges {
 
@@ -77,7 +78,7 @@ public class Badges {
         DEATH_FROM_POISON("Death from poison", 25),
         DEATH_FROM_GAS("Death from toxic gas", 26),
         DEATH_FROM_HUNGER("Death from hunger", 27),
-        DEATH_FROM_GLYPH("Death from a glyph", 57),
+        DEATH_FROM_GLYPH("Death from an enchantment", 57),
         DEATH_FROM_FALLING("Death from falling down", 59),
         YASD("Death from fire, poison, toxic gas & hunger", 34, true),
         BOSS_SLAIN_1_WARRIOR,
@@ -89,7 +90,7 @@ public class Badges {
         BOSS_SLAIN_2("2nd boss slain", 13),
         BOSS_SLAIN_3("3rd boss slain", 14),
         BOSS_SLAIN_4("4th boss slain", 15),
-        BOSS_SLAIN_1_ALL_CLASSES("1st boss slain by Warrior, Mage, Rogue, Huntress & Priest", 32, true),
+        BOSS_SLAIN_1_ALL_CLASSES("1st boss slain by Warrior, Mage, Rogue & Huntress", 32, true),
         BOSS_SLAIN_3_GLADIATOR,
         BOSS_SLAIN_3_BERSERKER,
         BOSS_SLAIN_3_WARLOCK,
@@ -101,56 +102,56 @@ public class Badges {
         BOSS_SLAIN_3_PALADIN,
         BOSS_SLAIN_3_HIGHPRIEST,
         BOSS_SLAIN_3_ALL_SUBCLASSES(
-                "3rd boss slain by Gladiator, Berserker, Warlock, Battlemage, Freerunner, Assassin, Sniper, Warden, Paladin & Highpreist",
+                "3rd boss slain by Gladiator, Berserker, Warlock, Battlemage, Freerunner, Assassin, Sniper & Warden",
                 33, true),
-        RING_OF_HAGGLER("Ring of Haggler obtained", 20),
-        RING_OF_THORNS("Ring of Thorns obtained", 21),
-        STRENGTH_ATTAINED_1("13 points of Strength attained", 40),
-        STRENGTH_ATTAINED_2("15 points of Strength attained", 41),
-        STRENGTH_ATTAINED_3("17 points of Strength attained", 42),
-        STRENGTH_ATTAINED_4("19 points of Strength attained", 43),
-        FOOD_EATEN_1("10 pieces of food eaten", 44),
-        FOOD_EATEN_2("20 pieces of food eaten", 45),
-        FOOD_EATEN_3("30 pieces of food eaten", 46),
-        FOOD_EATEN_4("40 pieces of food eaten", 47),
-        MASTERY_WARRIOR,
-        MASTERY_MAGE,
-        MASTERY_ROGUE,
-        MASTERY_HUNTRESS,
-        MASTERY_PRIEST,
-        ITEM_LEVEL_1("Item of level 3 acquired", 48),
-        ITEM_LEVEL_2("Item of level 6 acquired", 49),
-        ITEM_LEVEL_3("Item of level 9 acquired", 50),
-        ITEM_LEVEL_4("Item of level 12 acquired", 51),
-        RARE_ALBINO,
-        RARE_BANDIT,
-        RARE_SHIELDED,
-        RARE_SENIOR,
-        RARE_ACIDIC,
-        RARE("All rare monsters slain", 37, true),
-        VICTORY_WARRIOR,
-        VICTORY_MAGE,
-        VICTORY_ROGUE,
-        VICTORY_HUNTRESS,
-        VICTORY_PRIEST,
-        VICTORY("Amulet of Yendor obtained", 22),
-        VICTORY_ALL_CLASSES("Amulet of Yendor obtained by Warrior, Mage, Rogue, Huntress & Priest", 36, true),
-        MASTERY_COMBO("7-hit combo", 56),
-        POTIONS_COOKED_1("3 potions cooked", 52),
-        POTIONS_COOKED_2("6 potions cooked", 53),
-        POTIONS_COOKED_3("9 potions cooked", 54),
-        POTIONS_COOKED_4("12 potions cooked", 55),
-        NO_MONSTERS_SLAIN("Level completed without killing any monsters", 28),
-        GRIM_WEAPON("Monster killed by a Grim weapon", 29),
-        PIRANHAS("6 piranhas killed", 30),
-        NIGHT_HUNTER("15 monsters killed at nighttime", 58),
-        GAMES_PLAYED_1("10 games played", 60, true),
-        GAMES_PLAYED_2("100 games played", 61, true),
-        GAMES_PLAYED_3("500 games played", 62, true),
-        GAMES_PLAYED_4("2000 games played", 63, true),
-        HAPPY_END("Happy end", 38),
-        CHAMPION("Challenge won", 39, true),
-        SUPPORTER("Thanks for your support!", 31, true);
+                RING_OF_HAGGLER("Ring of Haggler obtained", 20),
+                RING_OF_THORNS("Ring of Thorns obtained", 21),
+                STRENGTH_ATTAINED_1("13 points of Strength attained", 40),
+                STRENGTH_ATTAINED_2("15 points of Strength attained", 41),
+                STRENGTH_ATTAINED_3("17 points of Strength attained", 42),
+                STRENGTH_ATTAINED_4("19 points of Strength attained", 43),
+                FOOD_EATEN_1("10 pieces of food eaten", 44),
+                FOOD_EATEN_2("20 pieces of food eaten", 45),
+                FOOD_EATEN_3("30 pieces of food eaten", 46),
+                FOOD_EATEN_4("40 pieces of food eaten", 47),
+                MASTERY_WARRIOR,
+                MASTERY_MAGE,
+                MASTERY_ROGUE,
+                MASTERY_HUNTRESS,
+                MASTERY_PRIEST, // TODO fix
+                ITEM_LEVEL_1("Item of level 3 acquired", 48),
+                ITEM_LEVEL_2("Item of level 6 acquired", 49),
+                ITEM_LEVEL_3("Item of level 9 acquired", 50),
+                ITEM_LEVEL_4("Item of level 12 acquired", 51),
+                RARE_ALBINO,
+                RARE_BANDIT,
+                RARE_SHIELDED,
+                RARE_SENIOR,
+                RARE_ACIDIC,
+                RARE("All rare monsters slain", 37, true),
+                VICTORY_WARRIOR,
+                VICTORY_MAGE,
+                VICTORY_ROGUE,
+                VICTORY_HUNTRESS,
+                VICTORY_PRIEST, // TODO fix
+                VICTORY("Amulet of Yendor obtained", 22),
+                VICTORY_ALL_CLASSES("Amulet of Yendor obtained by Warrior, Mage, Rogue & Huntress", 36, true),
+                MASTERY_COMBO("7-hit combo", 56),
+                POTIONS_COOKED_1("3 potions cooked", 52),
+                POTIONS_COOKED_2("6 potions cooked", 53),
+                POTIONS_COOKED_3("9 potions cooked", 54),
+                POTIONS_COOKED_4("12 potions cooked", 55),
+                NO_MONSTERS_SLAIN("Level completed without killing any monsters", 28),
+                GRIM_WEAPON("Monster killed by a Grim weapon", 29),
+                PIRANHAS("6 piranhas killed", 30),
+                NIGHT_HUNTER("15 monsters killed at nighttime", 58),
+                GAMES_PLAYED_1("10 games played", 60, true),
+                GAMES_PLAYED_2("100 games played", 61, true),
+                GAMES_PLAYED_3("500 games played", 62, true),
+                GAMES_PLAYED_4("2000 games played", 63, true),
+                HAPPY_END("Happy end", 38),
+                CHAMPION("Challenge won", 39, true),
+                SUPPORTER("Thanks for your support!", 31, true);
 
         public boolean meta;
 
@@ -176,6 +177,8 @@ public class Badges {
     private static HashSet<Badge> local = new HashSet<Badges.Badge>();
 
     private static boolean saveNeeded = false;
+
+    public static Callback loadingListener = null;
 
     private static final String BADGES_FILE = "badges.dat";
 
@@ -309,9 +312,12 @@ public class Badges {
     }
 
     public static void saveGlobal() {
+
+        Bundle bundle = null;
+
         if (saveNeeded) {
 
-            Bundle bundle = new Bundle();
+            bundle = new Bundle();
             Badges.store(bundle, global);
 
             try {
@@ -674,9 +680,9 @@ public class Badges {
     public static void validateItemLevelAquired(final Item item) {
 
         // This method should be called:
-        // 1) When an item is obtained (Item.collect)
-        // 2) When an item is upgraded (ScrollOfUpgrade, ScrollOfWeaponUpgrade, ShortSword, WandOfMagicMissile)
-        // 3) When an item is identified
+        // 1) When an item gets obtained (Item.collect)
+        // 2) When an item gets upgraded (ScrollOfUpgrade, ScrollOfWeaponUpgrade, ShortSword, WandOfMagicMissile)
+        // 3) When an item gets identified
         if (!item.levelKnown) {
             return;
         }
@@ -930,7 +936,7 @@ public class Badges {
             badge = Badge.VICTORY_HUNTRESS;
             break;
         case PRIEST:
-            badge = Badge.VICTORY_HUNTRESS;
+            badge = Badge.VICTORY_PRIEST;
             break;
         }
         local.add(badge);
@@ -942,7 +948,8 @@ public class Badges {
         if (global.contains(Badge.VICTORY_WARRIOR) &&
                 global.contains(Badge.VICTORY_MAGE) &&
                 global.contains(Badge.VICTORY_ROGUE) &&
-                global.contains(Badge.VICTORY_HUNTRESS)) {
+                global.contains(Badge.VICTORY_HUNTRESS) &&
+                global.contains(Badge.VICTORY_PRIEST)) {
 
             badge = Badge.VICTORY_ALL_CLASSES;
             Badges.displayBadge(badge);

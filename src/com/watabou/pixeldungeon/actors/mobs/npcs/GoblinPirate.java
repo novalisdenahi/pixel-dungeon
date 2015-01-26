@@ -32,11 +32,9 @@ import com.watabou.pixeldungeon.items.rings.RingOfHaste;
 import com.watabou.pixeldungeon.items.rings.RingOfSatiety;
 import com.watabou.pixeldungeon.items.rings.RingOfShadows;
 import com.watabou.pixeldungeon.items.wands.Wand;
-import com.watabou.pixeldungeon.items.weapon.Weapon.Enchantment;
 import com.watabou.pixeldungeon.items.weapon.melee.Dagger;
 import com.watabou.pixeldungeon.items.weapon.melee.Falchion;
 import com.watabou.pixeldungeon.items.weapon.melee.Mace;
-import com.watabou.pixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.watabou.pixeldungeon.items.weapon.melee.Rapier;
 import com.watabou.pixeldungeon.items.weapon.melee.Sword;
 import com.watabou.pixeldungeon.levels.GoblinSewerLevel;
@@ -172,7 +170,8 @@ public class GoblinPirate extends NPC {
                 // lucky day bonus - maybe the random shuold be 365 :)
                 if (Random.Int(10) == 0) {
                     item1.upgrade(2);
-                    ((MeleeWeapon) (item2)).enchant(Enchantment.random());
+                    // TODO FIXME
+                    // ((MeleeWeapon) (item2)).enchant(Enchantment.random());
                 }
             }
         }

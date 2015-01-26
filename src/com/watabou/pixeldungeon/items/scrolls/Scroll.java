@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,34 +38,34 @@ public abstract class Scroll extends Item {
     protected static final float TIME_TO_READ = 1f;
 
     private static final Class<?>[] scrolls = {
-            ScrollOfIdentify.class,
-            ScrollOfMagicMapping.class,
-            ScrollOfRecharging.class,
-            ScrollOfRemoveCurse.class,
-            ScrollOfTeleportation.class,
-            ScrollOfUpgrade.class,
-            ScrollOfChallenge.class,
-            ScrollOfTerror.class,
-            ScrollOfLullaby.class,
-            ScrollOfWeaponUpgrade.class,
-            ScrollOfPsionicBlast.class,
-            ScrollOfMirrorImage.class
+        ScrollOfIdentify.class,
+        ScrollOfMagicMapping.class,
+        ScrollOfRecharging.class,
+        ScrollOfRemoveCurse.class,
+        ScrollOfTeleportation.class,
+        ScrollOfChallenge.class,
+        ScrollOfTerror.class,
+        ScrollOfLullaby.class,
+        ScrollOfPsionicBlast.class,
+        ScrollOfMirrorImage.class,
+        ScrollOfUpgrade.class,
+        ScrollOfEnchantment.class
     };
     private static final String[] runes =
-    { "KAUNAN", "SOWILO", "LAGUZ", "YNGVI", "GYFU", "RAIDO", "ISAZ", "MANNAZ", "NAUDIZ", "BERKANAN", "ODAL", "TIWAZ" };
+        { "KAUNAN", "SOWILO", "LAGUZ", "YNGVI", "GYFU", "RAIDO", "ISAZ", "MANNAZ", "NAUDIZ", "BERKANAN", "ODAL", "TIWAZ" };
     private static final Integer[] images = {
-            ItemSpriteSheet.SCROLL_KAUNAN,
-            ItemSpriteSheet.SCROLL_SOWILO,
-            ItemSpriteSheet.SCROLL_LAGUZ,
-            ItemSpriteSheet.SCROLL_YNGVI,
-            ItemSpriteSheet.SCROLL_GYFU,
-            ItemSpriteSheet.SCROLL_RAIDO,
-            ItemSpriteSheet.SCROLL_ISAZ,
-            ItemSpriteSheet.SCROLL_MANNAZ,
-            ItemSpriteSheet.SCROLL_NAUDIZ,
-            ItemSpriteSheet.SCROLL_BERKANAN,
-            ItemSpriteSheet.SCROLL_ODAL,
-            ItemSpriteSheet.SCROLL_TIWAZ };
+        ItemSpriteSheet.SCROLL_KAUNAN,
+        ItemSpriteSheet.SCROLL_SOWILO,
+        ItemSpriteSheet.SCROLL_LAGUZ,
+        ItemSpriteSheet.SCROLL_YNGVI,
+        ItemSpriteSheet.SCROLL_GYFU,
+        ItemSpriteSheet.SCROLL_RAIDO,
+        ItemSpriteSheet.SCROLL_ISAZ,
+        ItemSpriteSheet.SCROLL_MANNAZ,
+        ItemSpriteSheet.SCROLL_NAUDIZ,
+        ItemSpriteSheet.SCROLL_BERKANAN,
+        ItemSpriteSheet.SCROLL_ODAL,
+        ItemSpriteSheet.SCROLL_TIWAZ };
 
     private static ItemStatusHandler<Scroll> handler;
 
@@ -146,8 +146,8 @@ public abstract class Scroll extends Item {
     public String info() {
         return isKnown() ?
                 desc() :
-                "This parchment is covered with indecipherable writing, and bears a title " +
-                        "of rune " + rune + ". Who knows what it will do when read aloud?";
+                    "This parchment is covered with indecipherable writing, and bears a title " +
+                    "of rune " + rune + ". Who knows what it will do when read aloud?";
     }
 
     @Override

@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import com.watabou.pixeldungeon.sprites.HeroSprite;
 import com.watabou.pixeldungeon.ui.BadgesList;
 import com.watabou.pixeldungeon.ui.Icons;
 import com.watabou.pixeldungeon.ui.ItemSlot;
+import com.watabou.pixeldungeon.ui.QuickSlot;
 import com.watabou.pixeldungeon.ui.RedButton;
 import com.watabou.pixeldungeon.ui.ScrollPane;
 import com.watabou.pixeldungeon.utils.Utils;
@@ -59,13 +60,12 @@ public class WndRanking extends WndTabbed {
 
     private class ItemButton extends Button {
 
-        public static final int HEIGHT = 28;
+        public static final int SIZE = 26;
 
-        private Item item;
+        protected Item item;
 
-        private ItemSlot slot;
+        protected ItemSlot slot;
         private ColorBlock bg;
-        private BitmapText name;
 
         public ItemButton(final Item item) {
 
@@ -86,14 +86,11 @@ public class WndRanking extends WndTabbed {
         @Override
         protected void createChildren() {
 
-            bg = new ColorBlock(HEIGHT, HEIGHT, 0xFF4A4D44);
+            bg = new ColorBlock(SIZE, SIZE, 0xFF4A4D44);
             add(bg);
 
             slot = new ItemSlot();
             add(slot);
-
-            name = PixelScene.createText("?", 7);
-            add(name);
 
             super.createChildren();
         }
@@ -103,21 +100,7 @@ public class WndRanking extends WndTabbed {
             bg.x = x;
             bg.y = y;
 
-            slot.setRect(x, y, HEIGHT, HEIGHT);
-
-            name.x = slot.right() + 2;
-            name.y = y + ((height - name.baseLine()) / 2);
-
-            String str = Utils.capitalize(item.name());
-            name.text(str);
-            name.measure();
-            if (name.width() > (width - name.x)) {
-                do {
-                    str = str.substring(0, str.length() - 1);
-                    name.text(str + "...");
-                    name.measure();
-                } while (name.width() > (width - name.x));
-            }
+            slot.setRect(x, y, SIZE, SIZE);
 
             super.layout();
         }
@@ -141,6 +124,7 @@ public class WndRanking extends WndTabbed {
 
     private class ItemsTab extends Group {
 
+        private int count;
         private float pos;
 
         public ItemsTab() {
@@ -160,25 +144,90 @@ public class WndRanking extends WndTabbed {
                 addItem(stuff.ring2);
             }
 
-            if ((Dungeon.quickslot instanceof Item) &&
-                    Dungeon.hero.belongings.backpack.contains((Item) Dungeon.quickslot)) {
+            Item primary = getQuickslot(QuickSlot.primaryValue);
+            Item secondary = getQuickslot(QuickSlot.secondaryValue);
 
-                addItem((Item) Dungeon.quickslot);
-            } else if (Dungeon.quickslot instanceof Class) {
-                @SuppressWarnings("unchecked")
-                Item item = Dungeon.hero.belongings.getItem((Class<? extends Item>) Dungeon.quickslot);
-                if (item != null) {
-                    addItem(item);
+            if ((count >= 4) && (primary != null) && (secondary != null)) {
+
+                float size = ItemButton.SIZE;
+
+                ItemButton slot = new ItemButton(primary);
+                slot.setRect(0, pos, size, size);
+                add(slot);
+
+                slot = new ItemButton(secondary);
+                slot.setRect(size + 1, pos, size, size);
+                add(slot);
+            } else {
+                if (primary != null) {
+                    addItem(primary);
+                }
+                if (secondary != null) {
+                    addItem(secondary);
                 }
             }
         }
 
         private void addItem(final Item item) {
-            ItemButton slot = new ItemButton(item);
-            slot.setRect(0, pos, width, ItemButton.HEIGHT);
+            LabelledItemButton slot = new LabelledItemButton(item);
+            slot.setRect(0, pos, width, ItemButton.SIZE);
             add(slot);
 
             pos += slot.height() + 1;
+            count++;
+        }
+
+        private Item getQuickslot(final Object value) {
+            if ((value instanceof Item) && Dungeon.hero.belongings.backpack.contains((Item) value)) {
+
+                return (Item) value;
+
+            } else if (value instanceof Class) {
+
+                @SuppressWarnings("unchecked")
+                Item item = Dungeon.hero.belongings.getItem((Class<? extends Item>) value);
+                if (item != null) {
+                    return item;
+                }
+            }
+
+            return null;
+        }
+    }
+
+    private class LabelledItemButton extends ItemButton {
+        private BitmapText name;
+
+        public LabelledItemButton(final Item item) {
+            super(item);
+        }
+
+        @Override
+        protected void createChildren() {
+            super.createChildren();
+
+            name = PixelScene.createText("?", 7);
+            add(name);
+        }
+
+        @Override
+        protected void layout() {
+
+            super.layout();
+
+            name.x = slot.right() + 2;
+            name.y = y + ((height - name.baseLine()) / 2);
+
+            String str = Utils.capitalize(item.name());
+            name.text(str);
+            name.measure();
+            if (name.width() > (width - name.x)) {
+                do {
+                    str = str.substring(0, str.length() - 1);
+                    name.text(str + "...");
+                    name.measure();
+                } while (name.width() > (width - name.x));
+            }
         }
     }
 
@@ -288,13 +337,13 @@ public class WndRanking extends WndTabbed {
     private static final String TXT_ERROR = "Unable to load additional information";
 
     private static final String TXT_STATS = "Stats";
-
     private static final String TXT_ITEMS = "Items";
+
     private static final String TXT_BADGES = "Badges";
 
     private static final int WIDTH = 112;
 
-    private static final int HEIGHT = 144;
+    private static final int HEIGHT = 134;
 
     private static final int TAB_WIDTH = 40;
 
@@ -333,9 +382,9 @@ public class WndRanking extends WndTabbed {
     private void createControls() {
 
         String[] labels =
-        { TXT_STATS, TXT_ITEMS, TXT_BADGES };
+            { TXT_STATS, TXT_ITEMS, TXT_BADGES };
         Group[] pages =
-        { new StatsTab(), new ItemsTab(), new BadgesTab() };
+            { new StatsTab(), new ItemsTab(), new BadgesTab() };
 
         for (int i = 0; i < pages.length; i++) {
 

@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,6 @@ public class Journal {
         ALCHEMY("Alchemy pot"),
         GARDEN("Garden"),
         STATUE("Animated statue"),
-
         PIRATE("Goblin pirate"),
         GHOST("Sad ghost"),
         WANDMAKER("Old wandmaker"),

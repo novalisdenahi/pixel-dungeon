@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,13 @@
 package com.watabou.pixeldungeon.actors.buffs;
 
 import com.watabou.pixeldungeon.ui.BuffIndicator;
+import com.watabou.utils.Bundle;
 
 public class SnipersMark extends FlavourBuff {
+
+    public int object = 0;
+
+    private static final String OBJECT = "object";
 
     @Override
     public int icon() {
@@ -27,7 +32,20 @@ public class SnipersMark extends FlavourBuff {
     }
 
     @Override
+    public void restoreFromBundle(final Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        object = bundle.getInt(OBJECT);
+    }
+
+    @Override
+    public void storeInBundle(final Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(OBJECT, object);
+
+    }
+
+    @Override
     public String toString() {
-        return "Sniper's mark";
+        return "Zeroed in";
     }
 }

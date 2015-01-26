@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@ package com.watabou.pixeldungeon.effects;
 import java.util.ArrayList;
 
 import com.watabou.noosa.BitmapText;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.pixeldungeon.DungeonTilemap;
 import com.watabou.pixeldungeon.scenes.GameScene;
@@ -30,6 +31,20 @@ public class FloatingText extends BitmapText {
 
     private static final float LIFESPAN = 1f;
     private static final float DISTANCE = DungeonTilemap.SIZE;
+
+    public static void show(final float x, final float y, final int key, final String text, final int color) {
+        FloatingText txt = GameScene.status();
+        txt.reset(x, y, text, color);
+        FloatingText.push(txt, key);
+    }
+
+    private float timeLeft;
+
+    private int key = -1;
+
+    private float cameraZoom = -1;
+
+    private static SparseArray<ArrayList<FloatingText>> stacks = new SparseArray<ArrayList<FloatingText>>();
 
     private static void push(final FloatingText txt, final int key) {
 
@@ -64,26 +79,8 @@ public class FloatingText extends BitmapText {
         GameScene.status().reset(x, y, text, color);
     }
 
-    private float timeLeft;
-
-    private int key = -1;
-
-    private static SparseArray<ArrayList<FloatingText>> stacks = new SparseArray<ArrayList<FloatingText>>();
-
-    public static void show(final float x, final float y, final int key, final String text, final int color) {
-        FloatingText txt = GameScene.status();
-        txt.reset(x, y, text, color);
-        FloatingText.push(txt, key);
-    }
-
     public FloatingText() {
-
         super();
-
-        PixelScene.chooseFont(9);
-        font = PixelScene.font;
-        scale.set(PixelScene.scale);
-
         speed.y = -DISTANCE / LIFESPAN;
     }
 
@@ -107,6 +104,13 @@ public class FloatingText extends BitmapText {
     public void reset(final float x, final float y, final String text, final int color) {
 
         revive();
+
+        if (cameraZoom != Camera.main.zoom) {
+            cameraZoom = Camera.main.zoom;
+            PixelScene.chooseFont(9, cameraZoom);
+            font = PixelScene.font;
+            scale.set(PixelScene.scale);
+        }
 
         text(text);
         hardlight(color);

@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,9 +48,9 @@ public class Armor extends EquipableItem {
     public static abstract class Glyph implements Bundlable {
 
         private static final Class<?>[] glyphs = new Class<?>[] {
-                Bounce.class, Affection.class, AntiEntropy.class, Multiplicity.class,
-                Potential.class, Metabolism.class, Stench.class, Viscosity.class,
-                Displacement.class, Entanglement.class };
+            Bounce.class, Affection.class, AntiEntropy.class, Multiplicity.class,
+            Potential.class, Metabolism.class, Stench.class, Viscosity.class,
+            Displacement.class, Entanglement.class };
 
         private static final float[] chances = new float[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 
@@ -79,10 +79,6 @@ public class Armor extends EquipableItem {
             return ItemSprite.Glowing.WHITE;
         }
 
-        public String name() {
-            return name("glyph");
-        }
-
         public String name(final String armorName) {
             return armorName;
         }
@@ -99,6 +95,8 @@ public class Armor extends EquipableItem {
 
     }
 
+    private static final int HITS_TO_KNOW = 10;
+
     private static final String TXT_EQUIP_CURSED = "your %s constricts around you painfully";
 
     private static final String TXT_IDENTIFY = "you are now familiar enough with your %s to identify it. It is %s.";
@@ -113,10 +111,11 @@ public class Armor extends EquipableItem {
 
     public int DR;
 
-    private int hitsToKnow = 10;
+    private int hitsToKnow = HITS_TO_KNOW;
 
     public Glyph glyph;
 
+    private static final String UNFAMILIRIARITY = "unfamiliarity";
     private static final String GLYPH = "glyph";
 
     public Armor(final int tier) {
@@ -159,7 +158,7 @@ public class Armor extends EquipableItem {
 
             ((HeroSprite) hero.sprite).updateArmor();
 
-            hero.spendAndNext(2 * time2equip(hero));
+            hero.spendAndNext(time2equip(hero));
             return true;
 
         } else {
@@ -206,11 +205,11 @@ public class Armor extends EquipableItem {
                 if (isEquipped(Dungeon.hero)) {
                     info.append(
                             "\n\nBecause of your inadequate strength your " +
-                                    "movement speed and defense skill is decreased. ");
+                            "movement speed and defense skill is decreased. ");
                 } else {
                     info.append(
                             "\n\nBecause of your inadequate strength wearing this armor " +
-                                    "will decrease your movement speed and defense skill. ");
+                            "will decrease your movement speed and defense skill. ");
                 }
 
             }
@@ -224,7 +223,7 @@ public class Armor extends EquipableItem {
         }
 
         if (glyph != null) {
-            info.append("It is inscribed.");
+            info.append("It is enchanted.");
         }
 
         if (isEquipped(Dungeon.hero)) {
@@ -237,6 +236,17 @@ public class Armor extends EquipableItem {
         }
 
         return info.toString();
+    }
+
+    public Armor inscribe() {
+
+        Class<? extends Glyph> oldGlyphClass = glyph != null ? glyph.getClass() : null;
+        Glyph gl = Glyph.random();
+        while (gl.getClass() == oldGlyphClass) {
+            gl = Armor.Glyph.random();
+        }
+
+        return inscribe(gl);
     }
 
     public Armor inscribe(final Glyph glyph) {
@@ -259,6 +269,11 @@ public class Armor extends EquipableItem {
 
     public boolean isInscribed() {
         return glyph != null;
+    }
+
+    @Override
+    public int maxDurability(final int lvl) {
+        return 6 * (lvl < 16 ? 16 - lvl : 1);
     }
 
     @Override
@@ -302,6 +317,8 @@ public class Armor extends EquipableItem {
             }
         }
 
+        use();
+
         return damage;
     }
 
@@ -324,7 +341,7 @@ public class Armor extends EquipableItem {
         }
 
         if (Random.Int(10) == 0) {
-            inscribe(Glyph.random());
+            inscribe();
         }
 
         return this;
@@ -333,7 +350,10 @@ public class Armor extends EquipableItem {
     @Override
     public void restoreFromBundle(final Bundle bundle) {
         super.restoreFromBundle(bundle);
-        glyph = (Glyph) bundle.get(GLYPH);
+        if ((hitsToKnow = bundle.getInt(UNFAMILIRIARITY)) == 0) {
+            hitsToKnow = HITS_TO_KNOW;
+        }
+        inscribe((Glyph) bundle.get(GLYPH));
     }
 
     public Item safeUpgrade() {
@@ -343,12 +363,13 @@ public class Armor extends EquipableItem {
     @Override
     public void storeInBundle(final Bundle bundle) {
         super.storeInBundle(bundle);
+        bundle.put(UNFAMILIRIARITY, hitsToKnow);
         bundle.put(GLYPH, glyph);
     }
 
     @Override
     protected float time2equip(final Hero hero) {
-        return hero.speed();
+        return 2 / hero.speed();
     }
 
     @Override
@@ -378,7 +399,7 @@ public class Armor extends EquipableItem {
             }
         } else {
             if (inscribe) {
-                inscribe(Glyph.random());
+                inscribe();
             }
         }
         ;

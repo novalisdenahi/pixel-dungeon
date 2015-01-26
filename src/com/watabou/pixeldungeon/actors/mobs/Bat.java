@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,7 +84,7 @@ public class Bat extends Mob {
     @Override
     public String description() {
         return
-        "These brisk and tenacious inhabitants of cave domes may defeat much larger opponents by " +
+                "These brisk and tenacious inhabitants of cave domes may defeat much larger opponents by " +
                 "replenishing their health with each successful attack.";
     }
 

@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@ import com.watabou.pixeldungeon.Badges;
 import com.watabou.pixeldungeon.actors.Char;
 import com.watabou.pixeldungeon.actors.hero.Hero;
 import com.watabou.pixeldungeon.actors.hero.HeroClass;
-import com.watabou.pixeldungeon.actors.hero.HeroSubClass;
 import com.watabou.pixeldungeon.items.Item;
 import com.watabou.pixeldungeon.items.KindOfWeapon;
 import com.watabou.pixeldungeon.items.weapon.enchantments.Death;
@@ -31,10 +30,10 @@ import com.watabou.pixeldungeon.items.weapon.enchantments.Instability;
 import com.watabou.pixeldungeon.items.weapon.enchantments.Leech;
 import com.watabou.pixeldungeon.items.weapon.enchantments.Luck;
 import com.watabou.pixeldungeon.items.weapon.enchantments.Paralysis;
-import com.watabou.pixeldungeon.items.weapon.enchantments.Piercing;
 import com.watabou.pixeldungeon.items.weapon.enchantments.Poison;
+import com.watabou.pixeldungeon.items.weapon.enchantments.Shock;
 import com.watabou.pixeldungeon.items.weapon.enchantments.Slow;
-import com.watabou.pixeldungeon.items.weapon.enchantments.Swing;
+import com.watabou.pixeldungeon.items.weapon.enchantments.Tempering;
 import com.watabou.pixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.watabou.pixeldungeon.sprites.ItemSprite;
 import com.watabou.pixeldungeon.utils.GLog;
@@ -49,8 +48,9 @@ public class Weapon extends KindOfWeapon {
 
         private static final Class<?>[] enchants = new Class<?>[] {
                 Fire.class, Poison.class, Death.class, Paralysis.class, Leech.class,
-                Slow.class, Swing.class, Piercing.class, Instability.class, Horror.class, Luck.class };
-        private static final float[] chances = new float[] { 10, 10, 1, 2, 1, 2, 3, 3, 3, 2, 2 };
+                Slow.class, Shock.class, Instability.class, Horror.class, Luck.class,
+                Tempering.class };
+        private static final float[] chances = new float[] { 10, 10, 1, 2, 1, 2, 6, 3, 2, 2, 3 };
 
         @SuppressWarnings("unchecked")
         public static Enchantment random() {
@@ -85,6 +85,7 @@ public class Weapon extends KindOfWeapon {
         NONE, SPEED, ACCURACY
     }
 
+    private static final int HITS_TO_KNOW = 20;
     private static final String TXT_IDENTIFY =
             "You are now familiar enough with your %s to identify it. It is %s.";
 
@@ -98,10 +99,11 @@ public class Weapon extends KindOfWeapon {
 
     public Imbue imbue = Imbue.NONE;
 
-    private int hitsToKnow = 20;
+    private int hitsToKnow = HITS_TO_KNOW;
 
     protected Enchantment enchantment;
 
+    private static final String UNFAMILIRIARITY = "unfamiliarity";
     private static final String ENCHANTMENT = "enchantment";
     private static final String IMBUE = "imbue";
 
@@ -120,10 +122,6 @@ public class Weapon extends KindOfWeapon {
                 break;
             default:
             }
-        }
-
-        if (hero.subClass == HeroSubClass.PALADIN) {
-            encumbrance--;
         }
 
         return (encumbrance > 0 ? (float) (ACU / Math.pow(1.5, encumbrance)) : ACU) *
@@ -145,6 +143,17 @@ public class Weapon extends KindOfWeapon {
         return damage;
     }
 
+    public Weapon enchant() {
+
+        Class<? extends Enchantment> oldEnchantment = enchantment != null ? enchantment.getClass() : null;
+        Enchantment ench = Enchantment.random();
+        while (ench.getClass() == oldEnchantment) {
+            ench = Enchantment.random();
+        }
+
+        return enchant(ench);
+    }
+
     public Weapon enchant(final Enchantment ench) {
         enchantment = ench;
         return this;
@@ -157,6 +166,11 @@ public class Weapon extends KindOfWeapon {
 
     public boolean isEnchanted() {
         return enchantment != null;
+    }
+
+    @Override
+    public int maxDurability(final int lvl) {
+        return 4 * (lvl < 16 ? 16 - lvl : 1);
     }
 
     @Override
@@ -178,6 +192,8 @@ public class Weapon extends KindOfWeapon {
                 Badges.validateItemLevelAquired(this);
             }
         }
+
+        use();
     }
 
     @Override
@@ -203,6 +219,9 @@ public class Weapon extends KindOfWeapon {
     @Override
     public void restoreFromBundle(final Bundle bundle) {
         super.restoreFromBundle(bundle);
+        if ((hitsToKnow = bundle.getInt(UNFAMILIRIARITY)) == 0) {
+            hitsToKnow = HITS_TO_KNOW;
+        }
         enchantment = (Enchantment) bundle.get(ENCHANTMENT);
         imbue = bundle.getEnum(IMBUE, Imbue.class);
     }
@@ -214,9 +233,6 @@ public class Weapon extends KindOfWeapon {
         if ((this instanceof MissileWeapon) && (hero.heroClass == HeroClass.HUNTRESS)) {
             encumrance -= 2;
         }
-        if (hero.subClass == HeroSubClass.PALADIN) { // TODO check this. paladin STR bonus kick out. add shields!!!
-            encumrance--;
-        }
 
         return (encumrance > 0 ? (float) (DLY * Math.pow(1.2, encumrance)) : DLY) *
                 (imbue == Imbue.SPEED ? 0.6f : 1.0f);
@@ -225,6 +241,7 @@ public class Weapon extends KindOfWeapon {
     @Override
     public void storeInBundle(final Bundle bundle) {
         super.storeInBundle(bundle);
+        bundle.put(UNFAMILIRIARITY, hitsToKnow);
         bundle.put(ENCHANTMENT, enchantment);
         bundle.put(IMBUE, imbue);
     }
@@ -242,7 +259,7 @@ public class Weapon extends KindOfWeapon {
             }
         } else {
             if (enchant) {
-                enchant(Enchantment.random());
+                enchant();
             }
         }
 

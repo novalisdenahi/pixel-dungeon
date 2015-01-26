@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -147,7 +147,8 @@ public class Imp extends NPC {
 
     private static final String TXT_GOLEMS1 =
             "Are you an adventurer? I love adventurers! You can always rely on them " +
-                    "if something needs to be killed. Am I right? For bounty of course ;)\n" +
+
+                    "if something needs to be killed. Am I right? For a bounty, of course ;)\n" +
                     "In my case this is _golems_ who need to be killed. You see, I'm going to start a " +
                     "little business here, but these stupid golems are bad for business! " +
                     "It's very hard to negotiate with wandering lumps of granite, damn them! " +
@@ -155,7 +156,7 @@ public class Imp extends NPC {
 
     private static final String TXT_MONKS1 =
             "Are you an adventurer? I love adventurers! You can always rely on them " +
-                    "if something needs to be killed. Am I right? For bounty of course ;)\n" +
+                    "if something needs to be killed. Am I right? For a bounty, of course ;)\n" +
                     "In my case this is _monks_ who need to be killed. You see, I'm going to start a " +
                     "little business here, but these lunatics don't buy anything themselves and " +
                     "will scare away other customers. " +
@@ -211,7 +212,7 @@ public class Imp extends NPC {
     @Override
     public String description() {
         return
-        "Imps are lesser demons. They are notable for neither their strength nor their magic talent, " +
+                "Imps are lesser demons. They are notable for neither their strength nor their magic talent, " +
                 "but they are quite smart and sociable. Many imps prefer to live among non-demons.";
     }
 

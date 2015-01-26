@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,7 +103,7 @@ public class PassagePainter extends Painter {
 
             return (room.right - xy.x - 1) + pasWidth + pasHeight;
 
-        } else {
+        } else /* if (xy.x == room.left) */{
 
             if (xy.y == (room.top + 1)) {
                 return 0;

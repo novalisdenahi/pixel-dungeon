@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@ public class Skeleton extends Mob {
     @Override
     public String description() {
         return
-        "Skeletons are composed of corpses bones from unlucky adventurers and inhabitants of the dungeon, " +
+                "Skeletons are composed of corpses bones from unlucky adventurers and inhabitants of the dungeon, " +
                 "animated by emanations of evil magic from the depths below. After they have been " +
                 "damaged enough, they disintegrate in an explosion of bones.";
     }

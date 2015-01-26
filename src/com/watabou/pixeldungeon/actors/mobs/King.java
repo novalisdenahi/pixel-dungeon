@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,11 +23,13 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.Badges;
 import com.watabou.pixeldungeon.Dungeon;
+import com.watabou.pixeldungeon.Statistics;
 import com.watabou.pixeldungeon.actors.Actor;
 import com.watabou.pixeldungeon.actors.Char;
 import com.watabou.pixeldungeon.actors.blobs.ToxicGas;
 import com.watabou.pixeldungeon.actors.buffs.Buff;
 import com.watabou.pixeldungeon.actors.buffs.Paralysis;
+import com.watabou.pixeldungeon.actors.buffs.Vertigo;
 import com.watabou.pixeldungeon.effects.Flare;
 import com.watabou.pixeldungeon.effects.Speck;
 import com.watabou.pixeldungeon.items.ArmorKit;
@@ -107,7 +109,7 @@ public class King extends Mob {
         @Override
         public String description() {
             return
-            "These undead dwarves, risen by the will of the King of Dwarves, were members of his court. " +
+                    "These undead dwarves, risen by the will of the King of Dwarves, were members of his court. " +
                     "They appear as skeletons with a stunning amount of facial hair.";
         }
 
@@ -146,7 +148,10 @@ public class King extends Mob {
     private static final int MAX_ARMY_SIZE = 5;
 
     {
-        name = "King of Dwarves";
+        name = Dungeon.depth == Statistics.deepestFloor ? "King of Dwarves" : "undead King of Dwarves";
+
+        mobType = Dungeon.depth == Statistics.deepestFloor ? MobType.NONE : MobType.UNDEAD;
+
         spriteClass = KingSprite.class;
 
         HP = HT = 300;
@@ -173,6 +178,7 @@ public class King extends Mob {
 
     static {
         IMMUNITIES.add(Paralysis.class);
+        IMMUNITIES.add(Vertigo.class);
     }
 
     @Override
@@ -197,7 +203,7 @@ public class King extends Mob {
     protected boolean canAttack(final Char enemy) {
         return canTryToSummon() ?
                 pos == CityBossLevel.pedestal(nextPedestal) :
-                Level.adjacent(pos, enemy.pos);
+                    Level.adjacent(pos, enemy.pos);
     }
 
     private boolean canTryToSummon() {
@@ -222,7 +228,7 @@ public class King extends Mob {
     @Override
     public String description() {
         return
-        "The last king of dwarves was known for his deep understanding of processes of life and death. " +
+                "The last king of dwarves was known for his deep understanding of processes of life and death. " +
                 "He has persuaded members of his court to participate in a ritual, that should have granted them " +
                 "eternal youthfulness. In the end he was the only one, who got it - and an army of undead " +
                 "as a bonus.";
@@ -250,7 +256,7 @@ public class King extends Mob {
     protected boolean getCloser(final int target) {
         return canTryToSummon() ?
                 super.getCloser(CityBossLevel.pedestal(nextPedestal)) :
-                super.getCloser(target);
+                    super.getCloser(target);
     }
 
     @Override
@@ -299,8 +305,7 @@ public class King extends Mob {
             }
         }
 
-        int undeadsToSummon = maxArmySize() - Undead.count;
-
+        int undeadsToSummon = (maxArmySize() - Undead.count);
         PathFinder.buildDistanceMap(pos, passable, undeadsToSummon);
         PathFinder.distance[pos] = Integer.MAX_VALUE;
         int dist = 1;

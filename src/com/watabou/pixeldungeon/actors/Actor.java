@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,8 @@ package com.watabou.pixeldungeon.actors;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import android.util.SparseArray;
+
 import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.Statistics;
 import com.watabou.pixeldungeon.actors.blobs.Blob;
@@ -35,11 +37,17 @@ public abstract class Actor implements Bundlable {
 
     private float time;
 
+    private int id = 0;
+
     private static final String TIME = "time";
+
+    private static final String ID = "id";
 
     private static HashSet<Actor> all = new HashSet<Actor>();
 
     private static Actor current;
+
+    private static SparseArray<Actor> ids = new SparseArray<Actor>();
 
     private static float now = 0;
 
@@ -55,8 +63,12 @@ public abstract class Actor implements Bundlable {
             return;
         }
 
+        if (actor.id > 0) {
+            ids.put(actor.id, actor);
+        }
+
         all.add(actor);
-        actor.time += time; // (+=) => (=) ?
+        actor.time += time;
         actor.onAdd();
 
         if (actor instanceof Char) {
@@ -83,10 +95,16 @@ public abstract class Actor implements Bundlable {
 
         Arrays.fill(chars, null);
         all.clear();
+
+        ids.clear();
     }
 
     // **********************
     // *** Static members ***
+
+    public static Actor findById(final int id) {
+        return ids.get(id);
+    }
 
     public static Char findChar(final int pos) {
         return chars[pos];
@@ -185,6 +203,10 @@ public abstract class Actor implements Bundlable {
         if (actor != null) {
             all.remove(actor);
             actor.onRemove();
+
+            if (actor.id > 0) {
+                ids.remove(actor.id);
+            }
         }
     }
 
@@ -196,6 +218,20 @@ public abstract class Actor implements Bundlable {
 
     protected void diactivate() {
         time = Float.MAX_VALUE;
+    }
+
+    public int id() {
+        if (id > 0) {
+            return id;
+        } else {
+            int max = 0;
+            for (Actor a : all) {
+                if (a.id > max) {
+                    max = a.id;
+                }
+            }
+            return (id = max + 1);
+        }
     }
 
     /* protected */public void next() {
@@ -219,6 +255,7 @@ public abstract class Actor implements Bundlable {
     @Override
     public void restoreFromBundle(final Bundle bundle) {
         time = bundle.getFloat(TIME);
+        id = bundle.getInt(ID);
     }
 
     protected void spend(final float time) {
@@ -228,5 +265,6 @@ public abstract class Actor implements Bundlable {
     @Override
     public void storeInBundle(final Bundle bundle) {
         bundle.put(TIME, time);
+        bundle.put(ID, id);
     }
 }

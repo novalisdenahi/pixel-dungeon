@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,12 +56,10 @@ public class SummoningTrap {
             }
         }
 
-        // It's complicated here, because these traps can be activated in chain
-
         ArrayList<Integer> candidates = new ArrayList<Integer>();
 
-        for (int i = 0; i < Level.NEIGHBOURS8.length; i++) {
-            int p = pos + Level.NEIGHBOURS8[i];
+        for (int element : Level.NEIGHBOURS8) {
+            int p = pos + element;
             if ((Actor.findChar(p) == null) && (Level.passable[p] || Level.avoid[p])) {
                 candidates.add(p);
             }

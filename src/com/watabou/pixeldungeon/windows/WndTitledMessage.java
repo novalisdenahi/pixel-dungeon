@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,12 +20,15 @@ package com.watabou.pixeldungeon.windows;
 import com.watabou.noosa.BitmapTextMultiline;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.ui.Component;
+import com.watabou.pixeldungeon.PixelDungeon;
 import com.watabou.pixeldungeon.scenes.PixelScene;
 import com.watabou.pixeldungeon.ui.Window;
 
 public class WndTitledMessage extends Window {
 
-    private static final int WIDTH = 120;
+    private static final int WIDTH_P = 120;
+    private static final int WIDTH_L = 144;
+
     private static final int GAP = 2;
 
     private BitmapTextMultiline normal;
@@ -35,13 +38,15 @@ public class WndTitledMessage extends Window {
 
         super();
 
-        titlebar.setRect(0, 0, WIDTH, 0);
+        int width = PixelDungeon.landscape() ? WIDTH_L : WIDTH_P;
+
+        titlebar.setRect(0, 0, width, 0);
         add(titlebar);
 
         Highlighter hl = new Highlighter(message);
 
         normal = PixelScene.createMultiline(hl.text, 6);
-        normal.maxWidth = WIDTH;
+        normal.maxWidth = width;
         normal.measure();
         normal.x = titlebar.left();
         normal.y = titlebar.bottom() + GAP;
@@ -61,7 +66,7 @@ public class WndTitledMessage extends Window {
             highlighted.hardlight(TITLE_COLOR);
         }
 
-        resize(WIDTH, (int) (normal.y + normal.height()));
+        resize(width, (int) (normal.y + normal.height()));
     }
 
     public WndTitledMessage(final Image icon, final String title, final String message) {

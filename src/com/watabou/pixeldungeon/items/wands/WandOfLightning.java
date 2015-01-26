@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ public class WandOfLightning extends Wand {
     @Override
     public String desc() {
         return
-        "This wand conjures forth deadly arcs of electricity, which deal damage " +
+                "This wand conjures forth deadly arcs of electricity, which deal damage " +
                 "to several creatures standing close to each other.";
     }
 
@@ -94,8 +94,8 @@ public class WandOfLightning extends Wand {
         points[nPoints++] = ch.pos;
 
         HashSet<Char> ns = new HashSet<Char>();
-        for (int i = 0; i < Level.NEIGHBOURS8.length; i++) {
-            Char n = Actor.findChar(ch.pos + Level.NEIGHBOURS8[i]);
+        for (int element : Level.NEIGHBOURS8) {
+            Char n = Actor.findChar(ch.pos + element);
             if ((n != null) && !affected.contains(n)) {
                 ns.add(n);
             }
@@ -108,7 +108,7 @@ public class WandOfLightning extends Wand {
 
     @Override
     protected void onZap(final int cell) {
-
+        // Everything is processed in fx() method
         if (!curUser.isAlive()) {
             Dungeon.fail(Utils.format(ResultDescriptions.WAND, name, Dungeon.depth));
             GLog.n("You killed yourself with your own Wand of Lightning...");

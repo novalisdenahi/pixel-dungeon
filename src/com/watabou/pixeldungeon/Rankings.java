@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,13 +88,15 @@ public enum Rankings {
     public static final String DETAILS_FILE = "game_%d.dat";
     public ArrayList<Record> records;
     public int lastRecord;
-
     public int totalNumber;
+
+    public int wonNumber;
 
     private static final String RECORDS = "records";
 
     private static final String LATEST = "latest";
     private static final String TOTAL = "total";
+    private static final String WON = "won";
     private static final Comparator<Record> scoreComparator = new Comparator<Rankings.Record>() {
         @Override
         public int compare(final Record lhs, final Record rhs) {
@@ -125,6 +127,15 @@ public enum Rankings {
                 totalNumber = records.size();
             }
 
+            wonNumber = bundle.getInt(WON);
+            if (wonNumber == 0) {
+                for (Record rec : records) {
+                    if (rec.win) {
+                        wonNumber++;
+                    }
+                }
+            }
+
         } catch (Exception e) {
         }
     }
@@ -134,6 +145,7 @@ public enum Rankings {
         bundle.put(RECORDS, records);
         bundle.put(LATEST, lastRecord);
         bundle.put(TOTAL, totalNumber);
+        bundle.put(WON, wonNumber);
 
         try {
             OutputStream output = Game.instance.openFileOutput(RANKINGS_FILE, Context.MODE_PRIVATE);
@@ -189,6 +201,9 @@ public enum Rankings {
         }
 
         totalNumber++;
+        if (win) {
+            wonNumber++;
+        }
 
         Badges.validateGamesPlayed();
 

@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,6 @@ public class Wraith extends Mob {
         spriteClass = WraithSprite.class;
 
         mobType = MobType.UNDEAD;
-
         HP = HT = 1;
         EXP = 0;
 
@@ -112,7 +111,7 @@ public class Wraith extends Mob {
     @Override
     public String description() {
         return
-        "A wraith is a vengeful spirit of a sinner, whose grave or tomb was disturbed. " +
+                "A wraith is a vengeful spirit of a sinner, whose grave or tomb was disturbed. " +
                 "Being an ethereal entity, it is very hard to hit with a regular weapon.";
     }
 

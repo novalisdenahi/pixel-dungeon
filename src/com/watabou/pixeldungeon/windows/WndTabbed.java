@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,7 +104,7 @@ public class WndTabbed extends Window {
 
             bg = Chrome.get(selected ?
                     Chrome.Type.TAB_SELECTED :
-                    Chrome.Type.TAB_UNSELECTED);
+                        Chrome.Type.TAB_UNSELECTED);
             addToBack(bg);
 
             layout();
@@ -123,7 +123,7 @@ public class WndTabbed extends Window {
 
         tab.setPos(tabs.size() == 0 ?
                 -chrome.marginLeft() + 1 :
-                tabs.get(tabs.size() - 1).right(), height);
+                    tabs.get(tabs.size() - 1).right(), height);
         tab.select(false);
         super.add(tab);
 
@@ -149,6 +149,11 @@ public class WndTabbed extends Window {
         camera.resize((int) chrome.width, chrome.marginTop() + height + tabHeight());
         camera.x = (int) (Game.width - camera.screenWidth()) / 2;
         camera.y = (int) (Game.height - camera.screenHeight()) / 2;
+
+        shadow.boxRect(
+                camera.x / camera.zoom,
+                camera.y / camera.zoom,
+                chrome.width(), chrome.height);
         // <- super.resize(...)
 
         for (Tab tab : tabs) {

@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ public class WndStory extends Window {
                         +
                         "Being nominally a part of the City, these levels are not that dangerous. No one will call it a safe place, "
                         +
-                        "but at least you won't need to deal with evil magic here.");
+                "but at least you won't need to deal with evil magic here.");
 
         CHAPTERS.put(
                 ID_PRISON,
@@ -61,7 +61,7 @@ public class WndStory extends Window {
                         +
                         "from below, driving prisoners and guards insane. In the end the prison was abandoned, though some convicts "
                         +
-                        "were left locked up here.");
+                "were left locked up here.");
 
         CHAPTERS.put(
                 ID_CAVES,
@@ -71,7 +71,7 @@ public class WndStory extends Window {
                         +
                         "somewhere here on the route between these two states, but it has perished since the decline of Dwarven Metropolis. "
                         +
-                        "Only omnipresent gnolls and subterranean animals dwell here now.");
+                "Only omnipresent gnolls and subterranean animals dwell here now.");
 
         CHAPTERS.put(
                 ID_METROPOLIS,
@@ -79,7 +79,7 @@ public class WndStory extends Window {
                         +
                         "has successfully repelled the invasion of the old god and his demon army. But it is said, that the returning warriors "
                         +
-                        "have brought seeds of corruption with them, and that victory was the beginning of the end for the underground kingdom.");
+                "have brought seeds of corruption with them, and that victory was the beginning of the end for the underground kingdom.");
 
         CHAPTERS.put(
                 ID_HALLS,
@@ -88,7 +88,7 @@ public class WndStory extends Window {
                         "dwarves were too weakened to clear them of remaining demons. Gradually demons have tightened their grip on this place "
                         +
                         "and now it's called Demon Halls.\n\n" +
-                        "Very few adventurers have ever descended this far...");
+                "Very few adventurers have ever descended this far...");
     };
 
     public static void showChapter(final int id) {
@@ -101,7 +101,7 @@ public class WndStory extends Window {
         if (text != null) {
             WndStory wnd = new WndStory(text);
             if ((wnd.delay = 0.6f) > 0) {
-                wnd.chrome.visible = wnd.tf.visible = false;
+                wnd.shadow.visible = wnd.chrome.visible = wnd.tf.visible = false;
             }
 
             Game.scene().add(wnd);
@@ -144,7 +144,7 @@ public class WndStory extends Window {
         super.update();
 
         if ((delay > 0) && ((delay -= Game.elapsed) <= 0)) {
-            chrome.visible = tf.visible = true;
+            shadow.visible = chrome.visible = tf.visible = true;
         }
     }
 }

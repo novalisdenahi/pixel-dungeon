@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,7 +86,7 @@ public class Scorpio extends Mob {
     @Override
     public String description() {
         return
-        "These huge arachnid-like demonic creatures avoid close combat by all means, " +
+                "These huge arachnid-like demonic creatures avoid close combat by all means, " +
                 "firing crippling serrated spikes from long distances.";
     }
 

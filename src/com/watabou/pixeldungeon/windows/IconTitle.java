@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ import com.watabou.noosa.ui.Component;
 import com.watabou.pixeldungeon.items.Item;
 import com.watabou.pixeldungeon.scenes.PixelScene;
 import com.watabou.pixeldungeon.sprites.ItemSprite;
+import com.watabou.pixeldungeon.ui.HealthBar;
 import com.watabou.pixeldungeon.ui.Window;
 import com.watabou.pixeldungeon.utils.Utils;
 
@@ -34,6 +35,9 @@ public class IconTitle extends Component {
 
     protected Image imIcon;
     protected BitmapTextMultiline tfLabel;
+    protected HealthBar health;
+
+    private float healthLvl = Float.NaN;
 
     public IconTitle() {
         super();
@@ -64,6 +68,14 @@ public class IconTitle extends Component {
         tfLabel = PixelScene.createMultiline(FONT_SIZE);
         tfLabel.hardlight(Window.TITLE_COLOR);
         add(tfLabel);
+
+        health = new HealthBar();
+        add(health);
+    }
+
+    public void health(final float value) {
+        health.level(healthLvl = value);
+        layout();
     }
 
     public void icon(final Image icon) {
@@ -82,17 +94,27 @@ public class IconTitle extends Component {
 
     @Override
     protected void layout() {
-        imIcon.x = 0;
-        imIcon.y = 0;
+
+        health.visible = !Float.isNaN(healthLvl);
+
+        imIcon.x = x;
+        imIcon.y = y;
 
         tfLabel.x = PixelScene.align(PixelScene.uiCamera, imIcon.x + imIcon.width() + GAP);
         tfLabel.maxWidth = (int) (width - tfLabel.x);
         tfLabel.measure();
         tfLabel.y = PixelScene.align(PixelScene.uiCamera,
                 imIcon.height > tfLabel.height() ?
-                        (imIcon.height() - tfLabel.baseLine()) / 2 :
-                        imIcon.y);
+                        imIcon.y + ((imIcon.height() - tfLabel.baseLine()) / 2) :
+                            imIcon.y);
 
-        height = Math.max(imIcon.y + imIcon.height(), tfLabel.y + tfLabel.height());
+        if (health.visible) {
+            health.setRect(tfLabel.x,
+                    Math.max(tfLabel.y + tfLabel.height(), (imIcon.y + imIcon.height()) - health.height()),
+                    tfLabel.maxWidth, 0);
+            height = health.bottom();
+        } else {
+            height = Math.max(imIcon.y + imIcon.height(), tfLabel.y + tfLabel.height());
+        }
     }
 }

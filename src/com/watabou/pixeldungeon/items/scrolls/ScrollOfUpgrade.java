@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ public class ScrollOfUpgrade extends InventoryScroll {
     @Override
     public String desc() {
         return
-        "This scroll will upgrade a single item, improving its quality. A wand will " +
+                "This scroll will upgrade a single item, improving its quality. A wand will " +
                 "increase in power and in number of charges; a weapon will inflict more damage " +
                 "or find its mark more frequently; a suit of armor will deflect additional blows; " +
                 "the effect of a ring on its wearer will intensify. Weapons and armor will also " +
@@ -55,10 +55,9 @@ public class ScrollOfUpgrade extends InventoryScroll {
         ScrollOfRemoveCurse.uncurse(Dungeon.hero, item);
         item.upgrade();
 
+        ScrollOfUpgrade.upgrade(curUser);
         GLog.p(TXT_LOOKS_BETTER, item.name());
 
         Badges.validateItemLevelAquired(item);
-
-        ScrollOfUpgrade.upgrade(curUser);
     }
 }

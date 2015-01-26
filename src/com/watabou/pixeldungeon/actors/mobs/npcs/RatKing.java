@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ public class RatKing extends NPC {
 
     @Override
     protected Char chooseEnemy() {
-        return DUMMY;
+        return null;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class RatKing extends NPC {
     @Override
     public String description() {
         return
-        "This rat is a little bigger than a regular marsupial rat " +
+                "This rat is a little bigger than a regular marsupial rat " +
                 "and it's wearing a tiny crown on its head.";
     }
 

@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -135,7 +135,7 @@ public class Eye extends Mob {
     @Override
     public String description() {
         return
-        "One of this demon's other names is \"orb of hatred\", because when it sees an enemy, " +
+                "One of this demon's other names is \"orb of hatred\", because when it sees an enemy, " +
                 "it uses its deathgaze recklessly, often ignoring its allies and wounding them.";
     }
 

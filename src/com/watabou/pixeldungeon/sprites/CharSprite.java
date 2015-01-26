@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Oleg Dolya
+ * Copyright (C) 2012-2015 Oleg Dolya
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@ package com.watabou.pixeldungeon.sprites;
 
 import com.watabou.noosa.Game;
 import com.watabou.noosa.MovieClip;
+import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.tweeners.PosTweener;
@@ -43,48 +44,74 @@ import com.watabou.utils.Random;
 
 public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip.Listener {
 
+    private static class JumpTweener extends Tweener {
+
+        public Visual visual;
+
+        public PointF start;
+        public PointF end;
+
+        public float height;
+
+        public JumpTweener(final Visual visual, final PointF pos, final float height, final float time) {
+            super(visual, time);
+
+            this.visual = visual;
+            start = visual.point();
+            end = pos;
+
+            this.height = height;
+        }
+
+        @Override
+        protected void updateValues(final float progress) {
+            visual.point(PointF.inter(start, end, progress).offset(0, -height * 4 * progress * (1 - progress)));
+        }
+    }
+
     public enum State {
         BURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED
     }
 
-    // Color constants for floating text
     public static final int DEFAULT = 0xFFFFFF;
     public static final int POSITIVE = 0x00FF00;
     public static final int NEGATIVE = 0xFF0000;
-    public static final int WARNING = 0xFF8800;
 
+    public static final int WARNING = 0xFF8800;
     public static final int NEUTRAL = 0xFFFF00;
+
     private static final float MOVE_INTERVAL = 0.1f;
 
     private static final float FLASH_INTERVAL = 0.05f;
-
     protected Animation idle;
     protected Animation run;
     protected Animation attack;
     protected Animation operate;
     protected Animation zap;
+
     protected Animation die;
 
     protected Callback animCallback;
 
     protected Tweener motion;
-
     protected Emitter burning;
-    protected Emitter levitation;
 
+    protected Emitter levitation;
     protected IceBlock iceBlock;
+
     protected TorchHalo halo;
 
     protected EmoIcon emo;
+    private Tweener jumpTweener;
+
+    private Callback jumpCallback;
 
     private float flashTime = 0;
 
     protected boolean sleeping = false;
 
-    // Char owner
     public Char ch;
 
-    // The sprite is currently in motion
     public boolean isMoving = false;
 
     public CharSprite() {
@@ -132,7 +159,6 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
         play(attack);
     }
 
-    // Blood color
     public int blood() {
         return 0xFFBB0000;
     }
@@ -207,6 +233,17 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
         }
     }
 
+    public void jump(final int from, final int to, final Callback callback) {
+        jumpCallback = callback;
+
+        int distance = Level.distance(from, to);
+        jumpTweener = new JumpTweener(this, worldToCamera(to), distance * 4, distance * 0.1f);
+        jumpTweener.listener = this;
+        parent.add(jumpTweener);
+
+        turnTo(from, to);
+    }
+
     @Override
     public void kill() {
         super.kill();
@@ -270,7 +307,16 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
     @Override
     public void onComplete(final Tweener tweener) {
-        if (tweener == motion) {
+        if (tweener == jumpTweener) {
+
+            if (visible && Level.water[ch.pos] && !ch.flying) {
+                GameScene.ripple(ch.pos);
+            }
+            if (jumpCallback != null) {
+                jumpCallback.call();
+            }
+
+        } else if (tweener == motion) {
 
             isMoving = false;
 
