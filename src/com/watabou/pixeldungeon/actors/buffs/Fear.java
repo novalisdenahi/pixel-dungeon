@@ -38,7 +38,7 @@ public class Fear extends FlavourBuff {
     public boolean attachTo(final Char target) {
         if (super.attachTo(target)) {
             // TODO FIXME
-            // target.pacified = true;
+            // target.pacified = false;
             target.paralysed = true;
             return true;
         } else {

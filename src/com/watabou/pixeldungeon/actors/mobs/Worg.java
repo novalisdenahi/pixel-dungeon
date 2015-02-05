@@ -18,7 +18,6 @@
 package com.watabou.pixeldungeon.actors.mobs;
 
 import com.watabou.pixeldungeon.actors.Char;
-import com.watabou.pixeldungeon.actors.mobs.npcs.Ghost;
 import com.watabou.pixeldungeon.items.food.MysteryMeat;
 import com.watabou.pixeldungeon.sprites.WorgSprite;
 import com.watabou.utils.Random;
@@ -58,14 +57,14 @@ public class Worg extends Mob {
     @Override
     public String description() {
         return
-        "Worgs are like the surface wolf. Except they are bigger, strongger and more bloodthirsty. "
+                "Worgs are like the surface wolf. Except they are bigger, strongger and more bloodthirsty. "
                 + "The goblins often tame them with the purpose of riding. The worg meat is not realy tasty, "
                 + "but eatable if you are hungry. ";
     }
 
     @Override
     public void die(final Object cause) {
-        Ghost.Quest.process(pos);
+        // Ghost.Quest.process(pos);
         super.die(cause);
     }
 

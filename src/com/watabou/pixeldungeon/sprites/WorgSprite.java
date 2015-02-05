@@ -25,7 +25,7 @@ public class WorgSprite extends MobSprite {
     public WorgSprite() {
         super();
 
-        texture(Assets.WOLF);
+        texture(Assets.WORG);
 
         TextureFilm frames = new TextureFilm(texture, 16, 15);
 

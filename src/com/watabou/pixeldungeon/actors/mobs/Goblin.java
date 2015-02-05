@@ -53,7 +53,7 @@ public class Goblin extends Mob {
     public String description() {
         return
         "Goblins are small goblinoids. They organized in tribes living under the surface. If you see one goblin "
-                + "you can be sure there are more of them.  The goblins sneaking into  villages and towns by night to take what they can. ";
+                + "you can be sure there are more of them. The goblins sneaking into villages and towns by night to take what they can. ";
     }
 
     @Override

@@ -189,10 +189,9 @@ public abstract class Char extends Actor {
                 GLog.i(TXT_HIT, name, enemy.name);
             }
 
-            // FIXME
             int dr = (this instanceof Hero) && (((Hero) this).rangedWeapon != null)
                     && (((Hero) this).subClass == HeroSubClass.SNIPER) ? 0 :
-                        Random.IntRange(0, enemy.dr());
+                    Random.IntRange(0, enemy.dr());
 
             int dmg = damageRoll();
             int effectiveDamage = Math.max(dmg - dr, 0);
@@ -221,9 +220,9 @@ public abstract class Char extends Actor {
                     if (Dungeon.hero.killerGlyph != null) {
 
                         // FIXME
-                        // Dungeon.fail( Utils.format( ResultDescriptions.GLYPH, Dungeon.hero.killerGlyph.name(),
-                        // Dungeon.depth ) );
-                        // GLog.n( TXT_KILL, Dungeon.hero.killerGlyph.name() );
+                        // Dungeon.fail(Utils.format(ResultDescriptions.GLYPH, Dungeon.hero.killerGlyph.name(),
+                        // Dungeon.depth));
+                        // GLog.n(TXT_KILL, Dungeon.hero.killerGlyph.name());
 
                     } else {
                         if (Bestiary.isBoss(this)) {
@@ -323,8 +322,8 @@ public abstract class Char extends Actor {
         if ((dmg > 0) || (src instanceof Char)) {
             sprite.showStatus(HP > (HT / 2) ?
                     CharSprite.WARNING :
-                        CharSprite.NEGATIVE,
-                        Integer.toString(dmg));
+                    CharSprite.NEGATIVE,
+                    Integer.toString(dmg));
         }
         if (HP <= 0) {
             die(src);
