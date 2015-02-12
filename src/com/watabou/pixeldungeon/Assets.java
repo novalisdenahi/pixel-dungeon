@@ -93,6 +93,7 @@ public class Assets {
     public static final String WORG = "worg.png";
     public static final String GOBLIN_KEEPER = "goblinkeeper.png";
     public static final String PIRATE = "goblinpirate.png";
+    public static final String ASH = "goblinash.png";
     public static final String GOBLINMAGE = "goblinmage.png";
 
     public static final String ITEMS = "items.png";

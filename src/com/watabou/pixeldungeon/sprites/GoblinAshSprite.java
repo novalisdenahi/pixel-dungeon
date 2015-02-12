@@ -20,14 +20,14 @@ package com.watabou.pixeldungeon.sprites;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.pixeldungeon.Assets;
 
-public class GoblinPirateSprite extends MobSprite {
+public class GoblinAshSprite extends MobSprite {
 
-    public GoblinPirateSprite() {
+    public GoblinAshSprite() {
         super();
 
-        texture(Assets.PIRATE);
+        texture(Assets.ASH);
 
-        TextureFilm frames = new TextureFilm(texture, 14, 16);
+        TextureFilm frames = new TextureFilm(texture, 16, 16);
 
         idle = new Animation(10, true);
         idle.frames(frames, 1, 1, 1, 1, 1, 0, 0, 0, 0);

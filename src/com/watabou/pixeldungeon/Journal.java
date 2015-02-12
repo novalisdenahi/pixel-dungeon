@@ -32,6 +32,7 @@ public class Journal {
         GARDEN("Garden"),
         STATUE("Animated statue"),
         PIRATE("Goblin pirate"),
+        ASH("Ash"),
         GHOST("Sad ghost"),
         WANDMAKER("Old wandmaker"),
         TROLL("Troll blacksmith"),

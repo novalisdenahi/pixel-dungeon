@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2014  Tóth Dániel
+ * Copyright (C) 2012-2015 Tóth Dániel
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,34 +15,37 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package com.watabou.pixeldungeon.sprites;
+package com.watabou.pixeldungeon.items.quest;
 
-import com.watabou.noosa.TextureFilm;
-import com.watabou.pixeldungeon.Assets;
+import com.watabou.pixeldungeon.items.Item;
+import com.watabou.pixeldungeon.sprites.ItemSpriteSheet;
 
-public class GoblinPirateSprite extends MobSprite {
+public class Pan extends Item {
 
-    public GoblinPirateSprite() {
-        super();
+    {
+        name = "pan";
+        image = ItemSpriteSheet.PAN;
 
-        texture(Assets.PIRATE);
-
-        TextureFilm frames = new TextureFilm(texture, 14, 16);
-
-        idle = new Animation(10, true);
-        idle.frames(frames, 1, 1, 1, 1, 1, 0, 0, 0, 0);
-
-        run = idle.clone();
-        die = idle.clone();
-        attack = idle.clone();
-
-        play(idle);
+        unique = true;
     }
 
     @Override
-    public void die() {
-        super.die();
-
+    public String info() {
+        return "Gotten worn old pan.";
     }
 
+    @Override
+    public boolean isIdentified() {
+        return true;
+    }
+
+    @Override
+    public boolean isUpgradable() {
+        return false;
+    }
+
+    @Override
+    public int price() {
+        return 2;
+    }
 }
