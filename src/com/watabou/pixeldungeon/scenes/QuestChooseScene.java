@@ -28,6 +28,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Button;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.Dungeon;
+import com.watabou.pixeldungeon.PixelDungeon;
 import com.watabou.pixeldungeon.effects.BannerSprites;
 import com.watabou.pixeldungeon.effects.Fireball;
 import com.watabou.pixeldungeon.ui.Archs;
@@ -108,7 +109,7 @@ public class QuestChooseScene extends PixelScene {
         int w = Camera.main.width;
         int h = Camera.main.height;
 
-        float height = 150;
+        // float height = 150;
 
         Archs archs = new Archs();
         archs.setSize(w, h);
@@ -116,6 +117,9 @@ public class QuestChooseScene extends PixelScene {
 
         Image title = BannerSprites.get(BannerSprites.Type.SELECT_DUNGEON);
         add(title);
+
+        float height = title.height +
+                (PixelDungeon.landscape() ? DashboardItem.SIZE : DashboardItem.SIZE * 3);
 
         title.x = (w - title.width()) / 2;
         title.y = (h - height) / 2;
@@ -129,7 +133,6 @@ public class QuestChooseScene extends PixelScene {
                 switchNoFadeIntoSelectedDungeon(DungeonType.GOBLIN);
             }
         };
-        btnGoblins.setPos((w / 2) - (btnGoblins.width() / 2), ((h / 2) - DashboardItem.SIZE));
         add(btnGoblins);
 
         // TODO fix icon
@@ -139,7 +142,6 @@ public class QuestChooseScene extends PixelScene {
                 switchNoFadeIntoSelectedDungeon(DungeonType.YOG);
             }
         };
-        btnMadMage.setPos((w / 2) - (btnMadMage.width() / 2), (h / 2));
         add(btnMadMage);
 
         DashboardItem btnYogDzewa = new DashboardItem(TXT_DUNGEON_YOG_DZEWA, 0) {
@@ -148,8 +150,17 @@ public class QuestChooseScene extends PixelScene {
                 switchNoFadeIntoSelectedDungeon(DungeonType.YOG);
             }
         };
-        btnYogDzewa.setPos((w / 2) - (btnYogDzewa.width() / 2), ((h / 2) + DashboardItem.SIZE));
         add(btnYogDzewa);
+
+        if (PixelDungeon.landscape()) {
+            btnGoblins.setPos(((w / 2) - (btnGoblins.width() / 2) - (DashboardItem.SIZE * 2)), (h / 2));
+            btnMadMage.setPos((w / 2) - (btnMadMage.width() / 2), (h / 2));
+            btnYogDzewa.setPos((((w / 2) - (btnYogDzewa.width() / 2)) + (DashboardItem.SIZE * 2)), (h / 2));
+        } else {
+            btnGoblins.setPos((w / 2) - (btnGoblins.width() / 2), ((h / 2) - DashboardItem.SIZE));
+            btnMadMage.setPos((w / 2) - (btnMadMage.width() / 2), (h / 2));
+            btnYogDzewa.setPos((w / 2) - (btnYogDzewa.width() / 2), ((h / 2) + DashboardItem.SIZE));
+        }
 
         BitmapText version = new BitmapText("v " + Game.version, font1x);
         version.measure();
