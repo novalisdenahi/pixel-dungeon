@@ -24,6 +24,7 @@ import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.DungeonTilemap;
+import com.watabou.pixeldungeon.actors.mobs.npcs.GoblinAsh;
 import com.watabou.pixeldungeon.actors.mobs.npcs.GoblinPirate;
 import com.watabou.pixeldungeon.items.DewVial;
 import com.watabou.pixeldungeon.scenes.GameScene;
@@ -129,8 +130,7 @@ public class GoblinSewerLevel extends RegularLevel {
     @Override
     protected void createMobs() {
         super.createMobs();
-        // TODO add different Quest
-        // Ghost.Quest.spawn( this );
+        GoblinAsh.Quest.spawn(this, roomEntrance);
         GoblinPirate.Quest.spawn(this, roomEntrance);
     }
 
@@ -161,9 +161,9 @@ public class GoblinSewerLevel extends RegularLevel {
 
                 int count =
                         (map[i + 1] == Terrain.WALL ? 1 : 0) +
-                                (map[i - 1] == Terrain.WALL ? 1 : 0) +
-                                (map[i + WIDTH] == Terrain.WALL ? 1 : 0) +
-                                (map[i - WIDTH] == Terrain.WALL ? 1 : 0);
+                        (map[i - 1] == Terrain.WALL ? 1 : 0) +
+                        (map[i + WIDTH] == Terrain.WALL ? 1 : 0) +
+                        (map[i - WIDTH] == Terrain.WALL ? 1 : 0);
 
                 if (Random.Int(16) < (count * count)) {
                     map[i] = Terrain.EMPTY_DECO;

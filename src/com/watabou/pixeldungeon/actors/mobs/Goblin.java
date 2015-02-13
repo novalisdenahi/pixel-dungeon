@@ -18,6 +18,7 @@
 package com.watabou.pixeldungeon.actors.mobs;
 
 import com.watabou.pixeldungeon.actors.Char;
+import com.watabou.pixeldungeon.actors.mobs.npcs.GoblinAsh;
 import com.watabou.pixeldungeon.items.Gold;
 import com.watabou.pixeldungeon.items.food.Rum;
 import com.watabou.pixeldungeon.sprites.GoblinSprite;
@@ -52,13 +53,13 @@ public class Goblin extends Mob {
     @Override
     public String description() {
         return
-        "Goblins are small goblinoids. They organized in tribes living under the surface. If you see one goblin "
+                "Goblins are small goblinoids. They organized in tribes living under the surface. If you see one goblin "
                 + "you can be sure there are more of them. The goblins sneaking into villages and towns by night to take what they can. ";
     }
 
     @Override
     public void die(final Object cause) {
-        // Ghost.Quest.process(pos); // TODO why
+        GoblinAsh.Quest.process(pos);
         super.die(cause);
     }
 

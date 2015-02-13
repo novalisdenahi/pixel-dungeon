@@ -24,7 +24,7 @@ import com.watabou.pixeldungeon.plants.Plant;
 public class Musmrooms extends Plant {
 
     private static final String TXT_DESC =
-            "Lots of little, and some big purple mushroom on the wet ground.";
+            "Lots of little, and some big purple mushrooms on the wet ground.";
 
     {
         image = 8;

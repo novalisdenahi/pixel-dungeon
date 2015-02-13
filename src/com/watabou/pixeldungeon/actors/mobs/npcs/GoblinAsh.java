@@ -27,10 +27,8 @@ import com.watabou.pixeldungeon.actors.buffs.Buff;
 import com.watabou.pixeldungeon.items.Item;
 import com.watabou.pixeldungeon.items.food.GoblinBroth;
 import com.watabou.pixeldungeon.items.food.MushroomStew;
-import com.watabou.pixeldungeon.items.quest.DriedRose;
 import com.watabou.pixeldungeon.items.quest.Mushroom;
 import com.watabou.pixeldungeon.items.quest.Pan;
-import com.watabou.pixeldungeon.items.quest.RatSkull;
 import com.watabou.pixeldungeon.levels.GoblinSewerLevel;
 import com.watabou.pixeldungeon.levels.Room;
 import com.watabou.pixeldungeon.levels.Terrain;
@@ -66,34 +64,36 @@ public class GoblinAsh extends NPC {
         private static final String GIVEN = "given";
         private static final String COMPLITED = "complited";
 
-        private static final String ITEM1 = "item1";
-        private static final String ITEM2 = "item2";
+        private static final String BROTH = "broth";
+        private static final String STEW = "stew";
 
-        public static Item item1;
-        public static Item item2;
+        public static Item broth;
+        public static Item stew;
 
         public static void complete() {
             completed = true;
 
-            item1 = null;
-            item2 = null;
+            broth = null;
+            stew = null;
 
             // TODO add Badge validition
             Journal.remove(Journal.Feature.ASH);
         }
 
+        public static void placeMushroom() {
+            if (alternative) {
+                int shrubPos = Dungeon.level.randomRespawnCell();
+                while (Dungeon.level.heaps.get(shrubPos) != null) {
+                    shrubPos = Dungeon.level.randomRespawnCell();
+                }
+                Dungeon.level.plant(new Mushroom.Seed(), shrubPos);
+                processed = true;
+            }
+        }
+
         public static void process(final int pos) {
             if (spawned && given && !processed && (depth == Dungeon.depth)) {
-                if (alternative) {
-                    int shrubPos = Dungeon.level.randomRespawnCell();
-                    while (Dungeon.level.heaps.get(shrubPos) != null) {
-                        shrubPos = Dungeon.level.randomRespawnCell();
-                    }
-                    Dungeon.level.plant(new Mushroom.Seed(), shrubPos);
-                    processed = true;
-
-                } else {
-
+                if (!alternative) {
                     if (Random.Int(left2kill) == 0) {
                         Dungeon.level.drop(new Pan(), pos).sprite.drop();
                         processed = true;
@@ -108,8 +108,8 @@ public class GoblinAsh extends NPC {
         public static void reset() {
             spawned = false;
 
-            item1 = null;
-            item2 = null;
+            broth = null;
+            stew = null;
         }
 
         public static void restoreFromBundle(final Bundle bundle) {
@@ -129,8 +129,8 @@ public class GoblinAsh extends NPC {
                 depth = node.getInt(DEPTH);
                 processed = node.getBoolean(PROCESSED);
 
-                item1 = (Item) node.get(ITEM1);
-                item2 = (Item) node.get(ITEM2);
+                broth = (Item) node.get(BROTH);
+                stew = (Item) node.get(STEW);
             } else {
                 Quest.reset();
             }
@@ -163,8 +163,8 @@ public class GoblinAsh extends NPC {
                 given = false;
                 completed = false;
 
-                item1 = new GoblinBroth();
-                item2 = new MushroomStew();
+                broth = new GoblinBroth();
+                stew = new MushroomStew();
 
             }
         }
@@ -188,8 +188,8 @@ public class GoblinAsh extends NPC {
                 node.put(GIVEN, given);
                 node.put(COMPLITED, completed);
 
-                node.put(ITEM1, item1);
-                node.put(ITEM2, item2);
+                node.put(BROTH, broth);
+                node.put(STEW, stew);
             }
 
             bundle.put(NODE, node);
@@ -203,12 +203,17 @@ public class GoblinAsh extends NPC {
 
     private static final String TXT_COMPLETED = "Please do not bother me! I'm working on a new recipient.";
 
-    private static final String TXT_NICE2MEETYOU = "Please do not bother me! I'm working on a new recipient.";
+    private static final String TXT_NICE2MEETYOU = "Nice to meet you! My name is Ash. I'am not like the other goblins. "
+            + " I'am not into bad things more like into cooking. I wana be a chef. \n"
+            +
+            "I wanna be the very best, \n Like no one ever was. \n To cook them all is my real test, \n To cook them well them is my cause. \n";
 
-    private static final String TXT_PAN1 = TXT_NICE2MEETYOU + " ";
-    private static final String TXT_MUSHROOM1 = TXT_NICE2MEETYOU + " ";
-    private static final String TXT_PAN2 = " ";
-    private static final String TXT_MUSHROOM2 = " ";
+    private static final String TXT_PAN1 = TXT_NICE2MEETYOU
+            + "But the other goblins hate me, and they stolen my favorite _pan_. Please bring it back to me. My precious! I will I will be thankful.";
+    private static final String TXT_MUSHROOM1 = TXT_NICE2MEETYOU
+            + "But in order to be the best, the best wages on groceries I need. Please bring me _purple magic mushroom_ .";
+    private static final String TXT_PAN2 = "Nothing yet? Please find further! I hope they don't use my _pan_ , in particular, don't use like a hat!";
+    private static final String TXT_MUSHROOM2 = "No _hushroom_ yet? I need it if I wanna make the most special food. ";
 
     @Override
     protected boolean act() {
@@ -236,8 +241,7 @@ public class GoblinAsh extends NPC {
 
     @Override
     public String description() {
-        return "He's a goblin. He's a pirate. He isn't ordinary. You can talk to him, "
-                + "it's worth a shot. Worst case you run away, he will never catch you with a wooden leg.";
+        return "What a strange dressing. I've never seen such a hat. This goblin does not seem dangerous, but rather funny.";
     }
 
     @Override
@@ -248,17 +252,17 @@ public class GoblinAsh extends NPC {
             tell(TXT_COMPLETED);
         } else if (Quest.given) {
             Item item = Quest.alternative ?
-                    Dungeon.hero.belongings.getItem(RatSkull.class) :
-                        Dungeon.hero.belongings.getItem(DriedRose.class);
-                    if (item != null) {
-                        GameScene.show(new WndAsh(this, item));
-                    } else {
-                        GameScene.show(new WndQuest(this, Quest.alternative ? TXT_PAN2 : TXT_MUSHROOM2));
+                    Dungeon.hero.belongings.getItem(Mushroom.class) :
+                    Dungeon.hero.belongings.getItem(Pan.class);
+            if (item != null) {
+                GameScene.show(new WndAsh(this, item));
+            } else {
+                GameScene.show(new WndQuest(this, Quest.alternative ? TXT_MUSHROOM2 : TXT_PAN2));
 
-                    }
+            }
         } else {
-            GameScene.show(new WndQuest(this, Quest.alternative ? TXT_PAN1 : TXT_MUSHROOM1));
-            // tell(TXT_NICE2MEETYOU);
+            GameScene.show(new WndQuest(this, Quest.alternative ? TXT_MUSHROOM1 : TXT_PAN1));
+            Quest.placeMushroom();
             Quest.given = true;
 
             Journal.add(Journal.Feature.ASH);

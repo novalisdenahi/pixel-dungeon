@@ -1,6 +1,6 @@
 /*
  * Pixel Dungeon
- * Copyright (C) 2012-2015 Oleg Dolya
+ * Copyright (C) 2012-2015 Tóth Dániel
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,10 +20,9 @@ package com.watabou.pixeldungeon.windows;
 import com.watabou.noosa.BitmapTextMultiline;
 import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.actors.hero.Hero;
-import com.watabou.pixeldungeon.actors.mobs.npcs.Ghost;
 import com.watabou.pixeldungeon.actors.mobs.npcs.GoblinAsh;
 import com.watabou.pixeldungeon.items.Item;
-import com.watabou.pixeldungeon.items.quest.DriedRose;
+import com.watabou.pixeldungeon.items.quest.Pan;
 import com.watabou.pixeldungeon.scenes.PixelScene;
 import com.watabou.pixeldungeon.sprites.ItemSprite;
 import com.watabou.pixeldungeon.ui.RedButton;
@@ -32,17 +31,16 @@ import com.watabou.pixeldungeon.utils.GLog;
 import com.watabou.pixeldungeon.utils.Utils;
 
 public class WndAsh extends Window {
-    // TODO FIXME the whole class :)
-    private static final String TXT_ROSE =
-            "Yes! Yes!!! This is it! Please give it to me! " +
-                    "And you can take one of these items, maybe they " +
-                    "will be useful to you in your journey...";
-    private static final String TXT_RAT =
-            "Yes! The ugly creature is slain and I can finally rest... " +
-                    "Please take one of these items, maybe they " +
-                    "will be useful to you in your journey...";
-    private static final String TXT_WEAPON = "Ghost's weapon";
-    private static final String TXT_ARMOR = "Ghost's armor";
+    private static final String TXT_PAN =
+            "Yes! Yes!!! Finaly! Please give it to me! " +
+                    "Sit down and wait a minute. I'll make something for you. " +
+                    "Something soo good like no one ever tasted.";
+    private static final String TXT_MUSHROOM =
+            "Beautiful mature piece of mushroom. I hope you have not tasted it, " +
+                    "because of its toxicity. This is a challenge for me. If I wanna be the very best cook then " +
+                    "every challenge along the way with courage I will face. I'll make something for you.";
+    private static final String TXT_BROTH = "Goblin Broth";
+    private static final String TXT_STEW = "Hushroom Stew";
 
     private static final int WIDTH = 120;
     private static final int BTN_HEIGHT = 20;
@@ -58,25 +56,25 @@ public class WndAsh extends Window {
         titlebar.setRect(0, 0, WIDTH, 0);
         add(titlebar);
 
-        BitmapTextMultiline message = PixelScene.createMultiline(item instanceof DriedRose ? TXT_ROSE : TXT_RAT, 6);
+        BitmapTextMultiline message = PixelScene.createMultiline(item instanceof Pan ? TXT_PAN : TXT_MUSHROOM, 8);
         message.maxWidth = WIDTH;
         message.measure();
         message.y = titlebar.bottom() + GAP;
         add(message);
 
-        RedButton btnWeapon = new RedButton(TXT_WEAPON) {
+        RedButton btnWeapon = new RedButton(TXT_BROTH) {
             @Override
             protected void onClick() {
-                selectReward(ash, item, Ghost.Quest.weapon);
+                selectReward(ash, item, GoblinAsh.Quest.broth);
             }
         };
         btnWeapon.setRect(0, message.y + message.height() + GAP, WIDTH, BTN_HEIGHT);
         add(btnWeapon);
 
-        RedButton btnArmor = new RedButton(TXT_ARMOR) {
+        RedButton btnArmor = new RedButton(TXT_STEW) {
             @Override
             protected void onClick() {
-                selectReward(ash, item, Ghost.Quest.armor);
+                selectReward(ash, item, GoblinAsh.Quest.stew);
             }
         };
         btnArmor.setRect(0, btnWeapon.bottom() + GAP, WIDTH, BTN_HEIGHT);
@@ -97,8 +95,8 @@ public class WndAsh extends Window {
             Dungeon.level.drop(reward, ash.pos).sprite.drop();
         }
 
-        ash.yell("Farewell, adventurer!");
+        ash.yell("Goodbye! and Bon appetit!");
 
-        Ghost.Quest.complete();
+        GoblinAsh.Quest.complete();
     }
 }
