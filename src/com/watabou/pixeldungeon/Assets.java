@@ -89,8 +89,10 @@ public class Assets {
     public static final String MIMIC = "mimic.png";
 
     // new mobs
+    public static final String ALPHAWORG = "alphaworg.png";
     public static final String GOBLIN = "goblin.png";
     public static final String WORG = "worg.png";
+    public static final String GOBLIN_RIDER = "goblinrider.png";
     public static final String GOBLIN_KEEPER = "goblinkeeper.png";
     public static final String PIRATE = "goblinpirate.png";
     public static final String ASH = "goblinash.png";

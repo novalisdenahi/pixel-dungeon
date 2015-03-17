@@ -30,6 +30,7 @@ import com.watabou.pixeldungeon.actors.buffs.Buff;
 import com.watabou.pixeldungeon.actors.buffs.Burning;
 import com.watabou.pixeldungeon.actors.buffs.Charm;
 import com.watabou.pixeldungeon.actors.buffs.Cripple;
+import com.watabou.pixeldungeon.actors.buffs.Fear;
 import com.watabou.pixeldungeon.actors.buffs.Frost;
 import com.watabou.pixeldungeon.actors.buffs.Invisibility;
 import com.watabou.pixeldungeon.actors.buffs.Levitation;
@@ -191,7 +192,7 @@ public abstract class Char extends Actor {
 
             int dr = (this instanceof Hero) && (((Hero) this).rangedWeapon != null)
                     && (((Hero) this).subClass == HeroSubClass.SNIPER) ? 0 :
-                    Random.IntRange(0, enemy.dr());
+                        Random.IntRange(0, enemy.dr());
 
             int dmg = damageRoll();
             int effectiveDamage = Math.max(dmg - dr, 0);
@@ -322,8 +323,8 @@ public abstract class Char extends Actor {
         if ((dmg > 0) || (src instanceof Char)) {
             sprite.showStatus(HP > (HT / 2) ?
                     CharSprite.WARNING :
-                    CharSprite.NEGATIVE,
-                    Integer.toString(dmg));
+                        CharSprite.NEGATIVE,
+                        Integer.toString(dmg));
         }
         if (HP <= 0) {
             die(src);
@@ -385,7 +386,7 @@ public abstract class Char extends Actor {
 
     public void move(int step) {
 
-        if (Level.adjacent(step, pos) && (buff(Vertigo.class) != null)) {
+        if (Level.adjacent(step, pos) && ((buff(Vertigo.class) != null ) || (buff(Fear.class) != null ))) {
             step = pos + Level.NEIGHBOURS8[Random.Int(8)];
             if (!(Level.passable[step] || Level.avoid[step]) || (Actor.findChar(step) != null)) {
                 return;

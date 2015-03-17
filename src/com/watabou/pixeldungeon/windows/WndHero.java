@@ -103,7 +103,7 @@ public class WndHero extends WndTabbed {
                 }
             };
             btnCatalogus
-                    .setRect(0, title.y + title.height(), btnCatalogus.reqWidth() + 2, btnCatalogus.reqHeight() + 2);
+            .setRect(0, title.y + title.height(), btnCatalogus.reqWidth() + 2, btnCatalogus.reqHeight() + 2);
             add(btnCatalogus);
 
             RedButton btnJournal = new RedButton(TXT_JOURNAL) {
@@ -127,7 +127,7 @@ public class WndHero extends WndTabbed {
             pos += GAP;
 
             statSlot(TXT_GOLD, Statistics.goldCollected);
-            statSlot(TXT_DEPTH, Statistics.deepestFloor);
+            statSlot(TXT_DEPTH, Statistics.getDeepestFloor(Dungeon.dungeonType));
 
             pos += GAP;
         }

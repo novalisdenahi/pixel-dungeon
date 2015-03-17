@@ -20,29 +20,41 @@ package com.watabou.pixeldungeon.sprites;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.pixeldungeon.Assets;
 
-public class GoblinAshSprite extends MobSprite {
+public class GoblinRiderSprite extends MobSprite {
 
-    public GoblinAshSprite() {
+    private Animation dieWithoutGoblin;
+
+    public GoblinRiderSprite() {
         super();
 
-        texture(Assets.ASH);
+        texture(Assets.GOBLIN_RIDER);
 
-        TextureFilm frames = new TextureFilm(texture, 14, 16);
+        TextureFilm frames = new TextureFilm(texture, 16, 18);
 
-        idle = new Animation(10, true);
-        idle.frames(frames, 1, 1, 1, 1, 1, 0, 0, 0, 0);
+        idle = new Animation(2, true);
+        idle.frames(frames, 0, 0, 0, 1, 0, 0, 1, 1);
 
-        run = idle.clone();
-        die = idle.clone();
-        attack = idle.clone();
+        run = new Animation(16, false);
+        run.frames(frames, 4, 5, 6, 7, 8, 9, 4);
+
+        attack = new Animation(12, false);
+        attack.frames(frames, 2, 3, 2);
+
+        die = new Animation(12, false);
+        die.frames(frames, 10, 11, 12, 13);
+
+        dieWithoutGoblin = new Animation(12, false);
+        dieWithoutGoblin.frames(frames, 14, 15, 16, 17);
 
         play(idle);
     }
 
-    @Override
-    public void die() {
-        super.die();
+    public void dieWithoutGoblin() {
+        sleeping = false;
+        play(dieWithoutGoblin);
 
+        if (emo != null) {
+            emo.killAndErase();
+        }
     }
-
 }

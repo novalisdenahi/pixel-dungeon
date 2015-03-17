@@ -313,7 +313,7 @@ public class Yog extends Mob {
     }
 
     {
-        name = Dungeon.depth == Statistics.deepestFloor ? "Yog-Dzewa" : "echo of Yog-Dzewa";
+        name = Dungeon.depth == Statistics.getDeepestFloor(Dungeon.dungeonType) ? "Yog-Dzewa" : "echo of Yog-Dzewa";
         spriteClass = YogSprite.class;
 
         HP = HT = 300;

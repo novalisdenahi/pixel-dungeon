@@ -17,6 +17,8 @@
  */
 package com.watabou.pixeldungeon;
 
+import hu.denahi.pixeldungeon.holy.quest.DungeonType;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -83,7 +85,9 @@ public enum Rankings {
     }
 
     public static final int TABLE_SIZE = 6;
-    public static final String RANKINGS_FILE = "rankings.dat";
+    public static final String RANKINGS_FILE_YOG = "rankings.dat";
+    public static final String RANKINGS_FILE_GOBLIN = "rankings_goblin.dat";
+    public static final String RANKINGS_FILE_MAGE = "rankings_mage.dat";
 
     public static final String DETAILS_FILE = "game_%d.dat";
     public ArrayList<Record> records;
@@ -104,18 +108,16 @@ public enum Rankings {
         }
     };
 
-    public void load() {
-
-        if (records != null) {
-            return;
-        }
+    public void load(final int dungeonType) {
+        // TODO always reload
+        // if (records != null) {
+        // return;
+        // }
 
         records = new ArrayList<Rankings.Record>();
 
         try {
-            InputStream input = Game.instance.openFileInput(RANKINGS_FILE);
-            Bundle bundle = Bundle.read(input);
-            input.close();
+            Bundle bundle = loadRankingsFile(dungeonType);
 
             for (Bundlable record : bundle.getCollection(RECORDS)) {
                 records.add((Record) record);
@@ -140,7 +142,30 @@ public enum Rankings {
         }
     }
 
-    public void save() {
+    private Bundle loadRankingsFile(final int dungeonType) throws IOException {
+        InputStream input;
+        switch (dungeonType) {
+        case DungeonType.YOG:
+            input = Game.instance.openFileInput(RANKINGS_FILE_YOG);
+            break;
+        case DungeonType.GOBLIN:
+            input = Game.instance.openFileInput(RANKINGS_FILE_GOBLIN);
+            break;
+        case DungeonType.MAD_MAGE:
+            input = Game.instance.openFileInput(RANKINGS_FILE_MAGE);
+            break;
+        default:
+            // as always YOG
+            input = Game.instance.openFileInput(RANKINGS_FILE_YOG);
+            break;
+        }
+
+        Bundle bundle = Bundle.read(input);
+        input.close();
+        return bundle;
+    }
+
+    public void save(final int dungeonType) {
         Bundle bundle = new Bundle();
         bundle.put(RECORDS, records);
         bundle.put(LATEST, lastRecord);
@@ -148,11 +173,31 @@ public enum Rankings {
         bundle.put(WON, wonNumber);
 
         try {
-            OutputStream output = Game.instance.openFileOutput(RANKINGS_FILE, Context.MODE_PRIVATE);
-            Bundle.write(bundle, output);
-            output.close();
+            saveRankingsFile(dungeonType, bundle);
         } catch (Exception e) {
         }
+    }
+
+    private void saveRankingsFile(final int dungeonType, final Bundle bundle) throws IOException {
+        OutputStream output;
+        switch (dungeonType) {
+        case DungeonType.YOG:
+            output = Game.instance.openFileOutput(RANKINGS_FILE_YOG, Context.MODE_PRIVATE);
+            break;
+        case DungeonType.GOBLIN:
+            output = Game.instance.openFileOutput(RANKINGS_FILE_GOBLIN, Context.MODE_PRIVATE);
+            break;
+        case DungeonType.MAD_MAGE:
+            output = Game.instance.openFileOutput(RANKINGS_FILE_MAGE, Context.MODE_PRIVATE);
+            break;
+        default:
+            // as always YOG
+            output = Game.instance.openFileOutput(RANKINGS_FILE_YOG, Context.MODE_PRIVATE);
+            break;
+        }
+
+        Bundle.write(bundle, output);
+        output.close();
     }
 
     private int score(final boolean win) {
@@ -161,7 +206,7 @@ public enum Rankings {
 
     public void submit(final boolean win) {
 
-        load();
+        load(Dungeon.dungeonType);
 
         Record rec = new Record();
 
@@ -207,6 +252,6 @@ public enum Rankings {
 
         Badges.validateGamesPlayed();
 
-        save();
+        save(Dungeon.dungeonType);
     }
 }

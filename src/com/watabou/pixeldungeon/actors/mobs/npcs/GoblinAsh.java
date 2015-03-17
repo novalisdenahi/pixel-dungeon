@@ -206,10 +206,10 @@ public class GoblinAsh extends NPC {
     private static final String TXT_NICE2MEETYOU = "Nice to meet you! My name is Ash. I'am not like the other goblins. "
             + " I'am not into bad things more like into cooking. I wana be a chef. \n"
             +
-            "I wanna be the very best, \n Like no one ever was. \n To cook them all is my real test, \n To cook them well them is my cause. \n";
+            "I wanna be the very best, \n Like no one ever was. \n To cook all food is my real test, \n To cook them well is my cause. \n";
 
     private static final String TXT_PAN1 = TXT_NICE2MEETYOU
-            + "But the other goblins hate me, and they stolen my favorite _pan_. Please bring it back to me. My precious! I will I will be thankful.";
+            + "But the other goblins hate me, and they stolen my favorite _pan_. Please bring it back to me. My precious! I will be thankful.";
     private static final String TXT_MUSHROOM1 = TXT_NICE2MEETYOU
             + "But in order to be the best, the best wages on groceries I need. Please bring me _purple magic mushroom_ .";
     private static final String TXT_PAN2 = "Nothing yet? Please find further! I hope they don't use my _pan_ , in particular, don't use like a hat!";
@@ -253,13 +253,13 @@ public class GoblinAsh extends NPC {
         } else if (Quest.given) {
             Item item = Quest.alternative ?
                     Dungeon.hero.belongings.getItem(Mushroom.class) :
-                    Dungeon.hero.belongings.getItem(Pan.class);
-            if (item != null) {
-                GameScene.show(new WndAsh(this, item));
-            } else {
-                GameScene.show(new WndQuest(this, Quest.alternative ? TXT_MUSHROOM2 : TXT_PAN2));
+                        Dungeon.hero.belongings.getItem(Pan.class);
+                    if (item != null) {
+                        GameScene.show(new WndAsh(this, item));
+                    } else {
+                        GameScene.show(new WndQuest(this, Quest.alternative ? TXT_MUSHROOM2 : TXT_PAN2));
 
-            }
+                    }
         } else {
             GameScene.show(new WndQuest(this, Quest.alternative ? TXT_MUSHROOM1 : TXT_PAN1));
             Quest.placeMushroom();

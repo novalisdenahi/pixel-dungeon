@@ -151,7 +151,7 @@ public class SymbolOfEstera extends Item {
 
                 updateQuickslot();
 
-                GLog.w(TXT_BLESS);
+                GLog.p(TXT_BLESS);
             } else {
                 GLog.w(TXT_EMPTY);
             }
@@ -177,7 +177,7 @@ public class SymbolOfEstera extends Item {
 
                 updateQuickslot();
 
-                GLog.w(TXT_HEALING);
+                GLog.p(TXT_HEALING);
             } else {
                 GLog.w(TXT_EMPTY);
             }

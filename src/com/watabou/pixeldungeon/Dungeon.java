@@ -53,6 +53,7 @@ import com.watabou.pixeldungeon.levels.CavesLevel;
 import com.watabou.pixeldungeon.levels.CityBossLevel;
 import com.watabou.pixeldungeon.levels.CityLevel;
 import com.watabou.pixeldungeon.levels.DeadEndLevel;
+import com.watabou.pixeldungeon.levels.GoblinSewerBossLevel;
 import com.watabou.pixeldungeon.levels.GoblinSewerLevel;
 import com.watabou.pixeldungeon.levels.HallsBossLevel;
 import com.watabou.pixeldungeon.levels.HallsLevel;
@@ -456,7 +457,7 @@ public class Dungeon {
         Journal.restoreFromBundle(bundle);
 
         droppedItems = new SparseArray<ArrayList<Item>>();
-        for (int i = 2; i <= (Statistics.deepestFloor + 1); i++) {
+        for (int i = 2; i <= (Statistics.getDeepestFloor(dungeonType) + 1); i++) {
             ArrayList<Item> dropped = new ArrayList<Item>();
             for (Bundlable b : bundle.getCollection(String.format(DROPPED, i))) {
                 dropped.add((Item) b);
@@ -489,11 +490,18 @@ public class Dungeon {
             level = new GoblinSewerLevel();
             break;
         case 5:
+            level = new GoblinSewerBossLevel();
+            break;
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+        case 10:
             level = new LastLevel();
             break;
         default:
             level = new DeadEndLevel();
-            Statistics.deepestFloor--;
+            Statistics.decDeepestFloor(dungeonType);
         }
         return level;
     }
@@ -503,8 +511,9 @@ public class Dungeon {
         Actor.clear();
 
         depth++;
-        if (depth > Statistics.deepestFloor) {
-            Statistics.deepestFloor = depth;
+        if (depth > Statistics.getDeepestFloor(dungeonType)) {
+
+            Statistics.setDeepestFloor(dungeonType, depth);
 
             if (Statistics.qualifiedForNoKilling) {
                 Statistics.completedWithNoKilling = true;
@@ -595,7 +604,7 @@ public class Dungeon {
             break;
         default:
             level = new DeadEndLevel();
-            Statistics.deepestFloor--;
+            Statistics.decDeepestFloor(dungeonType);
         }
         return level;
     }

@@ -19,40 +19,14 @@ package com.watabou.pixeldungeon.actors.buffs;
 
 import com.watabou.pixeldungeon.actors.Char;
 import com.watabou.pixeldungeon.ui.BuffIndicator;
-import com.watabou.utils.Bundle;
 
 public class Fear extends FlavourBuff {
 
-    protected float duration;
+    public static final float DURATION = 5f; // TODO check this
 
-    private static final String DURATION = "duration";
-
-    @Override
-    public boolean act() {
-        spend(duration);
-        detach();
-        return true;
+    public static float duration(final Char ch) {
+        return DURATION;
     }
-
-    @Override
-    public boolean attachTo(final Char target) {
-        if (super.attachTo(target)) {
-            // TODO FIXME
-            // target.pacified = false;
-            target.paralysed = true;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public void detach() {
-        // TODO FIXME
-        // target.pacified = false;
-        target.paralysed = false;
-        super.detach();
-    };
 
     @Override
     public int icon() {
@@ -60,24 +34,8 @@ public class Fear extends FlavourBuff {
     }
 
     @Override
-    public void restoreFromBundle(final Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        duration = bundle.getFloat(DURATION);
-    }
-
-    public void set(final float duration) {
-        this.duration = duration;
-    }
-
-    @Override
-    public void storeInBundle(final Bundle bundle) {
-        super.storeInBundle(bundle);
-        bundle.put(DURATION, duration);
-
-    }
-
-    @Override
     public String toString() {
         return "In Fear";
     }
+
 }

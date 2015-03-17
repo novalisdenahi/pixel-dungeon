@@ -307,7 +307,7 @@ public class WndRanking extends WndTabbed {
 
             pos += GAP;
 
-            pos = statSlot(this, TXT_DEPTH, Integer.toString(Statistics.deepestFloor), pos);
+            pos = statSlot(this, TXT_DEPTH, Integer.toString(Statistics.getDeepestFloor(Dungeon.dungeonType)), pos);
             pos = statSlot(this, TXT_ENEMIES, Integer.toString(Statistics.enemiesSlain), pos);
             pos = statSlot(this, TXT_GOLD, Integer.toString(Statistics.goldCollected), pos);
 

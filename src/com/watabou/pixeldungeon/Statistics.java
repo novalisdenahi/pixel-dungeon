@@ -17,29 +17,36 @@
  */
 package com.watabou.pixeldungeon;
 
+import hu.denahi.pixeldungeon.holy.quest.DungeonType;
+
 import com.watabou.utils.Bundle;
 
 public class Statistics {
 
     public static int goldCollected;
-    public static int deepestFloor;
+
+    private static int deepestFloor;
+    public static int deepestFloorGoblin;
+    public static int deepestFloorMadMage;
     public static int enemiesSlain;
     public static int foodEaten;
     public static int potionsCooked;
     public static int piranhasKilled;
     public static int nightHunt;
     public static int ankhsUsed;
-
     public static float duration;
 
     public static boolean qualifiedForNoKilling = false;
-    public static boolean completedWithNoKilling = false;
 
+    public static boolean completedWithNoKilling = false;
     public static boolean amuletObtained = false;
 
     private static final String GOLD = "score";
 
     private static final String DEEPEST = "maxDepth";
+
+    private static final String DEEPEST_GOBLIN = "maxDepthGoblin";
+    private static final String DEEPEST_MAD_MAGE = "maxDepthMadMage";
     private static final String SLAIN = "enemiesSlain";
     private static final String FOOD = "foodEaten";
     private static final String ALCHEMY = "potionsCooked";
@@ -49,10 +56,38 @@ public class Statistics {
     private static final String DURATION = "duration";
     private static final String AMULET = "amuletObtained";
 
+    public static int decDeepestFloor(final int dungeonType) {
+        switch (dungeonType) {
+        case DungeonType.GOBLIN:
+            return deepestFloorGoblin--;
+        case DungeonType.YOG:
+            return deepestFloor--;
+        case DungeonType.MAD_MAGE:
+            return deepestFloorMadMage--;
+        default:
+            return deepestFloor--;
+        }
+    }
+
+    public static int getDeepestFloor(final int dungeonType) {
+        switch (dungeonType) {
+        case DungeonType.GOBLIN:
+            return deepestFloorGoblin;
+        case DungeonType.YOG:
+            return deepestFloor;
+        case DungeonType.MAD_MAGE:
+            return deepestFloorMadMage;
+        default:
+            return deepestFloor;
+        }
+    }
+
     public static void reset() {
 
         goldCollected = 0;
         deepestFloor = 0;
+        deepestFloorGoblin = 0;
+        deepestFloorMadMage = 0;
         enemiesSlain = 0;
         foodEaten = 0;
         potionsCooked = 0;
@@ -71,6 +106,8 @@ public class Statistics {
     public static void restoreFromBundle(final Bundle bundle) {
         goldCollected = bundle.getInt(GOLD);
         deepestFloor = bundle.getInt(DEEPEST);
+        deepestFloorGoblin = bundle.getInt(DEEPEST_GOBLIN);
+        deepestFloorMadMage = bundle.getInt(DEEPEST_MAD_MAGE);
         enemiesSlain = bundle.getInt(SLAIN);
         foodEaten = bundle.getInt(FOOD);
         potionsCooked = bundle.getInt(ALCHEMY);
@@ -81,9 +118,24 @@ public class Statistics {
         amuletObtained = bundle.getBoolean(AMULET);
     }
 
+    public static int setDeepestFloor(final int dungeonType, final int newDepth) {
+        switch (dungeonType) {
+        case DungeonType.GOBLIN:
+            return deepestFloorGoblin--;
+        case DungeonType.YOG:
+            return deepestFloor--;
+        case DungeonType.MAD_MAGE:
+            return deepestFloorMadMage--;
+        default:
+            return deepestFloor--;
+        }
+    }
+
     public static void storeInBundle(final Bundle bundle) {
         bundle.put(GOLD, goldCollected);
         bundle.put(DEEPEST, deepestFloor);
+        bundle.put(DEEPEST_GOBLIN, deepestFloorGoblin);
+        bundle.put(DEEPEST_MAD_MAGE, deepestFloorMadMage);
         bundle.put(SLAIN, enemiesSlain);
         bundle.put(FOOD, foodEaten);
         bundle.put(ALCHEMY, potionsCooked);

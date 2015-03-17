@@ -48,9 +48,9 @@ public class Tengu extends Mob {
     private static final int JUMP_DELAY = 5;
 
     {
-        name = Dungeon.depth == Statistics.deepestFloor ? "Tengu" : "memory of Tengu";
+        name = Dungeon.depth == Statistics.getDeepestFloor(Dungeon.dungeonType) ? "Tengu" : "memory of Tengu";
 
-        mobType = Dungeon.depth == Statistics.deepestFloor ? MobType.NONE : MobType.UNDEAD;
+        mobType = Dungeon.depth == Statistics.getDeepestFloor(Dungeon.dungeonType) ? MobType.NONE : MobType.UNDEAD;
         spriteClass = TenguSprite.class;
 
         HP = HT = 120;
@@ -87,7 +87,7 @@ public class Tengu extends Mob {
     @Override
     public String description() {
         return
-        "Tengu are members of the ancient assassins clan, which is also called Tengu. " +
+                "Tengu are members of the ancient assassins clan, which is also called Tengu. " +
                 "These assassins are noted for extensive use of shuriken and traps.";
     }
 

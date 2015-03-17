@@ -46,7 +46,7 @@ public class Goo extends Mob {
     private static final float PUMP_UP_DELAY = 2f;
 
     {
-        name = Dungeon.depth == Statistics.deepestFloor ? "Goo" : "spawn of Goo";
+        name = Dungeon.depth == Statistics.getDeepestFloor(Dungeon.dungeonType) ? "Goo" : "spawn of Goo";
 
         HP = HT = 80;
         EXP = 10;

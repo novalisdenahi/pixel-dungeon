@@ -48,7 +48,7 @@ import com.watabou.utils.Random;
 public class DM300 extends Mob {
 
     {
-        name = Dungeon.depth == Statistics.deepestFloor ? "DM-300" : "DM-350";
+        name = Dungeon.depth == Statistics.getDeepestFloor(Dungeon.dungeonType) ? "DM-300" : "DM-350";
         spriteClass = DM300Sprite.class;
 
         HP = HT = 200;
@@ -91,7 +91,7 @@ public class DM300 extends Mob {
     @Override
     public String description() {
         return
-                "This machine was created by the Dwarves several centuries ago. Later, Dwarves started to replace machines with "
+        "This machine was created by the Dwarves several centuries ago. Later, Dwarves started to replace machines with "
                 +
                 "golems, elementals and even demons. Eventually it led their civilization to the decline. The DM-300 and similar "
                 +

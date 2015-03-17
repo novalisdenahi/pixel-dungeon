@@ -181,7 +181,7 @@ public class InterlevelScene extends PixelScene {
         }
 
         Level level;
-        if (Dungeon.depth >= Statistics.deepestFloor) {
+        if (Dungeon.depth >= Statistics.getDeepestFloor(Dungeon.dungeonType)) {
             level = Dungeon.newLevel();
         } else {
             Dungeon.depth++;
@@ -196,7 +196,7 @@ public class InterlevelScene extends PixelScene {
         Dungeon.saveLevel();
 
         Level level;
-        if (Dungeon.depth >= Statistics.deepestFloor) {
+        if (Dungeon.depth >= Statistics.getDeepestFloor(Dungeon.dungeonType)) {
             level = Dungeon.newLevel();
         } else {
             Dungeon.depth++;
@@ -216,7 +216,7 @@ public class InterlevelScene extends PixelScene {
 
         Dungeon.loadGame(StartScene.curClass);
         if (Dungeon.depth == -1) {
-            Dungeon.depth = Statistics.deepestFloor;
+            Dungeon.depth = Statistics.getDeepestFloor(Dungeon.dungeonType);
             Dungeon.switchLevel(Dungeon.loadLevel(StartScene.curClass), -1);
         } else {
             Level level = Dungeon.loadLevel(StartScene.curClass);

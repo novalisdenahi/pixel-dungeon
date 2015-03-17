@@ -380,6 +380,8 @@ public class Hero extends Char {
 
         enemy = action.target;
 
+        // TODO add fear buff check too! or not..
+
         if (Level.adjacent(pos, enemy.pos) && enemy.isAlive() && !isCharmedBy(enemy)) {
 
             spend(attackDelay());
@@ -871,7 +873,7 @@ public class Hero extends Char {
         }
 
         int aEnc = belongings.armor != null ? belongings.armor.STR - STR() : 0;
-        // TODO sure about this
+        // TODO sure about this FIXME i think the PALADIN bonus need to be refactored
         if (subClass == HeroSubClass.PALADIN) {
             aEnc--;
         }

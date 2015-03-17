@@ -220,7 +220,7 @@ public abstract class Mob extends Char {
 
     public MobType mobType = MobType.NONE;
 
-    private static final String TXT_DIED = "You hear something died in the distance";
+    protected static final String TXT_DIED = "You hear something died in the distance";
     protected static final String TXT_ECHO = "echo of ";
     protected static final String TXT_NOTICE1 = "?!";
     protected static final String TXT_RAGE = "#$%^";
@@ -282,7 +282,7 @@ public abstract class Mob extends Char {
 
         boolean enemyInFOV =
                 (enemy != null) && enemy.isAlive() &&
-                Level.fieldOfView[enemy.pos] && (enemy.invisible <= 0);
+                        Level.fieldOfView[enemy.pos] && (enemy.invisible <= 0);
 
         return state.act(enemyInFOV, justAlerted);
     }

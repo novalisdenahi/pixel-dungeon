@@ -74,23 +74,24 @@ public class Bestiary {
             break;
         case 5:
             chances = new float[] { 1 };
-            classes = new Class<?>[] { Goo.class }; // TODO add the real boos
+            classes = new Class<?>[] { AlphaWorg.class };
             break;
         case 6:
-            chances = new float[] { 2, 1, 1 };
-            classes = new Class<?>[] { Goblin.class, GoblinMage.class, GoblinFireMage.class }; // no empty worg after 5
+            chances = new float[] { 2, 2, 1, 1 };
+            classes = new Class<?>[] { Goblin.class, GoblinRider.class, GoblinMage.class, GoblinFireMage.class };
+            // no empty worg after 5
             break;
         case 7:
-            chances = new float[] { 2, 2, 1 };
-            classes = new Class<?>[] { Goblin.class, GoblinMage.class, GoblinFireMage.class };
+            chances = new float[] { 2, 2, 2, 1 };
+            classes = new Class<?>[] { Goblin.class, GoblinRider.class, GoblinMage.class, GoblinFireMage.class };
             break;
         case 8:
-            chances = new float[] { 1, 3, 1 };
-            classes = new Class<?>[] { Goblin.class, GoblinMage.class, GoblinFireMage.class };
+            chances = new float[] { 1, 3, 2, 1 };
+            classes = new Class<?>[] { Goblin.class, GoblinRider.class, GoblinMage.class, GoblinFireMage.class };
             break;
         case 9:
-            chances = new float[] { 1, 1 };
-            classes = new Class<?>[] { GoblinMage.class, GoblinFireMage.class };
+            chances = new float[] { 3, 2, 1 };
+            classes = new Class<?>[] { GoblinRider.class, GoblinMage.class, GoblinFireMage.class };
             break;
         case 10:
             chances = new float[] { 1 };

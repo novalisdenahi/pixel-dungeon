@@ -17,13 +17,18 @@
  */
 package com.watabou.pixeldungeon.scenes;
 
+import hu.denahi.pixeldungeon.holy.quest.DungeonType;
+
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.BitmapTextMultiline;
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Music;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Button;
 import com.watabou.pixeldungeon.Assets;
+import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.PixelDungeon;
 import com.watabou.pixeldungeon.Rankings;
 import com.watabou.pixeldungeon.effects.Flare;
@@ -37,6 +42,167 @@ import com.watabou.pixeldungeon.windows.WndError;
 import com.watabou.pixeldungeon.windows.WndRanking;
 
 public class RankingsScene extends PixelScene {
+    private class DungeonTypeItem extends Button {
+
+        public static final float SIZE = 17;
+
+        private static final int IMAGE_SIZE = 32;
+
+        private Image image;
+        private int dungeonType;
+
+        public DungeonTypeItem(final int dungeonType) {
+            super();
+            this.dungeonType = dungeonType;
+            image.frame(image.texture.uvRect(dungeonType * IMAGE_SIZE, 0, (dungeonType + 1) * IMAGE_SIZE, IMAGE_SIZE));
+            image.scale.scale(0.5f);
+            setSize(SIZE, SIZE);
+        }
+
+        @Override
+        protected void createChildren() {
+            super.createChildren();
+
+            image = new Image(Assets.QUESTBOARD);
+            add(image);
+
+        }
+
+        @Override
+        protected void layout() {
+            super.layout();
+            image.x = PixelScene.align(x + ((width - image.width()) / 2));
+            image.y = PixelScene.align(y);
+        }
+
+        @Override
+        protected void onTouchDown() {
+            image.brightness(1.5f);
+            Sample.INSTANCE.play(Assets.SND_CLICK, 1, 1, 0.8f);
+            pages[selected].visible = false;
+            selected = dungeonType;
+            pages[selected].visible = true;
+        }
+
+        @Override
+        protected void onTouchUp() {
+            image.resetColor();
+        }
+    }
+
+    private class RankingListPage extends Group {
+
+        public RankingListPage(final int dungeonType) {
+            Rankings.INSTANCE.load(dungeonType);
+
+            if (Rankings.INSTANCE.records.size() > 0) {
+                float rowHeight = PixelDungeon.landscape() ? ROW_HEIGHT_L : ROW_HEIGHT_P;
+
+                float left = ((w - Math.min(MAX_ROW_WIDTH, w)) / 2) + GAP;
+                float top = PixelScene.align((h - ((rowHeight * MAX_ROW_NUMBER))) / 2);
+                int pos = 0;
+
+                for (Rankings.Record rec : Rankings.INSTANCE.records) {
+                    Record row = new Record(pos, pos == Rankings.INSTANCE.lastRecord, rec);
+                    row.setRect(left, top + (pos * rowHeight), w - (left * 2), rowHeight);
+                    add(row);
+
+                    pos++;
+                }
+
+                if (Rankings.INSTANCE.totalNumber >= Rankings.TABLE_SIZE) {
+                    BitmapText label = PixelScene.createText(TXT_TOTAL, 8);
+                    label.hardlight(DEFAULT_COLOR);
+                    label.measure();
+                    add(label);
+
+                    BitmapText won = PixelScene.createText(Integer.toString(Rankings.INSTANCE.wonNumber), 8);
+                    won.hardlight(Window.TITLE_COLOR);
+                    won.measure();
+                    add(won);
+
+                    BitmapText total = PixelScene.createText("/" + Rankings.INSTANCE.totalNumber, 8);
+                    total.hardlight(DEFAULT_COLOR);
+                    total.measure();
+                    total.x = PixelScene.align((w - total.width()) / 2);
+                    total.y = PixelScene.align(top + (pos * rowHeight) + GAP);
+                    add(total);
+
+                    float tw = label.width() + won.width() + total.width();
+                    label.x = PixelScene.align((w - tw) / 2);
+                    won.x = label.x + label.width();
+                    total.x = won.x + won.width();
+                    label.y = won.y = total.y = PixelScene.align(top + (pos * rowHeight) + GAP);
+                }
+
+            } else {
+
+                BitmapText titleNoGames = PixelScene.createText(TXT_NO_GAMES, 8);
+                titleNoGames.hardlight(DEFAULT_COLOR);
+                titleNoGames.measure();
+                titleNoGames.x = PixelScene.align((w - titleNoGames.width()) / 2);
+                titleNoGames.y = PixelScene.align((h - titleNoGames.height()) / 2);
+                add(titleNoGames);
+
+            }
+        }
+
+    }
+
+    // private void createDungeonTypeRankingList(final int dungeonType) {
+    // Rankings.INSTANCE.load(dungeonType);
+    //
+    // if (Rankings.INSTANCE.records.size() > 0) {
+    // float rowHeight = PixelDungeon.landscape() ? ROW_HEIGHT_L : ROW_HEIGHT_P;
+    //
+    // float left = ((w - Math.min(MAX_ROW_WIDTH, w)) / 2) + GAP;
+    // float top = PixelScene.align((h - ((rowHeight * MAX_ROW_NUMBER))) / 2);
+    // int pos = 0;
+    //
+    // for (Rankings.Record rec : Rankings.INSTANCE.records) {
+    // Record row = new Record(pos, pos == Rankings.INSTANCE.lastRecord, rec);
+    // row.setRect(left, top + (pos * rowHeight), w - (left * 2), rowHeight);
+    // add(row);
+    //
+    // pos++;
+    // }
+    //
+    // if (Rankings.INSTANCE.totalNumber >= Rankings.TABLE_SIZE) {
+    // BitmapText label = PixelScene.createText(TXT_TOTAL, 8);
+    // label.hardlight(DEFAULT_COLOR);
+    // label.measure();
+    // add(label);
+    //
+    // BitmapText won = PixelScene.createText(Integer.toString(Rankings.INSTANCE.wonNumber), 8);
+    // won.hardlight(Window.TITLE_COLOR);
+    // won.measure();
+    // add(won);
+    //
+    // BitmapText total = PixelScene.createText("/" + Rankings.INSTANCE.totalNumber, 8);
+    // total.hardlight(DEFAULT_COLOR);
+    // total.measure();
+    // total.x = PixelScene.align((w - total.width()) / 2);
+    // total.y = PixelScene.align(top + (pos * rowHeight) + GAP);
+    // add(total);
+    //
+    // float tw = label.width() + won.width() + total.width();
+    // label.x = PixelScene.align((w - tw) / 2);
+    // won.x = label.x + label.width();
+    // total.x = won.x + won.width();
+    // label.y = won.y = total.y = PixelScene.align(top + (pos * rowHeight) + GAP);
+    // }
+    //
+    // } else {
+    //
+    // BitmapText titleNoGames = PixelScene.createText(TXT_NO_GAMES, 8);
+    // titleNoGames.hardlight(DEFAULT_COLOR);
+    // titleNoGames.measure();
+    // titleNoGames.x = PixelScene.align((w - titleNoGames.width()) / 2);
+    // titleNoGames.y = PixelScene.align((h - titleNoGames.height()) / 2);
+    // add(titleNoGames);
+    //
+    // }
+    // }
 
     public static class Record extends Button {
 
@@ -139,20 +305,29 @@ public class RankingsScene extends PixelScene {
 
     private static final int DEFAULT_COLOR = 0xCCCCCC;
     private static final String TXT_TITLE = "Top Rankings";
+
     private static final String TXT_TOTAL = "Games played: ";
 
     private static final String TXT_NO_GAMES = "No games have been played yet.";
-
     private static final String TXT_NO_INFO = "No additional information";
+
     private static final float ROW_HEIGHT_L = 22;
 
     private static final float ROW_HEIGHT_P = 28;
 
     private static final float MAX_ROW_WIDTH = 180;
 
+    private static final float MAX_ROW_NUMBER = 6;
+
     private static final float GAP = 4;
 
     private Archs archs;
+    private int w = Camera.main.width;
+
+    private int h = Camera.main.height;
+
+    private int selected;
+    private Group[] pages = new Group[3];
 
     @Override
     public void create() {
@@ -164,74 +339,40 @@ public class RankingsScene extends PixelScene {
 
         uiCamera.visible = false;
 
-        int w = Camera.main.width;
-        int h = Camera.main.height;
-
         archs = new Archs();
         archs.setSize(w, h);
         add(archs);
 
-        Rankings.INSTANCE.load();
+        BitmapText title = PixelScene.createText(TXT_TITLE, 9);
+        title.hardlight(Window.TITLE_COLOR);
+        title.measure();
+        title.x = PixelScene.align((w - title.width()) / 2);
+        title.y = PixelScene.align((15 - title.baseLine()) / 2);
+        add(title);
 
-        if (Rankings.INSTANCE.records.size() > 0) {
+        DungeonTypeItem yogDungeonTypeItem = new DungeonTypeItem(DungeonType.YOG);
+        add(yogDungeonTypeItem);
+        DungeonTypeItem goblinDungeonTypeItem = new DungeonTypeItem(DungeonType.GOBLIN);
+        add(goblinDungeonTypeItem);
+        DungeonTypeItem mageDungeonTypeItem = new DungeonTypeItem(DungeonType.MAD_MAGE);
+        add(mageDungeonTypeItem);
 
-            float rowHeight = PixelDungeon.landscape() ? ROW_HEIGHT_L : ROW_HEIGHT_P;
-
-            float left = ((w - Math.min(MAX_ROW_WIDTH, w)) / 2) + GAP;
-            float top = PixelScene.align((h - (rowHeight * Rankings.INSTANCE.records.size())) / 2);
-
-            BitmapText title = PixelScene.createText(TXT_TITLE, 9);
-            title.hardlight(Window.TITLE_COLOR);
-            title.measure();
-            title.x = PixelScene.align((w - title.width()) / 2);
-            title.y = PixelScene.align(top - title.height() - GAP);
-            add(title);
-
-            int pos = 0;
-
-            for (Rankings.Record rec : Rankings.INSTANCE.records) {
-                Record row = new Record(pos, pos == Rankings.INSTANCE.lastRecord, rec);
-                row.setRect(left, top + (pos * rowHeight), w - (left * 2), rowHeight);
-                add(row);
-
-                pos++;
-            }
-
-            if (Rankings.INSTANCE.totalNumber >= Rankings.TABLE_SIZE) {
-                BitmapText label = PixelScene.createText(TXT_TOTAL, 8);
-                label.hardlight(DEFAULT_COLOR);
-                label.measure();
-                add(label);
-
-                BitmapText won = PixelScene.createText(Integer.toString(Rankings.INSTANCE.wonNumber), 8);
-                won.hardlight(Window.TITLE_COLOR);
-                won.measure();
-                add(won);
-
-                BitmapText total = PixelScene.createText("/" + Rankings.INSTANCE.totalNumber, 8);
-                total.hardlight(DEFAULT_COLOR);
-                total.measure();
-                total.x = PixelScene.align((w - total.width()) / 2);
-                total.y = PixelScene.align(top + (pos * rowHeight) + GAP);
-                add(total);
-
-                float tw = label.width() + won.width() + total.width();
-                label.x = PixelScene.align((w - tw) / 2);
-                won.x = label.x + label.width();
-                total.x = won.x + won.width();
-                label.y = won.y = total.y = PixelScene.align(top + (pos * rowHeight) + GAP);
-            }
-
-        } else {
-
-            BitmapText title = PixelScene.createText(TXT_NO_GAMES, 8);
-            title.hardlight(DEFAULT_COLOR);
-            title.measure();
-            title.x = PixelScene.align((w - title.width()) / 2);
-            title.y = PixelScene.align((h - title.height()) / 2);
-            add(title);
-
-        }
+        float dungeonTypeItemsY = title.y + GAP + title.height();
+        yogDungeonTypeItem.setPos((w / 2) - (DungeonTypeItem.SIZE / 2) - DungeonTypeItem.SIZE, dungeonTypeItemsY);
+        goblinDungeonTypeItem.setPos((w / 2) - (DungeonTypeItem.SIZE / 2), dungeonTypeItemsY);
+        mageDungeonTypeItem.setPos(((w / 2) - (DungeonTypeItem.SIZE / 2)) + DungeonTypeItem.SIZE, dungeonTypeItemsY);
+        // TODO this is so much inelegant
+        pages[DungeonType.YOG] = new RankingListPage(DungeonType.YOG);
+        add(pages[DungeonType.YOG]);
+        pages[DungeonType.YOG].visible = false;
+        pages[DungeonType.GOBLIN] = new RankingListPage(DungeonType.GOBLIN);
+        add(pages[DungeonType.GOBLIN]);
+        pages[DungeonType.GOBLIN].visible = false;
+        pages[DungeonType.MAD_MAGE] = new RankingListPage(DungeonType.MAD_MAGE);
+        add(pages[DungeonType.MAD_MAGE]);
+        pages[DungeonType.MAD_MAGE].visible = false;
+        selected = Dungeon.dungeonType;
+        pages[selected].visible = true;
 
         ExitButton btnExit = new ExitButton();
         btnExit.setPos(Camera.main.width - btnExit.width(), 0);

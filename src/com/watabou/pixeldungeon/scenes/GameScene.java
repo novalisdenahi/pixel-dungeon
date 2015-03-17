@@ -249,10 +249,10 @@ public class GameScene extends PixelScene {
 
         WndBag wnd = mode == Mode.SEED ?
                 WndBag.seedPouch(listener, mode, title) :
-                    WndBag.lastBag(listener, mode, title);
-                scene.add(wnd);
+                WndBag.lastBag(listener, mode, title);
+        scene.add(wnd);
 
-                return wnd;
+        return wnd;
     }
 
     public static void show(final Window wnd) {
@@ -356,7 +356,7 @@ public class GameScene extends PixelScene {
     public void brightness(final boolean value) {
         water.rm = water.gm = water.bm =
                 tiles.rm = tiles.gm = tiles.bm =
-                value ? 1.5f : 1.0f;
+                        value ? 1.5f : 1.0f;
         if (value) {
             fog.am = +2f;
             fog.aa = -1f;
@@ -482,7 +482,7 @@ public class GameScene extends PixelScene {
         log.setRect(0, toolbar.top(), attack.left(), 0);
         add(log);
 
-        if (Dungeon.depth < Statistics.deepestFloor) {
+        if (Dungeon.depth < Statistics.getDeepestFloor(Dungeon.dungeonType)) {
             GLog.i(TXT_WELCOME_BACK, Dungeon.depth);
         } else {
             GLog.i(TXT_WELCOME, Dungeon.depth);
