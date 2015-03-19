@@ -121,13 +121,16 @@ public class Statistics {
     public static int setDeepestFloor(final int dungeonType, final int newDepth) {
         switch (dungeonType) {
         case DungeonType.GOBLIN:
-            return deepestFloorGoblin--;
+            deepestFloorGoblin = newDepth;
+            return deepestFloorGoblin;
         case DungeonType.YOG:
-            return deepestFloor--;
+            deepestFloor = newDepth;
+            return deepestFloor;
         case DungeonType.MAD_MAGE:
-            return deepestFloorMadMage--;
+            deepestFloorMadMage = newDepth;
+            return deepestFloorMadMage;
         default:
-            return deepestFloor--;
+            return deepestFloor;
         }
     }
 
