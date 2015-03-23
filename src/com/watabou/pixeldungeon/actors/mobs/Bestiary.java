@@ -58,6 +58,7 @@ public class Bestiary {
         switch (depth) {
         case 1:
             chances = new float[] { 1 };
+            // classes = new Class<?>[] { AlphaWorg.class }; // TODO test!!4
             classes = new Class<?>[] { Rat.class };
             break;
         case 2:
@@ -77,21 +78,22 @@ public class Bestiary {
             classes = new Class<?>[] { AlphaWorg.class };
             break;
         case 6:
-            chances = new float[] { 2, 2, 1, 1 };
+            chances = new float[] { 2, 2, 1, 0.5f };
             classes = new Class<?>[] { Goblin.class, GoblinRider.class, GoblinMage.class, GoblinFireMage.class };
             // no empty worg after 5
             break;
         case 7:
-            chances = new float[] { 2, 2, 2, 1 };
+            chances = new float[] { 2, 2, 2, 0.5f };
             classes = new Class<?>[] { Goblin.class, GoblinRider.class, GoblinMage.class, GoblinFireMage.class };
             break;
         case 8:
-            chances = new float[] { 1, 3, 2, 1 };
-            classes = new Class<?>[] { Goblin.class, GoblinRider.class, GoblinMage.class, GoblinFireMage.class };
+            chances = new float[] { 1, 3, 2, 0.5f, 1 };
+            classes = new Class<?>[] { Goblin.class, GoblinRider.class, GoblinMage.class, GoblinFireMage.class,
+                    GoblinChampion.class };
             break;
         case 9:
-            chances = new float[] { 3, 2, 1 };
-            classes = new Class<?>[] { GoblinRider.class, GoblinMage.class, GoblinFireMage.class };
+            chances = new float[] { 3, 2, 1, 2 };
+            classes = new Class<?>[] { GoblinRider.class, GoblinMage.class, GoblinFireMage.class, GoblinChampion.class };
             break;
         case 10:
             chances = new float[] { 1 };

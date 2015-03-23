@@ -30,8 +30,6 @@ import com.watabou.pixeldungeon.items.food.MushroomStew;
 import com.watabou.pixeldungeon.items.quest.Mushroom;
 import com.watabou.pixeldungeon.items.quest.Pan;
 import com.watabou.pixeldungeon.levels.GoblinSewerLevel;
-import com.watabou.pixeldungeon.levels.Room;
-import com.watabou.pixeldungeon.levels.Terrain;
 import com.watabou.pixeldungeon.scenes.GameScene;
 import com.watabou.pixeldungeon.sprites.GoblinAshSprite;
 import com.watabou.pixeldungeon.utils.Utils;
@@ -136,17 +134,14 @@ public class GoblinAsh extends NPC {
             }
         }
 
-        public static void spawn(final GoblinSewerLevel level, final Room room) {
-            // always spawn Goblin dungeon level 6 next to the shop
-            // TODO set back to 2 - 4 add alchemy room?
+        public static void spawn(final GoblinSewerLevel level) {
             Log.i("GoblinAsh", "depht: " + Dungeon.depth);
-            if (!spawned && (Dungeon.depth == 2)) {
+            if (!spawned && (Dungeon.depth > 1) && (Random.Int(5 - Dungeon.depth) == 0)) {
 
                 GoblinAsh npc = new GoblinAsh();
-                // TODO alchemy room?
                 do {
-                    npc.pos = room.random();
-                } while ((level.map[npc.pos] == Terrain.ENTRANCE) || (level.map[npc.pos] == Terrain.SIGN));
+                    npc.pos = level.randomRespawnCell();
+                } while (npc.pos == -1);
                 level.mobs.add(npc);
                 Actor.occupyCell(npc);
 
@@ -253,13 +248,13 @@ public class GoblinAsh extends NPC {
         } else if (Quest.given) {
             Item item = Quest.alternative ?
                     Dungeon.hero.belongings.getItem(Mushroom.class) :
-                        Dungeon.hero.belongings.getItem(Pan.class);
-                    if (item != null) {
-                        GameScene.show(new WndAsh(this, item));
-                    } else {
-                        GameScene.show(new WndQuest(this, Quest.alternative ? TXT_MUSHROOM2 : TXT_PAN2));
+                    Dungeon.hero.belongings.getItem(Pan.class);
+            if (item != null) {
+                GameScene.show(new WndAsh(this, item));
+            } else {
+                GameScene.show(new WndQuest(this, Quest.alternative ? TXT_MUSHROOM2 : TXT_PAN2));
 
-                    }
+            }
         } else {
             GameScene.show(new WndQuest(this, Quest.alternative ? TXT_MUSHROOM1 : TXT_PAN1));
             Quest.placeMushroom();

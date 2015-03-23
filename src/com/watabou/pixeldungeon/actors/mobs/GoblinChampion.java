@@ -18,57 +18,65 @@
 package com.watabou.pixeldungeon.actors.mobs;
 
 import com.watabou.pixeldungeon.actors.Char;
-import com.watabou.pixeldungeon.items.food.MysteryMeat;
-import com.watabou.pixeldungeon.sprites.WorgSprite;
+import com.watabou.pixeldungeon.actors.mobs.npcs.GoblinAsh;
+import com.watabou.pixeldungeon.items.Gold;
+import com.watabou.pixeldungeon.items.food.Rum;
+import com.watabou.pixeldungeon.sprites.GoblinChampionSprite;
 import com.watabou.utils.Random;
 
-public class Worg extends Mob {
+public class GoblinChampion extends Mob {
 
     {
-        name = "worg";
-        spriteClass = WorgSprite.class;
+        name = "goblin champion";
+        spriteClass = GoblinChampionSprite.class;
 
-        HP = HT = 15;
-        defenseSkill = 5;
-        baseSpeed = 2f;
+        HP = HT = 18;
+        defenseSkill = 12;
 
-        EXP = 3;
-        maxLvl = 9;
+        EXP = 5;
+        maxLvl = 10;
 
-        loot = new MysteryMeat();
-        lootChance = 0.1f;
+        lootGenerator();
+
     }
 
     @Override
     public int attackSkill(final Char target) {
-        return 12;
+        return 16; // TODO not too much
     }
 
     @Override
     public int damageRoll() {
-        return Random.NormalIntRange(3, 6);
-    }
-
-    @Override
-    public String defenseVerb() {
-        return "dodge";
+        return Random.NormalIntRange(4, 9);
     }
 
     @Override
     public String description() {
+        // TODO FIX desc
         return
-        "Worgs are like the surface wolf. Except they are bigger, strongger and more bloodthirsty. "
-                + "The goblins often tame them with the purpose of riding. The worg meat is not realy tasty, "
-                + "but eatable if you are hungry. ";
+                "Goblins are small goblinoids. They organized in tribes living under the surface. If you see one goblin "
+                + "you can be sure there are more of them. The goblins sneaking into villages and towns by night to take what they can. ";
     }
 
     @Override
     public void die(final Object cause) {
+        GoblinAsh.Quest.process(pos);
         super.die(cause);
     }
 
     @Override
     public int dr() {
-        return 4;
+        return 5;
+    }
+
+    private void lootGenerator() {
+        if (Random.Int(2) == 0) {
+            loot = Gold.class;
+            lootChance = 0.5f;
+        } else {
+            loot = Rum.class;
+            lootChance = 0.3f;
+        }
+
     }
 }

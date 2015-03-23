@@ -484,6 +484,8 @@ public class Dungeon {
         Level level;
         switch (depth) {
         case 1:
+            // level = new GoblinSewerBossLevel(); // TODO this is just a test B
+            // break;
         case 2:
         case 3:
         case 4:
@@ -497,7 +499,7 @@ public class Dungeon {
         case 8:
         case 9:
         case 10:
-            level = new LastLevel();
+            level = new GoblinSewerLevel(); // TODO create goblin cave
             break;
         default:
             level = new DeadEndLevel();

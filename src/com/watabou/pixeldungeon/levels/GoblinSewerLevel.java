@@ -130,7 +130,7 @@ public class GoblinSewerLevel extends RegularLevel {
     @Override
     protected void createMobs() {
         super.createMobs();
-        GoblinAsh.Quest.spawn(this, roomEntrance);
+        GoblinAsh.Quest.spawn(this);
         GoblinPirate.Quest.spawn(this, roomEntrance);
     }
 

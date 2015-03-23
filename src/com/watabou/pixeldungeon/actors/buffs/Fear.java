@@ -24,8 +24,21 @@ public class Fear extends FlavourBuff {
 
     public static final float DURATION = 5f; // TODO check this
 
+    public static final String NO_WAY_TO_RUN = "AAAAAAAA!!!!";
+
     public static float duration(final Char ch) {
         return DURATION;
+    }
+
+    @Override
+    public boolean attachTo(final Char target) {
+        spend(DURATION);
+        return super.attachTo(target);
+    }
+
+    @Override
+    public void detach() {
+        super.detach();
     }
 
     @Override

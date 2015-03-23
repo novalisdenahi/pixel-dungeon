@@ -30,7 +30,6 @@ import com.watabou.pixeldungeon.actors.buffs.Buff;
 import com.watabou.pixeldungeon.actors.buffs.Burning;
 import com.watabou.pixeldungeon.actors.buffs.Charm;
 import com.watabou.pixeldungeon.actors.buffs.Cripple;
-import com.watabou.pixeldungeon.actors.buffs.Fear;
 import com.watabou.pixeldungeon.actors.buffs.Frost;
 import com.watabou.pixeldungeon.actors.buffs.Invisibility;
 import com.watabou.pixeldungeon.actors.buffs.Levitation;
@@ -385,8 +384,7 @@ public abstract class Char extends Actor {
     }
 
     public void move(int step) {
-
-        if (Level.adjacent(step, pos) && ((buff(Vertigo.class) != null ) || (buff(Fear.class) != null ))) {
+        if (Level.adjacent(step, pos) && ((buff(Vertigo.class) != null))) {
             step = pos + Level.NEIGHBOURS8[Random.Int(8)];
             if (!(Level.passable[step] || Level.avoid[step]) || (Actor.findChar(step) != null)) {
                 return;

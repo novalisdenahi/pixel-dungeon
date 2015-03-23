@@ -25,15 +25,6 @@ public class Drunk extends FlavourBuff {
 
     public static final float DURATION = 10f;
 
-    private float spent = 0f;
-
-    // @Override
-    // public boolean act() {
-    // spend(DURATION);
-    // detach();
-    // return true;
-    // }
-
     @Override
     public boolean attachTo(final Char target) {
         target.immunities().add(Fear.class);

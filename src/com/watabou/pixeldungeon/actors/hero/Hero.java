@@ -42,6 +42,7 @@ import com.watabou.pixeldungeon.actors.buffs.Charm;
 import com.watabou.pixeldungeon.actors.buffs.Combo;
 import com.watabou.pixeldungeon.actors.buffs.Cripple;
 import com.watabou.pixeldungeon.actors.buffs.Drunk;
+import com.watabou.pixeldungeon.actors.buffs.Fear;
 import com.watabou.pixeldungeon.actors.buffs.Fury;
 import com.watabou.pixeldungeon.actors.buffs.GasesImmunity;
 import com.watabou.pixeldungeon.actors.buffs.Hunger;
@@ -1057,8 +1058,8 @@ public class Hero extends Char {
             case FOR_SALE:
                 curAction = (heap.size() == 1) && (heap.peek().price() > 0) ?
                         new HeroAction.Buy(cell) :
-                            new HeroAction.PickUp(cell);
-                        break;
+                        new HeroAction.PickUp(cell);
+                break;
             default:
                 curAction = new HeroAction.OpenChest(cell);
             }
@@ -1113,8 +1114,23 @@ public class Hero extends Char {
 
     @Override
     public void move(final int step) {
+        if (buff(Fear.class) != null) {
+            // TODO this is wrong have to be fixed... soon!
+            int runAwayStep = Dungeon.flee(this, pos, enemy.pos,
+                    Level.passable,
+                    Level.fieldOfView);
+            if (runAwayStep != -1) {
+                super.move(runAwayStep);
+            } else {
+                spend(TICK);
+                sprite.showStatus(CharSprite.NEGATIVE, Fear.NO_WAY_TO_RUN);
+            }
+            return;
+        }
+
         super.move(step);
 
+        // TODO add nose to Fear run away too
         if (!flying) {
 
             if (Level.water[pos]) {

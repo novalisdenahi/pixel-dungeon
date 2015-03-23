@@ -58,6 +58,7 @@ public class GoblinSewerBossLevel extends RegularLevel {
         int distance;
         int retry = 0;
         int minDistance = (int) Math.sqrt(rooms.size());
+
         do {
             int innerRetry = 0;
             do {
@@ -65,7 +66,7 @@ public class GoblinSewerBossLevel extends RegularLevel {
                     return false;
                 }
                 roomEntrance = Random.element(rooms);
-            } while ((roomEntrance.width() < 4) || (roomEntrance.height() < 4));
+            } while ((roomEntrance.width() < 3) || (roomEntrance.height() < 3));
 
             innerRetry = 0;
             do {
@@ -73,7 +74,7 @@ public class GoblinSewerBossLevel extends RegularLevel {
                     return false;
                 }
                 roomExit = Random.element(rooms);
-            } while ((roomExit == roomEntrance) || (roomExit.width() < 6) || (roomExit.height() < 6)
+            } while ((roomExit == roomEntrance) || (roomExit.width() < 5) || (roomExit.height() < 5)
                     || (roomExit.top == 0));
 
             Graph.buildDistanceMap(rooms, roomExit);
@@ -112,27 +113,13 @@ public class GoblinSewerBossLevel extends RegularLevel {
                 r.type = Type.PASSAGE;
             }
         }
-        // TODO no RAT KING
-        // ArrayList<Room> candidates = new ArrayList<Room>();
-        // for (Room r : roomExit.neigbours) {
-        // if (!roomExit.connected.containsKey(r) &&
-        // ((roomExit.left == r.right) || (roomExit.right == r.left) || (roomExit.bottom == r.top))) {
-        // candidates.add(r);
-        // }
-        // }
-        // if (candidates.size() > 0) {
-        // Room kingsRoom = Random.element(candidates);
-        // kingsRoom.connect(roomExit);
-        // kingsRoom.type = Room.Type.RAT_KING;
-        // }
-
         paint();
 
         paintWater();
         paintGrass();
 
         // TODO traps in this level?
-        placeTraps();
+        // placeTraps();
 
         return true;
     }
@@ -158,7 +145,6 @@ public class GoblinSewerBossLevel extends RegularLevel {
 
     @Override
     protected void decorate() {
-        // TODO check this method
         int start = (roomExit.top * WIDTH) + roomExit.left + 1;
         int end = (start + roomExit.width()) - 1;
         for (int i = start; i < end; i++) {
@@ -181,7 +167,7 @@ public class GoblinSewerBossLevel extends RegularLevel {
 
     @Override
     protected boolean[] grass() {
-        return Patch.generate(0.60f, 6);
+        return Patch.generate(0.50f, 3);
     }
 
     @Override

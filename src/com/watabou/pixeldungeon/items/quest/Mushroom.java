@@ -17,6 +17,8 @@
  */
 package com.watabou.pixeldungeon.items.quest;
 
+import java.util.ArrayList;
+
 import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.actors.buffs.Buff;
 import com.watabou.pixeldungeon.actors.buffs.Hunger;
@@ -53,11 +55,21 @@ public class Mushroom extends Food {
         energy = Hunger.HUNGRY;
     }
 
+    public static final String AC_EAT = "EAT";
+
+    @Override
+    public ArrayList<String> actions(final Hero hero) {
+        ArrayList<String> actions = super.actions(hero);
+        actions.add(AC_EAT);
+        return actions;
+    }
+
     @Override
     public void execute(final Hero hero, final String action) {
-        Buff.prolong(hero, Vertigo.class, Vertigo.duration(hero));
-        Buff.affect(hero, Poison.class).set(Poison.durationFactor(hero) * (4 + (Dungeon.depth / 2)));
-
+        if (action.equals(AC_EAT)) {
+            Buff.prolong(hero, Vertigo.class, Vertigo.duration(hero));
+            Buff.affect(hero, Poison.class).set(Poison.durationFactor(hero) * (4 + (Dungeon.depth / 2)));
+        }
         super.execute(hero, action);
     }
 

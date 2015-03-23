@@ -37,16 +37,18 @@ public class AlphaWorg extends Mob {
         spriteClass = AlphaWorgSprite.class;
 
         HP = HT = 55;
-        defenseSkill = 10;
+        defenseSkill = 9;
         baseSpeed = 2f;
 
         EXP = 10;
 
     }
 
+    private static final float DELAY_OF_HOWLS = 1f;
+
     @Override
     public int attackSkill(final Char target) {
-        return 12;
+        return 13;
     }
 
     @Override
@@ -62,7 +64,7 @@ public class AlphaWorg extends Mob {
     @Override
     public String description() { // TODO FIXME
         return
-        "Worgs are like the surface wolf. Except they are bigger, strongger and more bloodthirsty. "
+                "Worgs are like the surface wolf. Except they are bigger, strongger and more bloodthirsty. "
                 + "The goblins often tame them with the purpose of riding. The worg meat is not realy tasty, "
                 + "but eatable if you are hungry. ";
     }
@@ -94,7 +96,8 @@ public class AlphaWorg extends Mob {
             ((AlphaWorgSprite) sprite).howls();
             yell("AWOOUUUUU!!");
             Buff.affect(enemy, Fear.class);
-            return false;
+            spend(DELAY_OF_HOWLS);
+            return true;
         }
 
     }
