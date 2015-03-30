@@ -40,7 +40,7 @@ public class AlphaWorgSprite extends MobSprite {
         attack = new Animation(12, false);
         attack.frames(frames, 2, 3, 2);
 
-        howls = new Animation(8, false);
+        howls = new Animation(12, false);
         howls.frames(frames, 14, 15, 16, 17);
 
         die = new Animation(12, false);

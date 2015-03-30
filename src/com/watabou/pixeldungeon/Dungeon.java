@@ -82,9 +82,13 @@ public class Dungeon {
 
     // private static final String NO_TIPS = "The text  is indecipherable...";
     public static int potionOfStrength;
+
     public static int scrollsOfUpgrade;
+
     public static int scrollsOfEnchantment;
+
     public static boolean dewVial; // true if the dew vial can be spawned
+
     public static int transmutation; // depth number for a well of transmutation
 
     // private static final String TXT_DEAD_END =
@@ -122,10 +126,13 @@ public class Dungeon {
     // }
 
     public static int gold;
+
     public static String resultDescription;
 
     public static HashSet<Integer> chapters;
+
     public static boolean[] visible = new boolean[Level.LENGTH];
+
     // Reason of death
     public static boolean nightMode;
 
@@ -484,8 +491,6 @@ public class Dungeon {
         Level level;
         switch (depth) {
         case 1:
-            // level = new GoblinSewerBossLevel(); // TODO this is just a test B
-            // break;
         case 2:
         case 3:
         case 4:
@@ -740,7 +745,8 @@ public class Dungeon {
 
     public static boolean shopOnLevel() {
         // TODO add dungeon type too
-        return (depth == 6) || (depth == 11) || (depth == 16);
+        // TODO depth 1 is just test
+        return (depth == 1) || (depth == 6) || (depth == 11) || (depth == 16);
     }
 
     public static boolean soeNeeded() {

@@ -17,10 +17,13 @@
  */
 package com.watabou.pixeldungeon.levels.painters;
 
+import hu.denahi.pixeldungeon.holy.quest.DungeonType;
+
 import java.util.ArrayList;
 
 import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.actors.mobs.Mob;
+import com.watabou.pixeldungeon.actors.mobs.npcs.GoblinShopkeeper;
 import com.watabou.pixeldungeon.actors.mobs.npcs.ImpShopkeeper;
 import com.watabou.pixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.watabou.pixeldungeon.items.Ankh;
@@ -121,8 +124,12 @@ public class ShopPainter extends Painter {
         do {
             pos = room.random();
         } while (level.heaps.get(pos) != null);
-
-        Mob shopkeeper = level instanceof LastShopLevel ? new ImpShopkeeper() : new Shopkeeper();
+        Mob shopkeeper;
+        if (Dungeon.dungeonType == DungeonType.GOBLIN) {
+            shopkeeper = new GoblinShopkeeper();
+        } else {
+            shopkeeper = level instanceof LastShopLevel ? new ImpShopkeeper() : new Shopkeeper();
+        }
         shopkeeper.pos = pos;
         level.mobs.add(shopkeeper);
 

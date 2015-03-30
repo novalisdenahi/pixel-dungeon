@@ -117,68 +117,6 @@ public class Hero extends Char {
         public void onDeath();
     }
 
-    private static final String TXT_LEAVE = "One does not simply leave Pixel Dungeon.";
-    private static final String TXT_LEVEL_UP = "level up!";
-
-    private static final String TXT_NEW_LEVEL =
-            "Welcome to level %d! Now you are healthier and more focused. " +
-                    "It's easier for you to hit enemies and dodge their attacks.";
-
-    public static final String TXT_YOU_NOW_HAVE = "You now have %s";
-    private static final String TXT_SOMETHING_ELSE = "There is something else here";
-    private static final String TXT_LOCKED_CHEST = "This chest is locked and you don't have matching key";
-    private static final String TXT_LOCKED_DOOR = "You don't have a matching key";
-
-    private static final String TXT_NOTICED_SMTH = "You noticed something";
-    private static final String TXT_WAIT = "...";
-
-    private static final String TXT_SEARCH = "search";
-
-    public static final int STARTING_STR = 10;
-    private static final float TIME_TO_REST = 1f;
-
-    private static final float TIME_TO_SEARCH = 2f;
-    public HeroClass heroClass = HeroClass.ROGUE;
-
-    public HeroSubClass subClass = HeroSubClass.NONE;
-    private int attackSkill = 10;
-
-    private int defenseSkill = 5;
-
-    public boolean ready = false;
-    public HeroAction curAction = null;
-
-    public HeroAction lastAction = null;
-
-    private Char enemy;
-
-    public Armor.Glyph killerGlyph = null;
-
-    private Item theKey;
-
-    public boolean restoreHealth = false;
-    public MissileWeapon rangedWeapon = null;
-
-    public Belongings belongings;
-    public int STR;
-
-    public boolean weakened = false;
-
-    public float awareness;
-    public int lvl = 1;
-
-    public int exp = 0;
-
-    private ArrayList<Mob> visibleEnemies;
-
-    private static final String ATTACK = "attackSkill";
-
-    private static final String DEFENSE = "defenseSkill";
-    private static final String STRENGTH = "STR";
-    private static final String LEVEL = "lvl";
-    private static final String EXPERIENCE = "exp";
-    private static final float BLESS_BUFF_BONUS = 1.4f;
-
     public static void preview(final GamesInProgress.Info info, final Bundle bundle) {
         info.level = bundle.getInt(LEVEL);
     }
@@ -241,6 +179,69 @@ public class Hero extends Char {
         Dungeon.deleteGame(Dungeon.hero.heroClass, true);
     }
 
+    private static final String TXT_LEAVE = "One does not simply leave Pixel Dungeon.";
+
+    private static final String TXT_LEVEL_UP = "level up!";
+    private static final String TXT_NEW_LEVEL =
+            "Welcome to level %d! Now you are healthier and more focused. " +
+                    "It's easier for you to hit enemies and dodge their attacks.";
+    public static final String TXT_YOU_NOW_HAVE = "You now have %s";
+    private static final String TXT_SOMETHING_ELSE = "There is something else here";
+
+    private static final String TXT_LOCKED_CHEST = "This chest is locked and you don't have matching key";
+    private static final String TXT_LOCKED_DOOR = "You don't have a matching key";
+
+    private static final String TXT_NOTICED_SMTH = "You noticed something";
+
+    private static final String TXT_WAIT = "...";
+    private static final String TXT_SEARCH = "search";
+
+    public static final int STARTING_STR = 10;
+    private static final float TIME_TO_REST = 1f;
+
+    private static final float TIME_TO_SEARCH = 2f;
+    public HeroClass heroClass = HeroClass.ROGUE;
+
+    public HeroSubClass subClass = HeroSubClass.NONE;
+
+    private int attackSkill = 10;
+    private int defenseSkill = 5;
+
+    public boolean ready = false;
+
+    public HeroAction curAction = null;
+
+    public HeroAction lastAction = null;
+
+    private Char enemy;
+
+    public Armor.Glyph killerGlyph = null;
+    private Item theKey;
+
+    public boolean restoreHealth = false;
+    public MissileWeapon rangedWeapon = null;
+
+    public Belongings belongings;
+
+    public int STR;
+    public boolean weakened = false;
+
+    public float awareness;
+
+    public int lvl = 1;
+
+    public int exp = 0;
+
+    private ArrayList<Mob> visibleEnemies;
+    private static final String ATTACK = "attackSkill";
+    private static final String DEFENSE = "defenseSkill";
+    private static final String STRENGTH = "STR";
+    private static final String LEVEL = "lvl";
+
+    private static final String EXPERIENCE = "exp";
+
+    private static final float BLESS_BUFF_BONUS = 1.4f;
+
     public Hero() {
         super();
         name = "you";
@@ -290,6 +291,11 @@ public class Hero extends Char {
             restoreHealth = false;
 
             ready = false;
+            Fear fear = buff(Fear.class);
+            if ((fear != null) && !(curAction instanceof HeroAction.Move)) {
+                int calculateRunAway = calculateRunAway(fear);
+                curAction = new HeroAction.Move(calculateRunAway);// TODO test this
+            }
 
             if (curAction instanceof HeroAction.Move) {
 
@@ -696,6 +702,17 @@ public class Hero extends Char {
         BuffIndicator.refreshHero();
     }
 
+    // @Override
+    // public boolean attack(final Char enemy) {
+    // Fear buffFear = buff(Fear.class);
+    // if (buffFear != null) {
+    // // TODO this is not good.
+    // calculazeRunAway(buffFear);
+    // return false;
+    // }
+    // return super.attack(enemy);
+    // }
+
     public float attackDelay() {
         KindOfWeapon wep = rangedWeapon != null ? rangedWeapon : belongings.weapon;
         if (wep != null) {
@@ -762,6 +779,7 @@ public class Hero extends Char {
 
     @Override
     public int attackSkill(final Char target) {
+
         int bonus = 0;
         for (Buff buff : buffs(RingOfAccuracy.Accuracy.class)) {
             bonus += ((RingOfAccuracy.Accuracy) buff).level;
@@ -796,6 +814,21 @@ public class Hero extends Char {
 
     public void busy() {
         ready = false;
+    }
+
+    private int calculateRunAway(final Fear buffFear) {
+        int runAwayStep = Dungeon.flee(this, pos, buffFear.theFearfulEnemy.pos,
+                Level.passable,
+                Level.fieldOfView);
+        if (runAwayStep != -1) {
+            return runAwayStep;
+            // super.move(runAwayStep);
+        } else {
+            spend(TICK);
+            sprite.showStatus(CharSprite.NEGATIVE, Fear.NO_WAY_TO_RUN);
+            // TODO this is wrong i gues
+            return 0;
+        }
     }
 
     private void checkVisibleMobs() {
@@ -1058,8 +1091,8 @@ public class Hero extends Char {
             case FOR_SALE:
                 curAction = (heap.size() == 1) && (heap.peek().price() > 0) ?
                         new HeroAction.Buy(cell) :
-                        new HeroAction.PickUp(cell);
-                break;
+                            new HeroAction.PickUp(cell);
+                        break;
             default:
                 curAction = new HeroAction.OpenChest(cell);
             }
@@ -1114,23 +1147,8 @@ public class Hero extends Char {
 
     @Override
     public void move(final int step) {
-        if (buff(Fear.class) != null) {
-            // TODO this is wrong have to be fixed... soon!
-            int runAwayStep = Dungeon.flee(this, pos, enemy.pos,
-                    Level.passable,
-                    Level.fieldOfView);
-            if (runAwayStep != -1) {
-                super.move(runAwayStep);
-            } else {
-                spend(TICK);
-                sprite.showStatus(CharSprite.NEGATIVE, Fear.NO_WAY_TO_RUN);
-            }
-            return;
-        }
-
         super.move(step);
 
-        // TODO add nose to Fear run away too
         if (!flying) {
 
             if (Level.water[pos]) {

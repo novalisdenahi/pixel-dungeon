@@ -22,13 +22,15 @@ import com.watabou.pixeldungeon.ui.BuffIndicator;
 
 public class Fear extends FlavourBuff {
 
-    public static final float DURATION = 5f; // TODO check this
-
-    public static final String NO_WAY_TO_RUN = "AAAAAAAA!!!!";
-
     public static float duration(final Char ch) {
         return DURATION;
     }
+
+    public static final float DURATION = 3f;
+
+    public static final String NO_WAY_TO_RUN = "AAAAAAAA!!!!";
+
+    public Char theFearfulEnemy;
 
     @Override
     public boolean attachTo(final Char target) {
@@ -44,6 +46,10 @@ public class Fear extends FlavourBuff {
     @Override
     public int icon() {
         return BuffIndicator.FEAR;
+    }
+
+    public void setTheFearfulEnemy(final Char theFearfulEnemy) {
+        this.theFearfulEnemy = theFearfulEnemy;
     }
 
     @Override

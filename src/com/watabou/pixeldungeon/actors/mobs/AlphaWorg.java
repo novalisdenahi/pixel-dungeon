@@ -92,10 +92,10 @@ public class AlphaWorg extends Mob {
         } else {
             // TODO add howls sound
             // Sample.INSTANCE.play(Assets.SND_LULLABY);
-            sprite.centerEmitter().start(Speck.factory(Speck.BLACK_NOTE), 0.3f, 5);
+            sprite.centerEmitter().start(Speck.factory(Speck.BLACK_NOTE), 0.3f, 3);
             ((AlphaWorgSprite) sprite).howls();
             yell("AWOOUUUUU!!");
-            Buff.affect(enemy, Fear.class);
+            Buff.affect(enemy, Fear.class).setTheFearfulEnemy(this);
             spend(DELAY_OF_HOWLS);
             return true;
         }

@@ -22,10 +22,8 @@ import com.watabou.pixeldungeon.Badges;
 import com.watabou.pixeldungeon.items.SymbolOfEstera;
 import com.watabou.pixeldungeon.items.TomeOfMastery;
 import com.watabou.pixeldungeon.items.armor.ClothArmor;
-import com.watabou.pixeldungeon.items.armor.MailArmor;
 import com.watabou.pixeldungeon.items.bags.Keyring;
 import com.watabou.pixeldungeon.items.food.Food;
-import com.watabou.pixeldungeon.items.potions.PotionOfExperience;
 import com.watabou.pixeldungeon.items.potions.PotionOfHealing;
 import com.watabou.pixeldungeon.items.potions.PotionOfStrength;
 import com.watabou.pixeldungeon.items.rings.RingOfShadows;
@@ -45,8 +43,6 @@ import com.watabou.utils.Bundle;
 public enum HeroClass {
 
     WARRIOR("warrior"), MAGE("mage"), ROGUE("rogue"), HUNTRESS("huntress"), PRIEST("priest");
-
-    private String title;
 
     public static final String[] WAR_PERKS = {
             "Warriors start with 11 points of Strength.",
@@ -127,28 +123,14 @@ public enum HeroClass {
         new Dart(5).identify().collect();
         QuickSlot.primaryValue = Dart.class;
 
+        hero.STR = 19;
+
         SymbolOfEstera symbolOfEstera = new SymbolOfEstera();
         symbolOfEstera.identify().collect();
 
-        new MailArmor().collect();
         new Sword().collect();
 
-        new PotionOfStrength().collect();
-        new PotionOfStrength().collect();
-        new PotionOfStrength().collect();
-        new PotionOfStrength().collect();
-        new PotionOfStrength().collect();
-        new PotionOfStrength().collect();
-
         new ScrollOfMagicMapping().collect();
-        new ScrollOfMagicMapping().collect();
-        new ScrollOfMagicMapping().collect();
-        new ScrollOfMagicMapping().collect();
-
-        new PotionOfExperience().collect();
-        new PotionOfExperience().collect();
-        new PotionOfExperience().collect();
-        new PotionOfExperience().collect();
 
         new PotionOfHealing().setKnown();
     }
@@ -180,6 +162,8 @@ public enum HeroClass {
         String value = bundle.getString(CLASS);
         return value.length() > 0 ? HeroClass.valueOf(value) : ROGUE;
     }
+
+    private String title;
 
     private HeroClass(final String title) {
         this.title = title;

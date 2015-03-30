@@ -17,11 +17,10 @@
  */
 package com.watabou.pixeldungeon.actors.mobs.npcs;
 
-import android.util.Log;
+import java.util.Collection;
 
 import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.Journal;
-import com.watabou.pixeldungeon.actors.Actor;
 import com.watabou.pixeldungeon.actors.Char;
 import com.watabou.pixeldungeon.actors.buffs.Buff;
 import com.watabou.pixeldungeon.items.Item;
@@ -37,9 +36,8 @@ import com.watabou.pixeldungeon.items.weapon.melee.Mace;
 import com.watabou.pixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.watabou.pixeldungeon.items.weapon.melee.Rapier;
 import com.watabou.pixeldungeon.items.weapon.melee.Sword;
-import com.watabou.pixeldungeon.levels.GoblinSewerLevel;
 import com.watabou.pixeldungeon.levels.Room;
-import com.watabou.pixeldungeon.levels.Terrain;
+import com.watabou.pixeldungeon.levels.Room.Type;
 import com.watabou.pixeldungeon.scenes.GameScene;
 import com.watabou.pixeldungeon.sprites.GoblinPirateSprite;
 import com.watabou.pixeldungeon.utils.Utils;
@@ -55,6 +53,7 @@ public class GoblinPirate extends NPC {
         private static boolean spawned;
 
         private static int counter = 0;
+
         private static final int RUM_NECCESARY = 3;
 
         private static boolean given;
@@ -109,68 +108,66 @@ public class GoblinPirate extends NPC {
             }
         }
 
-        // TODO FIXME GoblinSewerLevel will be replace GoblinCaveLevel
-        public static void spawn(final GoblinSewerLevel level, final Room room) {
-            // always spawn Goblin dungeon level 6 next to the shop
+        public static void spawn(final Collection<Room> rooms) {
             // TODO set back to 6
-            Log.i("GOBLIN_PIRATE", "depht: " + Dungeon.depth);
             if (!spawned && (Dungeon.depth == 1)) {
 
-                GoblinPirate npc = new GoblinPirate();
-                // TODO where to put! not next to the sign... Pirate room?
-                do {
-                    npc.pos = room.random();
-                } while ((level.map[npc.pos] == Terrain.ENTRANCE) || (level.map[npc.pos] == Terrain.SIGN));
-                level.mobs.add(npc);
-                Actor.occupyCell(npc);
+                Room goblinPirate = null;
+                for (Room r : rooms) {
+                    if ((r.type == Type.STANDARD) && (r.width() > 4) && (r.height() > 4)) {
+                        goblinPirate = r;
+                        goblinPirate.type = Type.GOBLIN_PIRATE;
 
-                spawned = true;
+                        spawned = true;
 
-                given = false;
-                completed = false;
+                        given = false;
+                        completed = false;
 
-                switch (Random.Int(5)) {
-                case 0:
-                    item1 = new RingOfAccuracy();
-                    break;
-                case 1:
-                    item1 = new RingOfEvasion();
-                    break;
-                case 2:
-                    item1 = new RingOfHaste();
-                    break;
-                case 3:
-                    item1 = new RingOfSatiety();
-                    break;
-                case 4:
-                    item1 = new RingOfShadows();
-                    break;
-                }
-                item1.upgrade(Random.Int(2));
+                        switch (Random.Int(5)) {
+                        case 0:
+                            item1 = new RingOfAccuracy();
+                            break;
+                        case 1:
+                            item1 = new RingOfEvasion();
+                            break;
+                        case 2:
+                            item1 = new RingOfHaste();
+                            break;
+                        case 3:
+                            item1 = new RingOfSatiety();
+                            break;
+                        case 4:
+                            item1 = new RingOfShadows();
+                            break;
+                        }
+                        item1.upgrade(Random.Int(2));
 
-                switch (Random.Int(5)) {
-                case 0:
-                    item2 = new Dagger();
-                    break;
-                case 1:
-                    item2 = new Sword();
-                    break;
-                case 2:
-                    item2 = new Mace();
-                    break;
-                case 3:
-                    item2 = new Rapier();
-                    break;
-                case 4:
-                    item2 = new Falchion();
-                    break;
-                }
-                item2.upgrade(Random.Int(2, 4));
+                        switch (Random.Int(5)) {
+                        case 0:
+                            item2 = new Dagger();
+                            break;
+                        case 1:
+                            item2 = new Sword();
+                            break;
+                        case 2:
+                            item2 = new Mace();
+                            break;
+                        case 3:
+                            item2 = new Rapier();
+                            break;
+                        case 4:
+                            item2 = new Falchion();
+                            break;
+                        }
+                        item2.upgrade(Random.Int(2, 4));
 
-                // lucky day bonus - maybe the random shuold be 365 :)
-                if (Random.Int(10) == 0) {
-                    item1.upgrade(2);
-                    ((MeleeWeapon) (item2)).enchant();
+                        // lucky day bonus - maybe the random shuold be 365 :)
+                        if (Random.Int(10) == 0) {
+                            item1.upgrade(2);
+                            ((MeleeWeapon) (item2)).enchant();
+                        }
+                        break;
+                    }
                 }
             }
         }
@@ -195,10 +192,6 @@ public class GoblinPirate extends NPC {
         }
     }
 
-    {
-        name = "Goblin Pirate";
-        spriteClass = GoblinPirateSprite.class;
-    }
     private static final String TXT_RUM =
             "Yo Ho Ho! Come closer and don't be afraid. Yeah! I'm a Pirate Capt'n and a Goblin but not your enemy adventurer. "
                     + " My bloody crew sailling out without me! Arrgh! Maybe I was drunk. But I never said am a perfect Capt'n, "
@@ -206,7 +199,6 @@ public class GoblinPirate extends NPC {
                     + "Maybe we could be partnets too. Aye! You don't have to do nothing else, just bring me "
                     + Quest.RUM_NECCESARY
                     + " bottles of _Goblin Rum_. I will pay the price. Just hurry! This old bones really thirsty. ";
-
     private static final String TXT_RUM_1 = "Aaarrgghh! Matey it's not enough! But it will be enough until you bring more.";
 
     private static final String TXT_RUM_2 =
@@ -222,6 +214,11 @@ public class GoblinPirate extends NPC {
             "The King and his men stole the queen from *hic* her bed\n and bound her in her bones\n "
                     + "The seas be ours and by the powers\n Where we will...we'll roam *hic* \n"
                     + "Yo, Ho haul together, hoist the colours high\n Heave ho, *hic* thieves and beggars, never shall we die! *hic* ";
+
+    {
+        name = "Goblin Pirate";
+        spriteClass = GoblinPirateSprite.class;
+    }
 
     @Override
     protected boolean act() {

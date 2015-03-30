@@ -18,7 +18,7 @@
 package com.watabou.pixeldungeon.actors.mobs.npcs;
 
 import com.watabou.pixeldungeon.Dungeon;
-import com.watabou.pixeldungeon.sprites.ImpSprite;
+import com.watabou.pixeldungeon.sprites.GoblinShopkeeperSprite;
 import com.watabou.pixeldungeon.utils.Utils;
 
 public class GoblinShopkeeper extends Shopkeeper {
@@ -27,7 +27,7 @@ public class GoblinShopkeeper extends Shopkeeper {
 
     {
         name = "Goblin Usurer";
-        spriteClass = ImpSprite.class;
+        spriteClass = GoblinShopkeeperSprite.class;
     }
 
     private boolean seenBefore = false;
@@ -46,7 +46,7 @@ public class GoblinShopkeeper extends Shopkeeper {
     @Override
     public String description() {
         return
-        "This goblin looks frendly and smart. Maybe a little bit looks too smart. He is a sly boots. "
+                "This goblin looks frendly and smart. Maybe a little bit looks too smart. He is a sly boots. "
                 + " Watch out for your purse.";
     }
 

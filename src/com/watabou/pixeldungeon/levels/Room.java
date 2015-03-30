@@ -32,6 +32,7 @@ import com.watabou.pixeldungeon.levels.painters.CryptPainter;
 import com.watabou.pixeldungeon.levels.painters.EntrancePainter;
 import com.watabou.pixeldungeon.levels.painters.ExitPainter;
 import com.watabou.pixeldungeon.levels.painters.GardenPainter;
+import com.watabou.pixeldungeon.levels.painters.GoblinPiratePainter;
 import com.watabou.pixeldungeon.levels.painters.LaboratoryPainter;
 import com.watabou.pixeldungeon.levels.painters.LibraryPainter;
 import com.watabou.pixeldungeon.levels.painters.MagicWellPainter;
@@ -87,6 +88,7 @@ public class Room extends Rect implements Graph.Node, Bundlable {
         PASSAGE(PassagePainter.class),
         SHOP(ShopPainter.class),
         BLACKSMITH(BlacksmithPainter.class),
+        GOBLIN_PIRATE(GoblinPiratePainter.class),
         TREASURY(TreasuryPainter.class),
         ARMORY(ArmoryPainter.class),
         LIBRARY(LibraryPainter.class),
@@ -122,6 +124,14 @@ public class Room extends Rect implements Graph.Node, Bundlable {
         }
     }
 
+    public static final ArrayList<Type> SPECIALS = new ArrayList<Type>(Arrays.asList(
+
+            Type.ARMORY, Type.WEAK_FLOOR, Type.MAGIC_WELL, Type.CRYPT, Type.POOL, Type.GARDEN, Type.LIBRARY,
+            Type.TREASURY, Type.TRAPS, Type.STORAGE, Type.STATUE, Type.LABORATORY, Type.VAULT
+            ));
+
+    private static final String ROOMS = "rooms";
+
     public static void restoreRoomsFromBundle(final Bundle bundle) {
         if (bundle.contains(ROOMS)) {
             SPECIALS.clear();
@@ -131,21 +141,7 @@ public class Room extends Rect implements Graph.Node, Bundlable {
         } else {
             Room.shuffleTypes();
         }
-    }
-
-    public HashSet<Room> neigbours = new HashSet<Room>();
-
-    public HashMap<Room, Door> connected = new HashMap<Room, Door>();;
-
-    public int distance;
-
-    public int price = 1;
-
-    public static final ArrayList<Type> SPECIALS = new ArrayList<Type>(Arrays.asList(
-
-            Type.ARMORY, Type.WEAK_FLOOR, Type.MAGIC_WELL, Type.CRYPT, Type.POOL, Type.GARDEN, Type.LIBRARY,
-            Type.TREASURY, Type.TRAPS, Type.STORAGE, Type.STATUE, Type.LABORATORY, Type.VAULT
-            ));
+    };
 
     public static void shuffleTypes() {
         int size = SPECIALS.size();
@@ -173,9 +169,15 @@ public class Room extends Rect implements Graph.Node, Bundlable {
         }
     }
 
-    public Type type = Type.NULL;
+    public HashSet<Room> neigbours = new HashSet<Room>();
 
-    private static final String ROOMS = "rooms";
+    public HashMap<Room, Door> connected = new HashMap<Room, Door>();
+
+    public int distance;
+
+    public int price = 1;
+
+    public Type type = Type.NULL;
 
     public void addNeigbour(final Room other) {
 

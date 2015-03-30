@@ -36,9 +36,6 @@ public class GoblinSewerLevel extends RegularLevel {
 
     private static class Sink extends Emitter {
 
-        private int pos;
-        private float rippleDelay = 0;
-
         private static final Emitter.Factory factory = new Factory() {
 
             @Override
@@ -47,6 +44,9 @@ public class GoblinSewerLevel extends RegularLevel {
                 p.reset(x, y);
             }
         };
+        private int pos;
+
+        private float rippleDelay = 0;
 
         public Sink(final int pos) {
             super();
@@ -117,8 +117,14 @@ public class GoblinSewerLevel extends RegularLevel {
     }
 
     @Override
+    protected void assignRoomType() {
+        super.assignRoomType();
+        // TODO this is going to GCT
+        GoblinPirate.Quest.spawn(rooms);
+    }
+
+    @Override
     protected void createItems() {
-        // TODO do not add later levels
         if (Dungeon.dewVial && (Random.Int(4 - Dungeon.depth) == 0)) {
             addItemToSpawn(new DewVial());
             Dungeon.dewVial = false;
@@ -131,7 +137,6 @@ public class GoblinSewerLevel extends RegularLevel {
     protected void createMobs() {
         super.createMobs();
         GoblinAsh.Quest.spawn(this);
-        GoblinPirate.Quest.spawn(this, roomEntrance);
     }
 
     @Override
@@ -161,9 +166,9 @@ public class GoblinSewerLevel extends RegularLevel {
 
                 int count =
                         (map[i + 1] == Terrain.WALL ? 1 : 0) +
-                        (map[i - 1] == Terrain.WALL ? 1 : 0) +
-                        (map[i + WIDTH] == Terrain.WALL ? 1 : 0) +
-                        (map[i - WIDTH] == Terrain.WALL ? 1 : 0);
+                                (map[i - 1] == Terrain.WALL ? 1 : 0) +
+                                (map[i + WIDTH] == Terrain.WALL ? 1 : 0) +
+                                (map[i - WIDTH] == Terrain.WALL ? 1 : 0);
 
                 if (Random.Int(16) < (count * count)) {
                     map[i] = Terrain.EMPTY_DECO;
