@@ -41,7 +41,7 @@ import com.watabou.utils.Bundle;
 public class SymbolOfEstera extends Item {
     protected class Charger extends Buff {
         // TODO this Charger can be refactored to normal class. ! in that case the delay change!
-        private static final float TIME_TO_CHARGE = 55f;
+        private static final float TIME_TO_CHARGE = 40f;
 
         @Override
         public boolean act() {
@@ -65,8 +65,11 @@ public class SymbolOfEstera extends Item {
         }
 
         protected void delay() {
-            float time2charge = TIME_TO_CHARGE / (float) Math.sqrt(1 + (level / 3)); // nerfer with /3 chech out
-
+            float time2charge = TIME_TO_CHARGE;
+            if (((Hero) target).subClass == HeroSubClass.HIGHPRIEST) {
+                time2charge = TIME_TO_CHARGE / 2;
+                // this is equals a level 3 wand mage combo charge
+            }
             spend(time2charge);
         }
     }
@@ -84,6 +87,12 @@ public class SymbolOfEstera extends Item {
 
     private static final String TXT_EMPTY = "The Symbol of Estera is not sufficiently recharged.";
 
+    private static final Glowing WHITE = new Glowing(0xFFFFCC);
+
+    private static final String MAX_CHARGES = "maxCharges";
+
+    private static final String CUR_CHARGES = "curCharges";
+
     {
         name = "Symbol Of Estera";
         image = ItemSpriteSheet.SYMBOLOFESTERA;
@@ -93,17 +102,11 @@ public class SymbolOfEstera extends Item {
         unique = true;
     }
 
-    private static final Glowing WHITE = new Glowing(0xFFFFCC);
-
     public int maxCharges = initialCharges();
 
     public int curCharges = maxCharges;
 
     protected Charger charger;
-
-    private static final String MAX_CHARGES = "maxCharges";
-
-    private static final String CUR_CHARGES = "curCharges";
 
     @Override
     public ArrayList<String> actions(final Hero hero) {
@@ -138,10 +141,8 @@ public class SymbolOfEstera extends Item {
         if (action.equals(AC_BLESS)) {
             if (curCharges > 0) {
 
-                Buff.affect(hero, Bless.class).initialize(level);
-
+                Buff.affect(hero, Bless.class);
                 curCharges--;
-
                 hero.spend(TIME_TO_USE_SYMBOL);
                 hero.busy();
 
@@ -149,7 +150,7 @@ public class SymbolOfEstera extends Item {
                 Sample.INSTANCE.play(Assets.SND_LEVELUP); // TODO bless sound
                 hero.sprite.operate(hero.pos);
 
-                updateQuickslot();
+                // updateQuickslot();
 
                 GLog.p(TXT_BLESS);
             } else {
@@ -175,7 +176,7 @@ public class SymbolOfEstera extends Item {
                 hero.sprite.operate(hero.pos);
                 hero.sprite.emitter().start(Speck.factory(Speck.HEALING), 0.4f, 4);
 
-                updateQuickslot();
+                // updateQuickslot();
 
                 GLog.p(TXT_HEALING);
             } else {
@@ -216,7 +217,7 @@ public class SymbolOfEstera extends Item {
 
     @Override
     public boolean isUpgradable() {
-        return true;
+        return false;
     }
 
     @Override

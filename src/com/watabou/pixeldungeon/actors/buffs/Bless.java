@@ -17,33 +17,45 @@
  */
 package com.watabou.pixeldungeon.actors.buffs;
 
+import com.watabou.pixeldungeon.Dungeon;
+import com.watabou.pixeldungeon.actors.hero.Hero;
+import com.watabou.pixeldungeon.actors.hero.HeroSubClass;
 import com.watabou.pixeldungeon.effects.Speck;
 import com.watabou.pixeldungeon.sprites.CharSprite;
 import com.watabou.pixeldungeon.ui.BuffIndicator;
+import com.watabou.pixeldungeon.utils.GLog;
+import com.watabou.utils.Random;
 
 public class Bless extends FlavourBuff {
 
+    private static final int FAVORED_BONUS = 3;
+    private static final int PRIEST_CHANCE = 10;
+    private static final int HIGHPRIEST_CHANCE = 6;
     private static final float DURATION_STEP = 1f;
     private static final float DURATION_OF_BLESSING = 10f;
     private static final float REGENERATION_DELAY = 5f;
 
     private static final String TXT_VALUE = "%+dHP";
+    private static final String TXT_FAVORED = "The goddess look after you. You are really lucky!";
 
-    private int symbolLevel = 0;
     private float spent = 0;
-    private float curDuration = 0;
 
     @Override
     public boolean act() {
         spend(DURATION_STEP);
         spent += DURATION_STEP;
-        if (spent >= curDuration) {
+        if (spent >= DURATION_OF_BLESSING) {
             detach();
         } else {
             if (target.isAlive() && ((spent % REGENERATION_DELAY) == 0)) {
 
-                if (target.HP < target.HT) {
-                    int effect = (int) Math.sqrt(symbolLevel + 1);
+                int value = 1 + ((Dungeon.depth - 1) / 5);
+                if (isFavored()) {
+                    value = value * FAVORED_BONUS;
+                    GLog.p(TXT_FAVORED);
+                }
+                int effect = Math.min(target.HT - target.HP, value);
+                if (effect > 0) {
                     target.HP += effect;
                     target.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
                     target.sprite.showStatus(CharSprite.POSITIVE, TXT_VALUE, effect);
@@ -59,10 +71,19 @@ public class Bless extends FlavourBuff {
         return BuffIndicator.BLESS;
     }
 
-    public void initialize(final int symbolLevel) {
-        this.symbolLevel = symbolLevel;
+    private boolean isFavored() {
+        int chanceOfFavored;
+        if (((Hero) target).subClass == HeroSubClass.HIGHPRIEST) {
+            chanceOfFavored = HIGHPRIEST_CHANCE;
+        } else {
+            chanceOfFavored = PRIEST_CHANCE;
+        }
 
-        curDuration = (float) Math.sqrt(symbolLevel + 1) * DURATION_OF_BLESSING;
+        if (Random.Int(chanceOfFavored) == 0) {
+            return true;
+        }
+        return false;
+
     }
 
     @Override
