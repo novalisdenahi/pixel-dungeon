@@ -44,6 +44,9 @@ public class WndInfoMob extends WndTitledMessage {
             name.measure();
             add(name);
 
+            // TODO add some mini icon what is show the mob subType
+            // mob.mobType
+
             image = mob.sprite();
             add(image);
 

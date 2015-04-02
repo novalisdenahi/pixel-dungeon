@@ -53,6 +53,7 @@ import com.watabou.pixeldungeon.levels.CavesLevel;
 import com.watabou.pixeldungeon.levels.CityBossLevel;
 import com.watabou.pixeldungeon.levels.CityLevel;
 import com.watabou.pixeldungeon.levels.DeadEndLevel;
+import com.watabou.pixeldungeon.levels.GoblinCavesLevel;
 import com.watabou.pixeldungeon.levels.GoblinSewerBossLevel;
 import com.watabou.pixeldungeon.levels.GoblinSewerLevel;
 import com.watabou.pixeldungeon.levels.HallsBossLevel;
@@ -504,7 +505,7 @@ public class Dungeon {
         case 8:
         case 9:
         case 10:
-            level = new GoblinSewerLevel(); // TODO create goblin cave
+            level = new GoblinCavesLevel(); // TODO goblin cave boss level
             break;
         default:
             level = new DeadEndLevel();

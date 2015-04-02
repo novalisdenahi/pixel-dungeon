@@ -109,8 +109,7 @@ public class GoblinPirate extends NPC {
         }
 
         public static void spawn(final Collection<Room> rooms) {
-            // TODO set back to 6
-            if (!spawned && (Dungeon.depth == 1)) {
+            if (!spawned && (Dungeon.depth == 6)) {
 
                 Room goblinPirate = null;
                 for (Room r : rooms) {

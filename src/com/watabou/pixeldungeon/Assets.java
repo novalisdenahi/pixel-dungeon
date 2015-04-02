@@ -109,6 +109,7 @@ public class Assets {
     public static final String TILES_HALLS = "tiles4.png";
 
     public static final String TILES_GOBLIN_SEWERS = "title_hq0.png";
+    public static final String TILES_GOBLIN_CAVES = "title_hq1.png";
 
     public static final String SHADOW = "shadow.png";
 
