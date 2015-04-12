@@ -99,7 +99,7 @@ public class GoblinCavesLevel extends RegularLevel {
         color1 = 0x534f3e;
         color2 = 0xb9d661;
 
-        viewDistance = 6;
+        viewDistance = 6; // TODO check this
     }
 
     @Override
