@@ -79,9 +79,10 @@ public class GoblinCavesLevel extends RegularLevel {
                     delay = Random.Float();
 
                     PointF p = DungeonTilemap.tileToWorld(pos);
-                    ((Sparkle) recycle(Sparkle.class)).reset(
-                            p.x + Random.Float(DungeonTilemap.SIZE),
-                            p.y + Random.Float(DungeonTilemap.SIZE));
+                    // TODO check twice. turn off vien sparkle
+                    // ((Sparkle) recycle(Sparkle.class)).reset(
+                    // p.x + Random.Float(DungeonTilemap.SIZE),
+                    // p.y + Random.Float(DungeonTilemap.SIZE));
                 }
             }
         }

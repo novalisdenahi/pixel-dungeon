@@ -77,24 +77,16 @@ public class GoblinCaveBossLevel extends Level {
     protected boolean build() {
 
         Painter.fill(this, LEFT, TOP, HALL_WIDTH, HALL_HEIGHT, Terrain.EMPTY);
-        // TODO no special or .. idk
-        // Painter.fill(this, CENTER, TOP, 1, HALL_HEIGHT, Terrain.EMPTY_SP);
 
-        // TODO statu just nex to the door
-        // int y = TOP + 1;
-        // while (y < (TOP + HALL_HEIGHT)) {
-        // map[((y * WIDTH) + CENTER) - 2] = Terrain.STATUE_SP;
-        // map[(y * WIDTH) + CENTER + 2] = Terrain.STATUE_SP;
-        // y += 2;
-        // }
+        int y = (TOP + HALL_HEIGHT) - 2;
+        map[((y * WIDTH) + CENTER) - 2] = Terrain.STATUE;
+        map[(y * WIDTH) + CENTER + 2] = Terrain.STATUE;
+        y = TOP + 2;
+        map[((y * WIDTH) + CENTER) - 2] = Terrain.STATUE;
+        map[(y * WIDTH) + CENTER + 2] = Terrain.STATUE;
 
-        // NO PEDESTAL
-        // int left = GoblinCaveBossLevel.pedestal(true);
-        // int right = GoblinCaveBossLevel.pedestal(false);
-        // map[left] = map[right] = Terrain.PEDESTAL;
-        // for (int i = left + 1; i < right; i++) {
-        // map[i] = Terrain.EMPTY_SP;
-        // }
+        y = (TOP + (HALL_HEIGHT / 2));
+        map[(y * WIDTH) + CENTER] = Terrain.PEDESTAL;
 
         exit = ((TOP - 1) * WIDTH) + CENTER;
         map[exit] = Terrain.LOCKED_EXIT;
@@ -103,8 +95,8 @@ public class GoblinCaveBossLevel extends Level {
         map[arenaDoor] = Terrain.DOOR;
 
         Painter.fill(this, LEFT, TOP + HALL_HEIGHT + 1, HALL_WIDTH, CHAMBER_HEIGHT, Terrain.EMPTY);
-        Painter.fill(this, LEFT, TOP + HALL_HEIGHT + 1, 1, CHAMBER_HEIGHT, Terrain.BOOKSHELF);
-        Painter.fill(this, (LEFT + HALL_WIDTH) - 1, TOP + HALL_HEIGHT + 1, 1, CHAMBER_HEIGHT, Terrain.BOOKSHELF);
+        Painter.fill(this, LEFT, TOP + HALL_HEIGHT + 1, 1, CHAMBER_HEIGHT, Terrain.WALL);
+        Painter.fill(this, (LEFT + HALL_WIDTH) - 1, TOP + HALL_HEIGHT + 1, 1, CHAMBER_HEIGHT, Terrain.WALL);
 
         entrance = ((TOP + HALL_HEIGHT + 2 + Random.Int(CHAMBER_HEIGHT - 1)) * WIDTH) + LEFT
                 + (/* 1 + */Random.Int(HALL_WIDTH - 2));

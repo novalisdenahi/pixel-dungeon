@@ -53,6 +53,7 @@ import com.watabou.pixeldungeon.levels.CavesLevel;
 import com.watabou.pixeldungeon.levels.CityBossLevel;
 import com.watabou.pixeldungeon.levels.CityLevel;
 import com.watabou.pixeldungeon.levels.DeadEndLevel;
+import com.watabou.pixeldungeon.levels.GoblinCaveBossLevel;
 import com.watabou.pixeldungeon.levels.GoblinCavesLevel;
 import com.watabou.pixeldungeon.levels.GoblinSewerBossLevel;
 import com.watabou.pixeldungeon.levels.GoblinSewerLevel;
@@ -492,6 +493,9 @@ public class Dungeon {
         Level level;
         switch (depth) {
         case 1:
+            // TODO this is onl test
+            level = new GoblinCaveBossLevel();
+            break;
         case 2:
         case 3:
         case 4:
@@ -504,6 +508,8 @@ public class Dungeon {
         case 7:
         case 8:
         case 9:
+            level = new GoblinCavesLevel();
+            break;
         case 10:
             level = new GoblinCavesLevel(); // TODO goblin cave boss level
             break;
