@@ -17,236 +17,247 @@
  */
 package com.watabou.pixeldungeon.actors.mobs;
 
-import hu.denahi.pixeldungeon.holy.quest.DungeonType;
-
 import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.actors.Char;
 import com.watabou.utils.Random;
 
+import hu.denahi.pixeldungeon.holy.quest.DungeonType;
+
 public class Bestiary {
 
-    public static boolean isBoss(final Char mob) {
-        return (mob instanceof Goo) || (mob instanceof Tengu) || (mob instanceof DM300) || (mob instanceof King)
-                || (mob instanceof Yog);
+  public static boolean isBoss(final Char mob) {
+    return (mob instanceof Goo) || (mob instanceof Tengu) || (mob instanceof DM300)
+        || (mob instanceof King) || (mob instanceof Yog) || (mob instanceof AlphaWorg)
+        || (mob instanceof GoblinKing);
+  }
+
+  public static Mob mob(final int depth) {
+    @SuppressWarnings("unchecked")
+    Class<? extends Mob> cl = (Class<? extends Mob>) Bestiary.mobClass(depth);
+    try {
+      return cl.newInstance();
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  private static Class<?> mobClass(final int depth) {
+    switch (Dungeon.dungeonType) {
+      case DungeonType.YOG:
+        return Bestiary.mobClassYog(depth);
+      case DungeonType.GOBLIN:
+        return Bestiary.mobClassGoblin(depth); // TODO add mad_mage
+      default:
+        return Bestiary.mobClassYog(depth); // as always Yog_dungeon is the default
+    }
+  }
+
+  private static Class<?> mobClassGoblin(final int depth) {
+    float[] chances;
+    Class<?>[] classes;
+
+    switch (depth) {
+      case 1:
+        chances = new float[] { 1 };
+        classes = new Class<?>[] { Rat.class };
+        break;
+      case 2:
+        chances = new float[] { 1, 1 };
+        classes = new Class<?>[] { Rat.class, Goblin.class };
+        break;
+      case 3:
+        chances = new float[] { 1, 2, 1 };
+        classes = new Class<?>[] { Rat.class, Goblin.class, Worg.class };
+        break;
+      case 4:
+        chances = new float[] { 1, 2, 3, 0.02f };
+        classes = new Class<?>[] { Rat.class, Goblin.class, Worg.class, GoblinMage.class };
+        break;
+      case 5:
+        chances = new float[] { 1 };
+        classes = new Class<?>[] { AlphaWorg.class };
+        break;
+      case 6:
+        chances = new float[] { 2, 2, 1, 0.5f };
+        classes = new Class<?>[] { Goblin.class, GoblinRider.class, GoblinMage.class,
+            GoblinFireMage.class };
+        // no empty worg after 5
+        break;
+      case 7:
+        chances = new float[] { 2, 2, 2, 0.5f };
+        classes = new Class<?>[] { Goblin.class, GoblinRider.class, GoblinMage.class,
+            GoblinFireMage.class };
+        break;
+      case 8:
+        chances = new float[] { 1, 3, 2, 0.5f, 1 };
+        classes = new Class<?>[] { Goblin.class, GoblinRider.class, GoblinMage.class,
+            GoblinFireMage.class,
+            GoblinChampion.class };
+        break;
+      case 9:
+        chances = new float[] { 3, 2, 1, 2 };
+        classes = new Class<?>[] { GoblinRider.class, GoblinMage.class, GoblinFireMage.class,
+            GoblinChampion.class };
+        break;
+      case 10:
+        chances = new float[] { 1 };
+        classes = new Class<?>[] { GoblinKing.class };
+        break;
+      default:
+        chances = new float[] { 1 };
+        classes = new Class<?>[] { Eye.class };
     }
 
-    public static Mob mob(final int depth) {
-        @SuppressWarnings("unchecked")
-        Class<? extends Mob> cl = (Class<? extends Mob>) Bestiary.mobClass(depth);
-        try {
-            return cl.newInstance();
-        } catch (Exception e) {
-            return null;
-        }
+    return classes[Random.chances(chances)];
+  }
+
+  private static Class<?> mobClassYog(final int depth) {
+    float[] chances;
+    Class<?>[] classes;
+
+    switch (depth) {
+      case 1:
+        chances = new float[] { 1 };
+        classes = new Class<?>[] { Rat.class };
+        break;
+      case 2:
+        chances = new float[] { 1, 1 };
+        classes = new Class<?>[] { Rat.class, Gnoll.class };
+        break;
+      case 3:
+        chances = new float[] { 1, 2, 1, 0.02f };
+        classes = new Class<?>[] { Rat.class, Gnoll.class, Crab.class, Swarm.class };
+        break;
+      case 4:
+        chances = new float[] { 1, 2, 3, 0.02f, 0.01f, 0.01f };
+        classes = new Class<?>[] { Rat.class, Gnoll.class, Crab.class, Swarm.class, Skeleton.class,
+            Thief.class };
+        break;
+
+      case 5:
+        chances = new float[] { 1 };
+        classes = new Class<?>[] { Goo.class };
+        break;
+
+      case 6:
+        chances = new float[] { 4, 2, 1, 0.2f };
+        classes = new Class<?>[] { Skeleton.class, Thief.class, Swarm.class, Shaman.class };
+        break;
+      case 7:
+        chances = new float[] { 3, 1, 1, 1 };
+        classes = new Class<?>[] { Skeleton.class, Shaman.class, Thief.class, Swarm.class };
+        break;
+      case 8:
+        chances = new float[] { 3, 2, 1, 1, 1, 0.02f };
+        classes = new Class<?>[] { Skeleton.class, Shaman.class, Gnoll.class, Thief.class,
+            Swarm.class, Bat.class };
+        break;
+      case 9:
+        chances = new float[] { 3, 3, 1, 1, 0.02f, 0.01f };
+        classes = new Class<?>[] { Skeleton.class, Shaman.class, Thief.class, Swarm.class,
+            Bat.class, Brute.class };
+        break;
+
+      case 10:
+        chances = new float[] { 1 };
+        classes = new Class<?>[] { Tengu.class };
+        break;
+
+      case 11:
+        chances = new float[] { 1, 0.2f };
+        classes = new Class<?>[] { Bat.class, Brute.class };
+        break;
+      case 12:
+        chances = new float[] { 1, 1, 0.2f };
+        classes = new Class<?>[] { Bat.class, Brute.class, Spinner.class };
+        break;
+      case 13:
+        chances = new float[] { 1, 3, 1, 1, 0.02f };
+        classes =
+            new Class<?>[] { Bat.class, Brute.class, Shaman.class, Spinner.class, Elemental.class };
+        break;
+      case 14:
+        chances = new float[] { 1, 3, 1, 4, 0.02f, 0.01f };
+        classes = new Class<?>[] { Bat.class, Brute.class, Shaman.class, Spinner.class,
+            Elemental.class, Monk.class };
+        break;
+
+      case 15:
+        chances = new float[] { 1 };
+        classes = new Class<?>[] { DM300.class };
+        break;
+
+      case 16:
+        chances = new float[] { 1, 1, 0.2f };
+        classes = new Class<?>[] { Elemental.class, Warlock.class, Monk.class };
+        break;
+      case 17:
+        chances = new float[] { 1, 1, 1 };
+        classes = new Class<?>[] { Elemental.class, Monk.class, Warlock.class };
+        break;
+      case 18:
+        chances = new float[] { 1, 2, 1, 1 };
+        classes = new Class<?>[] { Elemental.class, Monk.class, Golem.class, Warlock.class };
+        break;
+      case 19:
+        chances = new float[] { 1, 2, 3, 1, 0.02f };
+        classes = new Class<?>[] { Elemental.class, Monk.class, Golem.class, Warlock.class,
+            Succubus.class };
+        break;
+
+      case 20:
+        chances = new float[] { 1 };
+        classes = new Class<?>[] { King.class };
+        break;
+
+      case 22:
+        chances = new float[] { 1, 1 };
+        classes = new Class<?>[] { Succubus.class, Eye.class };
+        break;
+      case 23:
+        chances = new float[] { 1, 2, 1 };
+        classes = new Class<?>[] { Succubus.class, Eye.class, Scorpio.class };
+        break;
+      case 24:
+        chances = new float[] { 1, 2, 3 };
+        classes = new Class<?>[] { Succubus.class, Eye.class, Scorpio.class };
+        break;
+
+      case 25:
+        chances = new float[] { 1 };
+        classes = new Class<?>[] { Yog.class };
+        break;
+
+      default:
+        chances = new float[] { 1 };
+        classes = new Class<?>[] { Eye.class };
     }
 
-    private static Class<?> mobClass(final int depth) {
-        switch (Dungeon.dungeonType) {
-        case DungeonType.YOG:
-            return Bestiary.mobClassYog(depth);
-        case DungeonType.GOBLIN:
-            return Bestiary.mobClassGoblin(depth); // TODO add mad_mage
-        default:
-            return Bestiary.mobClassYog(depth); // as always Yog_dungeon is the default
-        }
+    return classes[Random.chances(chances)];
+  }
+
+  public static Mob mutable(final int depth) {
+    @SuppressWarnings("unchecked")
+    Class<? extends Mob> cl = (Class<? extends Mob>) Bestiary.mobClass(depth);
+
+    if (Random.Int(30) == 0) {
+      if (cl == Rat.class) {
+        cl = Albino.class;
+      } else if (cl == Thief.class) {
+        cl = Bandit.class;
+      } else if (cl == Brute.class) {
+        cl = Shielded.class;
+      } else if (cl == Monk.class) {
+        cl = Senior.class;
+      } else if (cl == Scorpio.class) {
+        cl = Acidic.class;
+      }
     }
 
-    private static Class<?> mobClassGoblin(final int depth) {
-        float[] chances;
-        Class<?>[] classes;
-
-        switch (depth) {
-        case 1:
-            chances = new float[] { 1 };
-            classes = new Class<?>[] { Rat.class };
-            break;
-        case 2:
-            chances = new float[] { 1, 1 };
-            classes = new Class<?>[] { Rat.class, Goblin.class };
-            break;
-        case 3:
-            chances = new float[] { 1, 2, 1 };
-            classes = new Class<?>[] { Rat.class, Goblin.class, Worg.class };
-            break;
-        case 4:
-            chances = new float[] { 1, 2, 3, 0.02f };
-            classes = new Class<?>[] { Rat.class, Goblin.class, Worg.class, GoblinMage.class };
-            break;
-        case 5:
-            chances = new float[] { 1 };
-            classes = new Class<?>[] { AlphaWorg.class };
-            break;
-        case 6:
-            chances = new float[] { 2, 2, 1, 0.5f };
-            classes = new Class<?>[] { Goblin.class, GoblinRider.class, GoblinMage.class, GoblinFireMage.class };
-            // no empty worg after 5
-            break;
-        case 7:
-            chances = new float[] { 2, 2, 2, 0.5f };
-            classes = new Class<?>[] { Goblin.class, GoblinRider.class, GoblinMage.class, GoblinFireMage.class };
-            break;
-        case 8:
-            chances = new float[] { 1, 3, 2, 0.5f, 1 };
-            classes = new Class<?>[] { Goblin.class, GoblinRider.class, GoblinMage.class, GoblinFireMage.class,
-                    GoblinChampion.class };
-            break;
-        case 9:
-            chances = new float[] { 3, 2, 1, 2 };
-            classes = new Class<?>[] { GoblinRider.class, GoblinMage.class, GoblinFireMage.class, GoblinChampion.class };
-            break;
-        case 10:
-            chances = new float[] { 1 };
-            classes = new Class<?>[] { Goo.class }; // TODO add the real boos
-            break;
-        default:
-            chances = new float[] { 1 };
-            classes = new Class<?>[] { Eye.class };
-        }
-
-        return classes[Random.chances(chances)];
+    try {
+      return cl.newInstance();
+    } catch (Exception e) {
+      return null;
     }
-
-    private static Class<?> mobClassYog(final int depth) {
-        float[] chances;
-        Class<?>[] classes;
-
-        switch (depth) {
-        case 1:
-            chances = new float[] { 1 };
-            classes = new Class<?>[] { Rat.class };
-            break;
-        case 2:
-            chances = new float[] { 1, 1 };
-            classes = new Class<?>[] { Rat.class, Gnoll.class };
-            break;
-        case 3:
-            chances = new float[] { 1, 2, 1, 0.02f };
-            classes = new Class<?>[] { Rat.class, Gnoll.class, Crab.class, Swarm.class };
-            break;
-        case 4:
-            chances = new float[] { 1, 2, 3, 0.02f, 0.01f, 0.01f };
-            classes = new Class<?>[] { Rat.class, Gnoll.class, Crab.class, Swarm.class, Skeleton.class, Thief.class };
-            break;
-
-        case 5:
-            chances = new float[] { 1 };
-            classes = new Class<?>[] { Goo.class };
-            break;
-
-        case 6:
-            chances = new float[] { 4, 2, 1, 0.2f };
-            classes = new Class<?>[] { Skeleton.class, Thief.class, Swarm.class, Shaman.class };
-            break;
-        case 7:
-            chances = new float[] { 3, 1, 1, 1 };
-            classes = new Class<?>[] { Skeleton.class, Shaman.class, Thief.class, Swarm.class };
-            break;
-        case 8:
-            chances = new float[] { 3, 2, 1, 1, 1, 0.02f };
-            classes = new Class<?>[] { Skeleton.class, Shaman.class, Gnoll.class, Thief.class, Swarm.class, Bat.class };
-            break;
-        case 9:
-            chances = new float[] { 3, 3, 1, 1, 0.02f, 0.01f };
-            classes = new Class<?>[] { Skeleton.class, Shaman.class, Thief.class, Swarm.class, Bat.class, Brute.class };
-            break;
-
-        case 10:
-            chances = new float[] { 1 };
-            classes = new Class<?>[] { Tengu.class };
-            break;
-
-        case 11:
-            chances = new float[] { 1, 0.2f };
-            classes = new Class<?>[] { Bat.class, Brute.class };
-            break;
-        case 12:
-            chances = new float[] { 1, 1, 0.2f };
-            classes = new Class<?>[] { Bat.class, Brute.class, Spinner.class };
-            break;
-        case 13:
-            chances = new float[] { 1, 3, 1, 1, 0.02f };
-            classes = new Class<?>[] { Bat.class, Brute.class, Shaman.class, Spinner.class, Elemental.class };
-            break;
-        case 14:
-            chances = new float[] { 1, 3, 1, 4, 0.02f, 0.01f };
-            classes = new Class<?>[] { Bat.class, Brute.class, Shaman.class, Spinner.class, Elemental.class, Monk.class };
-            break;
-
-        case 15:
-            chances = new float[] { 1 };
-            classes = new Class<?>[] { DM300.class };
-            break;
-
-        case 16:
-            chances = new float[] { 1, 1, 0.2f };
-            classes = new Class<?>[] { Elemental.class, Warlock.class, Monk.class };
-            break;
-        case 17:
-            chances = new float[] { 1, 1, 1 };
-            classes = new Class<?>[] { Elemental.class, Monk.class, Warlock.class };
-            break;
-        case 18:
-            chances = new float[] { 1, 2, 1, 1 };
-            classes = new Class<?>[] { Elemental.class, Monk.class, Golem.class, Warlock.class };
-            break;
-        case 19:
-            chances = new float[] { 1, 2, 3, 1, 0.02f };
-            classes = new Class<?>[] { Elemental.class, Monk.class, Golem.class, Warlock.class, Succubus.class };
-            break;
-
-        case 20:
-            chances = new float[] { 1 };
-            classes = new Class<?>[] { King.class };
-            break;
-
-        case 22:
-            chances = new float[] { 1, 1 };
-            classes = new Class<?>[] { Succubus.class, Eye.class };
-            break;
-        case 23:
-            chances = new float[] { 1, 2, 1 };
-            classes = new Class<?>[] { Succubus.class, Eye.class, Scorpio.class };
-            break;
-        case 24:
-            chances = new float[] { 1, 2, 3 };
-            classes = new Class<?>[] { Succubus.class, Eye.class, Scorpio.class };
-            break;
-
-        case 25:
-            chances = new float[] { 1 };
-            classes = new Class<?>[] { Yog.class };
-            break;
-
-        default:
-            chances = new float[] { 1 };
-            classes = new Class<?>[] { Eye.class };
-        }
-
-        return classes[Random.chances(chances)];
-    }
-
-    public static Mob mutable(final int depth) {
-        @SuppressWarnings("unchecked")
-        Class<? extends Mob> cl = (Class<? extends Mob>) Bestiary.mobClass(depth);
-
-        if (Random.Int(30) == 0) {
-            if (cl == Rat.class) {
-                cl = Albino.class;
-            } else if (cl == Thief.class) {
-                cl = Bandit.class;
-            } else if (cl == Brute.class) {
-                cl = Shielded.class;
-            } else if (cl == Monk.class) {
-                cl = Senior.class;
-            } else if (cl == Scorpio.class) {
-                cl = Acidic.class;
-            }
-        }
-
-        try {
-            return cl.newInstance();
-        } catch (Exception e) {
-            return null;
-        }
-    }
+  }
 }

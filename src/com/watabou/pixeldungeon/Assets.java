@@ -98,6 +98,7 @@ public class Assets {
     public static final String ASH = "goblinash.png";
     public static final String GOBLINMAGE = "goblinmage.png";
     public static final String GOBLIN_CHAMPION = "goblinchampion.png";
+    public static final String GOBLIN_KING = "goblinking.png";
 
     public static final String ITEMS = "items.png";
     public static final String PLANTS = "plants.png";
