@@ -20,14 +20,14 @@ package com.watabou.pixeldungeon.actors.buffs;
 import com.watabou.pixeldungeon.ui.BuffIndicator;
 
 public class Rage extends FlavourBuff {
-	
-	@Override
-	public int icon() {
-		return BuffIndicator.RAGE;
-	}
-	
-	@Override
-	public String toString() {
-		return "Blinded with rage";
-	}
+
+  @Override
+  public int icon() {
+    return BuffIndicator.RAGE;
+  }
+
+  @Override
+  public String toString() {
+    return "Blinded with rage";
+  }
 }
