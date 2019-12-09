@@ -30,66 +30,66 @@ import com.watabou.pixeldungeon.utils.GLog;
 
 public class Rum extends Item {
 
-    private static final float TIME_TO_DRINK = 2f;
+  private static final float TIME_TO_DRINK = 2f;
 
-    public static final String AC_DRINK = "DRINK";
+  public static final String AC_DRINK = "DRINK";
 
-    // TODO add throw and shutter effect
-    public String message = "Ahh! This is strong! You feel yourself brave enough to fight with anything.";
+  // TODO add throw and shutter effect
+  public String message =
+      "Ahh! This is strong! You feel yourself brave enough to fight with anything.";
 
-    {
-        stackable = true;
-        name = "Goblin RUM";
-        image = ItemSpriteSheet.RUM;
+  {
+    stackable = true;
+    name = "Goblin RUM";
+    image = ItemSpriteSheet.RUM;
+  }
+
+  @Override
+  public ArrayList<String> actions(final Hero hero) {
+    ArrayList<String> actions = super.actions(hero);
+    actions.add(AC_DRINK);
+    return actions;
+  }
+
+  @Override
+  public void execute(final Hero hero, final String action) {
+    if (action.equals(AC_DRINK)) {
+
+      detach(hero.belongings.backpack);
+
+      GLog.i(message);
+      Buff.affect(hero, Drunk.class);
+      hero.sprite.operate(hero.pos);
+      hero.busy();
+      Sample.INSTANCE.play(Assets.SND_DRINK);
+
+      hero.spend(TIME_TO_DRINK);
+
+    } else {
+
+      super.execute(hero, action);
+
     }
+  }
 
-    @Override
-    public ArrayList<String> actions(final Hero hero) {
-        ArrayList<String> actions = super.actions(hero);
-        actions.add(AC_DRINK);
-        return actions;
-    }
+  @Override
+  public String info() {
+    return "Not smells good, and the quality of this rum is much worse than you hope. "
+        + "Remember! Drink responsibly!";
+  }
 
-    @Override
-    public void execute(final Hero hero, final String action) {
-        if (action.equals(AC_DRINK)) {
+  @Override
+  public boolean isIdentified() {
+    return true;
+  }
 
-            detach(hero.belongings.backpack);
+  @Override
+  public boolean isUpgradable() {
+    return false;
+  }
 
-            GLog.i(message);
-            Buff.affect(hero, Drunk.class);
-            hero.sprite.operate(hero.pos);
-            hero.busy();
-            Sample.INSTANCE.play(Assets.SND_DRINK);
-
-            hero.spend(TIME_TO_DRINK);
-
-        } else {
-
-            super.execute(hero, action);
-
-        }
-    }
-
-    @Override
-    public String info() {
-        return
-                "Not smells good, and the quality of this rum is much worse than you hope. "
-                + "Remember! Drink responsibly!";
-    }
-
-    @Override
-    public boolean isIdentified() {
-        return true;
-    }
-
-    @Override
-    public boolean isUpgradable() {
-        return false;
-    }
-
-    @Override
-    public int price() {
-        return 5 * quantity;
-    }
+  @Override
+  public int price() {
+    return 5 * quantity;
+  }
 }

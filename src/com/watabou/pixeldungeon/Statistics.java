@@ -23,130 +23,130 @@ import com.watabou.utils.Bundle;
 
 public class Statistics {
 
-    public static int goldCollected;
+  public static int goldCollected;
 
-    private static int deepestFloor;
-    public static int deepestFloorGoblin;
-    public static int deepestFloorMadMage;
-    public static int enemiesSlain;
-    public static int foodEaten;
-    public static int potionsCooked;
-    public static int piranhasKilled;
-    public static int nightHunt;
-    public static int ankhsUsed;
-    public static float duration;
+  private static int deepestFloor;
+  public static int deepestFloorGoblin;
+  public static int deepestFloorMadMage;
+  public static int enemiesSlain;
+  public static int foodEaten;
+  public static int potionsCooked;
+  public static int piranhasKilled;
+  public static int nightHunt;
+  public static int ankhsUsed;
+  public static float duration;
 
-    public static boolean qualifiedForNoKilling = false;
+  public static boolean qualifiedForNoKilling = false;
 
-    public static boolean completedWithNoKilling = false;
-    public static boolean amuletObtained = false;
+  public static boolean completedWithNoKilling = false;
+  public static boolean amuletObtained = false;
 
-    private static final String GOLD = "score";
+  private static final String GOLD = "score";
 
-    private static final String DEEPEST = "maxDepth";
+  private static final String DEEPEST = "maxDepth";
 
-    private static final String DEEPEST_GOBLIN = "maxDepthGoblin";
-    private static final String DEEPEST_MAD_MAGE = "maxDepthMadMage";
-    private static final String SLAIN = "enemiesSlain";
-    private static final String FOOD = "foodEaten";
-    private static final String ALCHEMY = "potionsCooked";
-    private static final String PIRANHAS = "priranhas";
-    private static final String NIGHT = "nightHunt";
-    private static final String ANKHS = "ankhsUsed";
-    private static final String DURATION = "duration";
-    private static final String AMULET = "amuletObtained";
+  private static final String DEEPEST_GOBLIN = "maxDepthGoblin";
+  private static final String DEEPEST_MAD_MAGE = "maxDepthMadMage";
+  private static final String SLAIN = "enemiesSlain";
+  private static final String FOOD = "foodEaten";
+  private static final String ALCHEMY = "potionsCooked";
+  private static final String PIRANHAS = "priranhas";
+  private static final String NIGHT = "nightHunt";
+  private static final String ANKHS = "ankhsUsed";
+  private static final String DURATION = "duration";
+  private static final String AMULET = "amuletObtained";
 
-    public static int decDeepestFloor(final int dungeonType) {
-        switch (dungeonType) {
-        case DungeonType.GOBLIN:
-            return deepestFloorGoblin--;
-        case DungeonType.YOG:
-            return deepestFloor--;
-        case DungeonType.MAD_MAGE:
-            return deepestFloorMadMage--;
-        default:
-            return deepestFloor--;
-        }
+  public static int decDeepestFloor(final int dungeonType) {
+    switch (dungeonType) {
+      case DungeonType.GOBLIN:
+        return deepestFloorGoblin--;
+      case DungeonType.YOG:
+        return deepestFloor--;
+      case DungeonType.MAD_MAGE:
+        return deepestFloorMadMage--;
+      default:
+        return deepestFloor--;
     }
+  }
 
-    public static int getDeepestFloor(final int dungeonType) {
-        switch (dungeonType) {
-        case DungeonType.GOBLIN:
-            return deepestFloorGoblin;
-        case DungeonType.YOG:
-            return deepestFloor;
-        case DungeonType.MAD_MAGE:
-            return deepestFloorMadMage;
-        default:
-            return deepestFloor;
-        }
+  public static int getDeepestFloor(final int dungeonType) {
+    switch (dungeonType) {
+      case DungeonType.GOBLIN:
+        return deepestFloorGoblin;
+      case DungeonType.YOG:
+        return deepestFloor;
+      case DungeonType.MAD_MAGE:
+        return deepestFloorMadMage;
+      default:
+        return deepestFloor;
     }
+  }
 
-    public static void reset() {
+  public static void reset() {
 
-        goldCollected = 0;
-        deepestFloor = 0;
-        deepestFloorGoblin = 0;
-        deepestFloorMadMage = 0;
-        enemiesSlain = 0;
-        foodEaten = 0;
-        potionsCooked = 0;
-        piranhasKilled = 0;
-        nightHunt = 0;
-        ankhsUsed = 0;
+    goldCollected = 0;
+    deepestFloor = 0;
+    deepestFloorGoblin = 0;
+    deepestFloorMadMage = 0;
+    enemiesSlain = 0;
+    foodEaten = 0;
+    potionsCooked = 0;
+    piranhasKilled = 0;
+    nightHunt = 0;
+    ankhsUsed = 0;
 
-        duration = 0;
+    duration = 0;
 
-        qualifiedForNoKilling = false;
+    qualifiedForNoKilling = false;
 
-        amuletObtained = false;
+    amuletObtained = false;
 
+  }
+
+  public static void restoreFromBundle(final Bundle bundle) {
+    goldCollected = bundle.getInt(GOLD);
+    deepestFloor = bundle.getInt(DEEPEST);
+    deepestFloorGoblin = bundle.getInt(DEEPEST_GOBLIN);
+    deepestFloorMadMage = bundle.getInt(DEEPEST_MAD_MAGE);
+    enemiesSlain = bundle.getInt(SLAIN);
+    foodEaten = bundle.getInt(FOOD);
+    potionsCooked = bundle.getInt(ALCHEMY);
+    piranhasKilled = bundle.getInt(PIRANHAS);
+    nightHunt = bundle.getInt(NIGHT);
+    ankhsUsed = bundle.getInt(ANKHS);
+    duration = bundle.getFloat(DURATION);
+    amuletObtained = bundle.getBoolean(AMULET);
+  }
+
+  public static int setDeepestFloor(final int dungeonType, final int newDepth) {
+    switch (dungeonType) {
+      case DungeonType.GOBLIN:
+        deepestFloorGoblin = newDepth;
+        return deepestFloorGoblin;
+      case DungeonType.YOG:
+        deepestFloor = newDepth;
+        return deepestFloor;
+      case DungeonType.MAD_MAGE:
+        deepestFloorMadMage = newDepth;
+        return deepestFloorMadMage;
+      default:
+        return deepestFloor;
     }
+  }
 
-    public static void restoreFromBundle(final Bundle bundle) {
-        goldCollected = bundle.getInt(GOLD);
-        deepestFloor = bundle.getInt(DEEPEST);
-        deepestFloorGoblin = bundle.getInt(DEEPEST_GOBLIN);
-        deepestFloorMadMage = bundle.getInt(DEEPEST_MAD_MAGE);
-        enemiesSlain = bundle.getInt(SLAIN);
-        foodEaten = bundle.getInt(FOOD);
-        potionsCooked = bundle.getInt(ALCHEMY);
-        piranhasKilled = bundle.getInt(PIRANHAS);
-        nightHunt = bundle.getInt(NIGHT);
-        ankhsUsed = bundle.getInt(ANKHS);
-        duration = bundle.getFloat(DURATION);
-        amuletObtained = bundle.getBoolean(AMULET);
-    }
-
-    public static int setDeepestFloor(final int dungeonType, final int newDepth) {
-        switch (dungeonType) {
-        case DungeonType.GOBLIN:
-            deepestFloorGoblin = newDepth;
-            return deepestFloorGoblin;
-        case DungeonType.YOG:
-            deepestFloor = newDepth;
-            return deepestFloor;
-        case DungeonType.MAD_MAGE:
-            deepestFloorMadMage = newDepth;
-            return deepestFloorMadMage;
-        default:
-            return deepestFloor;
-        }
-    }
-
-    public static void storeInBundle(final Bundle bundle) {
-        bundle.put(GOLD, goldCollected);
-        bundle.put(DEEPEST, deepestFloor);
-        bundle.put(DEEPEST_GOBLIN, deepestFloorGoblin);
-        bundle.put(DEEPEST_MAD_MAGE, deepestFloorMadMage);
-        bundle.put(SLAIN, enemiesSlain);
-        bundle.put(FOOD, foodEaten);
-        bundle.put(ALCHEMY, potionsCooked);
-        bundle.put(PIRANHAS, piranhasKilled);
-        bundle.put(NIGHT, nightHunt);
-        bundle.put(ANKHS, ankhsUsed);
-        bundle.put(DURATION, duration);
-        bundle.put(AMULET, amuletObtained);
-    }
+  public static void storeInBundle(final Bundle bundle) {
+    bundle.put(GOLD, goldCollected);
+    bundle.put(DEEPEST, deepestFloor);
+    bundle.put(DEEPEST_GOBLIN, deepestFloorGoblin);
+    bundle.put(DEEPEST_MAD_MAGE, deepestFloorMadMage);
+    bundle.put(SLAIN, enemiesSlain);
+    bundle.put(FOOD, foodEaten);
+    bundle.put(ALCHEMY, potionsCooked);
+    bundle.put(PIRANHAS, piranhasKilled);
+    bundle.put(NIGHT, nightHunt);
+    bundle.put(ANKHS, ankhsUsed);
+    bundle.put(DURATION, duration);
+    bundle.put(AMULET, amuletObtained);
+  }
 
 }

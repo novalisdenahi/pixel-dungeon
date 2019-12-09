@@ -37,111 +37,110 @@ import com.watabou.utils.Random;
 
 public class Warlock extends Mob implements Callback {
 
-    private static final float TIME_TO_ZAP = 1f;
+  private static final float TIME_TO_ZAP = 1f;
 
-    private static final String TXT_SHADOWBOLT_KILLED = "%s's shadow bolt killed you...";
+  private static final String TXT_SHADOWBOLT_KILLED = "%s's shadow bolt killed you...";
 
-    {
-        name = "dwarf warlock";
-        spriteClass = WarlockSprite.class;
+  {
+    name = "dwarf warlock";
+    spriteClass = WarlockSprite.class;
 
-        HP = HT = 70;
-        defenseSkill = 18;
+    HP = HT = 70;
+    defenseSkill = 18;
 
-        EXP = 11;
-        maxLvl = 21;
+    EXP = 11;
+    maxLvl = 21;
 
-        loot = Generator.Category.POTION;
-        lootChance = 0.83f;
-    }
+    loot = Generator.Category.POTION;
+    lootChance = 0.83f;
+  }
 
-    private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
 
-    static {
-        RESISTANCES.add(Death.class);
-    }
+  static {
+    RESISTANCES.add(Death.class);
+  }
 
-    @Override
-    public int attackSkill(final Char target) {
-        return 25;
-    }
+  @Override
+  public int attackSkill(final Char target) {
+    return 25;
+  }
 
-    @Override
-    public void call() {
-        next();
-    }
+  @Override
+  public void call() {
+    next();
+  }
 
-    @Override
-    protected boolean canAttack(final Char enemy) {
-        return Ballistica.cast(pos, enemy.pos, false, true) == enemy.pos;
-    }
+  @Override
+  protected boolean canAttack(final Char enemy) {
+    return Ballistica.cast(pos, enemy.pos, false, true) == enemy.pos;
+  }
 
-    @Override
-    public int damageRoll() {
-        return Random.NormalIntRange(12, 20);
-    }
+  @Override
+  public int damageRoll() {
+    return Random.NormalIntRange(12, 20);
+  }
 
-    @Override
-    public String description() {
-        return
-        "When dwarves' interests have shifted from engineering to arcane arts, " +
-                "warlocks have come to power in the city. They started with elemental magic, " +
-                "but soon switched to demonology and necromancy.";
-    }
+  @Override
+  public String description() {
+    return "When dwarves' interests have shifted from engineering to arcane arts, " +
+        "warlocks have come to power in the city. They started with elemental magic, " +
+        "but soon switched to demonology and necromancy.";
+  }
 
-    @Override
-    protected boolean doAttack(final Char enemy) {
+  @Override
+  protected boolean doAttack(final Char enemy) {
 
-        if (Level.adjacent(pos, enemy.pos)) {
+    if (Level.adjacent(pos, enemy.pos)) {
 
-            return super.doAttack(enemy);
+      return super.doAttack(enemy);
 
-        } else {
+    } else {
 
-            boolean visible = Level.fieldOfView[pos] || Level.fieldOfView[enemy.pos];
-            if (visible) {
-                ((WarlockSprite) sprite).zap(enemy.pos);
-            } else {
-                zap();
-            }
-
-            return !visible;
-        }
-    }
-
-    @Override
-    public int dr() {
-        return 8;
-    }
-
-    public void onZapComplete() {
+      boolean visible = Level.fieldOfView[pos] || Level.fieldOfView[enemy.pos];
+      if (visible) {
+        ((WarlockSprite) sprite).zap(enemy.pos);
+      } else {
         zap();
-        next();
+      }
+
+      return !visible;
     }
+  }
 
-    @Override
-    public HashSet<Class<?>> resistances() {
-        return RESISTANCES;
+  @Override
+  public int dr() {
+    return 8;
+  }
+
+  public void onZapComplete() {
+    zap();
+    next();
+  }
+
+  @Override
+  public HashSet<Class<?>> resistances() {
+    return RESISTANCES;
+  }
+
+  private void zap() {
+    spend(TIME_TO_ZAP);
+
+    if (Char.hit(this, enemy, true)) {
+      if ((enemy == Dungeon.hero) && (Random.Int(2) == 0)) {
+        Buff.prolong(enemy, Weakness.class, Weakness.duration(enemy));
+      }
+
+      int dmg = Random.Int(12, 18);
+      enemy.damage(dmg, this);
+
+      if (!enemy.isAlive() && (enemy == Dungeon.hero)) {
+        Dungeon.fail(Utils.format(ResultDescriptions.MOB,
+            Utils.indefinite(name), Dungeon.depth));
+        GLog.n(TXT_SHADOWBOLT_KILLED, name);
+      }
+    } else {
+      enemy.sprite.showStatus(CharSprite.NEUTRAL, enemy.defenseVerb());
     }
-
-    private void zap() {
-        spend(TIME_TO_ZAP);
-
-        if (Char.hit(this, enemy, true)) {
-            if ((enemy == Dungeon.hero) && (Random.Int(2) == 0)) {
-                Buff.prolong(enemy, Weakness.class, Weakness.duration(enemy));
-            }
-
-            int dmg = Random.Int(12, 18);
-            enemy.damage(dmg, this);
-
-            if (!enemy.isAlive() && (enemy == Dungeon.hero)) {
-                Dungeon.fail(Utils.format(ResultDescriptions.MOB,
-                        Utils.indefinite(name), Dungeon.depth));
-                GLog.n(TXT_SHADOWBOLT_KILLED, name);
-            }
-        } else {
-            enemy.sprite.showStatus(CharSprite.NEUTRAL, enemy.defenseVerb());
-        }
-    }
+  }
 }

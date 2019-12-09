@@ -27,42 +27,43 @@ import com.watabou.utils.Random;
 
 public class Leech extends Weapon.Enchantment {
 
-    private static final String TXT_VAMPIRIC = "Vampiric %s";
+  private static final String TXT_VAMPIRIC = "Vampiric %s";
 
-    private static ItemSprite.Glowing RED = new ItemSprite.Glowing(0x660022);
+  private static ItemSprite.Glowing RED = new ItemSprite.Glowing(0x660022);
 
-    @Override
-    public Glowing glowing() {
-        return RED;
+  @Override
+  public Glowing glowing() {
+    return RED;
+  }
+
+  @Override
+  public String name(final String weaponName) {
+    return String.format(TXT_VAMPIRIC, weaponName);
+  }
+
+  @Override
+  public boolean proc(final Weapon weapon, final Char attacker, final Char defender,
+      final int damage) {
+
+    int level = Math.max(0, weapon.level);
+
+    // lvl 0 - 33%
+    // lvl 1 - 43%
+    // lvl 2 - 50%
+    int maxValue = (damage * (level + 2)) / (level + 6);
+    int effValue = Math.min(Random.IntRange(0, maxValue), attacker.HT - attacker.HP);
+
+    if (effValue > 0) {
+
+      attacker.HP += effValue;
+      attacker.sprite.emitter().start(Speck.factory(Speck.HEALING), 0.4f, 1);
+      attacker.sprite.showStatus(CharSprite.POSITIVE, Integer.toString(effValue));
+
+      return true;
+
+    } else {
+      return false;
     }
-
-    @Override
-    public String name(final String weaponName) {
-        return String.format(TXT_VAMPIRIC, weaponName);
-    }
-
-    @Override
-    public boolean proc(final Weapon weapon, final Char attacker, final Char defender, final int damage) {
-
-        int level = Math.max(0, weapon.level);
-
-        // lvl 0 - 33%
-        // lvl 1 - 43%
-        // lvl 2 - 50%
-        int maxValue = (damage * (level + 2)) / (level + 6);
-        int effValue = Math.min(Random.IntRange(0, maxValue), attacker.HT - attacker.HP);
-
-        if (effValue > 0) {
-
-            attacker.HP += effValue;
-            attacker.sprite.emitter().start(Speck.factory(Speck.HEALING), 0.4f, 1);
-            attacker.sprite.showStatus(CharSprite.POSITIVE, Integer.toString(effValue));
-
-            return true;
-
-        } else {
-            return false;
-        }
-    }
+  }
 
 }

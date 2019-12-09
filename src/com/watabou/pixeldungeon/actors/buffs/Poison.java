@@ -30,67 +30,67 @@ import com.watabou.utils.Bundle;
 
 public class Poison extends Buff implements Hero.Doom {
 
-    protected float left;
+  protected float left;
 
-    private static final String LEFT = "left";
+  private static final String LEFT = "left";
 
-    public static float durationFactor(final Char ch) {
-        Resistance r = ch.buff(Resistance.class);
-        return r != null ? r.durationFactor() : 1;
-    }
+  public static float durationFactor(final Char ch) {
+    Resistance r = ch.buff(Resistance.class);
+    return r != null ? r.durationFactor() : 1;
+  }
 
-    @Override
-    public boolean act() {
-        if (target.isAlive()) {
+  @Override
+  public boolean act() {
+    if (target.isAlive()) {
 
-            target.damage((int) (left / 3) + 1, this);
-            spend(TICK);
+      target.damage((int) (left / 3) + 1, this);
+      spend(TICK);
 
-            if ((left -= TICK) <= 0) {
-                detach();
-            }
+      if ((left -= TICK) <= 0) {
+        detach();
+      }
 
-        } else {
+    } else {
 
-            detach();
-
-        }
-
-        return true;
-    }
-
-    @Override
-    public int icon() {
-        return BuffIndicator.POISON;
-    };
-
-    @Override
-    public void onDeath() {
-        Badges.validateDeathFromPoison();
-
-        Dungeon.fail(Utils.format(ResultDescriptions.POISON, Dungeon.depth));
-        GLog.n("You died from poison...");
-    }
-
-    @Override
-    public void restoreFromBundle(final Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        left = bundle.getFloat(LEFT);
-    }
-
-    public void set(final float duration) {
-        left = duration;
-    }
-
-    @Override
-    public void storeInBundle(final Bundle bundle) {
-        super.storeInBundle(bundle);
-        bundle.put(LEFT, left);
+      detach();
 
     }
 
-    @Override
-    public String toString() {
-        return "Poisoned";
-    }
+    return true;
+  }
+
+  @Override
+  public int icon() {
+    return BuffIndicator.POISON;
+  };
+
+  @Override
+  public void onDeath() {
+    Badges.validateDeathFromPoison();
+
+    Dungeon.fail(Utils.format(ResultDescriptions.POISON, Dungeon.depth));
+    GLog.n("You died from poison...");
+  }
+
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    left = bundle.getFloat(LEFT);
+  }
+
+  public void set(final float duration) {
+    left = duration;
+  }
+
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(LEFT, left);
+
+  }
+
+  @Override
+  public String toString() {
+    return "Poisoned";
+  }
 }

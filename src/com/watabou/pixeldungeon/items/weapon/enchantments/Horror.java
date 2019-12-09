@@ -29,39 +29,40 @@ import com.watabou.utils.Random;
 
 public class Horror extends Weapon.Enchantment {
 
-    private static final String TXT_ELDRITCH = "Eldritch %s";
+  private static final String TXT_ELDRITCH = "Eldritch %s";
 
-    private static ItemSprite.Glowing GREY = new ItemSprite.Glowing(0x222222);
+  private static ItemSprite.Glowing GREY = new ItemSprite.Glowing(0x222222);
 
-    @Override
-    public Glowing glowing() {
-        return GREY;
+  @Override
+  public Glowing glowing() {
+    return GREY;
+  }
+
+  @Override
+  public String name(final String weaponName) {
+    return String.format(TXT_ELDRITCH, weaponName);
+  }
+
+  @Override
+  public boolean proc(final Weapon weapon, final Char attacker, final Char defender,
+      final int damage) {
+    // lvl 0 - 20%
+    // lvl 1 - 33%
+    // lvl 2 - 43%
+    int level = Math.max(0, weapon.level);
+
+    if (Random.Int(level + 5) >= 4) {
+
+      if (defender == Dungeon.hero) {
+        Buff.affect(defender, Vertigo.class, Vertigo.duration(defender));
+      } else {
+        Buff.affect(defender, Terror.class, Terror.DURATION).object = attacker.id();
+      }
+
+      return true;
+    } else {
+      return false;
     }
-
-    @Override
-    public String name(final String weaponName) {
-        return String.format(TXT_ELDRITCH, weaponName);
-    }
-
-    @Override
-    public boolean proc(final Weapon weapon, final Char attacker, final Char defender, final int damage) {
-        // lvl 0 - 20%
-        // lvl 1 - 33%
-        // lvl 2 - 43%
-        int level = Math.max(0, weapon.level);
-
-        if (Random.Int(level + 5) >= 4) {
-
-            if (defender == Dungeon.hero) {
-                Buff.affect(defender, Vertigo.class, Vertigo.duration(defender));
-            } else {
-                Buff.affect(defender, Terror.class, Terror.DURATION).object = attacker.id();
-            }
-
-            return true;
-        } else {
-            return false;
-        }
-    }
+  }
 
 }

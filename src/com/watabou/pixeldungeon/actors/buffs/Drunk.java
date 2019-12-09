@@ -23,33 +23,33 @@ import com.watabou.utils.Bundle;
 
 public class Drunk extends FlavourBuff {
 
-    public static final float DURATION = 10f;
+  public static final float DURATION = 10f;
 
-    @Override
-    public boolean attachTo(final Char target) {
-        target.immunities().add(Fear.class);
-        spend(DURATION);
-        return super.attachTo(target);
-    }
+  @Override
+  public boolean attachTo(final Char target) {
+    target.immunities().add(Fear.class);
+    spend(DURATION);
+    return super.attachTo(target);
+  }
 
-    @Override
-    public void detach() {
-        target.immunities().remove(Fear.class);
-        super.detach();
-    }
+  @Override
+  public void detach() {
+    target.immunities().remove(Fear.class);
+    super.detach();
+  }
 
-    @Override
-    public int icon() {
-        return BuffIndicator.DRUNK;
-    }
+  @Override
+  public int icon() {
+    return BuffIndicator.DRUNK;
+  }
 
-    @Override
-    public void restoreFromBundle(final Bundle bundle) {
-        super.restoreFromBundle(bundle);
-    }
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+  }
 
-    @Override
-    public String toString() {
-        return "Drunk";
-    }
+  @Override
+  public String toString() {
+    return "Drunk";
+  }
 }

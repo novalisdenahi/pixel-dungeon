@@ -33,110 +33,110 @@ import com.watabou.utils.Random;
 
 public class Lightning extends Group {
 
-    private static final float DURATION = 0.3f;
+  private static final float DURATION = 0.3f;
 
-    private float life;
+  private float life;
 
-    private int length;
-    private float[] cx;
-    private float[] cy;
+  private int length;
+  private float[] cx;
+  private float[] cy;
 
-    private Image[] arcsS;
-    private Image[] arcsE;
+  private Image[] arcsS;
+  private Image[] arcsE;
 
-    private Callback callback;
+  private Callback callback;
 
-    private static final double A = 180 / Math.PI;
+  private static final double A = 180 / Math.PI;
 
-    public Lightning(final int[] cells, final int length, final Callback callback) {
+  public Lightning(final int[] cells, final int length, final Callback callback) {
 
-        super();
+    super();
 
-        this.callback = callback;
+    this.callback = callback;
 
-        Image proto = Effects.get(Effects.Type.LIGHTNING);
-        float ox = 0;
-        float oy = proto.height / 2;
+    Image proto = Effects.get(Effects.Type.LIGHTNING);
+    float ox = 0;
+    float oy = proto.height / 2;
 
-        this.length = length;
-        cx = new float[length];
-        cy = new float[length];
+    this.length = length;
+    cx = new float[length];
+    cy = new float[length];
 
-        for (int i = 0; i < length; i++) {
-            int c = cells[i];
-            cx[i] = ((c % Level.WIDTH) + 0.5f) * DungeonTilemap.SIZE;
-            cy[i] = ((c / Level.WIDTH) + 0.5f) * DungeonTilemap.SIZE;
-        }
-
-        arcsS = new Image[length - 1];
-        arcsE = new Image[length - 1];
-        for (int i = 0; i < (length - 1); i++) {
-
-            Image arc = arcsS[i] = new Image(proto);
-
-            arc.x = cx[i] - arc.origin.x;
-            arc.y = cy[i] - arc.origin.y;
-            arc.origin.set(ox, oy);
-            add(arc);
-
-            arc = arcsE[i] = new Image(proto);
-            arc.origin.set(ox, oy);
-            add(arc);
-        }
-
-        life = DURATION;
-
-        Sample.INSTANCE.play(Assets.SND_LIGHTNING);
+    for (int i = 0; i < length; i++) {
+      int c = cells[i];
+      cx[i] = ((c % Level.WIDTH) + 0.5f) * DungeonTilemap.SIZE;
+      cy[i] = ((c / Level.WIDTH) + 0.5f) * DungeonTilemap.SIZE;
     }
 
-    @Override
-    public void draw() {
-        GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
-        super.draw();
-        GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+    arcsS = new Image[length - 1];
+    arcsE = new Image[length - 1];
+    for (int i = 0; i < (length - 1); i++) {
+
+      Image arc = arcsS[i] = new Image(proto);
+
+      arc.x = cx[i] - arc.origin.x;
+      arc.y = cy[i] - arc.origin.y;
+      arc.origin.set(ox, oy);
+      add(arc);
+
+      arc = arcsE[i] = new Image(proto);
+      arc.origin.set(ox, oy);
+      add(arc);
     }
 
-    @Override
-    public void update() {
-        super.update();
+    life = DURATION;
 
-        if ((life -= Game.elapsed) < 0) {
+    Sample.INSTANCE.play(Assets.SND_LIGHTNING);
+  }
 
-            killAndErase();
-            if (callback != null) {
-                callback.call();
-            }
+  @Override
+  public void draw() {
+    GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
+    super.draw();
+    GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+  }
 
-        } else {
+  @Override
+  public void update() {
+    super.update();
 
-            float alpha = life / DURATION;
+    if ((life -= Game.elapsed) < 0) {
 
-            for (int i = 0; i < (length - 1); i++) {
+      killAndErase();
+      if (callback != null) {
+        callback.call();
+      }
 
-                float sx = cx[i];
-                float sy = cy[i];
-                float ex = cx[i + 1];
-                float ey = cy[i + 1];
+    } else {
 
-                float x2 = ((sx + ex) / 2) + Random.Float(-4, +4);
-                float y2 = ((sy + ey) / 2) + Random.Float(-4, +4);
+      float alpha = life / DURATION;
 
-                float dx = x2 - sx;
-                float dy = y2 - sy;
-                Image arc = arcsS[i];
-                arc.am = alpha;
-                arc.angle = (float) (Math.atan2(dy, dx) * A);
-                arc.scale.x = (float) Math.sqrt((dx * dx) + (dy * dy)) / arc.width;
+      for (int i = 0; i < (length - 1); i++) {
 
-                dx = ex - x2;
-                dy = ey - y2;
-                arc = arcsE[i];
-                arc.am = alpha;
-                arc.angle = (float) (Math.atan2(dy, dx) * A);
-                arc.scale.x = (float) Math.sqrt((dx * dx) + (dy * dy)) / arc.width;
-                arc.x = x2 - arc.origin.x;
-                arc.y = y2 - arc.origin.x;
-            }
-        }
+        float sx = cx[i];
+        float sy = cy[i];
+        float ex = cx[i + 1];
+        float ey = cy[i + 1];
+
+        float x2 = ((sx + ex) / 2) + Random.Float(-4, +4);
+        float y2 = ((sy + ey) / 2) + Random.Float(-4, +4);
+
+        float dx = x2 - sx;
+        float dy = y2 - sy;
+        Image arc = arcsS[i];
+        arc.am = alpha;
+        arc.angle = (float) (Math.atan2(dy, dx) * A);
+        arc.scale.x = (float) Math.sqrt((dx * dx) + (dy * dy)) / arc.width;
+
+        dx = ex - x2;
+        dy = ey - y2;
+        arc = arcsE[i];
+        arc.am = alpha;
+        arc.angle = (float) (Math.atan2(dy, dx) * A);
+        arc.scale.x = (float) Math.sqrt((dx * dx) + (dy * dy)) / arc.width;
+        arc.x = x2 - arc.origin.x;
+        arc.y = y2 - arc.origin.x;
+      }
     }
+  }
 }

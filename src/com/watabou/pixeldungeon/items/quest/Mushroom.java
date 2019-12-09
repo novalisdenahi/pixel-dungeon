@@ -32,55 +32,55 @@ import com.watabou.pixeldungeon.sprites.ItemSpriteSheet;
 
 public class Mushroom extends Food {
 
-    public static class Seed extends Plant.Seed {
-        {
-            plantName = "mushroom";
-
-            name = "seed of " + plantName;
-            image = ItemSpriteSheet.PM_MUSHROOM;
-
-            plantClass = Musmrooms.class;
-            alchemyClass = PotionOfToxicGas.class;
-        }
-
-        @Override
-        public String desc() {
-            return name;
-        }
-    }
-
+  public static class Seed extends Plant.Seed {
     {
-        name = "purple magic mushroom";
-        image = ItemSpriteSheet.PM_MUSHROOM;
-        energy = Hunger.HUNGRY;
-    }
+      plantName = "mushroom";
 
-    public static final String AC_EAT = "EAT";
+      name = "seed of " + plantName;
+      image = ItemSpriteSheet.PM_MUSHROOM;
 
-    @Override
-    public ArrayList<String> actions(final Hero hero) {
-        ArrayList<String> actions = super.actions(hero);
-        actions.add(AC_EAT);
-        return actions;
+      plantClass = Musmrooms.class;
+      alchemyClass = PotionOfToxicGas.class;
     }
 
     @Override
-    public void execute(final Hero hero, final String action) {
-        if (action.equals(AC_EAT)) {
-            Buff.prolong(hero, Vertigo.class, Vertigo.duration(hero));
-            Buff.affect(hero, Poison.class).set(Poison.durationFactor(hero) * (4 + (Dungeon.depth / 2)));
-        }
-        super.execute(hero, action);
+    public String desc() {
+      return name;
     }
+  }
 
-    @Override
-    public String info() {
-        return "This is a Purple Magic Mushroom. This is really rare and tasty mushroom and sadly poison. "
-                + "The shamans say things you will experience when you taste incredible.";
-    }
+  {
+    name = "purple magic mushroom";
+    image = ItemSpriteSheet.PM_MUSHROOM;
+    energy = Hunger.HUNGRY;
+  }
 
-    @Override
-    public int price() {
-        return 15;
+  public static final String AC_EAT = "EAT";
+
+  @Override
+  public ArrayList<String> actions(final Hero hero) {
+    ArrayList<String> actions = super.actions(hero);
+    actions.add(AC_EAT);
+    return actions;
+  }
+
+  @Override
+  public void execute(final Hero hero, final String action) {
+    if (action.equals(AC_EAT)) {
+      Buff.prolong(hero, Vertigo.class, Vertigo.duration(hero));
+      Buff.affect(hero, Poison.class).set(Poison.durationFactor(hero) * (4 + (Dungeon.depth / 2)));
     }
+    super.execute(hero, action);
+  }
+
+  @Override
+  public String info() {
+    return "This is a Purple Magic Mushroom. This is really rare and tasty mushroom and sadly poison. "
+        + "The shamans say things you will experience when you taste incredible.";
+  }
+
+  @Override
+  public int price() {
+    return 15;
+  }
 }

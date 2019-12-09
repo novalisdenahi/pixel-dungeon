@@ -22,34 +22,34 @@ import com.watabou.pixeldungeon.Assets;
 
 public class AlphaWorgSprite extends MobSprite {
 
-    private Animation howls;
+  private Animation howls;
 
-    public AlphaWorgSprite() {
-        super();
+  public AlphaWorgSprite() {
+    super();
 
-        texture(Assets.ALPHAWORG);
+    texture(Assets.ALPHAWORG);
 
-        TextureFilm frames = new TextureFilm(texture, 16, 16);
+    TextureFilm frames = new TextureFilm(texture, 16, 16);
 
-        idle = new Animation(2, true);
-        idle.frames(frames, 0, 0, 0, 1, 0, 0, 1, 1);
+    idle = new Animation(2, true);
+    idle.frames(frames, 0, 0, 0, 1, 0, 0, 1, 1);
 
-        run = new Animation(16, false);
-        run.frames(frames, 4, 5, 6, 7, 8, 9, 4);
+    run = new Animation(16, false);
+    run.frames(frames, 4, 5, 6, 7, 8, 9, 4);
 
-        attack = new Animation(12, false);
-        attack.frames(frames, 2, 3, 2);
+    attack = new Animation(12, false);
+    attack.frames(frames, 2, 3, 2);
 
-        howls = new Animation(12, false);
-        howls.frames(frames, 14, 15, 16, 17);
+    howls = new Animation(12, false);
+    howls.frames(frames, 14, 15, 16, 17);
 
-        die = new Animation(12, false);
-        die.frames(frames, 10, 11, 12, 13);
+    die = new Animation(12, false);
+    die.frames(frames, 10, 11, 12, 13);
 
-        play(idle);
-    }
+    play(idle);
+  }
 
-    public void howls() {
-        play(howls);
-    }
+  public void howls() {
+    play(howls);
+  }
 }

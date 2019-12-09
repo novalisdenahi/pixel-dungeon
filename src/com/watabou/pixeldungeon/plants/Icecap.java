@@ -29,47 +29,48 @@ import com.watabou.utils.PathFinder;
 
 public class Icecap extends Plant {
 
-    public static class Seed extends Plant.Seed {
-        {
-            plantName = "Icecap";
-
-            name = "seed of " + plantName;
-            image = ItemSpriteSheet.SEED_ICECAP;
-
-            plantClass = Icecap.class;
-            alchemyClass = PotionOfFrost.class;
-        }
-
-        @Override
-        public String desc() {
-            return TXT_DESC;
-        }
-    }
-
-    private static final String TXT_DESC = "Upon touching an Icecap excretes a pollen, which freezes everything in its vicinity.";
-
+  public static class Seed extends Plant.Seed {
     {
-        image = 1;
-        plantName = "Icecap";
-    }
+      plantName = "Icecap";
 
-    @Override
-    public void activate(final Char ch) {
-        super.activate(ch);
+      name = "seed of " + plantName;
+      image = ItemSpriteSheet.SEED_ICECAP;
 
-        PathFinder.buildDistanceMap(pos, BArray.not(Level.losBlocking, null), 1);
-
-        Fire fire = (Fire) Dungeon.level.blobs.get(Fire.class);
-
-        for (int i = 0; i < Level.LENGTH; i++) {
-            if (PathFinder.distance[i] < Integer.MAX_VALUE) {
-                Freezing.affect(i, fire);
-            }
-        }
+      plantClass = Icecap.class;
+      alchemyClass = PotionOfFrost.class;
     }
 
     @Override
     public String desc() {
-        return TXT_DESC;
+      return TXT_DESC;
     }
+  }
+
+  private static final String TXT_DESC =
+      "Upon touching an Icecap excretes a pollen, which freezes everything in its vicinity.";
+
+  {
+    image = 1;
+    plantName = "Icecap";
+  }
+
+  @Override
+  public void activate(final Char ch) {
+    super.activate(ch);
+
+    PathFinder.buildDistanceMap(pos, BArray.not(Level.losBlocking, null), 1);
+
+    Fire fire = (Fire) Dungeon.level.blobs.get(Fire.class);
+
+    for (int i = 0; i < Level.LENGTH; i++) {
+      if (PathFinder.distance[i] < Integer.MAX_VALUE) {
+        Freezing.affect(i, fire);
+      }
+    }
+  }
+
+  @Override
+  public String desc() {
+    return TXT_DESC;
+  }
 }

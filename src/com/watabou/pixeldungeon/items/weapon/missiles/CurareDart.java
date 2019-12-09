@@ -26,48 +26,47 @@ import com.watabou.utils.Random;
 
 public class CurareDart extends MissileWeapon {
 
-    public static final float DURATION = 3f;
+  public static final float DURATION = 3f;
 
-    {
-        name = "curare dart";
-        image = ItemSpriteSheet.CURARE_DART;
+  {
+    name = "curare dart";
+    image = ItemSpriteSheet.CURARE_DART;
 
-        STR = 14;
+    STR = 14;
 
-        MIN = 1;
-        MAX = 3;
-    }
+    MIN = 1;
+    MAX = 3;
+  }
 
-    public CurareDart() {
-        this(1);
-    }
+  public CurareDart() {
+    this(1);
+  }
 
-    public CurareDart(final int number) {
-        super();
-        quantity = number;
-    }
+  public CurareDart(final int number) {
+    super();
+    quantity = number;
+  }
 
-    @Override
-    public String desc() {
-        return
-        "These little evil darts don't do much damage but they can paralyze " +
-                "the target leaving it helpless and motionless for some time.";
-    }
+  @Override
+  public String desc() {
+    return "These little evil darts don't do much damage but they can paralyze " +
+        "the target leaving it helpless and motionless for some time.";
+  }
 
-    @Override
-    public int price() {
-        return 12 * quantity;
-    }
+  @Override
+  public int price() {
+    return 12 * quantity;
+  }
 
-    @Override
-    public void proc(final Char attacker, final Char defender, final int damage) {
-        Buff.prolong(defender, Paralysis.class, DURATION);
-        super.proc(attacker, defender, damage);
-    }
+  @Override
+  public void proc(final Char attacker, final Char defender, final int damage) {
+    Buff.prolong(defender, Paralysis.class, DURATION);
+    super.proc(attacker, defender, damage);
+  }
 
-    @Override
-    public Item random() {
-        quantity = Random.Int(2, 5);
-        return this;
-    }
+  @Override
+  public Item random() {
+    quantity = Random.Int(2, 5);
+    return this;
+  }
 }

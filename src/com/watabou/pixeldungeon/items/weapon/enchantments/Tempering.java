@@ -24,24 +24,25 @@ import com.watabou.pixeldungeon.sprites.ItemSprite.Glowing;
 
 public class Tempering extends Weapon.Enchantment {
 
-    private static final String TXT_TEMPERED = "Tempered %s";
+  private static final String TXT_TEMPERED = "Tempered %s";
 
-    private static ItemSprite.Glowing GRAY = new ItemSprite.Glowing(0xCC8888);
+  private static ItemSprite.Glowing GRAY = new ItemSprite.Glowing(0xCC8888);
 
-    @Override
-    public Glowing glowing() {
-        return GRAY;
-    }
+  @Override
+  public Glowing glowing() {
+    return GRAY;
+  }
 
-    @Override
-    public String name(final String weaponName) {
-        return String.format(TXT_TEMPERED, weaponName);
-    }
+  @Override
+  public String name(final String weaponName) {
+    return String.format(TXT_TEMPERED, weaponName);
+  }
 
-    @Override
-    public boolean proc(final Weapon weapon, final Char attacker, final Char defender, final int damage) {
-        weapon.polish();
-        return true;
-    }
+  @Override
+  public boolean proc(final Weapon weapon, final Char attacker, final Char defender,
+      final int damage) {
+    weapon.polish();
+    return true;
+  }
 
 }

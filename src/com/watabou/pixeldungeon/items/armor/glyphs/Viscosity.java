@@ -35,114 +35,115 @@ import com.watabou.utils.Random;
 
 public class Viscosity extends Glyph {
 
-    public static class DeferedDamage extends Buff {
+  public static class DeferedDamage extends Buff {
 
-        protected int damage = 0;
+    protected int damage = 0;
 
-        private static final String DAMAGE = "damage";
-
-        @Override
-        public boolean act() {
-            if (target.isAlive()) {
-
-                target.damage(1, this);
-                if ((target == Dungeon.hero) && !target.isAlive()) {
-                    // FIXME
-                    Dungeon.fail(Utils.format(ResultDescriptions.GLYPH, "enchantment of viscosity", Dungeon.depth));
-                    GLog.n("The enchantment of viscosity killed you...");
-
-                    Badges.validateDeathFromGlyph();
-                }
-                spend(TICK);
-
-                if (--damage <= 0) {
-                    detach();
-                }
-
-            } else {
-
-                detach();
-
-            }
-            return true;
-        }
-
-        @Override
-        public boolean attachTo(final Char target) {
-            if (super.attachTo(target)) {
-                postpone(TICK);
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        @Override
-        public int icon() {
-            return BuffIndicator.DEFERRED;
-        }
-
-        public void prolong(final int damage) {
-            this.damage += damage;
-        };
-
-        @Override
-        public void restoreFromBundle(final Bundle bundle) {
-            super.restoreFromBundle(bundle);
-            damage = bundle.getInt(DAMAGE);
-        }
-
-        @Override
-        public void storeInBundle(final Bundle bundle) {
-            super.storeInBundle(bundle);
-            bundle.put(DAMAGE, damage);
-
-        }
-
-        @Override
-        public String toString() {
-            return Utils.format("Defered damage (%d)", damage);
-        }
-    }
-
-    private static final String TXT_VISCOSITY = "%s of viscosity";
-
-    private static ItemSprite.Glowing PURPLE = new ItemSprite.Glowing(0x8844CC);
+    private static final String DAMAGE = "damage";
 
     @Override
-    public Glowing glowing() {
-        return PURPLE;
+    public boolean act() {
+      if (target.isAlive()) {
+
+        target.damage(1, this);
+        if ((target == Dungeon.hero) && !target.isAlive()) {
+          // FIXME
+          Dungeon.fail(
+              Utils.format(ResultDescriptions.GLYPH, "enchantment of viscosity", Dungeon.depth));
+          GLog.n("The enchantment of viscosity killed you...");
+
+          Badges.validateDeathFromGlyph();
+        }
+        spend(TICK);
+
+        if (--damage <= 0) {
+          detach();
+        }
+
+      } else {
+
+        detach();
+
+      }
+      return true;
     }
 
     @Override
-    public String name(final String weaponName) {
-        return String.format(TXT_VISCOSITY, weaponName);
+    public boolean attachTo(final Char target) {
+      if (super.attachTo(target)) {
+        postpone(TICK);
+        return true;
+      } else {
+        return false;
+      }
     }
 
     @Override
-    public int proc(final Armor armor, final Char attacker, final Char defender, final int damage) {
-
-        if (damage == 0) {
-            return 0;
-        }
-
-        int level = Math.max(0, armor.level);
-
-        if (Random.Int(level + 7) >= 6) {
-
-            DeferedDamage debuff = defender.buff(DeferedDamage.class);
-            if (debuff == null) {
-                debuff = new DeferedDamage();
-                debuff.attachTo(defender);
-            }
-            debuff.prolong(damage);
-
-            defender.sprite.showStatus(CharSprite.WARNING, "deferred %d", damage);
-
-            return 0;
-
-        } else {
-            return damage;
-        }
+    public int icon() {
+      return BuffIndicator.DEFERRED;
     }
+
+    public void prolong(final int damage) {
+      this.damage += damage;
+    };
+
+    @Override
+    public void restoreFromBundle(final Bundle bundle) {
+      super.restoreFromBundle(bundle);
+      damage = bundle.getInt(DAMAGE);
+    }
+
+    @Override
+    public void storeInBundle(final Bundle bundle) {
+      super.storeInBundle(bundle);
+      bundle.put(DAMAGE, damage);
+
+    }
+
+    @Override
+    public String toString() {
+      return Utils.format("Defered damage (%d)", damage);
+    }
+  }
+
+  private static final String TXT_VISCOSITY = "%s of viscosity";
+
+  private static ItemSprite.Glowing PURPLE = new ItemSprite.Glowing(0x8844CC);
+
+  @Override
+  public Glowing glowing() {
+    return PURPLE;
+  }
+
+  @Override
+  public String name(final String weaponName) {
+    return String.format(TXT_VISCOSITY, weaponName);
+  }
+
+  @Override
+  public int proc(final Armor armor, final Char attacker, final Char defender, final int damage) {
+
+    if (damage == 0) {
+      return 0;
+    }
+
+    int level = Math.max(0, armor.level);
+
+    if (Random.Int(level + 7) >= 6) {
+
+      DeferedDamage debuff = defender.buff(DeferedDamage.class);
+      if (debuff == null) {
+        debuff = new DeferedDamage();
+        debuff.attachTo(defender);
+      }
+      debuff.prolong(damage);
+
+      defender.sprite.showStatus(CharSprite.WARNING, "deferred %d", damage);
+
+      return 0;
+
+    } else {
+      return damage;
+    }
+  }
 }

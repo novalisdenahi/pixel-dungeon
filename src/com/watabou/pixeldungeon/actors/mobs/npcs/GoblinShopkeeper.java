@@ -23,31 +23,30 @@ import com.watabou.pixeldungeon.utils.Utils;
 
 public class GoblinShopkeeper extends Shopkeeper {
 
-    private static final String TXT_GREETINGS = "Time is money, friend! Hurry!";
+  private static final String TXT_GREETINGS = "Time is money, friend! Hurry!";
 
-    {
-        name = "Goblin Usurer";
-        spriteClass = GoblinShopkeeperSprite.class;
+  {
+    name = "Goblin Usurer";
+    spriteClass = GoblinShopkeeperSprite.class;
+  }
+
+  private boolean seenBefore = false;
+
+  @Override
+  protected boolean act() {
+
+    if (!seenBefore && Dungeon.visible[pos]) {
+      yell(Utils.format(TXT_GREETINGS));
+      seenBefore = true;
     }
 
-    private boolean seenBefore = false;
+    return super.act();
+  }
 
-    @Override
-    protected boolean act() {
-
-        if (!seenBefore && Dungeon.visible[pos]) {
-            yell(Utils.format(TXT_GREETINGS));
-            seenBefore = true;
-        }
-
-        return super.act();
-    }
-
-    @Override
-    public String description() {
-        return
-                "This goblin looks frendly and smart. Maybe a little bit looks too smart. He is a sly boots. "
-                + " Watch out for your purse.";
-    }
+  @Override
+  public String description() {
+    return "This goblin looks frendly and smart. Maybe a little bit looks too smart. He is a sly boots. "
+        + " Watch out for your purse.";
+  }
 
 }

@@ -30,73 +30,72 @@ import com.watabou.pixeldungeon.windows.WndTradeItem;
 
 public class Shopkeeper extends NPC {
 
-    public static WndBag sell() {
-        return GameScene.selectItem(itemSelector, WndBag.Mode.FOR_SALE, "Select an item to sell");
-    }
+  public static WndBag sell() {
+    return GameScene.selectItem(itemSelector, WndBag.Mode.FOR_SALE, "Select an item to sell");
+  }
 
-    {
-        name = "shopkeeper";
-        spriteClass = ShopkeeperSprite.class;
-    }
+  {
+    name = "shopkeeper";
+    spriteClass = ShopkeeperSprite.class;
+  }
 
-    private static WndBag.Listener itemSelector = new WndBag.Listener() {
-        @Override
-        public void onSelect(final Item item) {
-            if (item != null) {
-                WndBag parentWnd = Shopkeeper.sell();
-                GameScene.show(new WndTradeItem(item, parentWnd));
-            }
-        }
-    };
-
+  private static WndBag.Listener itemSelector = new WndBag.Listener() {
     @Override
-    protected boolean act() {
+    public void onSelect(final Item item) {
+      if (item != null) {
+        WndBag parentWnd = Shopkeeper.sell();
+        GameScene.show(new WndTradeItem(item, parentWnd));
+      }
+    }
+  };
 
-        throwItem();
+  @Override
+  protected boolean act() {
 
-        sprite.turnTo(pos, Dungeon.hero.pos);
-        spend(TICK);
-        return true;
+    throwItem();
+
+    sprite.turnTo(pos, Dungeon.hero.pos);
+    spend(TICK);
+    return true;
+  }
+
+  @Override
+  public void add(final Buff buff) {
+    flee();
+  }
+
+  @Override
+  public void damage(final int dmg, final Object src) {
+    flee();
+  }
+
+  @Override
+  public String description() {
+    return "This stout guy looks more appropriate for a trade district in some large city " +
+        "than for a dungeon. His prices explain why he prefers to do business here.";
+  }
+
+  protected void flee() {
+    for (Heap heap : Dungeon.level.heaps.values()) {
+      if (heap.type == Heap.Type.FOR_SALE) {
+        CellEmitter.get(heap.pos).burst(ElmoParticle.FACTORY, 4);
+        heap.destroy();
+      }
     }
 
-    @Override
-    public void add(final Buff buff) {
-        flee();
-    }
+    destroy();
 
-    @Override
-    public void damage(final int dmg, final Object src) {
-        flee();
-    }
+    sprite.killAndErase();
+    CellEmitter.get(pos).burst(ElmoParticle.FACTORY, 6);
+  }
 
-    @Override
-    public String description() {
-        return
-        "This stout guy looks more appropriate for a trade district in some large city " +
-                "than for a dungeon. His prices explain why he prefers to do business here.";
-    }
+  @Override
+  public void interact() {
+    Shopkeeper.sell();
+  }
 
-    protected void flee() {
-        for (Heap heap : Dungeon.level.heaps.values()) {
-            if (heap.type == Heap.Type.FOR_SALE) {
-                CellEmitter.get(heap.pos).burst(ElmoParticle.FACTORY, 4);
-                heap.destroy();
-            }
-        }
-
-        destroy();
-
-        sprite.killAndErase();
-        CellEmitter.get(pos).burst(ElmoParticle.FACTORY, 6);
-    }
-
-    @Override
-    public void interact() {
-        Shopkeeper.sell();
-    }
-
-    @Override
-    public boolean reset() {
-        return true;
-    }
+  @Override
+  public boolean reset() {
+    return true;
+  }
 }

@@ -26,48 +26,48 @@ import com.watabou.utils.Random;
 
 public class MobSprite extends CharSprite {
 
-    private static final float FADE_TIME = 3f;
-    private static final float FALL_TIME = 1f;
+  private static final float FADE_TIME = 3f;
+  private static final float FALL_TIME = 1f;
 
-    public void fall() {
+  public void fall() {
 
-        origin.set(width / 2, height - (DungeonTilemap.SIZE / 2));
-        angularSpeed = Random.Int(2) == 0 ? -720 : 720;
+    origin.set(width / 2, height - (DungeonTilemap.SIZE / 2));
+    angularSpeed = Random.Int(2) == 0 ? -720 : 720;
 
-        parent.add(new ScaleTweener(this, new PointF(0, 0), FALL_TIME) {
-            @Override
-            protected void onComplete() {
-                MobSprite.this.killAndErase();
-                parent.erase(this);
-            };
+    parent.add(new ScaleTweener(this, new PointF(0, 0), FALL_TIME) {
+      @Override
+      protected void onComplete() {
+        MobSprite.this.killAndErase();
+        parent.erase(this);
+      };
 
-            @Override
-            protected void updateValues(final float progress) {
-                super.updateValues(progress);
-                am = 1 - progress;
-            }
-        });
+      @Override
+      protected void updateValues(final float progress) {
+        super.updateValues(progress);
+        am = 1 - progress;
+      }
+    });
+  }
+
+  @Override
+  public void onComplete(final Animation anim) {
+
+    super.onComplete(anim);
+
+    if (anim == die) {
+      parent.add(new AlphaTweener(this, 0, FADE_TIME) {
+        @Override
+        protected void onComplete() {
+          MobSprite.this.killAndErase();
+          parent.erase(this);
+        };
+      });
     }
+  }
 
-    @Override
-    public void onComplete(final Animation anim) {
-
-        super.onComplete(anim);
-
-        if (anim == die) {
-            parent.add(new AlphaTweener(this, 0, FADE_TIME) {
-                @Override
-                protected void onComplete() {
-                    MobSprite.this.killAndErase();
-                    parent.erase(this);
-                };
-            });
-        }
-    }
-
-    @Override
-    public void update() {
-        sleeping = (ch != null) && (((Mob) ch).state == ((Mob) ch).SLEEPEING);
-        super.update();
-    }
+  @Override
+  public void update() {
+    sleeping = (ch != null) && (((Mob) ch).state == ((Mob) ch).SLEEPEING);
+    super.update();
+  }
 }

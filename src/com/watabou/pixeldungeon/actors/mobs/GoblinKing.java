@@ -35,96 +35,96 @@ import com.watabou.utils.Random;
 
 public class GoblinKing extends Mob {
 
-    private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
 
-    static {
-        RESISTANCES.add(Death.class);
+  static {
+    RESISTANCES.add(Death.class);
+  }
+
+  {
+    name = Dungeon.depth == Statistics.getDeepestFloor(Dungeon.dungeonType) ? "King of the Goblins"
+        : "Usurper Goblin King";
+    spriteClass = GoblinKingSprite.class;
+
+    HP = HT = 100;
+    EXP = 20;
+    defenseSkill = 18;
+
+  }
+
+  @Override
+  public boolean act() {
+    return super.act();
+  }
+
+  @Override
+  public int attackProc(final Char enemy, final int damage) {
+    int dice = Random.Int(6);
+    switch (dice) {
+      case 0:
+        Buff.affect(enemy, Bleeding.class).set(damage);
+        return damage;
+      case 1:
+        Buff.affect(enemy, Paralysis.class, Random.Float(1, 2));
+        return damage;
+      case 2:
+        Buff.affect(enemy, Cripple.class);
+        return damage;
+      case 3:
+        // TODO add yell and laught
+        return damage;
+      default:
+        return damage;
     }
+  }
 
-    {
-        name = Dungeon.depth == Statistics.getDeepestFloor(Dungeon.dungeonType) ? "King of the Goblins"
-                : "Usurper Goblin King";
-        spriteClass = GoblinKingSprite.class;
+  @Override
+  public int attackSkill(final Char target) {
+    return 20;
+  }
 
-        HP = HT = 100;
-        EXP = 20;
-        defenseSkill = 18;
+  @Override
+  public int damageRoll() {
+    return Random.NormalIntRange(8, 15);
+  }
 
-    }
+  @Override
+  public String description() {
+    return ""; // TODO add goblin king description
+  }
 
-    @Override
-    public boolean act() {
-        return super.act();
-    }
+  @Override
+  public void die(final Object cause) {
 
-    @Override
-    public int attackProc(final Char enemy, final int damage) {
-        int dice = Random.Int(6);
-        switch (dice) {
-        case 0:
-            Buff.affect(enemy, Bleeding.class).set(damage);
-            return damage;
-        case 1:
-            Buff.affect(enemy, Paralysis.class, Random.Float(1, 2));
-            return damage;
-        case 2:
-            Buff.affect(enemy, Cripple.class);
-            return damage;
-        case 3:
-            // TODO add yell and laught
-            return damage;
-        default:
-            return damage;
-        }
-    }
+    super.die(cause);
 
-    @Override
-    public int attackSkill(final Char target) {
-        return 20;
-    }
+    GameScene.bossSlain();
+    Dungeon.level.drop(new SkeletonKey(), pos).sprite.drop();
 
-    @Override
-    public int damageRoll() {
-        return Random.NormalIntRange(8, 15);
-    }
+    Badges.validateBossSlain();
+    // TODO yell something
+    yell("");
+  }
 
-    @Override
-    public String description() {
-        return ""; // TODO add goblin king description
-    }
+  @Override
+  public int dr() {
+    return 4;
+  }
 
-    @Override
-    public void die(final Object cause) {
+  @Override
+  public void move(final int step) {
+    super.move(step);
+  }
 
-        super.die(cause);
+  @Override
+  public void notice() {
+    super.notice();
+    // TODO yell something like. who is brave enough to face the king
+    yell("");
+  }
 
-        GameScene.bossSlain();
-        Dungeon.level.drop(new SkeletonKey(), pos).sprite.drop();
-
-        Badges.validateBossSlain();
-        // TODO yell something
-        yell("");
-    }
-
-    @Override
-    public int dr() {
-        return 4;
-    }
-
-    @Override
-    public void move(final int step) {
-        super.move(step);
-    }
-
-    @Override
-    public void notice() {
-        super.notice();
-        // TODO yell something like. who is brave enough to face the king
-        yell("");
-    }
-
-    @Override
-    public HashSet<Class<?>> resistances() {
-        return RESISTANCES;
-    }
+  @Override
+  public HashSet<Class<?>> resistances() {
+    return RESISTANCES;
+  }
 }

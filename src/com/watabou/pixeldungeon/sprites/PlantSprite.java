@@ -28,82 +28,82 @@ import com.watabou.pixeldungeon.plants.Plant;
 
 public class PlantSprite extends Image {
 
-    private static enum State {
-        GROWING, NORMAL, WITHERING
+  private static enum State {
+    GROWING, NORMAL, WITHERING
+  }
+
+  private static final float DELAY = 0.2f;
+  private State state = State.NORMAL;
+  private float time;
+
+  private static TextureFilm frames;
+
+  private int pos = -1;
+
+  public PlantSprite() {
+    super(Assets.PLANTS);
+
+    if (frames == null) {
+
+      frames = new TextureFilm(texture, 16, 16);
     }
 
-    private static final float DELAY = 0.2f;
-    private State state = State.NORMAL;
-    private float time;
+    origin.set(8, 12);
+  }
 
-    private static TextureFilm frames;
+  public PlantSprite(final int image) {
+    this();
+    reset(image);
+  }
 
-    private int pos = -1;
+  @Override
+  public void kill() {
+    state = State.WITHERING;
+    time = DELAY;
+  }
 
-    public PlantSprite() {
-        super(Assets.PLANTS);
+  public void reset(final int image) {
+    frame(frames.get(image));
+  }
 
-        if (frames == null) {
+  public void reset(final Plant plant) {
 
-            frames = new TextureFilm(texture, 16, 16);
+    revive();
+
+    reset(plant.image);
+    alpha(1f);
+
+    pos = plant.pos;
+    x = (pos % Level.WIDTH) * DungeonTilemap.SIZE;
+    y = (pos / Level.WIDTH) * DungeonTilemap.SIZE;
+
+    state = State.GROWING;
+    time = DELAY;
+  }
+
+  @Override
+  public void update() {
+    super.update();
+
+    visible = (pos == -1) || Dungeon.visible[pos];
+
+    switch (state) {
+      case GROWING:
+        if ((time -= Game.elapsed) <= 0) {
+          state = State.NORMAL;
+          scale.set(1);
+        } else {
+          scale.set(1 - (time / DELAY));
         }
-
-        origin.set(8, 12);
-    }
-
-    public PlantSprite(final int image) {
-        this();
-        reset(image);
-    }
-
-    @Override
-    public void kill() {
-        state = State.WITHERING;
-        time = DELAY;
-    }
-
-    public void reset(final int image) {
-        frame(frames.get(image));
-    }
-
-    public void reset(final Plant plant) {
-
-        revive();
-
-        reset(plant.image);
-        alpha(1f);
-
-        pos = plant.pos;
-        x = (pos % Level.WIDTH) * DungeonTilemap.SIZE;
-        y = (pos / Level.WIDTH) * DungeonTilemap.SIZE;
-
-        state = State.GROWING;
-        time = DELAY;
-    }
-
-    @Override
-    public void update() {
-        super.update();
-
-        visible = (pos == -1) || Dungeon.visible[pos];
-
-        switch (state) {
-        case GROWING:
-            if ((time -= Game.elapsed) <= 0) {
-                state = State.NORMAL;
-                scale.set(1);
-            } else {
-                scale.set(1 - (time / DELAY));
-            }
-            break;
-        case WITHERING:
-            if ((time -= Game.elapsed) <= 0) {
-                super.kill();
-            } else {
-                alpha(time / DELAY);
-            }
-            break;
-        default:
+        break;
+      case WITHERING:
+        if ((time -= Game.elapsed) <= 0) {
+          super.kill();
+        } else {
+          alpha(time / DELAY);
         }
+        break;
+      default:
     }
+  }
 }

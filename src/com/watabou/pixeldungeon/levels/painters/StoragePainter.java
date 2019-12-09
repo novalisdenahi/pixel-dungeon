@@ -27,39 +27,38 @@ import com.watabou.utils.Random;
 
 public class StoragePainter extends Painter {
 
-    public static void paint(final Level level, final Room room) {
+  public static void paint(final Level level, final Room room) {
 
-        final int floor = Terrain.EMPTY_SP;
+    final int floor = Terrain.EMPTY_SP;
 
-        Painter.fill(level, room, Terrain.WALL);
-        Painter.fill(level, room, 1, floor);
+    Painter.fill(level, room, Terrain.WALL);
+    Painter.fill(level, room, 1, floor);
 
-        int n = Random.IntRange(3, 4);
-        for (int i = 0; i < n; i++) {
-            int pos;
-            do {
-                pos = room.random();
-            } while (level.map[pos] != floor);
-            level.drop(StoragePainter.prize(level), pos);
-        }
-
-        room.entrance().set(Room.Door.Type.BARRICADE);
-        level.addItemToSpawn(new PotionOfLiquidFlame());
+    int n = Random.IntRange(3, 4);
+    for (int i = 0; i < n; i++) {
+      int pos;
+      do {
+        pos = room.random();
+      } while (level.map[pos] != floor);
+      level.drop(StoragePainter.prize(level), pos);
     }
 
-    private static Item prize(final Level level) {
+    room.entrance().set(Room.Door.Type.BARRICADE);
+    level.addItemToSpawn(new PotionOfLiquidFlame());
+  }
 
-        Item prize = level.itemToSpanAsPrize();
-        if (prize != null) {
-            return prize;
-        }
+  private static Item prize(final Level level) {
 
-        return Generator.random(Random.oneOf(
-                Generator.Category.POTION,
-                Generator.Category.SCROLL,
-                Generator.Category.FOOD,
-                Generator.Category.GOLD,
-                Generator.Category.MISC
-                ));
+    Item prize = level.itemToSpanAsPrize();
+    if (prize != null) {
+      return prize;
     }
+
+    return Generator.random(Random.oneOf(
+        Generator.Category.POTION,
+        Generator.Category.SCROLL,
+        Generator.Category.FOOD,
+        Generator.Category.GOLD,
+        Generator.Category.MISC));
+  }
 }

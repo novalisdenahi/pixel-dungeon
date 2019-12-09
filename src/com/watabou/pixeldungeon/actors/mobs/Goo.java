@@ -43,192 +43,193 @@ import com.watabou.utils.Random;
 
 public class Goo extends Mob {
 
-    private static final float PUMP_UP_DELAY = 2f;
+  private static final float PUMP_UP_DELAY = 2f;
 
-    {
-        name = Dungeon.depth == Statistics.getDeepestFloor(Dungeon.dungeonType) ? "Goo" : "spawn of Goo";
+  {
+    name =
+        Dungeon.depth == Statistics.getDeepestFloor(Dungeon.dungeonType) ? "Goo" : "spawn of Goo";
 
-        HP = HT = 80;
-        EXP = 10;
-        defenseSkill = 12;
-        spriteClass = GooSprite.class;
+    HP = HT = 80;
+    EXP = 10;
+    defenseSkill = 12;
+    spriteClass = GooSprite.class;
 
-        loot = new LloydsBeacon();
-        lootChance = 0.333f;
+    loot = new LloydsBeacon();
+    lootChance = 0.333f;
+  }
+
+  private boolean pumpedUp = false;
+  private boolean jumped = false;
+
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(ToxicGas.class);
+    RESISTANCES.add(Death.class);
+    RESISTANCES.add(ScrollOfPsionicBlast.class);
+  }
+
+  @Override
+  public boolean act() {
+
+    if (Level.water[pos] && (HP < HT)) {
+      sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
+      HP++;
     }
 
-    private boolean pumpedUp = false;
-    private boolean jumped = false;
+    return super.act();
+  }
 
-    private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+  @Override
+  public boolean attack(final Char enemy) {
+    boolean result = super.attack(enemy);
+    pumpedUp = false;
+    return result;
+  }
 
-    static {
-        RESISTANCES.add(ToxicGas.class);
-        RESISTANCES.add(Death.class);
-        RESISTANCES.add(ScrollOfPsionicBlast.class);
+  @Override
+  public int attackProc(final Char enemy, final int damage) {
+    if (Random.Int(3) == 0) {
+      Buff.affect(enemy, Ooze.class);
+      enemy.sprite.burst(0x000000, 5);
     }
 
-    @Override
-    public boolean act() {
+    return damage;
+  }
 
-        if (Level.water[pos] && (HP < HT)) {
-            sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
-            HP++;
-        }
+  @Override
+  public int attackSkill(final Char target) {
+    return pumpedUp && !jumped ? 30 : 15;
+  }
 
-        return super.act();
+  @Override
+  protected boolean canAttack(final Char enemy) {
+    return pumpedUp ? distance(enemy) <= 2 : super.canAttack(enemy);
+  }
+
+  @Override
+  public int damageRoll() {
+    if (pumpedUp) {
+      return Random.NormalIntRange(5, 30);
+    } else {
+      return Random.NormalIntRange(2, 12);
     }
+  }
 
-    @Override
-    public boolean attack(final Char enemy) {
-        boolean result = super.attack(enemy);
-        pumpedUp = false;
-        return result;
-    }
+  @Override
+  public String description() {
+    return "Little known about The Goo. It's quite possible that it is not even a creature, but rather a "
+        +
+        "conglomerate of substances from the sewers that gained rudiments of free will.";
+  }
 
-    @Override
-    public int attackProc(final Char enemy, final int damage) {
-        if (Random.Int(3) == 0) {
-            Buff.affect(enemy, Ooze.class);
-            enemy.sprite.burst(0x000000, 5);
-        }
+  @Override
+  public void die(final Object cause) {
 
-        return damage;
-    }
+    super.die(cause);
 
-    @Override
-    public int attackSkill(final Char target) {
-        return pumpedUp && !jumped ? 30 : 15;
-    }
+    ((SewerBossLevel) Dungeon.level).unseal();
 
-    @Override
-    protected boolean canAttack(final Char enemy) {
-        return pumpedUp ? distance(enemy) <= 2 : super.canAttack(enemy);
-    }
+    GameScene.bossSlain();
+    Dungeon.level.drop(new SkeletonKey(), pos).sprite.drop();
 
-    @Override
-    public int damageRoll() {
-        if (pumpedUp) {
-            return Random.NormalIntRange(5, 30);
-        } else {
-            return Random.NormalIntRange(2, 12);
-        }
-    }
+    Badges.validateBossSlain();
 
-    @Override
-    public String description() {
-        return
-                "Little known about The Goo. It's quite possible that it is not even a creature, but rather a " +
-                "conglomerate of substances from the sewers that gained rudiments of free will.";
-    }
+    yell("glurp... glurp...");
+  }
 
-    @Override
-    public void die(final Object cause) {
+  @Override
+  protected boolean doAttack(final Char enemy) {
+    if (pumpedUp) {
 
-        super.die(cause);
+      if (Level.adjacent(pos, enemy.pos)) {
 
-        ((SewerBossLevel) Dungeon.level).unseal();
+        // Pumped up attack WITHOUT accuracy penalty
+        jumped = false;
+        return super.doAttack(enemy);
 
-        GameScene.bossSlain();
-        Dungeon.level.drop(new SkeletonKey(), pos).sprite.drop();
+      } else {
 
-        Badges.validateBossSlain();
+        // Pumped up attack WITH accuracy penalty
+        jumped = true;
+        if (Ballistica.cast(pos, enemy.pos, false, true) == enemy.pos) {
+          final int dest = Ballistica.trace[Ballistica.distance - 2];
 
-        yell("glurp... glurp...");
-    }
-
-    @Override
-    protected boolean doAttack(final Char enemy) {
-        if (pumpedUp) {
-
-            if (Level.adjacent(pos, enemy.pos)) {
-
-                // Pumped up attack WITHOUT accuracy penalty
-                jumped = false;
-                return super.doAttack(enemy);
-
-            } else {
-
-                // Pumped up attack WITH accuracy penalty
-                jumped = true;
-                if (Ballistica.cast(pos, enemy.pos, false, true) == enemy.pos) {
-                    final int dest = Ballistica.trace[Ballistica.distance - 2];
-
-                    Callback afterJump = new Callback() {
-                        @Override
-                        public void call() {
-                            move(dest);
-                            Dungeon.level.mobPress(Goo.this);
-                            Goo.super.doAttack(enemy);
-                        }
-                    };
-
-                    if (Dungeon.visible[pos] || Dungeon.visible[dest]) {
-
-                        sprite.jump(pos, dest, afterJump);
-                        return false;
-
-                    } else {
-
-                        afterJump.call();
-                        return true;
-
-                    }
-                } else {
-
-                    sprite.idle();
-                    pumpedUp = false;
-                    return true;
-                }
+          Callback afterJump = new Callback() {
+            @Override
+            public void call() {
+              move(dest);
+              Dungeon.level.mobPress(Goo.this);
+              Goo.super.doAttack(enemy);
             }
+          };
 
-        } else if (Random.Int(3) > 0) {
+          if (Dungeon.visible[pos] || Dungeon.visible[dest]) {
 
-            // Normal attack
-            return super.doAttack(enemy);
+            sprite.jump(pos, dest, afterJump);
+            return false;
 
-        } else {
+          } else {
 
-            // Pumping up
-            pumpedUp = true;
-            spend(PUMP_UP_DELAY);
-
-            ((GooSprite) sprite).pumpUp();
-
-            if (Dungeon.visible[pos]) {
-                sprite.showStatus(CharSprite.NEGATIVE, "!!!");
-                GLog.n("Goo is pumping itself up!");
-            }
-
+            afterJump.call();
             return true;
+
+          }
+        } else {
+
+          sprite.idle();
+          pumpedUp = false;
+          return true;
         }
-    }
+      }
 
-    @Override
-    public int dr() {
-        return 2;
-    }
+    } else if (Random.Int(3) > 0) {
 
-    @Override
-    protected boolean getCloser(final int target) {
-        pumpedUp = false;
-        return super.getCloser(target);
-    }
+      // Normal attack
+      return super.doAttack(enemy);
 
-    @Override
-    public void move(final int step) {
-        ((SewerBossLevel) Dungeon.level).seal();
-        super.move(step);
-    }
+    } else {
 
-    @Override
-    public void notice() {
-        super.notice();
-        yell("GLURP-GLURP!");
-    }
+      // Pumping up
+      pumpedUp = true;
+      spend(PUMP_UP_DELAY);
 
-    @Override
-    public HashSet<Class<?>> resistances() {
-        return RESISTANCES;
+      ((GooSprite) sprite).pumpUp();
+
+      if (Dungeon.visible[pos]) {
+        sprite.showStatus(CharSprite.NEGATIVE, "!!!");
+        GLog.n("Goo is pumping itself up!");
+      }
+
+      return true;
     }
+  }
+
+  @Override
+  public int dr() {
+    return 2;
+  }
+
+  @Override
+  protected boolean getCloser(final int target) {
+    pumpedUp = false;
+    return super.getCloser(target);
+  }
+
+  @Override
+  public void move(final int step) {
+    ((SewerBossLevel) Dungeon.level).seal();
+    super.move(step);
+  }
+
+  @Override
+  public void notice() {
+    super.notice();
+    yell("GLURP-GLURP!");
+  }
+
+  @Override
+  public HashSet<Class<?>> resistances() {
+    return RESISTANCES;
+  }
 }

@@ -29,92 +29,91 @@ import com.watabou.pixeldungeon.utils.Utils;
 
 public class IconTitle extends Component {
 
-    private static final float FONT_SIZE = 9;
+  private static final float FONT_SIZE = 9;
 
-    private static final float GAP = 2;
+  private static final float GAP = 2;
 
-    protected Image imIcon;
-    protected BitmapTextMultiline tfLabel;
-    protected HealthBar health;
+  protected Image imIcon;
+  protected BitmapTextMultiline tfLabel;
+  protected HealthBar health;
 
-    private float healthLvl = Float.NaN;
+  private float healthLvl = Float.NaN;
 
-    public IconTitle() {
-        super();
+  public IconTitle() {
+    super();
+  }
+
+  public IconTitle(final Image icon, final String label) {
+    super();
+
+    icon(icon);
+    label(label);
+  }
+
+  public IconTitle(final Item item) {
+    this(
+        new ItemSprite(item.image(), item.glowing()),
+        Utils.capitalize(item.toString()));
+  }
+
+  public void color(final int color) {
+    tfLabel.hardlight(color);
+  }
+
+  @Override
+  protected void createChildren() {
+    imIcon = new Image();
+    add(imIcon);
+
+    tfLabel = PixelScene.createMultiline(FONT_SIZE);
+    tfLabel.hardlight(Window.TITLE_COLOR);
+    add(tfLabel);
+
+    health = new HealthBar();
+    add(health);
+  }
+
+  public void health(final float value) {
+    health.level(healthLvl = value);
+    layout();
+  }
+
+  public void icon(final Image icon) {
+    remove(imIcon);
+    add(imIcon = icon);
+  }
+
+  public void label(final String label) {
+    tfLabel.text(label);
+  }
+
+  public void label(final String label, final int color) {
+    tfLabel.text(label);
+    tfLabel.hardlight(color);
+  }
+
+  @Override
+  protected void layout() {
+
+    health.visible = !Float.isNaN(healthLvl);
+
+    imIcon.x = x;
+    imIcon.y = y;
+
+    tfLabel.x = PixelScene.align(PixelScene.uiCamera, imIcon.x + imIcon.width() + GAP);
+    tfLabel.maxWidth = (int) (width - tfLabel.x);
+    tfLabel.measure();
+    tfLabel.y = PixelScene.align(PixelScene.uiCamera,
+        imIcon.height > tfLabel.height() ? imIcon.y + ((imIcon.height() - tfLabel.baseLine()) / 2)
+            : imIcon.y);
+
+    if (health.visible) {
+      health.setRect(tfLabel.x,
+          Math.max(tfLabel.y + tfLabel.height(), (imIcon.y + imIcon.height()) - health.height()),
+          tfLabel.maxWidth, 0);
+      height = health.bottom();
+    } else {
+      height = Math.max(imIcon.y + imIcon.height(), tfLabel.y + tfLabel.height());
     }
-
-    public IconTitle(final Image icon, final String label) {
-        super();
-
-        icon(icon);
-        label(label);
-    }
-
-    public IconTitle(final Item item) {
-        this(
-                new ItemSprite(item.image(), item.glowing()),
-                Utils.capitalize(item.toString()));
-    }
-
-    public void color(final int color) {
-        tfLabel.hardlight(color);
-    }
-
-    @Override
-    protected void createChildren() {
-        imIcon = new Image();
-        add(imIcon);
-
-        tfLabel = PixelScene.createMultiline(FONT_SIZE);
-        tfLabel.hardlight(Window.TITLE_COLOR);
-        add(tfLabel);
-
-        health = new HealthBar();
-        add(health);
-    }
-
-    public void health(final float value) {
-        health.level(healthLvl = value);
-        layout();
-    }
-
-    public void icon(final Image icon) {
-        remove(imIcon);
-        add(imIcon = icon);
-    }
-
-    public void label(final String label) {
-        tfLabel.text(label);
-    }
-
-    public void label(final String label, final int color) {
-        tfLabel.text(label);
-        tfLabel.hardlight(color);
-    }
-
-    @Override
-    protected void layout() {
-
-        health.visible = !Float.isNaN(healthLvl);
-
-        imIcon.x = x;
-        imIcon.y = y;
-
-        tfLabel.x = PixelScene.align(PixelScene.uiCamera, imIcon.x + imIcon.width() + GAP);
-        tfLabel.maxWidth = (int) (width - tfLabel.x);
-        tfLabel.measure();
-        tfLabel.y = PixelScene.align(PixelScene.uiCamera,
-                imIcon.height > tfLabel.height() ?
-                        imIcon.y + ((imIcon.height() - tfLabel.baseLine()) / 2) :
-                            imIcon.y);
-
-        if (health.visible) {
-            health.setRect(tfLabel.x,
-                    Math.max(tfLabel.y + tfLabel.height(), (imIcon.y + imIcon.height()) - health.height()),
-                    tfLabel.maxWidth, 0);
-            height = health.bottom();
-        } else {
-            height = Math.max(imIcon.y + imIcon.height(), tfLabel.y + tfLabel.height());
-        }
-    }
+  }
 }

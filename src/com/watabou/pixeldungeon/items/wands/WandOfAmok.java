@@ -31,38 +31,37 @@ import com.watabou.utils.Callback;
 
 public class WandOfAmok extends Wand {
 
-    {
-        name = "Wand of Amok";
+  {
+    name = "Wand of Amok";
+  }
+
+  @Override
+  public String desc() {
+    return "The purple light from this wand will make the target run amok " +
+        "attacking random creatures in its vicinity.";
+  }
+
+  @Override
+  protected void fx(final int cell, final Callback callback) {
+    MagicMissile.purpleLight(curUser.sprite.parent, curUser.pos, cell, callback);
+    Sample.INSTANCE.play(Assets.SND_ZAP);
+  }
+
+  @Override
+  protected void onZap(final int cell) {
+    Char ch = Actor.findChar(cell);
+    if (ch != null) {
+
+      if (ch == Dungeon.hero) {
+        Buff.affect(ch, Vertigo.class, Vertigo.duration(ch));
+      } else {
+        Buff.affect(ch, Amok.class, 3f + level());
+      }
+
+    } else {
+
+      GLog.i("nothing happened");
+
     }
-
-    @Override
-    public String desc() {
-        return
-        "The purple light from this wand will make the target run amok " +
-                "attacking random creatures in its vicinity.";
-    }
-
-    @Override
-    protected void fx(final int cell, final Callback callback) {
-        MagicMissile.purpleLight(curUser.sprite.parent, curUser.pos, cell, callback);
-        Sample.INSTANCE.play(Assets.SND_ZAP);
-    }
-
-    @Override
-    protected void onZap(final int cell) {
-        Char ch = Actor.findChar(cell);
-        if (ch != null) {
-
-            if (ch == Dungeon.hero) {
-                Buff.affect(ch, Vertigo.class, Vertigo.duration(ch));
-            } else {
-                Buff.affect(ch, Amok.class, 3f + level());
-            }
-
-        } else {
-
-            GLog.i("nothing happened");
-
-        }
-    }
+  }
 }

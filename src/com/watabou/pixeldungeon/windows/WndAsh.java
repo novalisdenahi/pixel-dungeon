@@ -31,72 +31,74 @@ import com.watabou.pixeldungeon.utils.GLog;
 import com.watabou.pixeldungeon.utils.Utils;
 
 public class WndAsh extends Window {
-    private static final String TXT_PAN =
-            "Yes! Yes!!! Finaly! Please give it to me! " +
-                    "Sit down and wait a minute. I'll make something for you. " +
-                    "Something soo good like no one ever tasted.";
-    private static final String TXT_MUSHROOM =
-            "Beautiful mature piece of mushroom. I hope you have not tasted it, " +
-                    "because of its toxicity. This is a challenge for me. If I wanna be the very best cook then " +
-                    "every challenge along the way with courage I will face. I'll make something for you.";
-    private static final String TXT_BROTH = "Goblin Broth";
-    private static final String TXT_STEW = "Hushroom Stew";
+  private static final String TXT_PAN =
+      "Yes! Yes!!! Finaly! Please give it to me! " +
+          "Sit down and wait a minute. I'll make something for you. " +
+          "Something soo good like no one ever tasted.";
+  private static final String TXT_MUSHROOM =
+      "Beautiful mature piece of mushroom. I hope you have not tasted it, " +
+          "because of its toxicity. This is a challenge for me. If I wanna be the very best cook then "
+          +
+          "every challenge along the way with courage I will face. I'll make something for you.";
+  private static final String TXT_BROTH = "Goblin Broth";
+  private static final String TXT_STEW = "Hushroom Stew";
 
-    private static final int WIDTH = 120;
-    private static final int BTN_HEIGHT = 20;
-    private static final float GAP = 2;
+  private static final int WIDTH = 120;
+  private static final int BTN_HEIGHT = 20;
+  private static final float GAP = 2;
 
-    public WndAsh(final GoblinAsh ash, final Item item) {
+  public WndAsh(final GoblinAsh ash, final Item item) {
 
-        super();
+    super();
 
-        IconTitle titlebar = new IconTitle();
-        titlebar.icon(new ItemSprite(item.image(), null));
-        titlebar.label(Utils.capitalize(item.name()));
-        titlebar.setRect(0, 0, WIDTH, 0);
-        add(titlebar);
+    IconTitle titlebar = new IconTitle();
+    titlebar.icon(new ItemSprite(item.image(), null));
+    titlebar.label(Utils.capitalize(item.name()));
+    titlebar.setRect(0, 0, WIDTH, 0);
+    add(titlebar);
 
-        BitmapTextMultiline message = PixelScene.createMultiline(item instanceof Pan ? TXT_PAN : TXT_MUSHROOM, 8);
-        message.maxWidth = WIDTH;
-        message.measure();
-        message.y = titlebar.bottom() + GAP;
-        add(message);
+    BitmapTextMultiline message =
+        PixelScene.createMultiline(item instanceof Pan ? TXT_PAN : TXT_MUSHROOM, 8);
+    message.maxWidth = WIDTH;
+    message.measure();
+    message.y = titlebar.bottom() + GAP;
+    add(message);
 
-        RedButton btnWeapon = new RedButton(TXT_BROTH) {
-            @Override
-            protected void onClick() {
-                selectReward(ash, item, GoblinAsh.Quest.broth);
-            }
-        };
-        btnWeapon.setRect(0, message.y + message.height() + GAP, WIDTH, BTN_HEIGHT);
-        add(btnWeapon);
+    RedButton btnWeapon = new RedButton(TXT_BROTH) {
+      @Override
+      protected void onClick() {
+        selectReward(ash, item, GoblinAsh.Quest.broth);
+      }
+    };
+    btnWeapon.setRect(0, message.y + message.height() + GAP, WIDTH, BTN_HEIGHT);
+    add(btnWeapon);
 
-        RedButton btnArmor = new RedButton(TXT_STEW) {
-            @Override
-            protected void onClick() {
-                selectReward(ash, item, GoblinAsh.Quest.stew);
-            }
-        };
-        btnArmor.setRect(0, btnWeapon.bottom() + GAP, WIDTH, BTN_HEIGHT);
-        add(btnArmor);
+    RedButton btnArmor = new RedButton(TXT_STEW) {
+      @Override
+      protected void onClick() {
+        selectReward(ash, item, GoblinAsh.Quest.stew);
+      }
+    };
+    btnArmor.setRect(0, btnWeapon.bottom() + GAP, WIDTH, BTN_HEIGHT);
+    add(btnArmor);
 
-        resize(WIDTH, (int) btnArmor.bottom());
+    resize(WIDTH, (int) btnArmor.bottom());
+  }
+
+  private void selectReward(final GoblinAsh ash, final Item item, final Item reward) {
+
+    hide();
+
+    item.detach(Dungeon.hero.belongings.backpack);
+
+    if (reward.doPickUp(Dungeon.hero)) {
+      GLog.i(Hero.TXT_YOU_NOW_HAVE, reward.name());
+    } else {
+      Dungeon.level.drop(reward, ash.pos).sprite.drop();
     }
 
-    private void selectReward(final GoblinAsh ash, final Item item, final Item reward) {
+    ash.yell("Goodbye! and Bon appetit!");
 
-        hide();
-
-        item.detach(Dungeon.hero.belongings.backpack);
-
-        if (reward.doPickUp(Dungeon.hero)) {
-            GLog.i(Hero.TXT_YOU_NOW_HAVE, reward.name());
-        } else {
-            Dungeon.level.drop(reward, ash.pos).sprite.drop();
-        }
-
-        ash.yell("Goodbye! and Bon appetit!");
-
-        GoblinAsh.Quest.complete();
-    }
+    GoblinAsh.Quest.complete();
+  }
 }

@@ -11,73 +11,73 @@ import com.watabou.utils.Random;
 
 public class LightMap extends Image {
 
-    private class FogTexture extends SmartTexture {
+  private class FogTexture extends SmartTexture {
 
-        public FogTexture() {
-            super(Bitmap.createBitmap(width2, height2, Bitmap.Config.ARGB_8888));
-            filter(Texture.LINEAR, Texture.LINEAR);
-            TextureCache.add(LightMap.class, this);
-        }
-
-        @Override
-        public void reload() {
-            super.reload();
-            updateVisibility();
-        }
+    public FogTexture() {
+      super(Bitmap.createBitmap(width2, height2, Bitmap.Config.ARGB_8888));
+      filter(Texture.LINEAR, Texture.LINEAR);
+      TextureCache.add(LightMap.class, this);
     }
 
-    private int[] pixels;
-    private int pWidth;
+    @Override
+    public void reload() {
+      super.reload();
+      updateVisibility();
+    }
+  }
 
-    private int pHeight;
-    private int width2;
+  private int[] pixels;
+  private int pWidth;
 
-    private int height2;
+  private int pHeight;
+  private int width2;
 
-    public LightMap(final int mapWidth, final int mapHeight) {
+  private int height2;
 
-        super();
+  public LightMap(final int mapWidth, final int mapHeight) {
 
-        pWidth = mapWidth;
-        pHeight = mapHeight;
+    super();
 
-        width2 = 1;
-        while (width2 < pWidth) {
-            width2 <<= 1;
-        }
+    pWidth = mapWidth;
+    pHeight = mapHeight;
 
-        height2 = 1;
-        while (height2 < pHeight) {
-            height2 <<= 1;
-        }
-
-        float size = DungeonTilemap.SIZE;
-        width = width2 * size;
-        height = height2 * size;
-
-        texture(new FogTexture());
-
-        scale.set(
-                DungeonTilemap.SIZE,
-                DungeonTilemap.SIZE);
-
-        updateVisibility();
+    width2 = 1;
+    while (width2 < pWidth) {
+      width2 <<= 1;
     }
 
-    public void updateVisibility() {
-
-        if (pixels == null) {
-            pixels = new int[width2 * height2];
-        }
-
-        for (int i = 0; i < pixels.length; i++) {
-            if (Level.water[i]) {
-                pixels[i] = 0x00000000;
-            } else {
-                pixels[i] = (Random.Int(0x22) + (Level.solid[i] ? 0x44 : 0x00)) << 24;
-            }
-        }
-
-        texture.pixels(width2, height2, pixels);
+    height2 = 1;
+    while (height2 < pHeight) {
+      height2 <<= 1;
     }
+
+    float size = DungeonTilemap.SIZE;
+    width = width2 * size;
+    height = height2 * size;
+
+    texture(new FogTexture());
+
+    scale.set(
+        DungeonTilemap.SIZE,
+        DungeonTilemap.SIZE);
+
+    updateVisibility();
+  }
+
+  public void updateVisibility() {
+
+    if (pixels == null) {
+      pixels = new int[width2 * height2];
+    }
+
+    for (int i = 0; i < pixels.length; i++) {
+      if (Level.water[i]) {
+        pixels[i] = 0x00000000;
+      } else {
+        pixels[i] = (Random.Int(0x22) + (Level.solid[i] ? 0x44 : 0x00)) << 24;
+      }
+    }
+
+    texture.pixels(width2, height2, pixels);
+  }
 }

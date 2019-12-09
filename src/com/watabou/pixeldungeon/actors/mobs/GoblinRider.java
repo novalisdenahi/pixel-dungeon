@@ -28,74 +28,73 @@ import com.watabou.utils.Random;
 
 public class GoblinRider extends Mob {
 
-    {
-        name = "goblin rider";
-        spriteClass = GoblinRiderSprite.class;
+  {
+    name = "goblin rider";
+    spriteClass = GoblinRiderSprite.class;
 
-        HP = HT = 22;
-        defenseSkill = 8;
+    HP = HT = 22;
+    defenseSkill = 8;
 
-        EXP = 5;
-        maxLvl = 10;
+    EXP = 5;
+    maxLvl = 10;
 
+  }
+
+  @Override
+  public int attackSkill(final Char target) {
+    return 12;
+  }
+
+  @Override
+  public int damageRoll() {
+    return Random.NormalIntRange(4, 9);
+  }
+
+  @Override
+  public String defenseVerb() {
+    return "blocked";
+  }
+
+  @Override
+  public String description() {
+    // TODO FIXME descript
+    return "Goblins are small goblinoids. They organized in tribes living under the surface. If you see one goblin "
+        + "you can be sure there are more of them. The goblins sneaking into villages and towns by night to take what they can. ";
+  }
+
+  @Override
+  public void die(final Object cause) {
+    // super Char die
+    destroy();
+    // play the good spire
+    if (Random.Int(3) == 0) {
+      ((GoblinRiderSprite) sprite).dieWithoutGoblin();
+      Goblin goblin = new Goblin();
+      if (buff(Burning.class) != null) {
+        Buff.affect(goblin, Burning.class).reignite(goblin);
+      }
+      if (buff(Poison.class) != null) {
+        Buff.affect(goblin, Poison.class).set(2);
+      }
+      goblin.HP = (goblin.HT - Random.Int(6));
+      goblin.pos = pos;
+      goblin.state = goblin.HUNTING;
+    } else {
+      sprite.die();
     }
 
-    @Override
-    public int attackSkill(final Char target) {
-        return 12;
+    // super mob die
+    if (Dungeon.hero.lvl <= (maxLvl + 2)) {
+      dropLoot();
     }
-
-    @Override
-    public int damageRoll() {
-        return Random.NormalIntRange(4, 9);
+    if (Dungeon.hero.isAlive() && !Dungeon.visible[pos]) {
+      GLog.i(super.TXT_DIED);
     }
+  }
 
-    @Override
-    public String defenseVerb() {
-        return "blocked";
-    }
-
-    @Override
-    public String description() {
-        // TODO FIXME descript
-        return
-        "Goblins are small goblinoids. They organized in tribes living under the surface. If you see one goblin "
-                + "you can be sure there are more of them. The goblins sneaking into villages and towns by night to take what they can. ";
-    }
-
-    @Override
-    public void die(final Object cause) {
-        // super Char die
-        destroy();
-        // play the good spire
-        if (Random.Int(3) == 0) {
-            ((GoblinRiderSprite) sprite).dieWithoutGoblin();
-            Goblin goblin = new Goblin();
-            if (buff(Burning.class) != null) {
-                Buff.affect(goblin, Burning.class).reignite(goblin);
-            }
-            if (buff(Poison.class) != null) {
-                Buff.affect(goblin, Poison.class).set(2);
-            }
-            goblin.HP = (goblin.HT - Random.Int(6));
-            goblin.pos = pos;
-            goblin.state = goblin.HUNTING;
-        } else {
-            sprite.die();
-        }
-
-        // super mob die
-        if (Dungeon.hero.lvl <= (maxLvl + 2)) {
-            dropLoot();
-        }
-        if (Dungeon.hero.isAlive() && !Dungeon.visible[pos]) {
-            GLog.i(super.TXT_DIED);
-        }
-    }
-
-    @Override
-    public int dr() {
-        return 5;
-    }
+  @Override
+  public int dr() {
+    return 5;
+  }
 
 }

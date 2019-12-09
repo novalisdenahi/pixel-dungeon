@@ -34,56 +34,55 @@ import com.watabou.pixeldungeon.utils.GLog;
 import com.watabou.utils.Random;
 
 public class PriestArmor extends ClassArmor {
-    private static final String TXT_NOT_PRIEST = "Only priest can use this armor!";
+  private static final String TXT_NOT_PRIEST = "Only priest can use this armor!";
 
-    private static final String AC_SPECIAL = "HOLY STRIKE";
+  private static final String AC_SPECIAL = "HOLY STRIKE";
 
-    {
-        name = "priest armor";
-        image = ItemSpriteSheet.ARMOR_PRIEST;
+  {
+    name = "priest armor";
+    image = ItemSpriteSheet.ARMOR_PRIEST;
+  }
+
+  @Override
+  public String desc() {
+    return "This shining iron armor bears Estera's blessing. Only A Priest of Estera capable to use the armor power. "
+        + "The priest then release the power of the holy armor. Blinded the unbelievers , the wicked will ignite.";
+  }
+
+  @Override
+  public boolean doEquip(final Hero hero) {
+    if (hero.heroClass == HeroClass.PRIEST) {
+      return super.doEquip(hero);
+    } else {
+      GLog.w(TXT_NOT_PRIEST);
+      return false;
     }
+  }
 
-    @Override
-    public String desc() {
-        return
-        "This shining iron armor bears Estera's blessing. Only A Priest of Estera capable to use the armor power. "
-                + "The priest then release the power of the holy armor. Blinded the unbelievers , the wicked will ignite.";
-    }
+  @Override
+  public void doSpecial() {
 
-    @Override
-    public boolean doEquip(final Hero hero) {
-        if (hero.heroClass == HeroClass.PRIEST) {
-            return super.doEquip(hero);
-        } else {
-            GLog.w(TXT_NOT_PRIEST);
-            return false;
+    curUser.HP -= (curUser.HP / 3);
+
+    for (Mob mob : Dungeon.level.mobs) {
+      if (Level.fieldOfView[mob.pos]) {
+
+        Buff.prolong(mob, Blindness.class, Random.Int(3, 6));
+        mob.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 4);
+        if ((mob.mobType == MobType.UNDEAD)
+            || (mob.mobType == MobType.DEMON)) {
+          Buff.affect(mob, Burning.class).reignite(mob);
         }
+
+      }
     }
+    new Flare(6, 32).show(curUser.sprite, 2f);
+    curUser.spendAndNext(Actor.TICK);
 
-    @Override
-    public void doSpecial() {
+  }
 
-        curUser.HP -= (curUser.HP / 3);
-
-        for (Mob mob : Dungeon.level.mobs) {
-            if (Level.fieldOfView[mob.pos]) {
-
-                Buff.prolong(mob, Blindness.class, Random.Int(3, 6));
-                mob.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 4);
-                if ((mob.mobType == MobType.UNDEAD)
-                        || (mob.mobType == MobType.DEMON)) {
-                    Buff.affect(mob, Burning.class).reignite(mob);
-                }
-
-            }
-        }
-        new Flare(6, 32).show(curUser.sprite, 2f);
-        curUser.spendAndNext(Actor.TICK);
-
-    }
-
-    @Override
-    public String special() {
-        return AC_SPECIAL;
-    }
+  @Override
+  public String special() {
+    return AC_SPECIAL;
+  }
 }

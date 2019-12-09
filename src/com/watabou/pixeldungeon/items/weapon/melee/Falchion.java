@@ -21,17 +21,17 @@ import com.watabou.pixeldungeon.sprites.ItemSpriteSheet;
 
 public class Falchion extends MeleeWeapon {
 
-    {
-        name = "falchion";
-        image = ItemSpriteSheet.FALCHION;
-    }
+  {
+    name = "falchion";
+    image = ItemSpriteSheet.FALCHION;
+  }
 
-    public Falchion() {
-        super(4, 0.9f, 0.8f);
-    }
+  public Falchion() {
+    super(4, 0.9f, 0.8f);
+  }
 
-    @Override
-    public String desc() {
-        return "A broad, slightly curved sword with the cutting edge on the convex side.";
-    }
+  @Override
+  public String desc() {
+    return "A broad, slightly curved sword with the cutting edge on the convex side.";
+  }
 }

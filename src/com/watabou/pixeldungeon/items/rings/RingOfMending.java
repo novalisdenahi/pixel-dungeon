@@ -19,24 +19,22 @@ package com.watabou.pixeldungeon.items.rings;
 
 public class RingOfMending extends Ring {
 
-    public class Rejuvenation extends RingBuff {
-    }
+  public class Rejuvenation extends RingBuff {
+  }
 
-    {
-        name = "Ring of Mending";
-    }
+  {
+    name = "Ring of Mending";
+  }
 
-    @Override
-    protected RingBuff buff() {
-        return new Rejuvenation();
-    }
+  @Override
+  protected RingBuff buff() {
+    return new Rejuvenation();
+  }
 
-    @Override
-    public String desc() {
-        return isKnown() ?
-                "This ring increases the body's regenerative properties, allowing " +
-                        "one to recover lost health at an accelerated rate. Degraded rings will " +
-                        "decrease or even halt one's natural regeneration." :
-                super.desc();
-    }
+  @Override
+  public String desc() {
+    return isKnown() ? "This ring increases the body's regenerative properties, allowing " +
+        "one to recover lost health at an accelerated rate. Degraded rings will " +
+        "decrease or even halt one's natural regeneration." : super.desc();
+  }
 }

@@ -38,86 +38,86 @@ import com.watabou.utils.Random;
 
 public class GoblinFireMage extends GoblinMage implements Callback {
 
-    private static final float TIME_TO_ZAP = 2f;
+  private static final float TIME_TO_ZAP = 2f;
 
-    private static final String TXT_FIREBOLT_KILLED = "%s's fire bolt killed you...";
+  private static final String TXT_FIREBOLT_KILLED = "%s's fire bolt killed you...";
 
-    {
-        name = "insane goblin fire mage";
-        spriteClass = GoblinFireMageSprite.class;
+  {
+    name = "insane goblin fire mage";
+    spriteClass = GoblinFireMageSprite.class;
 
-        HP = HT = 14;
-        defenseSkill = 6;
+    HP = HT = 14;
+    defenseSkill = 6;
 
-        EXP = 5;
-        maxLvl = 10;
+    EXP = 5;
+    maxLvl = 10;
 
-        loot = Generator.Category.POTION;
-        lootChance = 0.33f;
+    loot = Generator.Category.POTION;
+    lootChance = 0.33f;
+  }
+
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(Burning.class);
+  }
+
+  @Override
+  public String description() {
+    return "The goblin mage is a honored member of the tribe. "
+        + " But there are a few exception, like a goblin fire mage. These goblin mages glorify the fire so that "
+        + "it is often their own tribe to serve as the flames.";
+  }
+
+  @Override
+  protected boolean doAttack(final Char enemy) {
+
+    if (Level.distance(pos, enemy.pos) <= 1) {
+
+      return super.doAttack(enemy);
+
+    } else {
+
+      boolean visible = Level.fieldOfView[pos] || Level.fieldOfView[enemy.pos];
+      if (visible) {
+        ((GoblinFireMageSprite) sprite).zap(enemy.pos);
+      } else {
+        zap();
+      }
+      return !visible;
     }
+  }
 
-    private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+  @Override
+  public HashSet<Class<?>> resistances() {
+    return RESISTANCES;
+  }
 
-    static {
-        RESISTANCES.add(Burning.class);
+  private void zap() {
+    spend(TIME_TO_ZAP);
+
+    if (Char.hit(this, enemy, true)) {
+      int dmg = Random.Int(1, 10);
+      enemy.damage(dmg, this);
+
+      GameScene.add(Blob.seed(enemy.pos, 1, Fire.class));
+
+      Buff.affect(enemy, Burning.class).reignite(enemy);
+      // hmm hmm TODO do we need this ballastica stuff
+      // for (int i = 1; i < (Ballistica.distance - 1); i++) {
+      // int c = Ballistica.trace[i];
+      // if (Level.flamable[c]) {
+      // GameScene.add(Blob.seed(c, 1, Fire.class));
+      // }
+      // }
+
+      if (!enemy.isAlive() && (enemy == Dungeon.hero)) {
+        Dungeon.fail(Utils.format(ResultDescriptions.MOB,
+            Utils.indefinite(name), Dungeon.depth));
+        GLog.n(TXT_FIREBOLT_KILLED, name);
+      }
+    } else {
+      enemy.sprite.showStatus(CharSprite.NEUTRAL, enemy.defenseVerb());
     }
-
-    @Override
-    public String description() {
-        return "The goblin mage is a honored member of the tribe. "
-                + " But there are a few exception, like a goblin fire mage. These goblin mages glorify the fire so that "
-                + "it is often their own tribe to serve as the flames.";
-    }
-
-    @Override
-    protected boolean doAttack(final Char enemy) {
-
-        if (Level.distance(pos, enemy.pos) <= 1) {
-
-            return super.doAttack(enemy);
-
-        } else {
-
-            boolean visible = Level.fieldOfView[pos] || Level.fieldOfView[enemy.pos];
-            if (visible) {
-                ((GoblinFireMageSprite) sprite).zap(enemy.pos);
-            } else {
-                zap();
-            }
-            return !visible;
-        }
-    }
-
-    @Override
-    public HashSet<Class<?>> resistances() {
-        return RESISTANCES;
-    }
-
-    private void zap() {
-        spend(TIME_TO_ZAP);
-
-        if (Char.hit(this, enemy, true)) {
-            int dmg = Random.Int(1, 10);
-            enemy.damage(dmg, this);
-
-            GameScene.add(Blob.seed(enemy.pos, 1, Fire.class));
-
-            Buff.affect(enemy, Burning.class).reignite(enemy);
-            // hmm hmm TODO do we need this ballastica stuff
-            // for (int i = 1; i < (Ballistica.distance - 1); i++) {
-            // int c = Ballistica.trace[i];
-            // if (Level.flamable[c]) {
-            // GameScene.add(Blob.seed(c, 1, Fire.class));
-            // }
-            // }
-
-            if (!enemy.isAlive() && (enemy == Dungeon.hero)) {
-                Dungeon.fail(Utils.format(ResultDescriptions.MOB,
-                        Utils.indefinite(name), Dungeon.depth));
-                GLog.n(TXT_FIREBOLT_KILLED, name);
-            }
-        } else {
-            enemy.sprite.showStatus(CharSprite.NEUTRAL, enemy.defenseVerb());
-        }
-    }
+  }
 }

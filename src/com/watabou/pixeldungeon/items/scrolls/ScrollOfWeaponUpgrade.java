@@ -27,36 +27,35 @@ import com.watabou.pixeldungeon.windows.WndBag;
 
 public class ScrollOfWeaponUpgrade extends InventoryScroll {
 
-    private static final String TXT_LOOKS_BETTER = "your %s certainly looks better now";
+  private static final String TXT_LOOKS_BETTER = "your %s certainly looks better now";
 
-    {
-        name = "Scroll of Weapon Upgrade";
-        inventoryTitle = "Select a weapon to upgrade";
-        mode = WndBag.Mode.WEAPON;
-    }
+  {
+    name = "Scroll of Weapon Upgrade";
+    inventoryTitle = "Select a weapon to upgrade";
+    mode = WndBag.Mode.WEAPON;
+  }
 
-    @Override
-    public String desc() {
-        return
-        "This scroll will upgrade a melee weapon, improving its quality. In contrast to a regular Scroll of Upgrade, "
-                +
-                "this specialized version will never destroy an enchantment on a weapon. On the contrary, it is able to imbue "
-                +
-                "an unenchanted weapon with a random enchantment.";
-    }
+  @Override
+  public String desc() {
+    return "This scroll will upgrade a melee weapon, improving its quality. In contrast to a regular Scroll of Upgrade, "
+        +
+        "this specialized version will never destroy an enchantment on a weapon. On the contrary, it is able to imbue "
+        +
+        "an unenchanted weapon with a random enchantment.";
+  }
 
-    @Override
-    protected void onItemSelected(final Item item) {
+  @Override
+  protected void onItemSelected(final Item item) {
 
-        Weapon weapon = (Weapon) item;
+    Weapon weapon = (Weapon) item;
 
-        ScrollOfRemoveCurse.uncurse(Dungeon.hero, weapon);
-        weapon.upgrade(true);
+    ScrollOfRemoveCurse.uncurse(Dungeon.hero, weapon);
+    weapon.upgrade(true);
 
-        GLog.p(TXT_LOOKS_BETTER, weapon.name());
+    GLog.p(TXT_LOOKS_BETTER, weapon.name());
 
-        Badges.validateItemLevelAquired(weapon);
+    Badges.validateItemLevelAquired(weapon);
 
-        curUser.sprite.emitter().start(Speck.factory(Speck.UP), 0.2f, 3);
-    }
+    curUser.sprite.emitter().start(Speck.factory(Speck.UP), 0.2f, 3);
+  }
 }

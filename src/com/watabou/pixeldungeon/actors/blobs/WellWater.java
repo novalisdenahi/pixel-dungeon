@@ -31,117 +31,117 @@ import com.watabou.utils.Random;
 
 public class WellWater extends Blob {
 
-    public static void affectCell(final int cell) {
+  public static void affectCell(final int cell) {
 
-        Class<?>[] waters = { WaterOfHealth.class, WaterOfAwareness.class, WaterOfTransmutation.class };
+    Class<?>[] waters = { WaterOfHealth.class, WaterOfAwareness.class, WaterOfTransmutation.class };
 
-        for (Class<?> waterClass : waters) {
-            WellWater water = (WellWater) Dungeon.level.blobs.get(waterClass);
-            if ((water != null) &&
-                    (water.volume > 0) &&
-                    (water.pos == cell) &&
-                    water.affect()) {
+    for (Class<?> waterClass : waters) {
+      WellWater water = (WellWater) Dungeon.level.blobs.get(waterClass);
+      if ((water != null) &&
+          (water.volume > 0) &&
+          (water.pos == cell) &&
+          water.affect()) {
 
-                Level.set(cell, Terrain.EMPTY_WELL);
-                GameScene.updateMap(cell);
+        Level.set(cell, Terrain.EMPTY_WELL);
+        GameScene.updateMap(cell);
 
-                return;
-            }
-        }
+        return;
+      }
     }
+  }
 
-    protected int pos;
+  protected int pos;
 
-    protected boolean affect() {
+  protected boolean affect() {
 
-        Heap heap;
+    Heap heap;
 
-        if ((pos == Dungeon.hero.pos) && affectHero(Dungeon.hero)) {
+    if ((pos == Dungeon.hero.pos) && affectHero(Dungeon.hero)) {
 
-            volume = off[pos] = cur[pos] = 0;
-            return true;
+      volume = off[pos] = cur[pos] = 0;
+      return true;
 
-        } else if ((heap = Dungeon.level.heaps.get(pos)) != null) {
+    } else if ((heap = Dungeon.level.heaps.get(pos)) != null) {
 
-            Item oldItem = heap.peek();
-            Item newItem = affectItem(oldItem);
+      Item oldItem = heap.peek();
+      Item newItem = affectItem(oldItem);
 
-            if (newItem != null) {
+      if (newItem != null) {
 
-                if (newItem == oldItem) {
+        if (newItem == oldItem) {
 
-                } else if (oldItem.quantity() > 1) {
+        } else if (oldItem.quantity() > 1) {
 
-                    oldItem.quantity(oldItem.quantity() - 1);
-                    heap.drop(newItem);
-
-                } else {
-                    heap.replace(oldItem, newItem);
-                }
-
-                heap.sprite.link();
-                volume = off[pos] = cur[pos] = 0;
-
-                return true;
-
-            } else {
-
-                int newPlace;
-                do {
-                    newPlace = pos + Level.NEIGHBOURS8[Random.Int(8)];
-                } while (!Level.passable[newPlace] && !Level.avoid[newPlace]);
-                Dungeon.level.drop(heap.pickUp(), newPlace).sprite.drop(pos);
-
-                return false;
-
-            }
+          oldItem.quantity(oldItem.quantity() - 1);
+          heap.drop(newItem);
 
         } else {
-
-            return false;
-
+          heap.replace(oldItem, newItem);
         }
-    }
 
-    protected boolean affectHero(final Hero hero) {
+        heap.sprite.link();
+        volume = off[pos] = cur[pos] = 0;
+
+        return true;
+
+      } else {
+
+        int newPlace;
+        do {
+          newPlace = pos + Level.NEIGHBOURS8[Random.Int(8)];
+        } while (!Level.passable[newPlace] && !Level.avoid[newPlace]);
+        Dungeon.level.drop(heap.pickUp(), newPlace).sprite.drop(pos);
+
         return false;
+
+      }
+
+    } else {
+
+      return false;
+
     }
+  }
 
-    protected Item affectItem(final Item item) {
-        return null;
+  protected boolean affectHero(final Hero hero) {
+    return false;
+  }
+
+  protected Item affectItem(final Item item) {
+    return null;
+  }
+
+  @Override
+  protected void evolve() {
+    volume = off[pos] = cur[pos];
+
+    if (Dungeon.visible[pos]) {
+      if (this instanceof WaterOfAwareness) {
+        Journal.add(Feature.WELL_OF_AWARENESS);
+      } else if (this instanceof WaterOfHealth) {
+        Journal.add(Feature.WELL_OF_HEALTH);
+      } else if (this instanceof WaterOfTransmutation) {
+        Journal.add(Feature.WELL_OF_TRANSMUTATION);
+      }
     }
+  }
 
-    @Override
-    protected void evolve() {
-        volume = off[pos] = cur[pos];
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
 
-        if (Dungeon.visible[pos]) {
-            if (this instanceof WaterOfAwareness) {
-                Journal.add(Feature.WELL_OF_AWARENESS);
-            } else if (this instanceof WaterOfHealth) {
-                Journal.add(Feature.WELL_OF_HEALTH);
-            } else if (this instanceof WaterOfTransmutation) {
-                Journal.add(Feature.WELL_OF_TRANSMUTATION);
-            }
-        }
+    for (int i = 0; i < LENGTH; i++) {
+      if (cur[i] > 0) {
+        pos = i;
+        break;
+      }
     }
+  }
 
-    @Override
-    public void restoreFromBundle(final Bundle bundle) {
-        super.restoreFromBundle(bundle);
-
-        for (int i = 0; i < LENGTH; i++) {
-            if (cur[i] > 0) {
-                pos = i;
-                break;
-            }
-        }
-    }
-
-    @Override
-    public void seed(final int cell, final int amount) {
-        cur[pos] = 0;
-        pos = cell;
-        volume = cur[pos] = amount;
-    }
+  @Override
+  public void seed(final int cell, final int amount) {
+    cur[pos] = 0;
+    pos = cell;
+    volume = cur[pos] = amount;
+  }
 }

@@ -29,60 +29,58 @@ import com.watabou.utils.Random;
 
 public class PitPainter extends Painter {
 
-    public static void paint(final Level level, final Room room) {
+  public static void paint(final Level level, final Room room) {
 
-        Painter.fill(level, room, Terrain.WALL);
-        Painter.fill(level, room, 1, Terrain.EMPTY);
+    Painter.fill(level, room, Terrain.WALL);
+    Painter.fill(level, room, 1, Terrain.EMPTY);
 
-        Room.Door entrance = room.entrance();
-        entrance.set(Room.Door.Type.LOCKED);
+    Room.Door entrance = room.entrance();
+    entrance.set(Room.Door.Type.LOCKED);
 
-        Point well = null;
-        if (entrance.x == room.left) {
-            well = new Point(room.right - 1, Random.Int(2) == 0 ? room.top + 1 : room.bottom - 1);
-        } else if (entrance.x == room.right) {
-            well = new Point(room.left + 1, Random.Int(2) == 0 ? room.top + 1 : room.bottom - 1);
-        } else if (entrance.y == room.top) {
-            well = new Point(Random.Int(2) == 0 ? room.left + 1 : room.right - 1, room.bottom - 1);
-        } else if (entrance.y == room.bottom) {
-            well = new Point(Random.Int(2) == 0 ? room.left + 1 : room.right - 1, room.top + 1);
-        }
-        Painter.set(level, well, Terrain.EMPTY_WELL);
+    Point well = null;
+    if (entrance.x == room.left) {
+      well = new Point(room.right - 1, Random.Int(2) == 0 ? room.top + 1 : room.bottom - 1);
+    } else if (entrance.x == room.right) {
+      well = new Point(room.left + 1, Random.Int(2) == 0 ? room.top + 1 : room.bottom - 1);
+    } else if (entrance.y == room.top) {
+      well = new Point(Random.Int(2) == 0 ? room.left + 1 : room.right - 1, room.bottom - 1);
+    } else if (entrance.y == room.bottom) {
+      well = new Point(Random.Int(2) == 0 ? room.left + 1 : room.right - 1, room.top + 1);
+    }
+    Painter.set(level, well, Terrain.EMPTY_WELL);
 
-        int remains = room.random();
-        while (level.map[remains] == Terrain.EMPTY_WELL) {
-            remains = room.random();
-        }
-
-        level.drop(new IronKey(), remains).type = Type.SKELETON;
-
-        if (Random.Int(5) == 0) {
-            level.drop(Generator.random(Generator.Category.RING), remains);
-        } else {
-            level.drop(Generator.random(Random.oneOf(
-                    Generator.Category.WEAPON,
-                    Generator.Category.ARMOR
-                    )), remains);
-        }
-
-        int n = Random.IntRange(1, 2);
-        for (int i = 0; i < n; i++) {
-            level.drop(PitPainter.prize(level), remains);
-        }
+    int remains = room.random();
+    while (level.map[remains] == Terrain.EMPTY_WELL) {
+      remains = room.random();
     }
 
-    private static Item prize(final Level level) {
+    level.drop(new IronKey(), remains).type = Type.SKELETON;
 
-        Item prize = level.itemToSpanAsPrize();
-        if (prize != null) {
-            return prize;
-        }
-
-        return Generator.random(Random.oneOf(
-                Generator.Category.POTION,
-                Generator.Category.SCROLL,
-                Generator.Category.FOOD,
-                Generator.Category.GOLD
-                ));
+    if (Random.Int(5) == 0) {
+      level.drop(Generator.random(Generator.Category.RING), remains);
+    } else {
+      level.drop(Generator.random(Random.oneOf(
+          Generator.Category.WEAPON,
+          Generator.Category.ARMOR)), remains);
     }
+
+    int n = Random.IntRange(1, 2);
+    for (int i = 0; i < n; i++) {
+      level.drop(PitPainter.prize(level), remains);
+    }
+  }
+
+  private static Item prize(final Level level) {
+
+    Item prize = level.itemToSpanAsPrize();
+    if (prize != null) {
+      return prize;
+    }
+
+    return Generator.random(Random.oneOf(
+        Generator.Category.POTION,
+        Generator.Category.SCROLL,
+        Generator.Category.FOOD,
+        Generator.Category.GOLD));
+  }
 }

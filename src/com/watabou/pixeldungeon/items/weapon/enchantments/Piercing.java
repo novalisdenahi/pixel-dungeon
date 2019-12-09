@@ -26,50 +26,51 @@ import com.watabou.utils.Random;
 
 public class Piercing extends Enchantment {
 
-    private static final String TXT_PIERCING = "Piercing %s";
+  private static final String TXT_PIERCING = "Piercing %s";
 
-    @Override
-    public String name(final String weaponName) {
-        return String.format(TXT_PIERCING, weaponName);
-    }
+  @Override
+  public String name(final String weaponName) {
+    return String.format(TXT_PIERCING, weaponName);
+  }
 
-    @Override
-    public boolean proc(final Weapon weapon, final Char attacker, final Char defender, final int damage) {
+  @Override
+  public boolean proc(final Weapon weapon, final Char attacker, final Char defender,
+      final int damage) {
 
-        int level = Math.max(0, weapon.level);
+    int level = Math.max(0, weapon.level);
 
-        int maxDamage = (int) (damage * Math.pow(2, -1d / (level + 1)));
-        if (maxDamage >= 1) {
+    int maxDamage = (int) (damage * Math.pow(2, -1d / (level + 1)));
+    if (maxDamage >= 1) {
 
-            int d = defender.pos - attacker.pos;
-            int pos = defender.pos + d;
+      int d = defender.pos - attacker.pos;
+      int pos = defender.pos + d;
 
-            do {
+      do {
 
-                Char ch = Actor.findChar(pos);
-                if (ch == null) {
-                    break;
-                }
-
-                int dr = Random.IntRange(0, ch.dr());
-                int dmg = Random.Int(1, maxDamage);
-                int effectiveDamage = Math.max(dmg - dr, 0);
-
-                ch.damage(effectiveDamage, this);
-
-                ch.sprite.bloodBurstA(attacker.sprite.center(), effectiveDamage);
-                ch.sprite.flash();
-
-                pos += d;
-            } while ((pos >= 0) && (pos < Level.LENGTH));
-
-            return true;
-
-        } else {
-
-            return false;
-
+        Char ch = Actor.findChar(pos);
+        if (ch == null) {
+          break;
         }
+
+        int dr = Random.IntRange(0, ch.dr());
+        int dmg = Random.Int(1, maxDamage);
+        int effectiveDamage = Math.max(dmg - dr, 0);
+
+        ch.damage(effectiveDamage, this);
+
+        ch.sprite.bloodBurstA(attacker.sprite.center(), effectiveDamage);
+        ch.sprite.flash();
+
+        pos += d;
+      } while ((pos >= 0) && (pos < Level.LENGTH));
+
+      return true;
+
+    } else {
+
+      return false;
+
     }
+  }
 
 }

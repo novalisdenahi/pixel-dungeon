@@ -27,69 +27,68 @@ import com.watabou.utils.PointF;
 
 public class DungeonTilemap extends Tilemap {
 
-    public static final int SIZE = 16;
+  public static final int SIZE = 16;
 
-    private static DungeonTilemap instance;
+  private static DungeonTilemap instance;
 
-    public static Image tile(final int index) {
-        Image img = new Image(instance.texture);
-        img.frame(instance.tileset.get(index));
-        return img;
-    }
+  public static Image tile(final int index) {
+    Image img = new Image(instance.texture);
+    img.frame(instance.tileset.get(index));
+    return img;
+  }
 
-    public static PointF tileCenterToWorld(final int pos) {
-        return new PointF(
-                ((pos % Level.WIDTH) + 0.5f) * SIZE,
-                ((pos / Level.WIDTH) + 0.5f) * SIZE);
-    }
+  public static PointF tileCenterToWorld(final int pos) {
+    return new PointF(
+        ((pos % Level.WIDTH) + 0.5f) * SIZE,
+        ((pos / Level.WIDTH) + 0.5f) * SIZE);
+  }
 
-    public static PointF tileToWorld(final int pos) {
-        return new PointF(pos % Level.WIDTH, pos / Level.WIDTH).scale(SIZE);
-    }
+  public static PointF tileToWorld(final int pos) {
+    return new PointF(pos % Level.WIDTH, pos / Level.WIDTH).scale(SIZE);
+  }
 
-    public DungeonTilemap() {
-        super(
-                Dungeon.level.tilesTex(),
-                new TextureFilm(Dungeon.level.tilesTex(), SIZE, SIZE));
-        map(Dungeon.level.map, Level.WIDTH);
+  public DungeonTilemap() {
+    super(
+        Dungeon.level.tilesTex(),
+        new TextureFilm(Dungeon.level.tilesTex(), SIZE, SIZE));
+    map(Dungeon.level.map, Level.WIDTH);
 
-        instance = this;
-    }
+    instance = this;
+  }
 
-    public void discover(final int pos, final int oldValue) {
+  public void discover(final int pos, final int oldValue) {
 
-        final Image tile = DungeonTilemap.tile(oldValue);
-        tile.point(DungeonTilemap.tileToWorld(pos));
+    final Image tile = DungeonTilemap.tile(oldValue);
+    tile.point(DungeonTilemap.tileToWorld(pos));
 
-        // For bright mode
-        tile.rm = tile.gm = tile.bm = rm;
-        tile.ra = tile.ga = tile.ba = ra;
-        parent.add(tile);
+    // For bright mode
+    tile.rm = tile.gm = tile.bm = rm;
+    tile.ra = tile.ga = tile.ba = ra;
+    parent.add(tile);
 
-        parent.add(new AlphaTweener(tile, 0, 0.6f) {
-            @Override
-            protected void onComplete() {
-                tile.killAndErase();
-                killAndErase();
-            };
-        });
-    }
+    parent.add(new AlphaTweener(tile, 0, 0.6f) {
+      @Override
+      protected void onComplete() {
+        tile.killAndErase();
+        killAndErase();
+      };
+    });
+  }
 
-    @Override
-    public boolean overlapsPoint(final float x, final float y) {
-        return true;
-    }
+  @Override
+  public boolean overlapsPoint(final float x, final float y) {
+    return true;
+  }
 
-    @Override
-    public boolean overlapsScreenPoint(final int x, final int y) {
-        return true;
-    }
+  @Override
+  public boolean overlapsScreenPoint(final int x, final int y) {
+    return true;
+  }
 
-    public int screenToTile(final int x, final int y) {
-        Point p = camera().screenToCamera(x, y).
-                offset(this.point().negate()).
-                invScale(SIZE).
-                floor();
-        return (p.x >= 0) && (p.x < Level.WIDTH) && (p.y >= 0) && (p.y < Level.HEIGHT) ? p.x + (p.y * Level.WIDTH) : -1;
-    }
+  public int screenToTile(final int x, final int y) {
+    Point p = camera().screenToCamera(x, y).offset(this.point().negate()).invScale(SIZE).floor();
+    return (p.x >= 0) && (p.x < Level.WIDTH) && (p.y >= 0) && (p.y < Level.HEIGHT)
+        ? p.x + (p.y * Level.WIDTH)
+        : -1;
+  }
 }

@@ -21,17 +21,17 @@ import com.watabou.pixeldungeon.sprites.ItemSpriteSheet;
 
 public class Rapier extends MeleeWeapon {
 
-    {
-        name = "rapier";
-        image = ItemSpriteSheet.RAPIER;
-    }
+  {
+    name = "rapier";
+    image = ItemSpriteSheet.RAPIER;
+  }
 
-    public Rapier() {
-        super(3, 1.2f, 0.9f);
-    }
+  public Rapier() {
+    super(3, 1.2f, 0.9f);
+  }
 
-    @Override
-    public String desc() {
-        return "A thin, light, sharp-pointed sword used for thrusting.";
-    }
+  @Override
+  public String desc() {
+    return "A thin, light, sharp-pointed sword used for thrusting.";
+  }
 }

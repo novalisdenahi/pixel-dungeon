@@ -30,44 +30,44 @@ import com.watabou.utils.Random;
 
 public class Metabolism extends Glyph {
 
-    private static final String TXT_METABOLISM = "%s of metabolism";
+  private static final String TXT_METABOLISM = "%s of metabolism";
 
-    private static ItemSprite.Glowing RED = new ItemSprite.Glowing(0xCC0000);
+  private static ItemSprite.Glowing RED = new ItemSprite.Glowing(0xCC0000);
 
-    @Override
-    public Glowing glowing() {
-        return RED;
-    }
+  @Override
+  public Glowing glowing() {
+    return RED;
+  }
 
-    @Override
-    public String name(final String weaponName) {
-        return String.format(TXT_METABOLISM, weaponName);
-    }
+  @Override
+  public String name(final String weaponName) {
+    return String.format(TXT_METABOLISM, weaponName);
+  }
 
-    @Override
-    public int proc(final Armor armor, final Char attacker, final Char defender, final int damage) {
+  @Override
+  public int proc(final Armor armor, final Char attacker, final Char defender, final int damage) {
 
-        int level = Math.max(0, armor.level);
-        if (Random.Int((level / 2) + 5) >= 4) {
+    int level = Math.max(0, armor.level);
+    if (Random.Int((level / 2) + 5) >= 4) {
 
-            int healing = Math.min(defender.HT - defender.HP, Random.Int(1, defender.HT / 5));
-            if (healing > 0) {
+      int healing = Math.min(defender.HT - defender.HP, Random.Int(1, defender.HT / 5));
+      if (healing > 0) {
 
-                Hunger hunger = defender.buff(Hunger.class);
+        Hunger hunger = defender.buff(Hunger.class);
 
-                if ((hunger != null) && !hunger.isStarving()) {
+        if ((hunger != null) && !hunger.isStarving()) {
 
-                    hunger.satisfy(-Hunger.STARVING / 10);
-                    BuffIndicator.refreshHero();
+          hunger.satisfy(-Hunger.STARVING / 10);
+          BuffIndicator.refreshHero();
 
-                    defender.HP += healing;
-                    defender.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
-                    defender.sprite.showStatus(CharSprite.POSITIVE, Integer.toString(healing));
-                }
-            }
-
+          defender.HP += healing;
+          defender.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
+          defender.sprite.showStatus(CharSprite.POSITIVE, Integer.toString(healing));
         }
+      }
 
-        return damage;
     }
+
+    return damage;
+  }
 }

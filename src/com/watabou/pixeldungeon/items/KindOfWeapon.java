@@ -27,83 +27,84 @@ import com.watabou.utils.Random;
 
 public class KindOfWeapon extends EquipableItem {
 
-    private static final String TXT_EQUIP_CURSED = "you wince as your grip involuntarily tightens around your %s";
+  private static final String TXT_EQUIP_CURSED =
+      "you wince as your grip involuntarily tightens around your %s";
 
-    protected static final float TIME_TO_EQUIP = 1f;
+  protected static final float TIME_TO_EQUIP = 1f;
 
-    public int MIN = 0;
-    public int MAX = 1;
+  public int MIN = 0;
+  public int MAX = 1;
 
-    @Override
-    public ArrayList<String> actions(final Hero hero) {
-        ArrayList<String> actions = super.actions(hero);
-        actions.add(isEquipped(hero) ? AC_UNEQUIP : AC_EQUIP);
-        return actions;
+  @Override
+  public ArrayList<String> actions(final Hero hero) {
+    ArrayList<String> actions = super.actions(hero);
+    actions.add(isEquipped(hero) ? AC_UNEQUIP : AC_EQUIP);
+    return actions;
+  }
+
+  public void activate(final Hero hero) {
+  }
+
+  public float acuracyFactor(final Hero hero) {
+    return 1f;
+  }
+
+  public int damageRoll(final Hero owner) {
+    return Random.NormalIntRange(MIN, MAX);
+  }
+
+  @Override
+  public boolean doEquip(final Hero hero) {
+
+    detachAll(hero.belongings.backpack);
+
+    if ((hero.belongings.weapon == null) || hero.belongings.weapon.doUnequip(hero, true)) {
+
+      hero.belongings.weapon = this;
+      activate(hero);
+
+      QuickSlot.refresh();
+
+      cursedKnown = true;
+      if (cursed) {
+        EquipableItem.equipCursed(hero);
+        GLog.n(TXT_EQUIP_CURSED, name());
+      }
+
+      hero.spendAndNext(TIME_TO_EQUIP);
+      return true;
+
+    } else {
+
+      collect(hero.belongings.backpack);
+      return false;
     }
+  }
 
-    public void activate(final Hero hero) {
+  @Override
+  public boolean doUnequip(final Hero hero, final boolean collect, final boolean single) {
+    if (super.doUnequip(hero, collect, single)) {
+
+      hero.belongings.weapon = null;
+      return true;
+
+    } else {
+
+      return false;
+
     }
+  }
 
-    public float acuracyFactor(final Hero hero) {
-        return 1f;
-    }
+  @Override
+  public boolean isEquipped(final Hero hero) {
+    return hero.belongings.weapon == this;
+  }
 
-    public int damageRoll(final Hero owner) {
-        return Random.NormalIntRange(MIN, MAX);
-    }
+  public void proc(final Char attacker, final Char defender, final int damage) {
+  }
 
-    @Override
-    public boolean doEquip(final Hero hero) {
-
-        detachAll(hero.belongings.backpack);
-
-        if ((hero.belongings.weapon == null) || hero.belongings.weapon.doUnequip(hero, true)) {
-
-            hero.belongings.weapon = this;
-            activate(hero);
-
-            QuickSlot.refresh();
-
-            cursedKnown = true;
-            if (cursed) {
-                EquipableItem.equipCursed(hero);
-                GLog.n(TXT_EQUIP_CURSED, name());
-            }
-
-            hero.spendAndNext(TIME_TO_EQUIP);
-            return true;
-
-        } else {
-
-            collect(hero.belongings.backpack);
-            return false;
-        }
-    }
-
-    @Override
-    public boolean doUnequip(final Hero hero, final boolean collect, final boolean single) {
-        if (super.doUnequip(hero, collect, single)) {
-
-            hero.belongings.weapon = null;
-            return true;
-
-        } else {
-
-            return false;
-
-        }
-    }
-
-    @Override
-    public boolean isEquipped(final Hero hero) {
-        return hero.belongings.weapon == this;
-    }
-
-    public void proc(final Char attacker, final Char defender, final int damage) {
-    }
-
-    public float speedFactor(final Hero hero) {
-        return 1f;
-    }
+  public float speedFactor(final Hero hero) {
+    return 1f;
+  }
 
 }

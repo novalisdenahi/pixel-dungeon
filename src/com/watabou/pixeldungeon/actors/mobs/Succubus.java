@@ -38,110 +38,110 @@ import com.watabou.utils.Random;
 
 public class Succubus extends Mob {
 
-    private static final int BLINK_DELAY = 5;
+  private static final int BLINK_DELAY = 5;
 
-    private int delay = 0;
+  private int delay = 0;
 
-    {
-        name = "succubus";
-        spriteClass = SuccubusSprite.class;
+  {
+    name = "succubus";
+    spriteClass = SuccubusSprite.class;
 
-        mobType = MobType.DEMON;
+    mobType = MobType.DEMON;
 
-        HP = HT = 80;
-        defenseSkill = 25;
-        viewDistance = Light.DISTANCE;
+    HP = HT = 80;
+    defenseSkill = 25;
+    viewDistance = Light.DISTANCE;
 
-        EXP = 12;
-        maxLvl = 25;
+    EXP = 12;
+    maxLvl = 25;
 
-        loot = new ScrollOfLullaby();
-        lootChance = 0.05f;
+    loot = new ScrollOfLullaby();
+    lootChance = 0.05f;
+  }
+
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(Leech.class);
+  }
+
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(Sleep.class);
+  }
+
+  @Override
+  public int attackProc(final Char enemy, final int damage) {
+
+    if (Random.Int(3) == 0) {
+      Buff.affect(enemy, Charm.class, Charm.durationFactor(enemy) * Random.IntRange(3, 7)).object =
+          id();
+      enemy.sprite.centerEmitter().start(Speck.factory(Speck.HEART), 0.2f, 5);
+      Sample.INSTANCE.play(Assets.SND_CHARMS);
     }
 
-    private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+    return damage;
+  }
 
-    static {
-        RESISTANCES.add(Leech.class);
+  @Override
+  public int attackSkill(final Char target) {
+    return 40;
+  }
+
+  private void blink(final int target) {
+
+    int cell = Ballistica.cast(pos, target, true, true);
+
+    if ((Actor.findChar(cell) != null) && (Ballistica.distance > 1)) {
+      cell = Ballistica.trace[Ballistica.distance - 2];
     }
 
-    private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+    WandOfBlink.appear(this, cell);
 
-    static {
-        IMMUNITIES.add(Sleep.class);
+    delay = BLINK_DELAY;
+  }
+
+  @Override
+  public int damageRoll() {
+    return Random.NormalIntRange(15, 25);
+  }
+
+  @Override
+  public String description() {
+    return "The succubi are demons that look like seductive (in a slightly gothic way) girls. Using its magic, the succubus "
+        +
+        "can charm a hero, who will become unable to attack anything until the charm wears off.";
+  }
+
+  @Override
+  public int dr() {
+    return 10;
+  }
+
+  @Override
+  protected boolean getCloser(final int target) {
+    if (Level.fieldOfView[target] && (Level.distance(pos, target) > 2) && (delay <= 0)) {
+
+      blink(target);
+      spend(-1 / speed());
+      return true;
+
+    } else {
+
+      delay--;
+      return super.getCloser(target);
+
     }
+  }
 
-    @Override
-    public int attackProc(final Char enemy, final int damage) {
+  @Override
+  public HashSet<Class<?>> immunities() {
+    return IMMUNITIES;
+  }
 
-        if (Random.Int(3) == 0) {
-            Buff.affect(enemy, Charm.class, Charm.durationFactor(enemy) * Random.IntRange(3, 7)).object = id();
-            enemy.sprite.centerEmitter().start(Speck.factory(Speck.HEART), 0.2f, 5);
-            Sample.INSTANCE.play(Assets.SND_CHARMS);
-        }
-
-        return damage;
-    }
-
-    @Override
-    public int attackSkill(final Char target) {
-        return 40;
-    }
-
-    private void blink(final int target) {
-
-        int cell = Ballistica.cast(pos, target, true, true);
-
-        if ((Actor.findChar(cell) != null) && (Ballistica.distance > 1)) {
-            cell = Ballistica.trace[Ballistica.distance - 2];
-        }
-
-        WandOfBlink.appear(this, cell);
-
-        delay = BLINK_DELAY;
-    }
-
-    @Override
-    public int damageRoll() {
-        return Random.NormalIntRange(15, 25);
-    }
-
-    @Override
-    public String description() {
-        return
-                "The succubi are demons that look like seductive (in a slightly gothic way) girls. Using its magic, the succubus "
-                +
-                "can charm a hero, who will become unable to attack anything until the charm wears off.";
-    }
-
-    @Override
-    public int dr() {
-        return 10;
-    }
-
-    @Override
-    protected boolean getCloser(final int target) {
-        if (Level.fieldOfView[target] && (Level.distance(pos, target) > 2) && (delay <= 0)) {
-
-            blink(target);
-            spend(-1 / speed());
-            return true;
-
-        } else {
-
-            delay--;
-            return super.getCloser(target);
-
-        }
-    }
-
-    @Override
-    public HashSet<Class<?>> immunities() {
-        return IMMUNITIES;
-    }
-
-    @Override
-    public HashSet<Class<?>> resistances() {
-        return RESISTANCES;
-    }
+  @Override
+  public HashSet<Class<?>> resistances() {
+    return RESISTANCES;
+  }
 }

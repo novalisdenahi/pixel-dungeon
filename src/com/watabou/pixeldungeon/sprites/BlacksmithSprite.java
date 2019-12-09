@@ -28,55 +28,55 @@ import com.watabou.pixeldungeon.levels.Level;
 
 public class BlacksmithSprite extends MobSprite {
 
-    private Emitter emitter;
+  private Emitter emitter;
 
-    public BlacksmithSprite() {
-        super();
+  public BlacksmithSprite() {
+    super();
 
-        texture(Assets.TROLL);
+    texture(Assets.TROLL);
 
-        TextureFilm frames = new TextureFilm(texture, 13, 16);
+    TextureFilm frames = new TextureFilm(texture, 13, 16);
 
-        idle = new Animation(15, true);
-        idle.frames(frames, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 3);
+    idle = new Animation(15, true);
+    idle.frames(frames, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 3);
 
-        run = new Animation(20, true);
-        run.frames(frames, 0);
+    run = new Animation(20, true);
+    run.frames(frames, 0);
 
-        die = new Animation(20, false);
-        die.frames(frames, 0);
+    die = new Animation(20, false);
+    die.frames(frames, 0);
 
-        play(idle);
+    play(idle);
+  }
+
+  @Override
+  public void link(final Char ch) {
+    super.link(ch);
+
+    emitter = new Emitter();
+    emitter.autoKill = false;
+    emitter.pos(x + 7, y + 12);
+    parent.add(emitter);
+  }
+
+  @Override
+  public void onComplete(final Animation anim) {
+    super.onComplete(anim);
+
+    if (visible && (emitter != null) && (anim == idle)) {
+      emitter.burst(Speck.factory(Speck.FORGE), 3);
+      float volume = 0.2f / (Level.distance(ch.pos, Dungeon.hero.pos));
+      Sample.INSTANCE.play(Assets.SND_EVOKE, volume, volume, 0.8f);
     }
+  }
 
-    @Override
-    public void link(final Char ch) {
-        super.link(ch);
+  @Override
+  public void update() {
+    super.update();
 
-        emitter = new Emitter();
-        emitter.autoKill = false;
-        emitter.pos(x + 7, y + 12);
-        parent.add(emitter);
+    if (emitter != null) {
+      emitter.visible = visible;
     }
-
-    @Override
-    public void onComplete(final Animation anim) {
-        super.onComplete(anim);
-
-        if (visible && (emitter != null) && (anim == idle)) {
-            emitter.burst(Speck.factory(Speck.FORGE), 3);
-            float volume = 0.2f / (Level.distance(ch.pos, Dungeon.hero.pos));
-            Sample.INSTANCE.play(Assets.SND_EVOKE, volume, volume, 0.8f);
-        }
-    }
-
-    @Override
-    public void update() {
-        super.update();
-
-        if (emitter != null) {
-            emitter.visible = visible;
-        }
-    }
+  }
 
 }

@@ -21,26 +21,26 @@ import com.watabou.pixeldungeon.ui.BuffIndicator;
 
 public class Fury extends Buff {
 
-    public static float LEVEL = 0.4f;
+  public static float LEVEL = 0.4f;
 
-    @Override
-    public boolean act() {
-        if (target.HP > (target.HT * LEVEL)) {
-            detach();
-        }
-
-        spend(TICK);
-
-        return true;
+  @Override
+  public boolean act() {
+    if (target.HP > (target.HT * LEVEL)) {
+      detach();
     }
 
-    @Override
-    public int icon() {
-        return BuffIndicator.FURY;
-    }
+    spend(TICK);
 
-    @Override
-    public String toString() {
-        return "Fury";
-    }
+    return true;
+  }
+
+  @Override
+  public int icon() {
+    return BuffIndicator.FURY;
+  }
+
+  @Override
+  public String toString() {
+    return "Fury";
+  }
 }

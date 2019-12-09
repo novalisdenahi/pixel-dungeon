@@ -24,23 +24,23 @@ import com.watabou.pixeldungeon.ui.BuffIndicator;
 
 public class GasesImmunity extends FlavourBuff {
 
-    public static final float DURATION = 5f;
+  public static final float DURATION = 5f;
 
-    public static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+  public static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
 
-    static {
-        IMMUNITIES.add(Paralysis.class);
-        IMMUNITIES.add(ToxicGas.class);
-        IMMUNITIES.add(Vertigo.class);
-    }
+  static {
+    IMMUNITIES.add(Paralysis.class);
+    IMMUNITIES.add(ToxicGas.class);
+    IMMUNITIES.add(Vertigo.class);
+  }
 
-    @Override
-    public int icon() {
-        return BuffIndicator.IMMUNITY;
-    }
+  @Override
+  public int icon() {
+    return BuffIndicator.IMMUNITY;
+  }
 
-    @Override
-    public String toString() {
-        return "Immune to gases";
-    }
+  @Override
+  public String toString() {
+    return "Immune to gases";
+  }
 }

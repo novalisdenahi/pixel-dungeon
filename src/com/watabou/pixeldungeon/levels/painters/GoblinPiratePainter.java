@@ -25,21 +25,21 @@ import com.watabou.pixeldungeon.levels.Terrain;
 
 public class GoblinPiratePainter extends Painter {
 
-    public static void paint(final Level level, final Room room) {
+  public static void paint(final Level level, final Room room) {
 
-        Painter.fill(level, room, Terrain.WALL);
-        Painter.fill(level, room, 1, Terrain.WATER);
+    Painter.fill(level, room, Terrain.WALL);
+    Painter.fill(level, room, 1, Terrain.WATER);
 
-        for (Room.Door door : room.connected.values()) {
-            door.set(Room.Door.Type.UNLOCKED);
-            Painter.drawInside(level, room, door, 2, Terrain.EMPTY_SP);
-        }
-
-        GoblinPirate npc = new GoblinPirate();
-        do {
-            npc.pos = room.random();
-        } while ((level.map[npc.pos] != Terrain.EMPTY_SP));
-        level.mobs.add(npc);
-        Actor.occupyCell(npc);
+    for (Room.Door door : room.connected.values()) {
+      door.set(Room.Door.Type.UNLOCKED);
+      Painter.drawInside(level, room, door, 2, Terrain.EMPTY_SP);
     }
+
+    GoblinPirate npc = new GoblinPirate();
+    do {
+      npc.pos = room.random();
+    } while ((level.map[npc.pos] != Terrain.EMPTY_SP));
+    level.mobs.add(npc);
+    Actor.occupyCell(npc);
+  }
 }

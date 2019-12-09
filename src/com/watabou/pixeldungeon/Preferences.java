@@ -24,51 +24,51 @@ import com.watabou.noosa.Game;
 
 enum Preferences {
 
-    INSTANCE;
+  INSTANCE;
 
-    public static final String KEY_LANDSCAPE = "landscape";
-    public static final String KEY_IMMERSIVE = "immersive";
-    public static final String KEY_GOOGLE_PLAY = "google_play";
-    public static final String KEY_SCALE_UP = "scaleup";
-    public static final String KEY_MUSIC = "music";
-    public static final String KEY_SOUND_FX = "soundfx";
-    public static final String KEY_ZOOM = "zoom";
-    public static final String KEY_LAST_CLASS = "last_class";
-    public static final String KEY_CHALLENGES = "challenges";
-    public static final String KEY_DONATED = "donated";
-    public static final String KEY_INTRO = "intro";
-    public static final String KEY_BRIGHTNESS = "brightness";
+  public static final String KEY_LANDSCAPE = "landscape";
+  public static final String KEY_IMMERSIVE = "immersive";
+  public static final String KEY_GOOGLE_PLAY = "google_play";
+  public static final String KEY_SCALE_UP = "scaleup";
+  public static final String KEY_MUSIC = "music";
+  public static final String KEY_SOUND_FX = "soundfx";
+  public static final String KEY_ZOOM = "zoom";
+  public static final String KEY_LAST_CLASS = "last_class";
+  public static final String KEY_CHALLENGES = "challenges";
+  public static final String KEY_DONATED = "donated";
+  public static final String KEY_INTRO = "intro";
+  public static final String KEY_BRIGHTNESS = "brightness";
 
-    private SharedPreferences prefs;
+  private SharedPreferences prefs;
 
-    private SharedPreferences get() {
-        if (prefs == null) {
-            prefs = Game.instance.getPreferences(Context.MODE_PRIVATE);
-        }
-        return prefs;
+  private SharedPreferences get() {
+    if (prefs == null) {
+      prefs = Game.instance.getPreferences(Context.MODE_PRIVATE);
     }
+    return prefs;
+  }
 
-    boolean getBoolean(final String key, final boolean defValue) {
-        return get().getBoolean(key, defValue);
-    }
+  boolean getBoolean(final String key, final boolean defValue) {
+    return get().getBoolean(key, defValue);
+  }
 
-    int getInt(final String key, final int defValue) {
-        return get().getInt(key, defValue);
-    }
+  int getInt(final String key, final int defValue) {
+    return get().getInt(key, defValue);
+  }
 
-    String getString(final String key, final String defValue) {
-        return get().getString(key, defValue);
-    }
+  String getString(final String key, final String defValue) {
+    return get().getString(key, defValue);
+  }
 
-    void put(final String key, final boolean value) {
-        get().edit().putBoolean(key, value).commit();
-    }
+  void put(final String key, final boolean value) {
+    get().edit().putBoolean(key, value).commit();
+  }
 
-    void put(final String key, final int value) {
-        get().edit().putInt(key, value).commit();
-    }
+  void put(final String key, final int value) {
+    get().edit().putInt(key, value).commit();
+  }
 
-    void put(final String key, final String value) {
-        get().edit().putString(key, value).commit();
-    }
+  void put(final String key, final String value) {
+    get().edit().putString(key, value).commit();
+  }
 }

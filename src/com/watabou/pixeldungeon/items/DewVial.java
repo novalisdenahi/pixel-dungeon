@@ -33,156 +33,155 @@ import com.watabou.utils.Bundle;
 
 public class DewVial extends Item {
 
-    private static final int MAX_VOLUME = 10;
+  private static final int MAX_VOLUME = 10;
 
-    private static final String AC_DRINK = "DRINK";
+  private static final String AC_DRINK = "DRINK";
 
-    private static final float TIME_TO_DRINK = 1f;
+  private static final float TIME_TO_DRINK = 1f;
 
-    private static final String TXT_VALUE = "%+dHP";
-    private static final String TXT_STATUS = "%d/%d";
+  private static final String TXT_VALUE = "%+dHP";
+  private static final String TXT_STATUS = "%d/%d";
 
-    private static final String TXT_AUTO_DRINK = "The dew vial was emptied to heal your wounds.";
-    private static final String TXT_COLLECTED = "You collected a dewdrop into your dew vial.";
-    private static final String TXT_FULL = "Your dew vial is full!";
-    private static final String TXT_EMPTY = "Your dew vial is empty!";
+  private static final String TXT_AUTO_DRINK = "The dew vial was emptied to heal your wounds.";
+  private static final String TXT_COLLECTED = "You collected a dewdrop into your dew vial.";
+  private static final String TXT_FULL = "Your dew vial is full!";
+  private static final String TXT_EMPTY = "Your dew vial is empty!";
 
-    {
-        name = "dew vial";
-        image = ItemSpriteSheet.VIAL;
+  {
+    name = "dew vial";
+    image = ItemSpriteSheet.VIAL;
 
-        defaultAction = AC_DRINK;
+    defaultAction = AC_DRINK;
 
-        unique = true;
+    unique = true;
+  }
+
+  private int volume = 0;
+
+  private static final String VOLUME = "volume";
+
+  private static final double NUM = 20;
+
+  private static final double POW = Math.log10(NUM);
+
+  private static final Glowing WHITE = new Glowing(0xFFFFCC);
+
+  public static void autoDrink(final Hero hero) {
+    DewVial vial = hero.belongings.getItem(DewVial.class);
+    if ((vial != null) && vial.isFull()) {
+      vial.execute(hero);
+      hero.sprite.emitter().start(ShaftParticle.FACTORY, 0.2f, 3);
+
+      GLog.w(TXT_AUTO_DRINK);
+    }
+  }
+
+  @Override
+  public ArrayList<String> actions(final Hero hero) {
+    ArrayList<String> actions = super.actions(hero);
+    if (volume > 0) {
+      actions.add(AC_DRINK);
+    }
+    return actions;
+  }
+
+  public void collectDew(final Dewdrop dew) {
+
+    GLog.i(TXT_COLLECTED);
+    volume += dew.quantity;
+    if (volume >= MAX_VOLUME) {
+      volume = MAX_VOLUME;
+      GLog.p(TXT_FULL);
     }
 
-    private int volume = 0;
+    updateQuickslot();
+  }
 
-    private static final String VOLUME = "volume";
+  @Override
+  public void execute(final Hero hero, final String action) {
+    if (action.equals(AC_DRINK)) {
 
-    private static final double NUM = 20;
+      if (volume > 0) {
 
-    private static final double POW = Math.log10(NUM);
-
-    private static final Glowing WHITE = new Glowing(0xFFFFCC);
-
-    public static void autoDrink(final Hero hero) {
-        DewVial vial = hero.belongings.getItem(DewVial.class);
-        if ((vial != null) && vial.isFull()) {
-            vial.execute(hero);
-            hero.sprite.emitter().start(ShaftParticle.FACTORY, 0.2f, 3);
-
-            GLog.w(TXT_AUTO_DRINK);
+        int value = (int) Math.ceil((Math.pow(volume, POW) / NUM) * hero.HT);
+        int effect = Math.min(hero.HT - hero.HP, value);
+        if (effect > 0) {
+          hero.HP += effect;
+          hero.sprite.emitter().burst(Speck.factory(Speck.HEALING), volume > 5 ? 2 : 1);
+          hero.sprite.showStatus(CharSprite.POSITIVE, TXT_VALUE, effect);
         }
-    }
 
-    @Override
-    public ArrayList<String> actions(final Hero hero) {
-        ArrayList<String> actions = super.actions(hero);
-        if (volume > 0) {
-            actions.add(AC_DRINK);
-        }
-        return actions;
-    }
+        volume = 0;
 
-    public void collectDew(final Dewdrop dew) {
+        hero.spend(TIME_TO_DRINK);
+        hero.busy();
 
-        GLog.i(TXT_COLLECTED);
-        volume += dew.quantity;
-        if (volume >= MAX_VOLUME) {
-            volume = MAX_VOLUME;
-            GLog.p(TXT_FULL);
-        }
+        Sample.INSTANCE.play(Assets.SND_DRINK);
+        hero.sprite.operate(hero.pos);
 
         updateQuickslot();
+
+      } else {
+        GLog.w(TXT_EMPTY);
+      }
+
+    } else {
+
+      super.execute(hero, action);
+
     }
+  }
 
-    @Override
-    public void execute(final Hero hero, final String action) {
-        if (action.equals(AC_DRINK)) {
+  public void fill() {
+    volume = MAX_VOLUME;
+    updateQuickslot();
+  }
 
-            if (volume > 0) {
+  @Override
+  public Glowing glowing() {
+    return isFull() ? WHITE : null;
+  }
 
-                int value = (int) Math.ceil((Math.pow(volume, POW) / NUM) * hero.HT);
-                int effect = Math.min(hero.HT - hero.HP, value);
-                if (effect > 0) {
-                    hero.HP += effect;
-                    hero.sprite.emitter().burst(Speck.factory(Speck.HEALING), volume > 5 ? 2 : 1);
-                    hero.sprite.showStatus(CharSprite.POSITIVE, TXT_VALUE, effect);
-                }
+  @Override
+  public String info() {
+    return "You can store excess dew in this tiny vessel for drinking it later. " +
+        "If the vial is full, in a moment of deadly peril the dew will be " +
+        "consumed automatically.";
+  }
 
-                volume = 0;
+  public boolean isFull() {
+    return volume >= MAX_VOLUME;
+  }
 
-                hero.spend(TIME_TO_DRINK);
-                hero.busy();
+  @Override
+  public boolean isIdentified() {
+    return true;
+  }
 
-                Sample.INSTANCE.play(Assets.SND_DRINK);
-                hero.sprite.operate(hero.pos);
+  @Override
+  public boolean isUpgradable() {
+    return false;
+  }
 
-                updateQuickslot();
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    volume = bundle.getInt(VOLUME);
+  }
 
-            } else {
-                GLog.w(TXT_EMPTY);
-            }
+  @Override
+  public String status() {
+    return Utils.format(TXT_STATUS, volume, MAX_VOLUME);
+  }
 
-        } else {
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(VOLUME, volume);
+  }
 
-            super.execute(hero, action);
-
-        }
-    }
-
-    public void fill() {
-        volume = MAX_VOLUME;
-        updateQuickslot();
-    }
-
-    @Override
-    public Glowing glowing() {
-        return isFull() ? WHITE : null;
-    }
-
-    @Override
-    public String info() {
-        return
-        "You can store excess dew in this tiny vessel for drinking it later. " +
-                "If the vial is full, in a moment of deadly peril the dew will be " +
-                "consumed automatically.";
-    }
-
-    public boolean isFull() {
-        return volume >= MAX_VOLUME;
-    }
-
-    @Override
-    public boolean isIdentified() {
-        return true;
-    }
-
-    @Override
-    public boolean isUpgradable() {
-        return false;
-    }
-
-    @Override
-    public void restoreFromBundle(final Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        volume = bundle.getInt(VOLUME);
-    }
-
-    @Override
-    public String status() {
-        return Utils.format(TXT_STATUS, volume, MAX_VOLUME);
-    }
-
-    @Override
-    public void storeInBundle(final Bundle bundle) {
-        super.storeInBundle(bundle);
-        bundle.put(VOLUME, volume);
-    }
-
-    @Override
-    public String toString() {
-        return super.toString() + " (" + status() + ")";
-    }
+  @Override
+  public String toString() {
+    return super.toString() + " (" + status() + ")";
+  }
 }

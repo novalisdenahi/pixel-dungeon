@@ -26,59 +26,59 @@ import com.watabou.utils.Random;
 
 public class PurpleParticle extends PixelParticle {
 
-    public static final Emitter.Factory MISSILE = new Factory() {
-        @Override
-        public void emit(final Emitter emitter, final int index, final float x, final float y) {
-            ((PurpleParticle) emitter.recycle(PurpleParticle.class)).reset(x, y);
-        }
-    };
-
-    public static final Emitter.Factory BURST = new Factory() {
-        @Override
-        public void emit(final Emitter emitter, final int index, final float x, final float y) {
-            ((PurpleParticle) emitter.recycle(PurpleParticle.class)).resetBurst(x, y);
-        }
-
-        @Override
-        public boolean lightMode() {
-            return true;
-        }
-    };
-
-    public PurpleParticle() {
-        super();
-
-        lifespan = 0.5f;
+  public static final Emitter.Factory MISSILE = new Factory() {
+    @Override
+    public void emit(final Emitter emitter, final int index, final float x, final float y) {
+      ((PurpleParticle) emitter.recycle(PurpleParticle.class)).reset(x, y);
     }
+  };
 
-    public void reset(final float x, final float y) {
-        revive();
-
-        this.x = x;
-        this.y = y;
-
-        speed.set(Random.Float(-5, +5), Random.Float(-5, +5));
-
-        left = lifespan;
-    }
-
-    public void resetBurst(final float x, final float y) {
-        revive();
-
-        this.x = x;
-        this.y = y;
-
-        speed.polar(Random.Float(PointF.PI2), Random.Float(16, 32));
-
-        left = lifespan;
+  public static final Emitter.Factory BURST = new Factory() {
+    @Override
+    public void emit(final Emitter emitter, final int index, final float x, final float y) {
+      ((PurpleParticle) emitter.recycle(PurpleParticle.class)).resetBurst(x, y);
     }
 
     @Override
-    public void update() {
-        super.update();
-        // alpha: 1 -> 0; size: 1 -> 5
-        size(5 - ((am = left / lifespan) * 4));
-        // color: 0xFF0044 -> 0x220066
-        color(ColorMath.interpolate(0x220066, 0xFF0044, am));
+    public boolean lightMode() {
+      return true;
     }
+  };
+
+  public PurpleParticle() {
+    super();
+
+    lifespan = 0.5f;
+  }
+
+  public void reset(final float x, final float y) {
+    revive();
+
+    this.x = x;
+    this.y = y;
+
+    speed.set(Random.Float(-5, +5), Random.Float(-5, +5));
+
+    left = lifespan;
+  }
+
+  public void resetBurst(final float x, final float y) {
+    revive();
+
+    this.x = x;
+    this.y = y;
+
+    speed.polar(Random.Float(PointF.PI2), Random.Float(16, 32));
+
+    left = lifespan;
+  }
+
+  @Override
+  public void update() {
+    super.update();
+    // alpha: 1 -> 0; size: 1 -> 5
+    size(5 - ((am = left / lifespan) * 4));
+    // color: 0xFF0044 -> 0x220066
+    color(ColorMath.interpolate(0x220066, 0xFF0044, am));
+  }
 }

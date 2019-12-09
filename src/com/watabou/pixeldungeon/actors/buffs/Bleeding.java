@@ -29,65 +29,65 @@ import com.watabou.utils.Random;
 
 public class Bleeding extends Buff {
 
-    protected int level;
+  protected int level;
 
-    private static final String LEVEL = "level";
+  private static final String LEVEL = "level";
 
-    @Override
-    public boolean act() {
-        if (target.isAlive()) {
+  @Override
+  public boolean act() {
+    if (target.isAlive()) {
 
-            if ((level = Random.Int(level / 2, level)) > 0) {
+      if ((level = Random.Int(level / 2, level)) > 0) {
 
-                target.damage(level, this);
-                if (target.sprite.visible) {
-                    Splash.at(target.sprite.center(), -PointF.PI / 2, PointF.PI / 6,
-                            target.sprite.blood(), Math.min((10 * level) / target.HT, 10));
-                }
-
-                if ((target == Dungeon.hero) && !target.isAlive()) {
-                    Dungeon.fail(Utils.format(ResultDescriptions.BLEEDING, Dungeon.depth));
-                    GLog.n("You bled to death...");
-                }
-
-                spend(TICK);
-            } else {
-                detach();
-            }
-
-        } else {
-
-            detach();
-
+        target.damage(level, this);
+        if (target.sprite.visible) {
+          Splash.at(target.sprite.center(), -PointF.PI / 2, PointF.PI / 6,
+              target.sprite.blood(), Math.min((10 * level) / target.HT, 10));
         }
 
-        return true;
-    }
+        if ((target == Dungeon.hero) && !target.isAlive()) {
+          Dungeon.fail(Utils.format(ResultDescriptions.BLEEDING, Dungeon.depth));
+          GLog.n("You bled to death...");
+        }
 
-    @Override
-    public int icon() {
-        return BuffIndicator.BLEEDING;
-    }
+        spend(TICK);
+      } else {
+        detach();
+      }
 
-    @Override
-    public void restoreFromBundle(final Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        level = bundle.getInt(LEVEL);
-    };
+    } else {
 
-    public void set(final int level) {
-        this.level = level;
-    }
-
-    @Override
-    public void storeInBundle(final Bundle bundle) {
-        super.storeInBundle(bundle);
-        bundle.put(LEVEL, level);
+      detach();
 
     }
 
-    @Override
-    public String toString() {
-        return "Bleeding";
-    }
+    return true;
+  }
+
+  @Override
+  public int icon() {
+    return BuffIndicator.BLEEDING;
+  }
+
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    level = bundle.getInt(LEVEL);
+  };
+
+  public void set(final int level) {
+    this.level = level;
+  }
+
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(LEVEL, level);
+
+  }
+
+  @Override
+  public String toString() {
+    return "Bleeding";
+  }
 }

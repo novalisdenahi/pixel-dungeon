@@ -36,162 +36,163 @@ import com.watabou.pixeldungeon.windows.WndBag;
 
 public class Weightstone extends Item {
 
-    public class WndBalance extends Window {
+  public class WndBalance extends Window {
 
-        private static final String TXT_CHOICE = "How would you like to balance your %s?";
+    private static final String TXT_CHOICE = "How would you like to balance your %s?";
 
-        private static final String TXT_SPEED = "For speed";
-        private static final String TXT_ACCURACY = "For accuracy";
-        private static final String TXT_CANCEL = "Never mind";
+    private static final String TXT_SPEED = "For speed";
+    private static final String TXT_ACCURACY = "For accuracy";
+    private static final String TXT_CANCEL = "Never mind";
 
-        private static final int WIDTH = 120;
-        private static final int MARGIN = 2;
-        private static final int BUTTON_WIDTH = WIDTH - (MARGIN * 2);
-        private static final int BUTTON_HEIGHT = 20;
+    private static final int WIDTH = 120;
+    private static final int MARGIN = 2;
+    private static final int BUTTON_WIDTH = WIDTH - (MARGIN * 2);
+    private static final int BUTTON_HEIGHT = 20;
 
-        public WndBalance(final Weapon weapon) {
-            super();
+    public WndBalance(final Weapon weapon) {
+      super();
 
-            IconTitle titlebar = new IconTitle(weapon);
-            titlebar.setRect(0, 0, WIDTH, 0);
-            add(titlebar);
+      IconTitle titlebar = new IconTitle(weapon);
+      titlebar.setRect(0, 0, WIDTH, 0);
+      add(titlebar);
 
-            BitmapTextMultiline tfMesage = PixelScene.createMultiline(Utils.format(TXT_CHOICE, weapon.name()), 8);
-            tfMesage.maxWidth = WIDTH - (MARGIN * 2);
-            tfMesage.measure();
-            tfMesage.x = MARGIN;
-            tfMesage.y = titlebar.bottom() + MARGIN;
-            add(tfMesage);
+      BitmapTextMultiline tfMesage =
+          PixelScene.createMultiline(Utils.format(TXT_CHOICE, weapon.name()), 8);
+      tfMesage.maxWidth = WIDTH - (MARGIN * 2);
+      tfMesage.measure();
+      tfMesage.x = MARGIN;
+      tfMesage.y = titlebar.bottom() + MARGIN;
+      add(tfMesage);
 
-            float pos = tfMesage.y + tfMesage.height();
+      float pos = tfMesage.y + tfMesage.height();
 
-            if (weapon.imbue != Weapon.Imbue.SPEED) {
-                RedButton btnSpeed = new RedButton(TXT_SPEED) {
-                    @Override
-                    protected void onClick() {
-                        hide();
-                        apply(weapon, true);
-                    }
-                };
-                btnSpeed.setRect(MARGIN, pos + MARGIN, BUTTON_WIDTH, BUTTON_HEIGHT);
-                add(btnSpeed);
-
-                pos = btnSpeed.bottom();
-            }
-
-            if (weapon.imbue != Weapon.Imbue.ACCURACY) {
-                RedButton btnAccuracy = new RedButton(TXT_ACCURACY) {
-                    @Override
-                    protected void onClick() {
-                        hide();
-                        apply(weapon, false);
-                    }
-                };
-                btnAccuracy.setRect(MARGIN, pos + MARGIN, BUTTON_WIDTH, BUTTON_HEIGHT);
-                add(btnAccuracy);
-
-                pos = btnAccuracy.bottom();
-            }
-
-            RedButton btnCancel = new RedButton(TXT_CANCEL) {
-                @Override
-                protected void onClick() {
-                    hide();
-                }
-            };
-            btnCancel.setRect(MARGIN, pos + MARGIN, BUTTON_WIDTH, BUTTON_HEIGHT);
-            add(btnCancel);
-
-            resize(WIDTH, (int) btnCancel.bottom() + MARGIN);
-        }
-
-        protected void onSelect(final int index) {
+      if (weapon.imbue != Weapon.Imbue.SPEED) {
+        RedButton btnSpeed = new RedButton(TXT_SPEED) {
+          @Override
+          protected void onClick() {
+            hide();
+            apply(weapon, true);
+          }
         };
-    }
+        btnSpeed.setRect(MARGIN, pos + MARGIN, BUTTON_WIDTH, BUTTON_HEIGHT);
+        add(btnSpeed);
 
-    private static final String TXT_SELECT_WEAPON = "Select a weapon to balance";
-    private static final String TXT_FAST = "you balanced your %s to make it faster";
+        pos = btnSpeed.bottom();
+      }
 
-    private static final String TXT_ACCURATE = "you balanced your %s to make it more accurate";
+      if (weapon.imbue != Weapon.Imbue.ACCURACY) {
+        RedButton btnAccuracy = new RedButton(TXT_ACCURACY) {
+          @Override
+          protected void onClick() {
+            hide();
+            apply(weapon, false);
+          }
+        };
+        btnAccuracy.setRect(MARGIN, pos + MARGIN, BUTTON_WIDTH, BUTTON_HEIGHT);
+        add(btnAccuracy);
 
-    private static final float TIME_TO_APPLY = 2;
+        pos = btnAccuracy.bottom();
+      }
 
-    private static final String AC_APPLY = "APPLY";
-
-    {
-        name = "weightstone";
-        image = ItemSpriteSheet.WEIGHT;
-
-        stackable = true;
-    }
-
-    private final WndBag.Listener itemSelector = new WndBag.Listener() {
+      RedButton btnCancel = new RedButton(TXT_CANCEL) {
         @Override
-        public void onSelect(final Item item) {
-            if (item != null) {
-                GameScene.show(new WndBalance((Weapon) item));
-            }
+        protected void onClick() {
+          hide();
         }
+      };
+      btnCancel.setRect(MARGIN, pos + MARGIN, BUTTON_WIDTH, BUTTON_HEIGHT);
+      add(btnCancel);
+
+      resize(WIDTH, (int) btnCancel.bottom() + MARGIN);
+    }
+
+    protected void onSelect(final int index) {
     };
+  }
 
+  private static final String TXT_SELECT_WEAPON = "Select a weapon to balance";
+  private static final String TXT_FAST = "you balanced your %s to make it faster";
+
+  private static final String TXT_ACCURATE = "you balanced your %s to make it more accurate";
+
+  private static final float TIME_TO_APPLY = 2;
+
+  private static final String AC_APPLY = "APPLY";
+
+  {
+    name = "weightstone";
+    image = ItemSpriteSheet.WEIGHT;
+
+    stackable = true;
+  }
+
+  private final WndBag.Listener itemSelector = new WndBag.Listener() {
     @Override
-    public ArrayList<String> actions(final Hero hero) {
-        ArrayList<String> actions = super.actions(hero);
-        actions.add(AC_APPLY);
-        return actions;
+    public void onSelect(final Item item) {
+      if (item != null) {
+        GameScene.show(new WndBalance((Weapon) item));
+      }
+    }
+  };
+
+  @Override
+  public ArrayList<String> actions(final Hero hero) {
+    ArrayList<String> actions = super.actions(hero);
+    actions.add(AC_APPLY);
+    return actions;
+  }
+
+  private void apply(final Weapon weapon, final boolean forSpeed) {
+
+    detach(curUser.belongings.backpack);
+
+    weapon.fix();
+    if (forSpeed) {
+      weapon.imbue = Weapon.Imbue.SPEED;
+      GLog.p(TXT_FAST, weapon.name());
+    } else {
+      weapon.imbue = Weapon.Imbue.ACCURACY;
+      GLog.p(TXT_ACCURATE, weapon.name());
     }
 
-    private void apply(final Weapon weapon, final boolean forSpeed) {
+    curUser.sprite.operate(curUser.pos);
+    Sample.INSTANCE.play(Assets.SND_MISS);
 
-        detach(curUser.belongings.backpack);
+    curUser.spend(TIME_TO_APPLY);
+    curUser.busy();
+  }
 
-        weapon.fix();
-        if (forSpeed) {
-            weapon.imbue = Weapon.Imbue.SPEED;
-            GLog.p(TXT_FAST, weapon.name());
-        } else {
-            weapon.imbue = Weapon.Imbue.ACCURACY;
-            GLog.p(TXT_ACCURATE, weapon.name());
-        }
+  @Override
+  public void execute(final Hero hero, final String action) {
+    if (action == AC_APPLY) {
 
-        curUser.sprite.operate(curUser.pos);
-        Sample.INSTANCE.play(Assets.SND_MISS);
+      curUser = hero;
+      GameScene.selectItem(itemSelector, WndBag.Mode.WEAPON, TXT_SELECT_WEAPON);
 
-        curUser.spend(TIME_TO_APPLY);
-        curUser.busy();
+    } else {
+
+      super.execute(hero, action);
+
     }
+  }
 
-    @Override
-    public void execute(final Hero hero, final String action) {
-        if (action == AC_APPLY) {
+  @Override
+  public String info() {
+    return "Using a weightstone, you can balance your melee weapon to increase its speed or accuracy.";
+  }
 
-            curUser = hero;
-            GameScene.selectItem(itemSelector, WndBag.Mode.WEAPON, TXT_SELECT_WEAPON);
+  @Override
+  public boolean isIdentified() {
+    return true;
+  }
 
-        } else {
+  @Override
+  public boolean isUpgradable() {
+    return false;
+  }
 
-            super.execute(hero, action);
-
-        }
-    }
-
-    @Override
-    public String info() {
-        return "Using a weightstone, you can balance your melee weapon to increase its speed or accuracy.";
-    }
-
-    @Override
-    public boolean isIdentified() {
-        return true;
-    }
-
-    @Override
-    public boolean isUpgradable() {
-        return false;
-    }
-
-    @Override
-    public int price() {
-        return 40 * quantity;
-    }
+  @Override
+  public int price() {
+    return 40 * quantity;
+  }
 }

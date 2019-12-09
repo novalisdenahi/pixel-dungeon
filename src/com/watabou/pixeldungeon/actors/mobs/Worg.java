@@ -24,51 +24,50 @@ import com.watabou.utils.Random;
 
 public class Worg extends Mob {
 
-    {
-        name = "worg";
-        spriteClass = WorgSprite.class;
+  {
+    name = "worg";
+    spriteClass = WorgSprite.class;
 
-        HP = HT = 15;
-        defenseSkill = 5;
-        baseSpeed = 2f;
+    HP = HT = 15;
+    defenseSkill = 5;
+    baseSpeed = 2f;
 
-        EXP = 3;
-        maxLvl = 9;
+    EXP = 3;
+    maxLvl = 9;
 
-        loot = new MysteryMeat();
-        lootChance = 0.1f;
-    }
+    loot = new MysteryMeat();
+    lootChance = 0.1f;
+  }
 
-    @Override
-    public int attackSkill(final Char target) {
-        return 12;
-    }
+  @Override
+  public int attackSkill(final Char target) {
+    return 12;
+  }
 
-    @Override
-    public int damageRoll() {
-        return Random.NormalIntRange(3, 6);
-    }
+  @Override
+  public int damageRoll() {
+    return Random.NormalIntRange(3, 6);
+  }
 
-    @Override
-    public String defenseVerb() {
-        return "dodge";
-    }
+  @Override
+  public String defenseVerb() {
+    return "dodge";
+  }
 
-    @Override
-    public String description() {
-        return
-        "Worgs are like the surface wolf. Except they are bigger, strongger and more bloodthirsty. "
-                + "The goblins often tame them with the purpose of riding. The worg meat is not realy tasty, "
-                + "but eatable if you are hungry. ";
-    }
+  @Override
+  public String description() {
+    return "Worgs are like the surface wolf. Except they are bigger, strongger and more bloodthirsty. "
+        + "The goblins often tame them with the purpose of riding. The worg meat is not realy tasty, "
+        + "but eatable if you are hungry. ";
+  }
 
-    @Override
-    public void die(final Object cause) {
-        super.die(cause);
-    }
+  @Override
+  public void die(final Object cause) {
+    super.die(cause);
+  }
 
-    @Override
-    public int dr() {
-        return 4;
-    }
+  @Override
+  public int dr() {
+    return 4;
+  }
 }

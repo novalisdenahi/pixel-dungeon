@@ -26,57 +26,56 @@ import com.watabou.utils.Random;
 
 public class GoblinChampion extends Mob {
 
-    {
-        name = "goblin champion";
-        spriteClass = GoblinChampionSprite.class;
+  {
+    name = "goblin champion";
+    spriteClass = GoblinChampionSprite.class;
 
-        HP = HT = 18;
-        defenseSkill = 12;
+    HP = HT = 18;
+    defenseSkill = 12;
 
-        EXP = 5;
-        maxLvl = 10;
+    EXP = 5;
+    maxLvl = 10;
 
-        lootGenerator();
+    lootGenerator();
 
+  }
+
+  @Override
+  public int attackSkill(final Char target) {
+    return 16; // TODO not too much
+  }
+
+  @Override
+  public int damageRoll() {
+    return Random.NormalIntRange(4, 9);
+  }
+
+  @Override
+  public String description() {
+    // TODO FIX desc
+    return "Goblins are small goblinoids. They organized in tribes living under the surface. If you see one goblin "
+        + "you can be sure there are more of them. The goblins sneaking into villages and towns by night to take what they can. ";
+  }
+
+  @Override
+  public void die(final Object cause) {
+    GoblinAsh.Quest.process(pos);
+    super.die(cause);
+  }
+
+  @Override
+  public int dr() {
+    return 5;
+  }
+
+  private void lootGenerator() {
+    if (Random.Int(2) == 0) {
+      loot = Gold.class;
+      lootChance = 0.5f;
+    } else {
+      loot = Rum.class;
+      lootChance = 0.3f;
     }
 
-    @Override
-    public int attackSkill(final Char target) {
-        return 16; // TODO not too much
-    }
-
-    @Override
-    public int damageRoll() {
-        return Random.NormalIntRange(4, 9);
-    }
-
-    @Override
-    public String description() {
-        // TODO FIX desc
-        return
-                "Goblins are small goblinoids. They organized in tribes living under the surface. If you see one goblin "
-                + "you can be sure there are more of them. The goblins sneaking into villages and towns by night to take what they can. ";
-    }
-
-    @Override
-    public void die(final Object cause) {
-        GoblinAsh.Quest.process(pos);
-        super.die(cause);
-    }
-
-    @Override
-    public int dr() {
-        return 5;
-    }
-
-    private void lootGenerator() {
-        if (Random.Int(2) == 0) {
-            loot = Gold.class;
-            lootChance = 0.5f;
-        } else {
-            loot = Rum.class;
-            lootChance = 0.3f;
-        }
-
-    }
+  }
 }

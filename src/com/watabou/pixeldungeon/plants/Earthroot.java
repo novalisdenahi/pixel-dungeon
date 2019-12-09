@@ -30,115 +30,115 @@ import com.watabou.utils.Bundle;
 
 public class Earthroot extends Plant {
 
-    public static class Armor extends Buff {
+  public static class Armor extends Buff {
 
-        private static final float STEP = 1f;
+    private static final float STEP = 1f;
 
-        private int pos;
-        private int level;
+    private int pos;
+    private int level;
 
-        private static final String POS = "pos";
+    private static final String POS = "pos";
 
-        private static final String LEVEL = "level";
+    private static final String LEVEL = "level";
 
-        public int absorb(final int damage) {
-            if (damage >= level) {
-                detach();
-                return damage - level;
-            } else {
-                level -= damage;
-                return 0;
-            }
-        }
-
-        @Override
-        public boolean act() {
-            if (target.pos != pos) {
-                detach();
-            }
-            spend(STEP);
-            return true;
-        }
-
-        @Override
-        public boolean attachTo(final Char target) {
-            pos = target.pos;
-            return super.attachTo(target);
-        }
-
-        @Override
-        public int icon() {
-            return BuffIndicator.ARMOR;
-        }
-
-        public void level(final int value) {
-            if (level < value) {
-                level = value;
-            }
-        }
-
-        @Override
-        public void restoreFromBundle(final Bundle bundle) {
-            super.restoreFromBundle(bundle);
-            pos = bundle.getInt(POS);
-            level = bundle.getInt(LEVEL);
-        }
-
-        @Override
-        public void storeInBundle(final Bundle bundle) {
-            super.storeInBundle(bundle);
-            bundle.put(POS, pos);
-            bundle.put(LEVEL, level);
-        }
-
-        @Override
-        public String toString() {
-            return "Herbal armor";
-        }
-    }
-
-    public static class Seed extends Plant.Seed {
-        {
-            plantName = "Earthroot";
-
-            name = "seed of " + plantName;
-            image = ItemSpriteSheet.SEED_EARTHROOT;
-
-            plantClass = Earthroot.class;
-            alchemyClass = PotionOfParalyticGas.class;
-        }
-
-        @Override
-        public String desc() {
-            return TXT_DESC;
-        }
-    }
-
-    private static final String TXT_DESC =
-            "When a creature touches an Earthroot, its roots " +
-                    "create a kind of natural armor around it.";
-
-    {
-        image = 5;
-        plantName = "Earthroot";
+    public int absorb(final int damage) {
+      if (damage >= level) {
+        detach();
+        return damage - level;
+      } else {
+        level -= damage;
+        return 0;
+      }
     }
 
     @Override
-    public void activate(final Char ch) {
-        super.activate(ch);
+    public boolean act() {
+      if (target.pos != pos) {
+        detach();
+      }
+      spend(STEP);
+      return true;
+    }
 
-        if (ch != null) {
-            Buff.affect(ch, Armor.class).level = ch.HT;
-        }
+    @Override
+    public boolean attachTo(final Char target) {
+      pos = target.pos;
+      return super.attachTo(target);
+    }
 
-        if (Dungeon.visible[pos]) {
-            CellEmitter.bottom(pos).start(EarthParticle.FACTORY, 0.05f, 8);
-            Camera.main.shake(1, 0.4f);
-        }
+    @Override
+    public int icon() {
+      return BuffIndicator.ARMOR;
+    }
+
+    public void level(final int value) {
+      if (level < value) {
+        level = value;
+      }
+    }
+
+    @Override
+    public void restoreFromBundle(final Bundle bundle) {
+      super.restoreFromBundle(bundle);
+      pos = bundle.getInt(POS);
+      level = bundle.getInt(LEVEL);
+    }
+
+    @Override
+    public void storeInBundle(final Bundle bundle) {
+      super.storeInBundle(bundle);
+      bundle.put(POS, pos);
+      bundle.put(LEVEL, level);
+    }
+
+    @Override
+    public String toString() {
+      return "Herbal armor";
+    }
+  }
+
+  public static class Seed extends Plant.Seed {
+    {
+      plantName = "Earthroot";
+
+      name = "seed of " + plantName;
+      image = ItemSpriteSheet.SEED_EARTHROOT;
+
+      plantClass = Earthroot.class;
+      alchemyClass = PotionOfParalyticGas.class;
     }
 
     @Override
     public String desc() {
-        return TXT_DESC;
+      return TXT_DESC;
     }
+  }
+
+  private static final String TXT_DESC =
+      "When a creature touches an Earthroot, its roots " +
+          "create a kind of natural armor around it.";
+
+  {
+    image = 5;
+    plantName = "Earthroot";
+  }
+
+  @Override
+  public void activate(final Char ch) {
+    super.activate(ch);
+
+    if (ch != null) {
+      Buff.affect(ch, Armor.class).level = ch.HT;
+    }
+
+    if (Dungeon.visible[pos]) {
+      CellEmitter.bottom(pos).start(EarthParticle.FACTORY, 0.05f, 8);
+      Camera.main.shake(1, 0.4f);
+    }
+  }
+
+  @Override
+  public String desc() {
+    return TXT_DESC;
+  }
 }

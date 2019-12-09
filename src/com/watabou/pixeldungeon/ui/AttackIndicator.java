@@ -29,141 +29,141 @@ import com.watabou.utils.Random;
 
 public class AttackIndicator extends Tag {
 
-    private static final float ENABLED = 1.0f;
-    private static final float DISABLED = 0.3f;
+  private static final float ENABLED = 1.0f;
+  private static final float DISABLED = 0.3f;
 
-    private static AttackIndicator instance;
+  private static AttackIndicator instance;
 
-    private CharSprite sprite = null;
+  private CharSprite sprite = null;
 
-    private static Mob lastTarget = null;
+  private static Mob lastTarget = null;
 
-    public static void target(final Char target) {
-        lastTarget = (Mob) target;
-        instance.updateImage();
+  public static void target(final Char target) {
+    lastTarget = (Mob) target;
+    instance.updateImage();
 
-        HealthIndicator.instance.target(target);
+    HealthIndicator.instance.target(target);
+  }
+
+  public static void updateState() {
+    instance.checkEnemies();
+  }
+
+  private ArrayList<Mob> candidates = new ArrayList<Mob>();
+
+  private boolean enabled = true;
+
+  public AttackIndicator() {
+    super(DangerIndicator.COLOR);
+
+    instance = this;
+
+    setSize(24, 24);
+    visible(false);
+    enable(false);
+  }
+
+  private void checkEnemies() {
+
+    int heroPos = Dungeon.hero.pos;
+    candidates.clear();
+    int v = Dungeon.hero.visibleEnemies();
+    for (int i = 0; i < v; i++) {
+      Mob mob = Dungeon.hero.visibleEnemy(i);
+      if (Level.adjacent(heroPos, mob.pos)) {
+        candidates.add(mob);
+      }
     }
 
-    public static void updateState() {
-        instance.checkEnemies();
+    if (!candidates.contains(lastTarget)) {
+      if (candidates.isEmpty()) {
+        lastTarget = null;
+      } else {
+        lastTarget = Random.element(candidates);
+        updateImage();
+        flash();
+      }
+    } else {
+      if (!bg.visible) {
+        flash();
+      }
     }
 
-    private ArrayList<Mob> candidates = new ArrayList<Mob>();
+    visible(lastTarget != null);
+    enable(bg.visible);
+  }
 
-    private boolean enabled = true;
+  @Override
+  protected void createChildren() {
+    super.createChildren();
+  }
 
-    public AttackIndicator() {
-        super(DangerIndicator.COLOR);
+  private void enable(final boolean value) {
+    enabled = value;
+    if (sprite != null) {
+      sprite.alpha(value ? ENABLED : DISABLED);
+    }
+  }
 
-        instance = this;
+  @Override
+  protected void layout() {
+    super.layout();
 
-        setSize(24, 24);
-        visible(false);
+    if (sprite != null) {
+      sprite.x = x + ((width - sprite.width()) / 2);
+      sprite.y = y + ((height - sprite.height()) / 2);
+      PixelScene.align(sprite);
+    }
+  }
+
+  @Override
+  protected void onClick() {
+    if (enabled) {
+      Dungeon.hero.handle(lastTarget.pos);
+    }
+  }
+
+  @Override
+  public void update() {
+    super.update();
+
+    if (Dungeon.hero.isAlive()) {
+
+      if (!Dungeon.hero.ready) {
         enable(false);
+      }
+
+    } else {
+      visible(false);
+      enable(false);
+    }
+  }
+
+  private void updateImage() {
+
+    if (sprite != null) {
+      sprite.killAndErase();
+      sprite = null;
     }
 
-    private void checkEnemies() {
+    try {
+      sprite = lastTarget.spriteClass.newInstance();
+      sprite.idle();
+      sprite.paused = true;
+      add(sprite);
 
-        int heroPos = Dungeon.hero.pos;
-        candidates.clear();
-        int v = Dungeon.hero.visibleEnemies();
-        for (int i = 0; i < v; i++) {
-            Mob mob = Dungeon.hero.visibleEnemy(i);
-            if (Level.adjacent(heroPos, mob.pos)) {
-                candidates.add(mob);
-            }
-        }
+      sprite.x = x + ((width - sprite.width()) / 2) + 1;
+      sprite.y = y + ((height - sprite.height()) / 2);
+      PixelScene.align(sprite);
 
-        if (!candidates.contains(lastTarget)) {
-            if (candidates.isEmpty()) {
-                lastTarget = null;
-            } else {
-                lastTarget = Random.element(candidates);
-                updateImage();
-                flash();
-            }
-        } else {
-            if (!bg.visible) {
-                flash();
-            }
-        }
-
-        visible(lastTarget != null);
-        enable(bg.visible);
+    } catch (Exception e) {
     }
+  }
 
-    @Override
-    protected void createChildren() {
-        super.createChildren();
+  private void visible(final boolean value) {
+    bg.visible = value;
+    if (sprite != null) {
+      sprite.visible = value;
     }
-
-    private void enable(final boolean value) {
-        enabled = value;
-        if (sprite != null) {
-            sprite.alpha(value ? ENABLED : DISABLED);
-        }
-    }
-
-    @Override
-    protected void layout() {
-        super.layout();
-
-        if (sprite != null) {
-            sprite.x = x + ((width - sprite.width()) / 2);
-            sprite.y = y + ((height - sprite.height()) / 2);
-            PixelScene.align(sprite);
-        }
-    }
-
-    @Override
-    protected void onClick() {
-        if (enabled) {
-            Dungeon.hero.handle(lastTarget.pos);
-        }
-    }
-
-    @Override
-    public void update() {
-        super.update();
-
-        if (Dungeon.hero.isAlive()) {
-
-            if (!Dungeon.hero.ready) {
-                enable(false);
-            }
-
-        } else {
-            visible(false);
-            enable(false);
-        }
-    }
-
-    private void updateImage() {
-
-        if (sprite != null) {
-            sprite.killAndErase();
-            sprite = null;
-        }
-
-        try {
-            sprite = lastTarget.spriteClass.newInstance();
-            sprite.idle();
-            sprite.paused = true;
-            add(sprite);
-
-            sprite.x = x + ((width - sprite.width()) / 2) + 1;
-            sprite.y = y + ((height - sprite.height()) / 2);
-            PixelScene.align(sprite);
-
-        } catch (Exception e) {
-        }
-    }
-
-    private void visible(final boolean value) {
-        bg.visible = value;
-        if (sprite != null) {
-            sprite.visible = value;
-        }
-    }
+  }
 }

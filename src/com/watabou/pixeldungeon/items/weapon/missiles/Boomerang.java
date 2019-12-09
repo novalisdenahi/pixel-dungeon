@@ -26,87 +26,87 @@ import com.watabou.pixeldungeon.sprites.MissileSprite;
 
 public class Boomerang extends MissileWeapon {
 
-    {
-        name = "boomerang";
-        image = ItemSpriteSheet.BOOMERANG;
+  {
+    name = "boomerang";
+    image = ItemSpriteSheet.BOOMERANG;
 
-        STR = 10;
+    STR = 10;
 
-        MIN = 1;
-        MAX = 4;
+    MIN = 1;
+    MAX = 4;
 
-        stackable = false;
+    stackable = false;
+  }
+
+  private boolean throwEquiped;
+
+  @Override
+  public void cast(final Hero user, final int dst) {
+    throwEquiped = isEquipped(user);
+    super.cast(user, dst);
+  }
+
+  private void circleBack(final int from, final Hero owner) {
+
+    ((MissileSprite) curUser.sprite.parent.recycle(MissileSprite.class)).reset(from, curUser.pos,
+        curItem, null);
+
+    if (throwEquiped) {
+      owner.belongings.weapon = this;
+      owner.spend(-TIME_TO_EQUIP);
+    } else if (!collect(curUser.belongings.backpack)) {
+      Dungeon.level.drop(this, owner.pos).sprite.drop();
     }
+  }
 
-    private boolean throwEquiped;
+  @Override
+  public Item degrade() {
+    MIN -= 1;
+    MAX -= 2;
+    return super.degrade();
+  }
 
-    @Override
-    public void cast(final Hero user, final int dst) {
-        throwEquiped = isEquipped(user);
-        super.cast(user, dst);
+  @Override
+  public String desc() {
+    return "Thrown to the enemy this flat curved wooden missile will return to the hands of its thrower.";
+  }
+
+  @Override
+  public boolean isUpgradable() {
+    return true;
+  }
+
+  @Override
+  public int maxDurability(final int lvl) {
+    return 7 * (lvl < 16 ? 16 - lvl : 1);
+  }
+
+  @Override
+  protected void miss(final int cell) {
+    circleBack(cell, curUser);
+  }
+
+  @Override
+  public void proc(final Char attacker, final Char defender, final int damage) {
+    super.proc(attacker, defender, damage);
+    if ((attacker instanceof Hero) && (((Hero) attacker).rangedWeapon == this)) {
+      circleBack(defender.pos, (Hero) attacker);
     }
+  }
 
-    private void circleBack(final int from, final Hero owner) {
+  @Override
+  public Item upgrade() {
+    return upgrade(false);
+  }
 
-        ((MissileSprite) curUser.sprite.parent.recycle(MissileSprite.class)).
-        reset(from, curUser.pos, curItem, null);
+  @Override
+  public Item upgrade(final boolean enchant) {
+    MIN += 1;
+    MAX += 2;
+    super.upgrade(enchant);
 
-        if (throwEquiped) {
-            owner.belongings.weapon = this;
-            owner.spend(-TIME_TO_EQUIP);
-        } else if (!collect(curUser.belongings.backpack)) {
-            Dungeon.level.drop(this, owner.pos).sprite.drop();
-        }
-    }
+    updateQuickslot();
 
-    @Override
-    public Item degrade() {
-        MIN -= 1;
-        MAX -= 2;
-        return super.degrade();
-    }
-
-    @Override
-    public String desc() {
-        return "Thrown to the enemy this flat curved wooden missile will return to the hands of its thrower.";
-    }
-
-    @Override
-    public boolean isUpgradable() {
-        return true;
-    }
-
-    @Override
-    public int maxDurability(final int lvl) {
-        return 7 * (lvl < 16 ? 16 - lvl : 1);
-    }
-
-    @Override
-    protected void miss(final int cell) {
-        circleBack(cell, curUser);
-    }
-
-    @Override
-    public void proc(final Char attacker, final Char defender, final int damage) {
-        super.proc(attacker, defender, damage);
-        if ((attacker instanceof Hero) && (((Hero) attacker).rangedWeapon == this)) {
-            circleBack(defender.pos, (Hero) attacker);
-        }
-    }
-
-    @Override
-    public Item upgrade() {
-        return upgrade(false);
-    }
-
-    @Override
-    public Item upgrade(final boolean enchant) {
-        MIN += 1;
-        MAX += 2;
-        super.upgrade(enchant);
-
-        updateQuickslot();
-
-        return this;
-    }
+    return this;
+  }
 }

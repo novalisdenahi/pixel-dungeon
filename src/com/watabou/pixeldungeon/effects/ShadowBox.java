@@ -23,24 +23,24 @@ import com.watabou.pixeldungeon.Assets;
 
 public class ShadowBox extends NinePatch {
 
-    public static final float SIZE = 16;
+  public static final float SIZE = 16;
 
-    public ShadowBox() {
-        super(Assets.SHADOW, 1);
+  public ShadowBox() {
+    super(Assets.SHADOW, 1);
 
-        texture.filter(Texture.LINEAR, Texture.LINEAR);
+    texture.filter(Texture.LINEAR, Texture.LINEAR);
 
-        scale.set(SIZE, SIZE);
-    }
+    scale.set(SIZE, SIZE);
+  }
 
-    public void boxRect(final float x, final float y, final float width, final float height) {
-        this.x = x - SIZE;
-        this.y = y - SIZE;
-        size(width + (SIZE * 2), height + (SIZE * 2));
-    }
+  public void boxRect(final float x, final float y, final float width, final float height) {
+    this.x = x - SIZE;
+    this.y = y - SIZE;
+    size(width + (SIZE * 2), height + (SIZE * 2));
+  }
 
-    @Override
-    public void size(final float width, final float height) {
-        super.size(width / SIZE, height / SIZE);
-    }
+  @Override
+  public void size(final float width, final float height) {
+    super.size(width / SIZE, height / SIZE);
+  }
 }

@@ -22,30 +22,30 @@ import com.watabou.pixeldungeon.sprites.ItemSpriteSheet;
 
 public class RatSkull extends Item {
 
-    {
-        name = "giant rat skull";
-        image = ItemSpriteSheet.SKULL;
+  {
+    name = "giant rat skull";
+    image = ItemSpriteSheet.SKULL;
 
-        unique = true;
-    }
+    unique = true;
+  }
 
-    @Override
-    public String info() {
-        return "It could be a nice hunting trophy, but it smells too bad to place it on a wall.";
-    }
+  @Override
+  public String info() {
+    return "It could be a nice hunting trophy, but it smells too bad to place it on a wall.";
+  }
 
-    @Override
-    public boolean isIdentified() {
-        return true;
-    }
+  @Override
+  public boolean isIdentified() {
+    return true;
+  }
 
-    @Override
-    public boolean isUpgradable() {
-        return false;
-    }
+  @Override
+  public boolean isUpgradable() {
+    return false;
+  }
 
-    @Override
-    public int price() {
-        return 100;
-    }
+  @Override
+  public int price() {
+    return 100;
+  }
 }

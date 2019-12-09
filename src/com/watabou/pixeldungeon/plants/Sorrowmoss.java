@@ -28,46 +28,46 @@ import com.watabou.pixeldungeon.sprites.ItemSpriteSheet;
 
 public class Sorrowmoss extends Plant {
 
-    public static class Seed extends Plant.Seed {
-        {
-            plantName = "Sorrowmoss";
-
-            name = "seed of " + plantName;
-            image = ItemSpriteSheet.SEED_SORROWMOSS;
-
-            plantClass = Sorrowmoss.class;
-            alchemyClass = PotionOfToxicGas.class;
-        }
-
-        @Override
-        public String desc() {
-            return TXT_DESC;
-        }
-    }
-
-    private static final String TXT_DESC =
-            "A Sorrowmoss is a flower (not a moss) with razor-sharp petals, coated with a deadly venom.";
-
+  public static class Seed extends Plant.Seed {
     {
-        image = 2;
-        plantName = "Sorrowmoss";
-    }
+      plantName = "Sorrowmoss";
 
-    @Override
-    public void activate(final Char ch) {
-        super.activate(ch);
+      name = "seed of " + plantName;
+      image = ItemSpriteSheet.SEED_SORROWMOSS;
 
-        if (ch != null) {
-            Buff.affect(ch, Poison.class).set(Poison.durationFactor(ch) * (4 + (Dungeon.depth / 2)));
-        }
-
-        if (Dungeon.visible[pos]) {
-            CellEmitter.center(pos).burst(PoisonParticle.SPLASH, 3);
-        }
+      plantClass = Sorrowmoss.class;
+      alchemyClass = PotionOfToxicGas.class;
     }
 
     @Override
     public String desc() {
-        return TXT_DESC;
+      return TXT_DESC;
     }
+  }
+
+  private static final String TXT_DESC =
+      "A Sorrowmoss is a flower (not a moss) with razor-sharp petals, coated with a deadly venom.";
+
+  {
+    image = 2;
+    plantName = "Sorrowmoss";
+  }
+
+  @Override
+  public void activate(final Char ch) {
+    super.activate(ch);
+
+    if (ch != null) {
+      Buff.affect(ch, Poison.class).set(Poison.durationFactor(ch) * (4 + (Dungeon.depth / 2)));
+    }
+
+    if (Dungeon.visible[pos]) {
+      CellEmitter.center(pos).burst(PoisonParticle.SPLASH, 3);
+    }
+  }
+
+  @Override
+  public String desc() {
+    return TXT_DESC;
+  }
 }

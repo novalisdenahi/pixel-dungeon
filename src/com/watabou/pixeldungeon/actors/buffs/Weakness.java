@@ -24,39 +24,39 @@ import com.watabou.pixeldungeon.ui.BuffIndicator;
 
 public class Weakness extends FlavourBuff {
 
-    private static final float DURATION = 40f;
+  private static final float DURATION = 40f;
 
-    public static float duration(final Char ch) {
-        Resistance r = ch.buff(Resistance.class);
-        return r != null ? r.durationFactor() * DURATION : DURATION;
+  public static float duration(final Char ch) {
+    Resistance r = ch.buff(Resistance.class);
+    return r != null ? r.durationFactor() * DURATION : DURATION;
+  }
+
+  @Override
+  public boolean attachTo(final Char target) {
+    if (super.attachTo(target)) {
+      Hero hero = (Hero) target;
+      hero.weakened = true;
+      hero.belongings.discharge();
+
+      return true;
+    } else {
+      return false;
     }
+  }
 
-    @Override
-    public boolean attachTo(final Char target) {
-        if (super.attachTo(target)) {
-            Hero hero = (Hero) target;
-            hero.weakened = true;
-            hero.belongings.discharge();
+  @Override
+  public void detach() {
+    super.detach();
+    ((Hero) target).weakened = false;
+  }
 
-            return true;
-        } else {
-            return false;
-        }
-    }
+  @Override
+  public int icon() {
+    return BuffIndicator.WEAKNESS;
+  }
 
-    @Override
-    public void detach() {
-        super.detach();
-        ((Hero) target).weakened = false;
-    }
-
-    @Override
-    public int icon() {
-        return BuffIndicator.WEAKNESS;
-    }
-
-    @Override
-    public String toString() {
-        return "Weakened";
-    }
+  @Override
+  public String toString() {
+    return "Weakened";
+  }
 }

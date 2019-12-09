@@ -22,69 +22,69 @@ import com.watabou.pixeldungeon.actors.mobs.npcs.NPC;
 
 public class HeroAction {
 
-    public static class Ascend extends HeroAction {
-        public Ascend(final int stairs) {
-            dst = stairs;
-        }
+  public static class Ascend extends HeroAction {
+    public Ascend(final int stairs) {
+      dst = stairs;
     }
+  }
 
-    public static class Attack extends HeroAction {
-        public Char target;
+  public static class Attack extends HeroAction {
+    public Char target;
 
-        public Attack(final Char target) {
-            this.target = target;
-        }
+    public Attack(final Char target) {
+      this.target = target;
     }
+  }
 
-    public static class Buy extends HeroAction {
-        public Buy(final int dst) {
-            this.dst = dst;
-        }
+  public static class Buy extends HeroAction {
+    public Buy(final int dst) {
+      this.dst = dst;
     }
+  }
 
-    public static class Cook extends HeroAction {
-        public Cook(final int pot) {
-            dst = pot;
-        }
+  public static class Cook extends HeroAction {
+    public Cook(final int pot) {
+      dst = pot;
     }
+  }
 
-    public static class Descend extends HeroAction {
-        public Descend(final int stairs) {
-            dst = stairs;
-        }
+  public static class Descend extends HeroAction {
+    public Descend(final int stairs) {
+      dst = stairs;
     }
+  }
 
-    public static class Interact extends HeroAction {
-        public NPC npc;
+  public static class Interact extends HeroAction {
+    public NPC npc;
 
-        public Interact(final NPC npc) {
-            this.npc = npc;
-        }
+    public Interact(final NPC npc) {
+      this.npc = npc;
     }
+  }
 
-    public static class Move extends HeroAction {
-        public Move(final int dst) {
-            this.dst = dst;
-        }
+  public static class Move extends HeroAction {
+    public Move(final int dst) {
+      this.dst = dst;
     }
+  }
 
-    public static class OpenChest extends HeroAction {
-        public OpenChest(final int dst) {
-            this.dst = dst;
-        }
+  public static class OpenChest extends HeroAction {
+    public OpenChest(final int dst) {
+      this.dst = dst;
     }
+  }
 
-    public static class PickUp extends HeroAction {
-        public PickUp(final int dst) {
-            this.dst = dst;
-        }
+  public static class PickUp extends HeroAction {
+    public PickUp(final int dst) {
+      this.dst = dst;
     }
+  }
 
-    public static class Unlock extends HeroAction {
-        public Unlock(final int door) {
-            dst = door;
-        }
+  public static class Unlock extends HeroAction {
+    public Unlock(final int door) {
+      dst = door;
     }
+  }
 
-    public int dst;
+  public int dst;
 }

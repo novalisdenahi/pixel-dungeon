@@ -41,340 +41,340 @@ import com.watabou.utils.Random;
 
 public class PrisonBossLevel extends RegularLevel {
 
-    {
-        color1 = 0x6a723d;
-        color2 = 0x88924c;
+  {
+    color1 = 0x6a723d;
+    color2 = 0x88924c;
+  }
+
+  private Room anteroom;
+  private int arenaDoor;
+
+  private boolean enteredArena = false;
+  private boolean keyDropped = false;
+
+  private static final String ARENA = "arena";
+
+  private static final String DOOR = "door";
+
+  private static final String ENTERED = "entered";
+  private static final String DROPPED = "droppped";
+
+  @Override
+  public void addVisuals(final Scene scene) {
+    PrisonLevel.addVisuals(this, scene);
+  }
+
+  @Override
+  protected boolean build() {
+
+    initRooms();
+
+    int distance;
+    int retry = 0;
+
+    do {
+
+      if (retry++ > 10) {
+        return false;
+      }
+
+      int innerRetry = 0;
+      do {
+        if (innerRetry++ > 10) {
+          return false;
+        }
+        roomEntrance = Random.element(rooms);
+      } while ((roomEntrance.width() < 4) || (roomEntrance.height() < 4));
+
+      innerRetry = 0;
+      do {
+        if (innerRetry++ > 10) {
+          return false;
+        }
+        roomExit = Random.element(rooms);
+      } while ((roomExit == roomEntrance) ||
+          (roomExit.width() < 7) ||
+          (roomExit.height() < 7) ||
+          (roomExit.top == 0));
+
+      Graph.buildDistanceMap(rooms, roomExit);
+      distance = Graph.buildPath(rooms, roomEntrance, roomExit).size();
+
+    } while (distance < 3);
+
+    roomEntrance.type = Type.ENTRANCE;
+    roomExit.type = Type.BOSS_EXIT;
+
+    List<Room> path = Graph.buildPath(rooms, roomEntrance, roomExit);
+    Graph.setPrice(path, roomEntrance.distance);
+
+    Graph.buildDistanceMap(rooms, roomExit);
+    path = Graph.buildPath(rooms, roomEntrance, roomExit);
+
+    anteroom = path.get(path.size() - 2);
+    anteroom.type = Type.STANDARD;
+
+    Room room = roomEntrance;
+    for (Room next : path) {
+      room.connect(next);
+      room = next;
     }
 
-    private Room anteroom;
-    private int arenaDoor;
-
-    private boolean enteredArena = false;
-    private boolean keyDropped = false;
-
-    private static final String ARENA = "arena";
-
-    private static final String DOOR = "door";
-
-    private static final String ENTERED = "entered";
-    private static final String DROPPED = "droppped";
-
-    @Override
-    public void addVisuals(final Scene scene) {
-        PrisonLevel.addVisuals(this, scene);
+    for (Room r : rooms) {
+      if ((r.type == Type.NULL) && (r.connected.size() > 0)) {
+        r.type = Type.PASSAGE;
+      }
     }
 
-    @Override
-    protected boolean build() {
+    paint();
 
-        initRooms();
+    Room r = (Room) roomExit.connected.keySet().toArray()[0];
+    if (roomExit.connected.get(r).y == roomExit.top) {
+      return false;
+    }
 
-        int distance;
-        int retry = 0;
+    paintWater();
+    paintGrass();
 
-        do {
+    placeTraps();
 
-            if (retry++ > 10) {
-                return false;
-            }
+    return true;
+  }
 
-            int innerRetry = 0;
-            do {
-                if (innerRetry++ > 10) {
-                    return false;
-                }
-                roomEntrance = Random.element(rooms);
-            } while ((roomEntrance.width() < 4) || (roomEntrance.height() < 4));
+  @Override
+  protected void createItems() {
 
-            innerRetry = 0;
-            do {
-                if (innerRetry++ > 10) {
-                    return false;
-                }
-                roomExit = Random.element(rooms);
-            } while ((roomExit == roomEntrance) ||
-                    (roomExit.width() < 7) ||
-                    (roomExit.height() < 7) ||
-                    (roomExit.top == 0));
+    int keyPos = anteroom.random();
+    while (!passable[keyPos]) {
+      keyPos = anteroom.random();
+    }
+    drop(new IronKey(), keyPos).type = Heap.Type.CHEST;
 
-            Graph.buildDistanceMap(rooms, roomExit);
-            distance = Graph.buildPath(rooms, roomEntrance, roomExit).size();
+    Item item = Bones.get();
+    if (item != null) {
+      int pos;
+      do {
+        pos = roomEntrance.random();
+      } while ((pos == entrance) || (map[pos] == Terrain.SIGN));
+      drop(item, pos).type = Heap.Type.SKELETON;
+    }
+  }
 
-        } while (distance < 3);
+  @Override
+  protected void createMobs() {
+  }
 
-        roomEntrance.type = Type.ENTRANCE;
-        roomExit.type = Type.BOSS_EXIT;
+  @Override
+  protected void decorate() {
 
-        List<Room> path = Graph.buildPath(rooms, roomEntrance, roomExit);
-        Graph.setPrice(path, roomEntrance.distance);
+    for (int i = WIDTH + 1; i < (LENGTH - WIDTH - 1); i++) {
+      if (map[i] == Terrain.EMPTY) {
 
-        Graph.buildDistanceMap(rooms, roomExit);
-        path = Graph.buildPath(rooms, roomEntrance, roomExit);
-
-        anteroom = path.get(path.size() - 2);
-        anteroom.type = Type.STANDARD;
-
-        Room room = roomEntrance;
-        for (Room next : path) {
-            room.connect(next);
-            room = next;
+        float c = 0.15f;
+        if ((map[i + 1] == Terrain.WALL) && (map[i + WIDTH] == Terrain.WALL)) {
+          c += 0.2f;
+        }
+        if ((map[i - 1] == Terrain.WALL) && (map[i + WIDTH] == Terrain.WALL)) {
+          c += 0.2f;
+        }
+        if ((map[i + 1] == Terrain.WALL) && (map[i - WIDTH] == Terrain.WALL)) {
+          c += 0.2f;
+        }
+        if ((map[i - 1] == Terrain.WALL) && (map[i - WIDTH] == Terrain.WALL)) {
+          c += 0.2f;
         }
 
-        for (Room r : rooms) {
-            if ((r.type == Type.NULL) && (r.connected.size() > 0)) {
-                r.type = Type.PASSAGE;
-            }
+        if (Random.Float() < c) {
+          map[i] = Terrain.EMPTY_DECO;
         }
-
-        paint();
-
-        Room r = (Room) roomExit.connected.keySet().toArray()[0];
-        if (roomExit.connected.get(r).y == roomExit.top) {
-            return false;
-        }
-
-        paintWater();
-        paintGrass();
-
-        placeTraps();
-
-        return true;
+      }
     }
 
-    @Override
-    protected void createItems() {
+    for (int i = 0; i < WIDTH; i++) {
+      if ((map[i] == Terrain.WALL) &&
+          ((map[i + WIDTH] == Terrain.EMPTY) || (map[i + WIDTH] == Terrain.EMPTY_SP)) &&
+          (Random.Int(4) == 0)) {
 
-        int keyPos = anteroom.random();
-        while (!passable[keyPos]) {
-            keyPos = anteroom.random();
-        }
-        drop(new IronKey(), keyPos).type = Heap.Type.CHEST;
-
-        Item item = Bones.get();
-        if (item != null) {
-            int pos;
-            do {
-                pos = roomEntrance.random();
-            } while ((pos == entrance) || (map[pos] == Terrain.SIGN));
-            drop(item, pos).type = Heap.Type.SKELETON;
-        }
+        map[i] = Terrain.WALL_DECO;
+      }
     }
 
-    @Override
-    protected void createMobs() {
+    for (int i = WIDTH; i < (LENGTH - WIDTH); i++) {
+      if ((map[i] == Terrain.WALL) &&
+          (map[i - WIDTH] == Terrain.WALL) &&
+          ((map[i + WIDTH] == Terrain.EMPTY) || (map[i + WIDTH] == Terrain.EMPTY_SP)) &&
+          (Random.Int(2) == 0)) {
+
+        map[i] = Terrain.WALL_DECO;
+      }
     }
 
-    @Override
-    protected void decorate() {
-
-        for (int i = WIDTH + 1; i < (LENGTH - WIDTH - 1); i++) {
-            if (map[i] == Terrain.EMPTY) {
-
-                float c = 0.15f;
-                if ((map[i + 1] == Terrain.WALL) && (map[i + WIDTH] == Terrain.WALL)) {
-                    c += 0.2f;
-                }
-                if ((map[i - 1] == Terrain.WALL) && (map[i + WIDTH] == Terrain.WALL)) {
-                    c += 0.2f;
-                }
-                if ((map[i + 1] == Terrain.WALL) && (map[i - WIDTH] == Terrain.WALL)) {
-                    c += 0.2f;
-                }
-                if ((map[i - 1] == Terrain.WALL) && (map[i - WIDTH] == Terrain.WALL)) {
-                    c += 0.2f;
-                }
-
-                if (Random.Float() < c) {
-                    map[i] = Terrain.EMPTY_DECO;
-                }
-            }
-        }
-
-        for (int i = 0; i < WIDTH; i++) {
-            if ((map[i] == Terrain.WALL) &&
-                    ((map[i + WIDTH] == Terrain.EMPTY) || (map[i + WIDTH] == Terrain.EMPTY_SP)) &&
-                    (Random.Int(4) == 0)) {
-
-                map[i] = Terrain.WALL_DECO;
-            }
-        }
-
-        for (int i = WIDTH; i < (LENGTH - WIDTH); i++) {
-            if ((map[i] == Terrain.WALL) &&
-                    (map[i - WIDTH] == Terrain.WALL) &&
-                    ((map[i + WIDTH] == Terrain.EMPTY) || (map[i + WIDTH] == Terrain.EMPTY_SP)) &&
-                    (Random.Int(2) == 0)) {
-
-                map[i] = Terrain.WALL_DECO;
-            }
-        }
-
-        while (true) {
-            int pos = roomEntrance.random();
-            if (pos != entrance) {
-                map[pos] = Terrain.SIGN;
-                break;
-            }
-        }
-
-        Point door = roomExit.entrance();
-        arenaDoor = door.x + (door.y * WIDTH);
-        Painter.set(this, arenaDoor, Terrain.LOCKED_DOOR);
-
-        Painter.fill(this,
-                roomExit.left + 2,
-                roomExit.top + 2,
-                roomExit.width() - 3,
-                roomExit.height() - 3,
-                Terrain.INACTIVE_TRAP);
+    while (true) {
+      int pos = roomEntrance.random();
+      if (pos != entrance) {
+        map[pos] = Terrain.SIGN;
+        break;
+      }
     }
 
-    @Override
-    public Heap drop(final Item item, final int cell) {
+    Point door = roomExit.entrance();
+    arenaDoor = door.x + (door.y * WIDTH);
+    Painter.set(this, arenaDoor, Terrain.LOCKED_DOOR);
 
-        if (!keyDropped && (item instanceof SkeletonKey)) {
+    Painter.fill(this,
+        roomExit.left + 2,
+        roomExit.top + 2,
+        roomExit.width() - 3,
+        roomExit.height() - 3,
+        Terrain.INACTIVE_TRAP);
+  }
 
-            keyDropped = true;
+  @Override
+  public Heap drop(final Item item, final int cell) {
 
-            Level.set(arenaDoor, Terrain.DOOR);
-            GameScene.updateMap(arenaDoor);
-            Dungeon.observe();
-        }
+    if (!keyDropped && (item instanceof SkeletonKey)) {
 
-        return super.drop(item, cell);
+      keyDropped = true;
+
+      Level.set(arenaDoor, Terrain.DOOR);
+      GameScene.updateMap(arenaDoor);
+      Dungeon.observe();
     }
 
-    @Override
-    protected boolean[] grass() {
-        return Patch.generate(0.30f, 4);
+    return super.drop(item, cell);
+  }
+
+  @Override
+  protected boolean[] grass() {
+    return Patch.generate(0.30f, 4);
+  }
+
+  @Override
+  protected void paintDoors(final Room r) {
+    for (Room n : r.connected.keySet()) {
+
+      if (r.type == Type.NULL) {
+        continue;
+      }
+
+      Point door = r.connected.get(n);
+
+      if ((r.type == Room.Type.PASSAGE) && (n.type == Room.Type.PASSAGE)) {
+
+        Painter.set(this, door, Terrain.EMPTY);
+
+      } else {
+
+        Painter.set(this, door, Terrain.DOOR);
+
+      }
+
     }
+  }
 
-    @Override
-    protected void paintDoors(final Room r) {
-        for (Room n : r.connected.keySet()) {
+  @Override
+  protected void placeTraps() {
 
-            if (r.type == Type.NULL) {
-                continue;
-            }
+    int nTraps = nTraps();
 
-            Point door = r.connected.get(n);
+    for (int i = 0; i < nTraps; i++) {
 
-            if ((r.type == Room.Type.PASSAGE) && (n.type == Room.Type.PASSAGE)) {
+      int trapPos = Random.Int(LENGTH);
 
-                Painter.set(this, door, Terrain.EMPTY);
-
-            } else {
-
-                Painter.set(this, door, Terrain.DOOR);
-
-            }
-
-        }
+      if (map[trapPos] == Terrain.EMPTY) {
+        map[trapPos] = Terrain.POISON_TRAP;
+      }
     }
+  }
 
-    @Override
-    protected void placeTraps() {
+  @Override
+  public void press(final int cell, final Char ch) {
 
-        int nTraps = nTraps();
+    super.press(cell, ch);
 
-        for (int i = 0; i < nTraps; i++) {
+    if ((ch == Dungeon.hero) && !enteredArena && roomExit.inside(cell)) {
 
-            int trapPos = Random.Int(LENGTH);
+      enteredArena = true;
 
-            if (map[trapPos] == Terrain.EMPTY) {
-                map[trapPos] = Terrain.POISON_TRAP;
-            }
-        }
+      int pos;
+      do {
+        pos = roomExit.random();
+      } while ((pos == cell) || (Actor.findChar(pos) != null));
+
+      Mob boss = Bestiary.mob(Dungeon.depth);
+      boss.state = boss.HUNTING;
+      boss.pos = pos;
+      GameScene.add(boss);
+      boss.notice();
+
+      mobPress(boss);
+
+      Level.set(arenaDoor, Terrain.LOCKED_DOOR);
+      GameScene.updateMap(arenaDoor);
+      Dungeon.observe();
     }
+  }
 
-    @Override
-    public void press(final int cell, final Char ch) {
+  @Override
+  public int randomRespawnCell() {
+    return -1;
+  }
 
-        super.press(cell, ch);
+  @Override
+  public Actor respawner() {
+    return null;
+  }
 
-        if ((ch == Dungeon.hero) && !enteredArena && roomExit.inside(cell)) {
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    roomExit = (Room) bundle.get(ARENA);
+    arenaDoor = bundle.getInt(DOOR);
+    enteredArena = bundle.getBoolean(ENTERED);
+    keyDropped = bundle.getBoolean(DROPPED);
+  }
 
-            enteredArena = true;
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(ARENA, roomExit);
+    bundle.put(DOOR, arenaDoor);
+    bundle.put(ENTERED, enteredArena);
+    bundle.put(DROPPED, keyDropped);
+  }
 
-            int pos;
-            do {
-                pos = roomExit.random();
-            } while ((pos == cell) || (Actor.findChar(pos) != null));
-
-            Mob boss = Bestiary.mob(Dungeon.depth);
-            boss.state = boss.HUNTING;
-            boss.pos = pos;
-            GameScene.add(boss);
-            boss.notice();
-
-            mobPress(boss);
-
-            Level.set(arenaDoor, Terrain.LOCKED_DOOR);
-            GameScene.updateMap(arenaDoor);
-            Dungeon.observe();
-        }
+  @Override
+  public String tileDesc(final int tile) {
+    switch (tile) {
+      case Terrain.EMPTY_DECO:
+        return "There are old blood stains on the floor.";
+      default:
+        return super.tileDesc(tile);
     }
+  }
 
-    @Override
-    public int randomRespawnCell() {
-        return -1;
+  @Override
+  public String tileName(final int tile) {
+    switch (tile) {
+      case Terrain.WATER:
+        return "Dark cold water.";
+      default:
+        return super.tileName(tile);
     }
+  }
 
-    @Override
-    public Actor respawner() {
-        return null;
-    }
+  @Override
+  public String tilesTex() {
+    return Assets.TILES_PRISON;
+  }
 
-    @Override
-    public void restoreFromBundle(final Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        roomExit = (Room) bundle.get(ARENA);
-        arenaDoor = bundle.getInt(DOOR);
-        enteredArena = bundle.getBoolean(ENTERED);
-        keyDropped = bundle.getBoolean(DROPPED);
-    }
+  @Override
+  protected boolean[] water() {
+    return Patch.generate(0.45f, 5);
+  }
 
-    @Override
-    public void storeInBundle(final Bundle bundle) {
-        super.storeInBundle(bundle);
-        bundle.put(ARENA, roomExit);
-        bundle.put(DOOR, arenaDoor);
-        bundle.put(ENTERED, enteredArena);
-        bundle.put(DROPPED, keyDropped);
-    }
-
-    @Override
-    public String tileDesc(final int tile) {
-        switch (tile) {
-        case Terrain.EMPTY_DECO:
-            return "There are old blood stains on the floor.";
-        default:
-            return super.tileDesc(tile);
-        }
-    }
-
-    @Override
-    public String tileName(final int tile) {
-        switch (tile) {
-        case Terrain.WATER:
-            return "Dark cold water.";
-        default:
-            return super.tileName(tile);
-        }
-    }
-
-    @Override
-    public String tilesTex() {
-        return Assets.TILES_PRISON;
-    }
-
-    @Override
-    protected boolean[] water() {
-        return Patch.generate(0.45f, 5);
-    }
-
-    @Override
-    public String waterTex() {
-        return Assets.WATER_PRISON;
-    }
+  @Override
+  public String waterTex() {
+    return Assets.WATER_PRISON;
+  }
 }

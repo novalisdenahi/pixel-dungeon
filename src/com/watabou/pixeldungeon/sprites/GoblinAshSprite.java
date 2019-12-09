@@ -22,27 +22,27 @@ import com.watabou.pixeldungeon.Assets;
 
 public class GoblinAshSprite extends MobSprite {
 
-    public GoblinAshSprite() {
-        super();
+  public GoblinAshSprite() {
+    super();
 
-        texture(Assets.ASH);
+    texture(Assets.ASH);
 
-        TextureFilm frames = new TextureFilm(texture, 14, 16);
+    TextureFilm frames = new TextureFilm(texture, 14, 16);
 
-        idle = new Animation(10, true);
-        idle.frames(frames, 1, 1, 1, 1, 1, 0, 0, 0, 0);
+    idle = new Animation(10, true);
+    idle.frames(frames, 1, 1, 1, 1, 1, 0, 0, 0, 0);
 
-        run = idle.clone();
-        die = idle.clone();
-        attack = idle.clone();
+    run = idle.clone();
+    die = idle.clone();
+    attack = idle.clone();
 
-        play(idle);
-    }
+    play(idle);
+  }
 
-    @Override
-    public void die() {
-        super.die();
+  @Override
+  public void die() {
+    super.die();
 
-    }
+  }
 
 }

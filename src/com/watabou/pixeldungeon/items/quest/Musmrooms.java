@@ -23,24 +23,24 @@ import com.watabou.pixeldungeon.plants.Plant;
 
 public class Musmrooms extends Plant {
 
-    private static final String TXT_DESC =
-            "Lots of little, and some big purple mushrooms on the wet ground.";
+  private static final String TXT_DESC =
+      "Lots of little, and some big purple mushrooms on the wet ground.";
 
-    {
-        image = 8;
-        plantName = "Purple Mushrooms";
-    }
+  {
+    image = 8;
+    plantName = "Purple Mushrooms";
+  }
 
-    @Override
-    public void activate(final Char ch) {
-        super.activate(ch);
+  @Override
+  public void activate(final Char ch) {
+    super.activate(ch);
 
-        Dungeon.level.drop(new Mushroom(), pos).sprite.drop();
+    Dungeon.level.drop(new Mushroom(), pos).sprite.drop();
 
-    }
+  }
 
-    @Override
-    public String desc() {
-        return TXT_DESC;
-    }
+  @Override
+  public String desc() {
+    return TXT_DESC;
+  }
 }

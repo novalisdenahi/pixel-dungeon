@@ -28,52 +28,52 @@ import com.watabou.pixeldungeon.ui.BuffIndicator;
 
 public class Frost extends FlavourBuff {
 
-    private static final float DURATION = 5f;
+  private static final float DURATION = 5f;
 
-    public static float duration(final Char ch) {
-        Resistance r = ch.buff(Resistance.class);
-        return r != null ? r.durationFactor() * DURATION : DURATION;
-    }
+  public static float duration(final Char ch) {
+    Resistance r = ch.buff(Resistance.class);
+    return r != null ? r.durationFactor() * DURATION : DURATION;
+  }
 
-    @Override
-    public boolean attachTo(final Char target) {
-        if (super.attachTo(target)) {
+  @Override
+  public boolean attachTo(final Char target) {
+    if (super.attachTo(target)) {
 
-            target.paralysed = true;
-            Buff.detach(target, Burning.class);
+      target.paralysed = true;
+      Buff.detach(target, Burning.class);
 
-            if (target instanceof Hero) {
-                Hero hero = (Hero) target;
-                Item item = hero.belongings.randomUnequipped();
-                if (item instanceof MysteryMeat) {
+      if (target instanceof Hero) {
+        Hero hero = (Hero) target;
+        Item item = hero.belongings.randomUnequipped();
+        if (item instanceof MysteryMeat) {
 
-                    item = item.detach(hero.belongings.backpack);
-                    FrozenCarpaccio carpaccio = new FrozenCarpaccio();
-                    if (!carpaccio.collect(hero.belongings.backpack)) {
-                        Dungeon.level.drop(carpaccio, target.pos).sprite.drop();
-                    }
-                }
-            }
-
-            return true;
-        } else {
-            return false;
+          item = item.detach(hero.belongings.backpack);
+          FrozenCarpaccio carpaccio = new FrozenCarpaccio();
+          if (!carpaccio.collect(hero.belongings.backpack)) {
+            Dungeon.level.drop(carpaccio, target.pos).sprite.drop();
+          }
         }
-    }
+      }
 
-    @Override
-    public void detach() {
-        super.detach();
-        Paralysis.unfreeze(target);
+      return true;
+    } else {
+      return false;
     }
+  }
 
-    @Override
-    public int icon() {
-        return BuffIndicator.FROST;
-    }
+  @Override
+  public void detach() {
+    super.detach();
+    Paralysis.unfreeze(target);
+  }
 
-    @Override
-    public String toString() {
-        return "Frozen";
-    }
+  @Override
+  public int icon() {
+    return BuffIndicator.FROST;
+  }
+
+  @Override
+  public String toString() {
+    return "Frozen";
+  }
 }

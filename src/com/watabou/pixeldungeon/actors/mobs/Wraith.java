@@ -34,108 +34,107 @@ import com.watabou.utils.Random;
 
 public class Wraith extends Mob {
 
-    private static final float SPAWN_DELAY = 2f;
+  private static final float SPAWN_DELAY = 2f;
 
-    private int level;
+  private int level;
 
-    {
-        name = "wraith";
-        spriteClass = WraithSprite.class;
+  {
+    name = "wraith";
+    spriteClass = WraithSprite.class;
 
-        mobType = MobType.UNDEAD;
-        HP = HT = 1;
-        EXP = 0;
+    mobType = MobType.UNDEAD;
+    HP = HT = 1;
+    EXP = 0;
 
-        flying = true;
+    flying = true;
+  }
+
+  private static final String LEVEL = "level";
+
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(Death.class);
+    IMMUNITIES.add(Terror.class);
+  }
+
+  public static void spawnAround(final int pos) {
+    for (int n : Level.NEIGHBOURS4) {
+      int cell = pos + n;
+      if (Level.passable[cell] && (Actor.findChar(cell) == null)) {
+        Wraith.spawnAt(cell);
+      }
     }
+  }
 
-    private static final String LEVEL = "level";
+  public static Wraith spawnAt(final int pos) {
+    if (Level.passable[pos] && (Actor.findChar(pos) == null)) {
 
-    private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+      Wraith w = new Wraith();
+      w.adjustStats(Dungeon.depth);
+      w.pos = pos;
+      w.state = w.HUNTING;
+      GameScene.add(w, SPAWN_DELAY);
 
-    static {
-        IMMUNITIES.add(Death.class);
-        IMMUNITIES.add(Terror.class);
+      w.sprite.alpha(0);
+      w.sprite.parent.add(new AlphaTweener(w.sprite, 1, 0.5f));
+
+      w.sprite.emitter().burst(ShadowParticle.CURSE, 5);
+
+      return w;
+    } else {
+      return null;
     }
+  }
 
-    public static void spawnAround(final int pos) {
-        for (int n : Level.NEIGHBOURS4) {
-            int cell = pos + n;
-            if (Level.passable[cell] && (Actor.findChar(cell) == null)) {
-                Wraith.spawnAt(cell);
-            }
-        }
-    }
+  public void adjustStats(final int level) {
+    this.level = level;
+    defenseSkill = attackSkill(null) * 5;
+    enemySeen = true;
+  }
 
-    public static Wraith spawnAt(final int pos) {
-        if (Level.passable[pos] && (Actor.findChar(pos) == null)) {
+  @Override
+  public int attackSkill(final Char target) {
+    return 10 + level;
+  }
 
-            Wraith w = new Wraith();
-            w.adjustStats(Dungeon.depth);
-            w.pos = pos;
-            w.state = w.HUNTING;
-            GameScene.add(w, SPAWN_DELAY);
+  @Override
+  public int damageRoll() {
+    return Random.NormalIntRange(1, 3 + level);
+  }
 
-            w.sprite.alpha(0);
-            w.sprite.parent.add(new AlphaTweener(w.sprite, 1, 0.5f));
+  @Override
+  public String defenseVerb() {
+    return "evaded";
+  }
 
-            w.sprite.emitter().burst(ShadowParticle.CURSE, 5);
+  @Override
+  public String description() {
+    return "A wraith is a vengeful spirit of a sinner, whose grave or tomb was disturbed. " +
+        "Being an ethereal entity, it is very hard to hit with a regular weapon.";
+  }
 
-            return w;
-        } else {
-            return null;
-        }
-    }
+  @Override
+  public HashSet<Class<?>> immunities() {
+    return IMMUNITIES;
+  }
 
-    public void adjustStats(final int level) {
-        this.level = level;
-        defenseSkill = attackSkill(null) * 5;
-        enemySeen = true;
-    }
+  @Override
+  public boolean reset() {
+    state = WANDERING;
+    return true;
+  }
 
-    @Override
-    public int attackSkill(final Char target) {
-        return 10 + level;
-    }
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    level = bundle.getInt(LEVEL);
+    adjustStats(level);
+  }
 
-    @Override
-    public int damageRoll() {
-        return Random.NormalIntRange(1, 3 + level);
-    }
-
-    @Override
-    public String defenseVerb() {
-        return "evaded";
-    }
-
-    @Override
-    public String description() {
-        return
-                "A wraith is a vengeful spirit of a sinner, whose grave or tomb was disturbed. " +
-                "Being an ethereal entity, it is very hard to hit with a regular weapon.";
-    }
-
-    @Override
-    public HashSet<Class<?>> immunities() {
-        return IMMUNITIES;
-    }
-
-    @Override
-    public boolean reset() {
-        state = WANDERING;
-        return true;
-    }
-
-    @Override
-    public void restoreFromBundle(final Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        level = bundle.getInt(LEVEL);
-        adjustStats(level);
-    }
-
-    @Override
-    public void storeInBundle(final Bundle bundle) {
-        super.storeInBundle(bundle);
-        bundle.put(LEVEL, level);
-    }
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(LEVEL, level);
+  }
 }

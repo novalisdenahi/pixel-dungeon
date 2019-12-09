@@ -28,29 +28,29 @@ import com.watabou.utils.Random;
 
 public class Bandit extends Thief {
 
-    public Item item;
+  public Item item;
 
-    {
-        name = "crazy bandit";
-        spriteClass = BanditSprite.class;
+  {
+    name = "crazy bandit";
+    spriteClass = BanditSprite.class;
+  }
+
+  @Override
+  public void die(final Object cause) {
+    super.die(cause);
+    Badges.validateRare(this);
+  }
+
+  @Override
+  protected boolean steal(final Hero hero) {
+    if (super.steal(hero)) {
+
+      Buff.prolong(hero, Blindness.class, Random.Int(5, 12));
+      Dungeon.observe();
+
+      return true;
+    } else {
+      return false;
     }
-
-    @Override
-    public void die(final Object cause) {
-        super.die(cause);
-        Badges.validateRare(this);
-    }
-
-    @Override
-    protected boolean steal(final Hero hero) {
-        if (super.steal(hero)) {
-
-            Buff.prolong(hero, Blindness.class, Random.Int(5, 12));
-            Dungeon.observe();
-
-            return true;
-        } else {
-            return false;
-        }
-    }
+  }
 }

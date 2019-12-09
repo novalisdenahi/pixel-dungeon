@@ -25,170 +25,170 @@ import com.watabou.utils.Random;
 
 public class MeleeWeapon extends Weapon {
 
-    private int tier;
+  private int tier;
 
-    public MeleeWeapon(final int tier, final float acu, final float dly) {
-        super();
+  public MeleeWeapon(final int tier, final float acu, final float dly) {
+    super();
 
-        this.tier = tier;
+    this.tier = tier;
 
-        ACU = acu;
-        DLY = dly;
+    ACU = acu;
+    DLY = dly;
 
-        STR = typicalSTR();
+    STR = typicalSTR();
 
-        MIN = min();
-        MAX = max();
+    MIN = min();
+    MAX = max();
+  }
+
+  @Override
+  public Item degrade() {
+    STR++;
+    MIN--;
+    MAX -= tier;
+    return super.degrade();
+  }
+
+  @Override
+  public String info() {
+
+    final String p = "\n\n";
+
+    StringBuilder info = new StringBuilder(desc());
+
+    String quality = levelKnown && (level != 0) ? (level > 0 ? "upgraded" : "degraded") : "";
+    info.append(p);
+    info.append("This " + name + " is " + Utils.indefinite(quality));
+    info.append(" tier-" + tier + " melee weapon. ");
+
+    if (levelKnown) {
+      info.append("Its average damage is " + (MIN + ((MAX - MIN) / 2)) + " points per hit. ");
+    } else {
+      info.append(
+          "Its typical average damage is " + (min() + ((max() - min()) / 2)) + " points per hit " +
+              "and usually it requires " + typicalSTR() + " points of strength. ");
+      if (typicalSTR() > Dungeon.hero.STR()) {
+        info.append("Probably this weapon is too heavy for you. ");
+      }
     }
 
-    @Override
-    public Item degrade() {
-        STR++;
-        MIN--;
-        MAX -= tier;
-        return super.degrade();
+    if (DLY != 1f) {
+      info.append("This is a rather " + (DLY < 1f ? "fast" : "slow"));
+      if (ACU != 1f) {
+        if ((ACU > 1f) == (DLY < 1f)) {
+          info.append(" and ");
+        } else {
+          info.append(" but ");
+        }
+        info.append(ACU > 1f ? "accurate" : "inaccurate");
+      }
+      info.append(" weapon. ");
+    } else if (ACU != 1f) {
+      info.append("This is a rather " + (ACU > 1f ? "accurate" : "inaccurate") + " weapon. ");
+    }
+    switch (imbue) {
+      case SPEED:
+        info.append("It was balanced to make it faster. ");
+        break;
+      case ACCURACY:
+        info.append("It was balanced to make it more accurate. ");
+        break;
+      case NONE:
     }
 
-    @Override
-    public String info() {
+    if (enchantment != null) {
+      info.append("It is enchanted.");
+    }
 
-        final String p = "\n\n";
-
-        StringBuilder info = new StringBuilder(desc());
-
-        String quality = levelKnown && (level != 0) ? (level > 0 ? "upgraded" : "degraded") : "";
+    if (levelKnown && Dungeon.hero.belongings.backpack.items.contains(this)) {
+      if (STR > Dungeon.hero.STR()) {
         info.append(p);
-        info.append("This " + name + " is " + Utils.indefinite(quality));
-        info.append(" tier-" + tier + " melee weapon. ");
-
-        if (levelKnown) {
-            info.append("Its average damage is " + (MIN + ((MAX - MIN) / 2)) + " points per hit. ");
-        } else {
-            info.append(
-                    "Its typical average damage is " + (min() + ((max() - min()) / 2)) + " points per hit " +
-                            "and usually it requires " + typicalSTR() + " points of strength. ");
-            if (typicalSTR() > Dungeon.hero.STR()) {
-                info.append("Probably this weapon is too heavy for you. ");
-            }
-        }
-
-        if (DLY != 1f) {
-            info.append("This is a rather " + (DLY < 1f ? "fast" : "slow"));
-            if (ACU != 1f) {
-                if ((ACU > 1f) == (DLY < 1f)) {
-                    info.append(" and ");
-                } else {
-                    info.append(" but ");
-                }
-                info.append(ACU > 1f ? "accurate" : "inaccurate");
-            }
-            info.append(" weapon. ");
-        } else if (ACU != 1f) {
-            info.append("This is a rather " + (ACU > 1f ? "accurate" : "inaccurate") + " weapon. ");
-        }
-        switch (imbue) {
-        case SPEED:
-            info.append("It was balanced to make it faster. ");
-            break;
-        case ACCURACY:
-            info.append("It was balanced to make it more accurate. ");
-            break;
-        case NONE:
-        }
-
-        if (enchantment != null) {
-            info.append("It is enchanted.");
-        }
-
-        if (levelKnown && Dungeon.hero.belongings.backpack.items.contains(this)) {
-            if (STR > Dungeon.hero.STR()) {
-                info.append(p);
-                info.append(
-                        "Because of your inadequate strength the accuracy and speed " +
-                                "of your attack with this " + name + " is decreased.");
-            }
-            if (STR < Dungeon.hero.STR()) {
-                info.append(p);
-                info.append(
-                        "Because of your excess strength the damage " +
-                                "of your attack with this " + name + " is increased.");
-            }
-        }
-
-        if (isEquipped(Dungeon.hero)) {
-            info.append(p);
-            info.append("You hold the " + name + " at the ready" +
-                    (cursed ? ", and because it is cursed, you are powerless to let go." : "."));
-        } else {
-            if (cursedKnown && cursed) {
-                info.append(p);
-                info.append("You can feel a malevolent magic lurking within " + name + ".");
-            }
-        }
-
-        return info.toString();
+        info.append(
+            "Because of your inadequate strength the accuracy and speed " +
+                "of your attack with this " + name + " is decreased.");
+      }
+      if (STR < Dungeon.hero.STR()) {
+        info.append(p);
+        info.append(
+            "Because of your excess strength the damage " +
+                "of your attack with this " + name + " is increased.");
+      }
     }
 
-    private int max() {
-        return (int) (((((tier * tier) - tier) + 10) / ACU) * DLY);
+    if (isEquipped(Dungeon.hero)) {
+      info.append(p);
+      info.append("You hold the " + name + " at the ready" +
+          (cursed ? ", and because it is cursed, you are powerless to let go." : "."));
+    } else {
+      if (cursedKnown && cursed) {
+        info.append(p);
+        info.append("You can feel a malevolent magic lurking within " + name + ".");
+      }
     }
 
-    private int min() {
-        return tier;
+    return info.toString();
+  }
+
+  private int max() {
+    return (int) (((((tier * tier) - tier) + 10) / ACU) * DLY);
+  }
+
+  private int min() {
+    return tier;
+  }
+
+  @Override
+  public int price() {
+    int price = 20 * (1 << (tier - 1));
+    if (enchantment != null) {
+      price *= 1.5;
+    }
+    if (cursed && cursedKnown) {
+      price /= 2;
+    }
+    if (levelKnown) {
+      if (level > 0) {
+        price *= (level + 1);
+      } else if (level < 0) {
+        price /= (1 - level);
+      }
+    }
+    if (price < 1) {
+      price = 1;
+    }
+    return price;
+  }
+
+  @Override
+  public Item random() {
+    super.random();
+
+    if (Random.Int(10 + level) == 0) {
+      enchant();
     }
 
-    @Override
-    public int price() {
-        int price = 20 * (1 << (tier - 1));
-        if (enchantment != null) {
-            price *= 1.5;
-        }
-        if (cursed && cursedKnown) {
-            price /= 2;
-        }
-        if (levelKnown) {
-            if (level > 0) {
-                price *= (level + 1);
-            } else if (level < 0) {
-                price /= (1 - level);
-            }
-        }
-        if (price < 1) {
-            price = 1;
-        }
-        return price;
-    }
+    return this;
+  }
 
-    @Override
-    public Item random() {
-        super.random();
+  public Item safeUpgrade() {
+    return upgrade(enchantment != null);
+  }
 
-        if (Random.Int(10 + level) == 0) {
-            enchant();
-        }
+  public int typicalSTR() {
+    return 8 + (tier * 2);
+  }
 
-        return this;
-    }
+  @Override
+  final public Item upgrade() {
+    return upgrade(false);
+  }
 
-    public Item safeUpgrade() {
-        return upgrade(enchantment != null);
-    }
+  @Override
+  public Item upgrade(final boolean enchant) {
+    STR--;
+    MIN++;
+    MAX += tier;
 
-    public int typicalSTR() {
-        return 8 + (tier * 2);
-    }
-
-    @Override
-    final public Item upgrade() {
-        return upgrade(false);
-    }
-
-    @Override
-    public Item upgrade(final boolean enchant) {
-        STR--;
-        MIN++;
-        MAX += tier;
-
-        return super.upgrade(enchant);
-    }
+    return super.upgrade(enchant);
+  }
 }

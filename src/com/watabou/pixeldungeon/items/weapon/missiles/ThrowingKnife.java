@@ -23,41 +23,41 @@ import com.watabou.utils.Random;
 
 public class ThrowingKnife extends MissileWeapon {
 
-    {
-        name = "Throwing knife";
-        image = ItemSpriteSheet.THROWINGKNIFE;
+  {
+    name = "Throwing knife";
+    image = ItemSpriteSheet.THROWINGKNIFE;
 
-        STR = 12;
+    STR = 12;
 
-        MIN = 2;
-        MAX = 5;
+    MIN = 2;
+    MAX = 5;
 
-        DLY = 0.5f;
-    }
+    DLY = 0.5f;
+  }
 
-    public ThrowingKnife() {
-        this(1);
-    }
+  public ThrowingKnife() {
+    this(1);
+  }
 
-    public ThrowingKnife(final int number) {
-        super();
-        quantity = number;
-    }
+  public ThrowingKnife(final int number) {
+    super();
+    quantity = number;
+  }
 
-    @Override
-    public String desc() {
-        return "Lightweight knife without handle. It is not easy to deal with, but is in good hands" +
-                " is dangerous. They can be thrown at very high rate.";
-    }
+  @Override
+  public String desc() {
+    return "Lightweight knife without handle. It is not easy to deal with, but is in good hands" +
+        " is dangerous. They can be thrown at very high rate.";
+  }
 
-    @Override
-    public int price() {
-        return 15 * quantity;
-    }
+  @Override
+  public int price() {
+    return 15 * quantity;
+  }
 
-    @Override
-    public Item random() {
-        quantity = Random.Int(5, 10);
-        return this;
-    }
+  @Override
+  public Item random() {
+    quantity = Random.Int(5, 10);
+    return this;
+  }
 }

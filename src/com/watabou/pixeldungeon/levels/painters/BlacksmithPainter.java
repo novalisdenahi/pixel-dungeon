@@ -27,34 +27,34 @@ import com.watabou.utils.Random;
 
 public class BlacksmithPainter extends Painter {
 
-    public static void paint(final Level level, final Room room) {
+  public static void paint(final Level level, final Room room) {
 
-        Painter.fill(level, room, Terrain.WALL);
-        Painter.fill(level, room, 1, Terrain.FIRE_TRAP);
-        Painter.fill(level, room, 2, Terrain.EMPTY_SP);
+    Painter.fill(level, room, Terrain.WALL);
+    Painter.fill(level, room, 1, Terrain.FIRE_TRAP);
+    Painter.fill(level, room, 2, Terrain.EMPTY_SP);
 
-        for (int i = 0; i < 2; i++) {
-            int pos;
-            do {
-                pos = room.random();
-            } while (level.map[pos] != Terrain.EMPTY_SP);
-            level.drop(
-                    Generator.random(Random.oneOf(
-                            Generator.Category.ARMOR,
-                            Generator.Category.WEAPON
-                            )), pos);
-        }
-
-        for (Room.Door door : room.connected.values()) {
-            door.set(Room.Door.Type.UNLOCKED);
-            Painter.drawInside(level, room, door, 1, Terrain.EMPTY);
-        }
-
-        Blacksmith npc = new Blacksmith();
-        do {
-            npc.pos = room.random(1);
-        } while (level.heaps.get(npc.pos) != null);
-        level.mobs.add(npc);
-        Actor.occupyCell(npc);
+    for (int i = 0; i < 2; i++) {
+      int pos;
+      do {
+        pos = room.random();
+      } while (level.map[pos] != Terrain.EMPTY_SP);
+      level.drop(
+          Generator.random(Random.oneOf(
+              Generator.Category.ARMOR,
+              Generator.Category.WEAPON)),
+          pos);
     }
+
+    for (Room.Door door : room.connected.values()) {
+      door.set(Room.Door.Type.UNLOCKED);
+      Painter.drawInside(level, room, door, 1, Terrain.EMPTY);
+    }
+
+    Blacksmith npc = new Blacksmith();
+    do {
+      npc.pos = room.random(1);
+    } while (level.heaps.get(npc.pos) != null);
+    level.mobs.add(npc);
+    Actor.occupyCell(npc);
+  }
 }

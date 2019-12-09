@@ -29,48 +29,47 @@ import com.watabou.utils.Random;
 
 public class VaultPainter extends Painter {
 
-    public static void paint(final Level level, final Room room) {
+  public static void paint(final Level level, final Room room) {
 
-        Painter.fill(level, room, Terrain.WALL);
-        Painter.fill(level, room, 1, Terrain.EMPTY);
+    Painter.fill(level, room, Terrain.WALL);
+    Painter.fill(level, room, 1, Terrain.EMPTY);
 
-        int cx = (room.left + room.right) / 2;
-        int cy = (room.top + room.bottom) / 2;
-        int c = cx + (cy * Level.WIDTH);
+    int cx = (room.left + room.right) / 2;
+    int cy = (room.top + room.bottom) / 2;
+    int c = cx + (cy * Level.WIDTH);
 
-        switch (Random.Int(3)) {
+    switch (Random.Int(3)) {
 
-        case 0:
-            level.drop(VaultPainter.prize(level), c).type = Type.LOCKED_CHEST;
-            level.addItemToSpawn(new GoldenKey());
-            break;
+      case 0:
+        level.drop(VaultPainter.prize(level), c).type = Type.LOCKED_CHEST;
+        level.addItemToSpawn(new GoldenKey());
+        break;
 
-        case 1:
-            Item i1,
+      case 1:
+        Item i1,
             i2;
-            do {
-                i1 = VaultPainter.prize(level);
-                i2 = VaultPainter.prize(level);
-            } while (i1.getClass() == i2.getClass());
-            level.drop(i1, c).type = Type.CRYSTAL_CHEST;
-            level.drop(i2, c + Level.NEIGHBOURS8[Random.Int(8)]).type = Type.CRYSTAL_CHEST;
-            level.addItemToSpawn(new GoldenKey());
-            break;
+        do {
+          i1 = VaultPainter.prize(level);
+          i2 = VaultPainter.prize(level);
+        } while (i1.getClass() == i2.getClass());
+        level.drop(i1, c).type = Type.CRYSTAL_CHEST;
+        level.drop(i2, c + Level.NEIGHBOURS8[Random.Int(8)]).type = Type.CRYSTAL_CHEST;
+        level.addItemToSpawn(new GoldenKey());
+        break;
 
-        case 2:
-            level.drop(VaultPainter.prize(level), c);
-            Painter.set(level, c, Terrain.PEDESTAL);
-            break;
-        }
-
-        room.entrance().set(Room.Door.Type.LOCKED);
-        level.addItemToSpawn(new IronKey());
+      case 2:
+        level.drop(VaultPainter.prize(level), c);
+        Painter.set(level, c, Terrain.PEDESTAL);
+        break;
     }
 
-    private static Item prize(final Level level) {
-        return Generator.random(Random.oneOf(
-                Generator.Category.WAND,
-                Generator.Category.RING
-                ));
-    }
+    room.entrance().set(Room.Door.Type.LOCKED);
+    level.addItemToSpawn(new IronKey());
+  }
+
+  private static Item prize(final Level level) {
+    return Generator.random(Random.oneOf(
+        Generator.Category.WAND,
+        Generator.Category.RING));
+  }
 }

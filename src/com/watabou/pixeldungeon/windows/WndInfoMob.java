@@ -28,69 +28,69 @@ import com.watabou.pixeldungeon.utils.Utils;
 
 public class WndInfoMob extends WndTitledMessage {
 
-    private static class MobTitle extends Component {
+  private static class MobTitle extends Component {
 
-        private static final int GAP = 2;
+    private static final int GAP = 2;
 
-        private CharSprite image;
-        private BitmapText name;
-        private HealthBar health;
-        private BuffIndicator buffs;
+    private CharSprite image;
+    private BitmapText name;
+    private HealthBar health;
+    private BuffIndicator buffs;
 
-        public MobTitle(final Mob mob) {
+    public MobTitle(final Mob mob) {
 
-            name = PixelScene.createText(Utils.capitalize(mob.name), 9);
-            name.hardlight(TITLE_COLOR);
-            name.measure();
-            add(name);
+      name = PixelScene.createText(Utils.capitalize(mob.name), 9);
+      name.hardlight(TITLE_COLOR);
+      name.measure();
+      add(name);
 
-            // TODO add some mini icon what is show the mob subType
-            // mob.mobType
+      // TODO add some mini icon what is show the mob subType
+      // mob.mobType
 
-            image = mob.sprite();
-            add(image);
+      image = mob.sprite();
+      add(image);
 
-            health = new HealthBar();
-            health.level((float) mob.HP / mob.HT);
-            add(health);
+      health = new HealthBar();
+      health.level((float) mob.HP / mob.HT);
+      add(health);
 
-            buffs = new BuffIndicator(mob);
-            add(buffs);
-        }
-
-        @Override
-        protected void layout() {
-
-            image.x = 0;
-            image.y = Math.max(0, (name.height() + GAP + health.height()) - image.height);
-
-            name.x = image.width + GAP;
-            name.y = image.height - health.height() - GAP - name.baseLine();
-
-            float w = width - image.width - GAP;
-
-            health.setRect(image.width + GAP, image.height - health.height(), w, health.height());
-
-            buffs.setPos(
-                    name.x + name.width() + GAP,
-                    (name.y + name.baseLine()) - BuffIndicator.SIZE);
-
-            height = health.bottom();
-        }
+      buffs = new BuffIndicator(mob);
+      add(buffs);
     }
 
-    private static String desc(final Mob mob) {
+    @Override
+    protected void layout() {
 
-        StringBuilder builder = new StringBuilder(mob.description());
+      image.x = 0;
+      image.y = Math.max(0, (name.height() + GAP + health.height()) - image.height);
 
-        builder.append("\n\n" + mob.state.status() + ".");
+      name.x = image.width + GAP;
+      name.y = image.height - health.height() - GAP - name.baseLine();
 
-        return builder.toString();
+      float w = width - image.width - GAP;
+
+      health.setRect(image.width + GAP, image.height - health.height(), w, health.height());
+
+      buffs.setPos(
+          name.x + name.width() + GAP,
+          (name.y + name.baseLine()) - BuffIndicator.SIZE);
+
+      height = health.bottom();
     }
+  }
 
-    public WndInfoMob(final Mob mob) {
+  private static String desc(final Mob mob) {
 
-        super(new MobTitle(mob), WndInfoMob.desc(mob));
+    StringBuilder builder = new StringBuilder(mob.description());
 
-    }
+    builder.append("\n\n" + mob.state.status() + ".");
+
+    return builder.toString();
+  }
+
+  public WndInfoMob(final Mob mob) {
+
+    super(new MobTitle(mob), WndInfoMob.desc(mob));
+
+  }
 }

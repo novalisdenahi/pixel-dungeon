@@ -36,138 +36,139 @@ import com.watabou.utils.Random;
 
 public class Statue extends Mob {
 
-    {
-        name = "animated statue";
-        spriteClass = StatueSprite.class;
+  {
+    name = "animated statue";
+    spriteClass = StatueSprite.class;
 
-        EXP = 0;
-        state = PASSIVE;
+    EXP = 0;
+    state = PASSIVE;
+  }
+
+  private Weapon weapon;
+
+  private static final String WEAPON = "weapon";
+
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(ToxicGas.class);
+    RESISTANCES.add(Poison.class);
+    RESISTANCES.add(Death.class);
+    RESISTANCES.add(ScrollOfPsionicBlast.class);
+    IMMUNITIES.add(Leech.class);
+  }
+
+  public Statue() {
+    super();
+
+    do {
+      weapon = (Weapon) Generator.random(Generator.Category.WEAPON);
+    } while (!(weapon instanceof MeleeWeapon) || (weapon.level < 0));
+
+    weapon.identify();
+
+    weapon.enchant();
+
+    HP = HT = 15 + (Dungeon.depth * 5);
+    defenseSkill = 4 + Dungeon.depth;
+  }
+
+  @Override
+  protected boolean act() {
+    if (Dungeon.visible[pos]) {
+      Journal.add(Journal.Feature.STATUE);
+    }
+    return super.act();
+  }
+
+  @Override
+  protected float attackDelay() {
+    return weapon.DLY;
+  }
+
+  @Override
+  public int attackProc(final Char enemy, final int damage) {
+    weapon.proc(this, enemy, damage);
+    return damage;
+  }
+
+  @Override
+  public int attackSkill(final Char target) {
+    return (int) ((9 + Dungeon.depth) * weapon.ACU);
+  }
+
+  @Override
+  public void beckon(final int cell) {
+    // Do nothing
+  }
+
+  @Override
+  public void damage(final int dmg, final Object src) {
+
+    if (state == PASSIVE) {
+      state = HUNTING;
     }
 
-    private Weapon weapon;
+    super.damage(dmg, src);
+  }
 
-    private static final String WEAPON = "weapon";
+  @Override
+  public int damageRoll() {
+    return Random.NormalIntRange(weapon.MIN, weapon.MAX);
+  }
 
-    private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+  @Override
+  public String description() {
+    return "You would think that it's just another ugly statue of this dungeon, but its red glowing eyes give itself away. "
+        +
+        "While the statue itself is made of stone, the _" + weapon.name()
+        + "_, it's wielding, looks real.";
+  }
 
-    private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+  @Override
+  public void destroy() {
+    Journal.remove(Journal.Feature.STATUE);
+    super.destroy();
+  }
 
-    static {
-        RESISTANCES.add(ToxicGas.class);
-        RESISTANCES.add(Poison.class);
-        RESISTANCES.add(Death.class);
-        RESISTANCES.add(ScrollOfPsionicBlast.class);
-        IMMUNITIES.add(Leech.class);
-    }
+  @Override
+  public void die(final Object cause) {
+    Dungeon.level.drop(weapon, pos).sprite.drop();
+    super.die(cause);
+  }
 
-    public Statue() {
-        super();
+  @Override
+  public int dr() {
+    return Dungeon.depth;
+  }
 
-        do {
-            weapon = (Weapon) Generator.random(Generator.Category.WEAPON);
-        } while (!(weapon instanceof MeleeWeapon) || (weapon.level < 0));
+  @Override
+  public HashSet<Class<?>> immunities() {
+    return IMMUNITIES;
+  }
 
-        weapon.identify();
+  @Override
+  public boolean reset() {
+    state = PASSIVE;
+    return true;
+  }
 
-        weapon.enchant();
+  @Override
+  public HashSet<Class<?>> resistances() {
+    return RESISTANCES;
+  }
 
-        HP = HT = 15 + (Dungeon.depth * 5);
-        defenseSkill = 4 + Dungeon.depth;
-    }
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    weapon = (Weapon) bundle.get(WEAPON);
+  }
 
-    @Override
-    protected boolean act() {
-        if (Dungeon.visible[pos]) {
-            Journal.add(Journal.Feature.STATUE);
-        }
-        return super.act();
-    }
-
-    @Override
-    protected float attackDelay() {
-        return weapon.DLY;
-    }
-
-    @Override
-    public int attackProc(final Char enemy, final int damage) {
-        weapon.proc(this, enemy, damage);
-        return damage;
-    }
-
-    @Override
-    public int attackSkill(final Char target) {
-        return (int) ((9 + Dungeon.depth) * weapon.ACU);
-    }
-
-    @Override
-    public void beckon(final int cell) {
-        // Do nothing
-    }
-
-    @Override
-    public void damage(final int dmg, final Object src) {
-
-        if (state == PASSIVE) {
-            state = HUNTING;
-        }
-
-        super.damage(dmg, src);
-    }
-
-    @Override
-    public int damageRoll() {
-        return Random.NormalIntRange(weapon.MIN, weapon.MAX);
-    }
-
-    @Override
-    public String description() {
-        return "You would think that it's just another ugly statue of this dungeon, but its red glowing eyes give itself away. "
-                +
-                "While the statue itself is made of stone, the _" + weapon.name() + "_, it's wielding, looks real.";
-    }
-
-    @Override
-    public void destroy() {
-        Journal.remove(Journal.Feature.STATUE);
-        super.destroy();
-    }
-
-    @Override
-    public void die(final Object cause) {
-        Dungeon.level.drop(weapon, pos).sprite.drop();
-        super.die(cause);
-    }
-
-    @Override
-    public int dr() {
-        return Dungeon.depth;
-    }
-
-    @Override
-    public HashSet<Class<?>> immunities() {
-        return IMMUNITIES;
-    }
-
-    @Override
-    public boolean reset() {
-        state = PASSIVE;
-        return true;
-    }
-
-    @Override
-    public HashSet<Class<?>> resistances() {
-        return RESISTANCES;
-    }
-
-    @Override
-    public void restoreFromBundle(final Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        weapon = (Weapon) bundle.get(WEAPON);
-    }
-
-    @Override
-    public void storeInBundle(final Bundle bundle) {
-        super.storeInBundle(bundle);
-        bundle.put(WEAPON, weapon);
-    }
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(WEAPON, weapon);
+  }
 }

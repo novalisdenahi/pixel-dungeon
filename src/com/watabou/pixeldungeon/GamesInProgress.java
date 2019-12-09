@@ -24,52 +24,53 @@ import com.watabou.utils.Bundle;
 
 public class GamesInProgress {
 
-    public static class Info {
-        public int depth;
-        public int level;
-        public boolean challenges;
+  public static class Info {
+    public int depth;
+    public int level;
+    public boolean challenges;
+  }
+
+  private static HashMap<HeroClass, Info> state = new HashMap<HeroClass, Info>();
+
+  public static Info check(final HeroClass cl) {
+
+    if (state.containsKey(cl)) {
+
+      return state.get(cl);
+
+    } else {
+
+      Info info;
+      try {
+
+        Bundle bundle = Dungeon.gameBundle(Dungeon.gameFile(cl));
+        info = new Info();
+        Dungeon.preview(info, bundle);
+
+      } catch (Exception e) {
+        info = null;
+      }
+
+      state.put(cl, info);
+      return info;
+
     }
+  }
 
-    private static HashMap<HeroClass, Info> state = new HashMap<HeroClass, Info>();
+  public static void delete(final HeroClass cl) {
+    state.put(cl, null);
+  }
 
-    public static Info check(final HeroClass cl) {
+  public static void set(final HeroClass cl, final int depth, final int level,
+      final boolean challenges) {
+    Info info = new Info();
+    info.depth = depth;
+    info.level = level;
+    info.challenges = challenges;
+    state.put(cl, info);
+  }
 
-        if (state.containsKey(cl)) {
-
-            return state.get(cl);
-
-        } else {
-
-            Info info;
-            try {
-
-                Bundle bundle = Dungeon.gameBundle(Dungeon.gameFile(cl));
-                info = new Info();
-                Dungeon.preview(info, bundle);
-
-            } catch (Exception e) {
-                info = null;
-            }
-
-            state.put(cl, info);
-            return info;
-
-        }
-    }
-
-    public static void delete(final HeroClass cl) {
-        state.put(cl, null);
-    }
-
-    public static void set(final HeroClass cl, final int depth, final int level, final boolean challenges) {
-        Info info = new Info();
-        info.depth = depth;
-        info.level = level;
-        info.challenges = challenges;
-        state.put(cl, info);
-    }
-
-    public static void setUnknown(final HeroClass cl) {
-        state.remove(cl);
-    }
+  public static void setUnknown(final HeroClass cl) {
+    state.remove(cl);
+  }
 }

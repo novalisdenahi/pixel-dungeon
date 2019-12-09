@@ -21,25 +21,24 @@ import com.watabou.pixeldungeon.actors.hero.Hero;
 
 public class PotionOfExperience extends Potion {
 
-    {
-        name = "Potion of Experience";
-    }
+  {
+    name = "Potion of Experience";
+  }
 
-    @Override
-    protected void apply(final Hero hero) {
-        setKnown();
-        hero.earnExp(hero.maxExp() - hero.exp);
-    }
+  @Override
+  protected void apply(final Hero hero) {
+    setKnown();
+    hero.earnExp(hero.maxExp() - hero.exp);
+  }
 
-    @Override
-    public String desc() {
-        return
-        "The storied experiences of multitudes of battles reduced to liquid form, " +
-                "this draught will instantly raise your experience level.";
-    }
+  @Override
+  public String desc() {
+    return "The storied experiences of multitudes of battles reduced to liquid form, " +
+        "this draught will instantly raise your experience level.";
+  }
 
-    @Override
-    public int price() {
-        return isKnown() ? 80 * quantity : super.price();
-    }
+  @Override
+  public int price() {
+    return isKnown() ? 80 * quantity : super.price();
+  }
 }

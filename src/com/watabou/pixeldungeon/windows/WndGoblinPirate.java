@@ -31,72 +31,73 @@ import com.watabou.pixeldungeon.utils.Utils;
 
 public class WndGoblinPirate extends Window {
 
-    private static final String TXT_MESSAGE =
-            "Blimey! Aye! You are a the pirate! If my crew come back i'll count you in if you want it. "
-                    + "Aaarrgghhh! Don't say am  cheat out belongings from you. Choose your price!";
-    private static final String TXT_BOOTY = "Pirate Booty";
-    private static final String TXT_CUTLASS = "The Capt'n's cutlass";
+  private static final String TXT_MESSAGE =
+      "Blimey! Aye! You are a the pirate! If my crew come back i'll count you in if you want it. "
+          + "Aaarrgghhh! Don't say am  cheat out belongings from you. Choose your price!";
+  private static final String TXT_BOOTY = "Pirate Booty";
+  private static final String TXT_CUTLASS = "The Capt'n's cutlass";
 
-    private static final String TXT_FARAWELL = "Farewll matey! *hic* Don't forgett, you can join to my crew anytime!";
+  private static final String TXT_FARAWELL =
+      "Farewll matey! *hic* Don't forgett, you can join to my crew anytime!";
 
-    private static final int WIDTH = 120;
-    private static final int BTN_HEIGHT = 18;
-    private static final float GAP = 2;
+  private static final int WIDTH = 120;
+  private static final int BTN_HEIGHT = 18;
+  private static final float GAP = 2;
 
-    public WndGoblinPirate(final GoblinPirate goblinPirate, final Item item) {
+  public WndGoblinPirate(final GoblinPirate goblinPirate, final Item item) {
 
-        super();
+    super();
 
-        IconTitle titlebar = new IconTitle();
-        titlebar.icon(new ItemSprite(item.image(), null));
-        titlebar.label(Utils.capitalize(item.name()));
-        titlebar.setRect(0, 0, WIDTH, 0);
-        add(titlebar);
+    IconTitle titlebar = new IconTitle();
+    titlebar.icon(new ItemSprite(item.image(), null));
+    titlebar.label(Utils.capitalize(item.name()));
+    titlebar.setRect(0, 0, WIDTH, 0);
+    add(titlebar);
 
-        BitmapTextMultiline message = PixelScene.createMultiline(TXT_MESSAGE, 6);
-        message.maxWidth = WIDTH;
-        message.measure();
-        message.y = titlebar.bottom() + GAP;
-        add(message);
+    BitmapTextMultiline message = PixelScene.createMultiline(TXT_MESSAGE, 6);
+    message.maxWidth = WIDTH;
+    message.measure();
+    message.y = titlebar.bottom() + GAP;
+    add(message);
 
-        RedButton btnBattle = new RedButton(TXT_BOOTY) {
-            @Override
-            protected void onClick() {
-                selectReward(goblinPirate, item, GoblinPirate.Quest.item1);
-            }
-        };
-        btnBattle.setRect(0, message.y + message.height() + GAP, WIDTH, BTN_HEIGHT);
-        add(btnBattle);
+    RedButton btnBattle = new RedButton(TXT_BOOTY) {
+      @Override
+      protected void onClick() {
+        selectReward(goblinPirate, item, GoblinPirate.Quest.item1);
+      }
+    };
+    btnBattle.setRect(0, message.y + message.height() + GAP, WIDTH, BTN_HEIGHT);
+    add(btnBattle);
 
-        RedButton btnNonBattle = new RedButton(TXT_CUTLASS) {
-            @Override
-            protected void onClick() {
-                selectReward(goblinPirate, item, GoblinPirate.Quest.item2);
-            }
-        };
-        btnNonBattle.setRect(0, btnBattle.bottom() + GAP, WIDTH, BTN_HEIGHT);
-        add(btnNonBattle);
+    RedButton btnNonBattle = new RedButton(TXT_CUTLASS) {
+      @Override
+      protected void onClick() {
+        selectReward(goblinPirate, item, GoblinPirate.Quest.item2);
+      }
+    };
+    btnNonBattle.setRect(0, btnBattle.bottom() + GAP, WIDTH, BTN_HEIGHT);
+    add(btnNonBattle);
 
-        resize(WIDTH, (int) btnNonBattle.bottom());
+    resize(WIDTH, (int) btnNonBattle.bottom());
+  }
+
+  private void selectReward(final GoblinPirate goblinPirate, final Item item, final Item reward) {
+
+    hide();
+
+    item.detach(Dungeon.hero.belongings.backpack);
+
+    reward.identify();
+    if (reward.doPickUp(Dungeon.hero)) {
+      GLog.i(Hero.TXT_YOU_NOW_HAVE, reward.name());
+    } else {
+      Dungeon.level.drop(reward, goblinPirate.pos).sprite.drop();
     }
 
-    private void selectReward(final GoblinPirate goblinPirate, final Item item, final Item reward) {
+    // GoblinPirate don't die. Stay and being drunk.
+    GoblinPirate.Quest.complete();
 
-        hide();
+    goblinPirate.yell(Utils.format(TXT_FARAWELL));
 
-        item.detach(Dungeon.hero.belongings.backpack);
-
-        reward.identify();
-        if (reward.doPickUp(Dungeon.hero)) {
-            GLog.i(Hero.TXT_YOU_NOW_HAVE, reward.name());
-        } else {
-            Dungeon.level.drop(reward, goblinPirate.pos).sprite.drop();
-        }
-
-        // GoblinPirate don't die. Stay and being drunk.
-        GoblinPirate.Quest.complete();
-
-        goblinPirate.yell(Utils.format(TXT_FARAWELL));
-
-    }
+  }
 }

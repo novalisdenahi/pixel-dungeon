@@ -26,73 +26,73 @@ import com.watabou.pixeldungeon.utils.GLog;
 
 public abstract class EquipableItem extends Item {
 
-    private static final String TXT_UNEQUIP_CURSED = "You can't remove cursed %s!";
+  private static final String TXT_UNEQUIP_CURSED = "You can't remove cursed %s!";
 
-    public static final String AC_EQUIP = "EQUIP";
-    public static final String AC_UNEQUIP = "UNEQUIP";
+  public static final String AC_EQUIP = "EQUIP";
+  public static final String AC_UNEQUIP = "UNEQUIP";
 
-    protected static void equipCursed(final Hero hero) {
-        hero.sprite.emitter().burst(ShadowParticle.CURSE, 6);
-        Sample.INSTANCE.play(Assets.SND_CURSED);
+  protected static void equipCursed(final Hero hero) {
+    hero.sprite.emitter().burst(ShadowParticle.CURSE, 6);
+    Sample.INSTANCE.play(Assets.SND_CURSED);
+  }
+
+  @Override
+  public void cast(final Hero user, final int dst) {
+
+    if (isEquipped(user)) {
+      if ((quantity == 1) && !this.doUnequip(user, false, false)) {
+        return;
+      }
     }
 
-    @Override
-    public void cast(final Hero user, final int dst) {
+    super.cast(user, dst);
+  }
 
-        if (isEquipped(user)) {
-            if ((quantity == 1) && !this.doUnequip(user, false, false)) {
-                return;
-            }
-        }
+  @Override
+  public void doDrop(final Hero hero) {
+    if (!isEquipped(hero) || doUnequip(hero, false, false)) {
+      super.doDrop(hero);
+    }
+  }
 
-        super.cast(user, dst);
+  public abstract boolean doEquip(Hero hero);
+
+  public final boolean doUnequip(final Hero hero, final boolean collect) {
+    return doUnequip(hero, collect, true);
+  }
+
+  public boolean doUnequip(final Hero hero, final boolean collect, final boolean single) {
+
+    if (cursed) {
+      GLog.w(TXT_UNEQUIP_CURSED, name());
+      return false;
     }
 
-    @Override
-    public void doDrop(final Hero hero) {
-        if (!isEquipped(hero) || doUnequip(hero, false, false)) {
-            super.doDrop(hero);
-        }
+    if (single) {
+      hero.spendAndNext(time2equip(hero));
+    } else {
+      hero.spend(time2equip(hero));
     }
 
-    public abstract boolean doEquip(Hero hero);
-
-    public final boolean doUnequip(final Hero hero, final boolean collect) {
-        return doUnequip(hero, collect, true);
+    if (collect && !collect(hero.belongings.backpack)) {
+      Dungeon.level.drop(this, hero.pos);
     }
 
-    public boolean doUnequip(final Hero hero, final boolean collect, final boolean single) {
+    return true;
+  }
 
-        if (cursed) {
-            GLog.w(TXT_UNEQUIP_CURSED, name());
-            return false;
-        }
-
-        if (single) {
-            hero.spendAndNext(time2equip(hero));
-        } else {
-            hero.spend(time2equip(hero));
-        }
-
-        if (collect && !collect(hero.belongings.backpack)) {
-            Dungeon.level.drop(this, hero.pos);
-        }
-
-        return true;
+  @Override
+  public void execute(final Hero hero, final String action) {
+    if (action.equals(AC_EQUIP)) {
+      doEquip(hero);
+    } else if (action.equals(AC_UNEQUIP)) {
+      doUnequip(hero, true);
+    } else {
+      super.execute(hero, action);
     }
+  }
 
-    @Override
-    public void execute(final Hero hero, final String action) {
-        if (action.equals(AC_EQUIP)) {
-            doEquip(hero);
-        } else if (action.equals(AC_UNEQUIP)) {
-            doUnequip(hero, true);
-        } else {
-            super.execute(hero, action);
-        }
-    }
-
-    protected float time2equip(final Hero hero) {
-        return 1;
-    }
+  protected float time2equip(final Hero hero) {
+    return 1;
+  }
 }

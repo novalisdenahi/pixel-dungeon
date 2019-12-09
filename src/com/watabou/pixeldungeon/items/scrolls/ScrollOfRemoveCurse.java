@@ -30,70 +30,70 @@ import com.watabou.pixeldungeon.utils.GLog;
 
 public class ScrollOfRemoveCurse extends Scroll {
 
-    private static final String TXT_PROCCED =
-            "Your pack glows with a cleansing light, and a malevolent energy disperses.";
-    private static final String TXT_NOT_PROCCED =
-            "Your pack glows with a cleansing light, but nothing happens.";
+  private static final String TXT_PROCCED =
+      "Your pack glows with a cleansing light, and a malevolent energy disperses.";
+  private static final String TXT_NOT_PROCCED =
+      "Your pack glows with a cleansing light, but nothing happens.";
 
-    public static boolean uncurse(final Hero hero, final Item... items) {
+  public static boolean uncurse(final Hero hero, final Item... items) {
 
-        boolean procced = false;
-        for (int i = 0; i < items.length; i++) {
-            Item item = items[i];
-            if ((item != null) && item.cursed) {
-                item.cursed = false;
-                procced = true;
-            }
-        }
-
-        if (procced) {
-            hero.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
-        }
-
-        return procced;
+    boolean procced = false;
+    for (int i = 0; i < items.length; i++) {
+      Item item = items[i];
+      if ((item != null) && item.cursed) {
+        item.cursed = false;
+        procced = true;
+      }
     }
 
-    {
-        name = "Scroll of Remove Curse";
+    if (procced) {
+      hero.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
     }
 
-    @Override
-    public String desc() {
-        return
-        "The incantation on this scroll will instantly strip from " +
-                "the reader's weapon, armor, rings and carried items any evil " +
-                "enchantments that might prevent the wearer from removing them.";
+    return procced;
+  }
+
+  {
+    name = "Scroll of Remove Curse";
+  }
+
+  @Override
+  public String desc() {
+    return "The incantation on this scroll will instantly strip from " +
+        "the reader's weapon, armor, rings and carried items any evil " +
+        "enchantments that might prevent the wearer from removing them.";
+  }
+
+  @Override
+  protected void doRead() {
+
+    new Flare(6, 32).show(curUser.sprite, 2f);
+    Sample.INSTANCE.play(Assets.SND_READ);
+    Invisibility.dispel();
+
+    boolean procced = ScrollOfRemoveCurse.uncurse(curUser,
+        curUser.belongings.backpack.items.toArray(new Item[0]));
+    procced = ScrollOfRemoveCurse.uncurse(curUser,
+        curUser.belongings.weapon,
+        curUser.belongings.armor,
+        curUser.belongings.ring1,
+        curUser.belongings.ring2) || procced;
+
+    Buff.detach(curUser, Weakness.class);
+
+    if (procced) {
+      GLog.p(TXT_PROCCED);
+    } else {
+      GLog.i(TXT_NOT_PROCCED);
     }
 
-    @Override
-    protected void doRead() {
+    setKnown();
 
-        new Flare(6, 32).show(curUser.sprite, 2f);
-        Sample.INSTANCE.play(Assets.SND_READ);
-        Invisibility.dispel();
+    curUser.spendAndNext(TIME_TO_READ);
+  }
 
-        boolean procced = ScrollOfRemoveCurse.uncurse(curUser, curUser.belongings.backpack.items.toArray(new Item[0]));
-        procced = ScrollOfRemoveCurse.uncurse(curUser,
-                curUser.belongings.weapon,
-                curUser.belongings.armor,
-                curUser.belongings.ring1,
-                curUser.belongings.ring2) || procced;
-
-        Buff.detach(curUser, Weakness.class);
-
-        if (procced) {
-            GLog.p(TXT_PROCCED);
-        } else {
-            GLog.i(TXT_NOT_PROCCED);
-        }
-
-        setKnown();
-
-        curUser.spendAndNext(TIME_TO_READ);
-    }
-
-    @Override
-    public int price() {
-        return isKnown() ? 30 * quantity : super.price();
-    }
+  @Override
+  public int price() {
+    return isKnown() ? 30 * quantity : super.price();
+  }
 }

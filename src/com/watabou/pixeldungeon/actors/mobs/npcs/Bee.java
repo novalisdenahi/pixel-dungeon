@@ -31,154 +31,153 @@ import com.watabou.utils.Random;
 
 public class Bee extends NPC {
 
-    private class Wandering implements AiState {
-
-        @Override
-        public boolean act(final boolean enemyInFOV, final boolean justAlerted) {
-            if (enemyInFOV) {
-
-                enemySeen = true;
-
-                notice();
-                state = HUNTING;
-                target = enemy.pos;
-
-            } else {
-
-                enemySeen = false;
-
-                int oldPos = pos;
-                if (getCloser(Dungeon.hero.pos)) {
-                    spend(1 / speed());
-                    return moveSprite(oldPos, pos);
-                } else {
-                    spend(TICK);
-                }
-
-            }
-            return true;
-        }
-
-        @Override
-        public String status() {
-            return Utils.format("This %s is wandering", name);
-        }
-    }
-
-    {
-        name = "golden bee";
-        spriteClass = BeeSprite.class;
-
-        viewDistance = 4;
-
-        WANDERING = new Wandering();
-
-        flying = true;
-        state = WANDERING;
-    }
-
-    private int level;
-
-    private static final String LEVEL = "level";
-
-    private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-
-    static {
-        IMMUNITIES.add(Poison.class);
-    }
+  private class Wandering implements AiState {
 
     @Override
-    protected boolean act() {
-        HP--;
-        if (HP <= 0) {
-            die(null);
-            return true;
+    public boolean act(final boolean enemyInFOV, final boolean justAlerted) {
+      if (enemyInFOV) {
+
+        enemySeen = true;
+
+        notice();
+        state = HUNTING;
+        target = enemy.pos;
+
+      } else {
+
+        enemySeen = false;
+
+        int oldPos = pos;
+        if (getCloser(Dungeon.hero.pos)) {
+          spend(1 / speed());
+          return moveSprite(oldPos, pos);
         } else {
-            return super.act();
+          spend(TICK);
         }
+
+      }
+      return true;
     }
 
     @Override
-    public int attackProc(final Char enemy, final int damage) {
-        if (enemy instanceof Mob) {
-            ((Mob) enemy).aggro(this);
+    public String status() {
+      return Utils.format("This %s is wandering", name);
+    }
+  }
+
+  {
+    name = "golden bee";
+    spriteClass = BeeSprite.class;
+
+    viewDistance = 4;
+
+    WANDERING = new Wandering();
+
+    flying = true;
+    state = WANDERING;
+  }
+
+  private int level;
+
+  private static final String LEVEL = "level";
+
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(Poison.class);
+  }
+
+  @Override
+  protected boolean act() {
+    HP--;
+    if (HP <= 0) {
+      die(null);
+      return true;
+    } else {
+      return super.act();
+    }
+  }
+
+  @Override
+  public int attackProc(final Char enemy, final int damage) {
+    if (enemy instanceof Mob) {
+      ((Mob) enemy).aggro(this);
+    }
+    return damage;
+  }
+
+  @Override
+  public int attackSkill(final Char target) {
+    return defenseSkill;
+  }
+
+  @Override
+  protected Char chooseEnemy() {
+
+    if ((enemy == null) || !enemy.isAlive()) {
+      HashSet<Mob> enemies = new HashSet<Mob>();
+      for (Mob mob : Dungeon.level.mobs) {
+        if (mob.hostile && Level.fieldOfView[mob.pos]) {
+          enemies.add(mob);
         }
-        return damage;
+      }
+
+      return enemies.size() > 0 ? Random.element(enemies) : null;
+
+    } else {
+
+      return enemy;
+
     }
+  }
 
-    @Override
-    public int attackSkill(final Char target) {
-        return defenseSkill;
-    }
+  @Override
+  public int damageRoll() {
+    return Random.NormalIntRange(HT / 10, HT / 4);
+  }
 
-    @Override
-    protected Char chooseEnemy() {
+  @Override
+  public String description() {
+    return "Despite their small size, golden bees tend " +
+        "to protect their master fiercely. They don't live long though.";
+  }
 
-        if ((enemy == null) || !enemy.isAlive()) {
-            HashSet<Mob> enemies = new HashSet<Mob>();
-            for (Mob mob : Dungeon.level.mobs) {
-                if (mob.hostile && Level.fieldOfView[mob.pos]) {
-                    enemies.add(mob);
-                }
-            }
+  @Override
+  public HashSet<Class<?>> immunities() {
+    return IMMUNITIES;
+  }
 
-            return enemies.size() > 0 ? Random.element(enemies) : null;
+  @Override
+  public void interact() {
 
-        } else {
+    int curPos = pos;
 
-            return enemy;
+    moveSprite(pos, Dungeon.hero.pos);
+    move(Dungeon.hero.pos);
 
-        }
-    }
+    Dungeon.hero.sprite.move(Dungeon.hero.pos, curPos);
+    Dungeon.hero.move(curPos);
 
-    @Override
-    public int damageRoll() {
-        return Random.NormalIntRange(HT / 10, HT / 4);
-    }
+    Dungeon.hero.spend(1 / Dungeon.hero.speed());
+    Dungeon.hero.busy();
+  }
 
-    @Override
-    public String description() {
-        return
-        "Despite their small size, golden bees tend " +
-                "to protect their master fiercely. They don't live long though.";
-    }
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    spawn(bundle.getInt(LEVEL));
+  }
 
-    @Override
-    public HashSet<Class<?>> immunities() {
-        return IMMUNITIES;
-    }
+  public void spawn(final int level) {
+    this.level = level;
 
-    @Override
-    public void interact() {
+    HT = (3 + level) * 5;
+    defenseSkill = 9 + level;
+  }
 
-        int curPos = pos;
-
-        moveSprite(pos, Dungeon.hero.pos);
-        move(Dungeon.hero.pos);
-
-        Dungeon.hero.sprite.move(Dungeon.hero.pos, curPos);
-        Dungeon.hero.move(curPos);
-
-        Dungeon.hero.spend(1 / Dungeon.hero.speed());
-        Dungeon.hero.busy();
-    }
-
-    @Override
-    public void restoreFromBundle(final Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        spawn(bundle.getInt(LEVEL));
-    }
-
-    public void spawn(final int level) {
-        this.level = level;
-
-        HT = (3 + level) * 5;
-        defenseSkill = 9 + level;
-    }
-
-    @Override
-    public void storeInBundle(final Bundle bundle) {
-        super.storeInBundle(bundle);
-        bundle.put(LEVEL, level);
-    }
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(LEVEL, level);
+  }
 }

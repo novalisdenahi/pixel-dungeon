@@ -29,35 +29,35 @@ import com.watabou.pixeldungeon.utils.GLog;
 
 public class PotionOfHealing extends Potion {
 
-    public static void heal(final Hero hero) {
+  public static void heal(final Hero hero) {
 
-        hero.HP = hero.HT;
-        Buff.detach(hero, Poison.class);
-        Buff.detach(hero, Cripple.class);
-        Buff.detach(hero, Weakness.class);
-        Buff.detach(hero, Bleeding.class);
+    hero.HP = hero.HT;
+    Buff.detach(hero, Poison.class);
+    Buff.detach(hero, Cripple.class);
+    Buff.detach(hero, Weakness.class);
+    Buff.detach(hero, Bleeding.class);
 
-        hero.sprite.emitter().start(Speck.factory(Speck.HEALING), 0.4f, 4);
-    }
+    hero.sprite.emitter().start(Speck.factory(Speck.HEALING), 0.4f, 4);
+  }
 
-    {
-        name = "Potion of Healing";
-    }
+  {
+    name = "Potion of Healing";
+  }
 
-    @Override
-    protected void apply(final Hero hero) {
-        setKnown();
-        PotionOfHealing.heal(Dungeon.hero);
-        GLog.p("Your wounds heal completely.");
-    }
+  @Override
+  protected void apply(final Hero hero) {
+    setKnown();
+    PotionOfHealing.heal(Dungeon.hero);
+    GLog.p("Your wounds heal completely.");
+  }
 
-    @Override
-    public String desc() {
-        return "An elixir that will instantly return you to full health and cure poison.";
-    }
+  @Override
+  public String desc() {
+    return "An elixir that will instantly return you to full health and cure poison.";
+  }
 
-    @Override
-    public int price() {
-        return isKnown() ? 30 * quantity : super.price();
-    }
+  @Override
+  public int price() {
+    return isKnown() ? 30 * quantity : super.price();
+  }
 }

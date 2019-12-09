@@ -24,34 +24,35 @@ import com.watabou.pixeldungeon.sprites.ItemSprite.Glowing;
 
 public class Luck extends Weapon.Enchantment {
 
-    private static final String TXT_LUCKY = "Lucky %s";
+  private static final String TXT_LUCKY = "Lucky %s";
 
-    private static ItemSprite.Glowing GREEN = new ItemSprite.Glowing(0x00FF00);
+  private static ItemSprite.Glowing GREEN = new ItemSprite.Glowing(0x00FF00);
 
-    @Override
-    public Glowing glowing() {
-        return GREEN;
+  @Override
+  public Glowing glowing() {
+    return GREEN;
+  }
+
+  @Override
+  public String name(final String weaponName) {
+    return String.format(TXT_LUCKY, weaponName);
+  }
+
+  @Override
+  public boolean proc(final Weapon weapon, final Char attacker, final Char defender,
+      final int damage) {
+    int level = Math.max(0, weapon.level);
+
+    int dmg = damage;
+    for (int i = 1; i <= (level + 1); i++) {
+      dmg = Math.max(dmg, attacker.damageRoll() - i);
     }
 
-    @Override
-    public String name(final String weaponName) {
-        return String.format(TXT_LUCKY, weaponName);
+    if (dmg > damage) {
+      defender.damage(dmg - damage, this);
+      return true;
+    } else {
+      return false;
     }
-
-    @Override
-    public boolean proc(final Weapon weapon, final Char attacker, final Char defender, final int damage) {
-        int level = Math.max(0, weapon.level);
-
-        int dmg = damage;
-        for (int i = 1; i <= (level + 1); i++) {
-            dmg = Math.max(dmg, attacker.damageRoll() - i);
-        }
-
-        if (dmg > damage) {
-            defender.damage(dmg - damage, this);
-            return true;
-        } else {
-            return false;
-        }
-    }
+  }
 }

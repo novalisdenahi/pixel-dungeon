@@ -26,52 +26,52 @@ import com.watabou.utils.Callback;
 
 public class GoblinFireMageSprite extends MobSprite {
 
-    public GoblinFireMageSprite() {
-        super();
+  public GoblinFireMageSprite() {
+    super();
 
-        texture(Assets.GOBLINMAGE);
+    texture(Assets.GOBLINMAGE);
 
-        TextureFilm frames = new TextureFilm(texture, 12, 15);
+    TextureFilm frames = new TextureFilm(texture, 12, 15);
 
-        idle = new Animation(2, true);
-        idle.frames(frames, 18, 18, 18, 19, 18, 18, 19, 19);
+    idle = new Animation(2, true);
+    idle.frames(frames, 18, 18, 18, 19, 18, 18, 19, 19);
 
-        run = new Animation(12, true);
-        run.frames(frames, 22, 23, 24, 25, 18);
+    run = new Animation(12, true);
+    run.frames(frames, 22, 23, 24, 25, 18);
 
-        attack = new Animation(12, false);
-        attack.frames(frames, 20, 21, 18);
+    attack = new Animation(12, false);
+    attack.frames(frames, 20, 21, 18);
 
-        zap = attack.clone();
+    zap = attack.clone();
 
-        die = new Animation(12, false);
-        die.frames(frames, 26, 27, 28, 29);
+    die = new Animation(12, false);
+    die.frames(frames, 26, 27, 28, 29);
 
-        play(idle);
+    play(idle);
 
+  }
+
+  @Override
+  public void onComplete(final Animation anim) {
+    if (anim == zap) {
+      idle();
     }
+    super.onComplete(anim);
+  }
 
-    @Override
-    public void onComplete(final Animation anim) {
-        if (anim == zap) {
-            idle();
-        }
-        super.onComplete(anim);
-    }
+  @Override
+  public void zap(final int cell) {
 
-    @Override
-    public void zap(final int cell) {
+    turnTo(ch.pos, cell);
+    play(zap);
 
-        turnTo(ch.pos, cell);
-        play(zap);
-
-        MagicMissile.fire(parent, ch.pos, cell,
-                new Callback() {
-                    @Override
-                    public void call() {
-                        ((GoblinFireMage) ch).onZapComplete();
-                    }
-                });
-        Sample.INSTANCE.play(Assets.SND_ZAP);
-    }
+    MagicMissile.fire(parent, ch.pos, cell,
+        new Callback() {
+          @Override
+          public void call() {
+            ((GoblinFireMage) ch).onZapComplete();
+          }
+        });
+    Sample.INSTANCE.play(Assets.SND_ZAP);
+  }
 }

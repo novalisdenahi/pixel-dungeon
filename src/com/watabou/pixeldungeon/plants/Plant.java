@@ -42,138 +42,139 @@ import com.watabou.utils.Random;
 
 public class Plant implements Bundlable {
 
-    public static class Seed extends Item {
+  public static class Seed extends Item {
 
-        public static final String AC_PLANT = "PLANT";
+    public static final String AC_PLANT = "PLANT";
 
-        private static final String TXT_INFO = "Throw this seed to the place where you want to grow %s.\n\n%s";
+    private static final String TXT_INFO =
+        "Throw this seed to the place where you want to grow %s.\n\n%s";
 
-        private static final float TIME_TO_PLANT = 1f;
+    private static final float TIME_TO_PLANT = 1f;
 
-        {
-            stackable = true;
-            defaultAction = AC_THROW;
-        }
-
-        protected Class<? extends Plant> plantClass;
-        protected String plantName;
-
-        public Class<? extends Item> alchemyClass;
-
-        @Override
-        public ArrayList<String> actions(final Hero hero) {
-            ArrayList<String> actions = super.actions(hero);
-            actions.add(AC_PLANT);
-            return actions;
-        }
-
-        public Plant couch(final int pos) {
-            try {
-                if (Dungeon.visible[pos]) {
-                    Sample.INSTANCE.play(Assets.SND_PLANT);
-                }
-                Plant plant = plantClass.newInstance();
-                plant.pos = pos;
-                return plant;
-            } catch (Exception e) {
-                return null;
-            }
-        }
-
-        @Override
-        public void execute(final Hero hero, final String action) {
-            if (action.equals(AC_PLANT)) {
-
-                hero.spend(TIME_TO_PLANT);
-                hero.busy();
-                ((Seed) detach(hero.belongings.backpack)).onThrow(hero.pos);
-
-                hero.sprite.operate(hero.pos);
-
-            } else {
-
-                super.execute(hero, action);
-
-            }
-        }
-
-        @Override
-        public String info() {
-            return String.format(TXT_INFO, Utils.indefinite(plantName), desc());
-        }
-
-        @Override
-        public boolean isIdentified() {
-            return true;
-        }
-
-        @Override
-        public boolean isUpgradable() {
-            return false;
-        }
-
-        @Override
-        protected void onThrow(final int cell) {
-            if ((Dungeon.level.map[cell] == Terrain.ALCHEMY) || Level.pit[cell]) {
-                super.onThrow(cell);
-            } else {
-                Dungeon.level.plant(this, cell);
-            }
-        }
-
-        @Override
-        public int price() {
-            return 10 * quantity;
-        }
+    {
+      stackable = true;
+      defaultAction = AC_THROW;
     }
 
-    public String plantName;
-    public int image;
+    protected Class<? extends Plant> plantClass;
+    protected String plantName;
 
-    public int pos;
-
-    public PlantSprite sprite;
-
-    private static final String POS = "pos";
-
-    public void activate(final Char ch) {
-
-        if ((ch instanceof Hero) && (((Hero) ch).subClass == HeroSubClass.WARDEN)) {
-            Buff.affect(ch, Barkskin.class).level(ch.HT / 3);
-        }
-
-        wither();
-    }
-
-    public String desc() {
-        return null;
-    }
+    public Class<? extends Item> alchemyClass;
 
     @Override
-    public void restoreFromBundle(final Bundle bundle) {
-        pos = bundle.getInt(POS);
+    public ArrayList<String> actions(final Hero hero) {
+      ArrayList<String> actions = super.actions(hero);
+      actions.add(AC_PLANT);
+      return actions;
     }
 
-    @Override
-    public void storeInBundle(final Bundle bundle) {
-        bundle.put(POS, pos);
-    }
-
-    public void wither() {
-        Dungeon.level.uproot(pos);
-
-        sprite.kill();
+    public Plant couch(final int pos) {
+      try {
         if (Dungeon.visible[pos]) {
-            CellEmitter.get(pos).burst(LeafParticle.GENERAL, 6);
+          Sample.INSTANCE.play(Assets.SND_PLANT);
         }
-
-        if (Dungeon.hero.subClass == HeroSubClass.WARDEN) {
-            if (Random.Int(5) == 0) {
-                Dungeon.level.drop(Generator.random(Generator.Category.SEED), pos).sprite.drop();
-            }
-            if (Random.Int(5) == 0) {
-                Dungeon.level.drop(new Dewdrop(), pos).sprite.drop();
-            }
-        }
+        Plant plant = plantClass.newInstance();
+        plant.pos = pos;
+        return plant;
+      } catch (Exception e) {
+        return null;
+      }
     }
+
+    @Override
+    public void execute(final Hero hero, final String action) {
+      if (action.equals(AC_PLANT)) {
+
+        hero.spend(TIME_TO_PLANT);
+        hero.busy();
+        ((Seed) detach(hero.belongings.backpack)).onThrow(hero.pos);
+
+        hero.sprite.operate(hero.pos);
+
+      } else {
+
+        super.execute(hero, action);
+
+      }
+    }
+
+    @Override
+    public String info() {
+      return String.format(TXT_INFO, Utils.indefinite(plantName), desc());
+    }
+
+    @Override
+    public boolean isIdentified() {
+      return true;
+    }
+
+    @Override
+    public boolean isUpgradable() {
+      return false;
+    }
+
+    @Override
+    protected void onThrow(final int cell) {
+      if ((Dungeon.level.map[cell] == Terrain.ALCHEMY) || Level.pit[cell]) {
+        super.onThrow(cell);
+      } else {
+        Dungeon.level.plant(this, cell);
+      }
+    }
+
+    @Override
+    public int price() {
+      return 10 * quantity;
+    }
+  }
+
+  public String plantName;
+  public int image;
+
+  public int pos;
+
+  public PlantSprite sprite;
+
+  private static final String POS = "pos";
+
+  public void activate(final Char ch) {
+
+    if ((ch instanceof Hero) && (((Hero) ch).subClass == HeroSubClass.WARDEN)) {
+      Buff.affect(ch, Barkskin.class).level(ch.HT / 3);
+    }
+
+    wither();
+  }
+
+  public String desc() {
+    return null;
+  }
+
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    pos = bundle.getInt(POS);
+  }
+
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    bundle.put(POS, pos);
+  }
+
+  public void wither() {
+    Dungeon.level.uproot(pos);
+
+    sprite.kill();
+    if (Dungeon.visible[pos]) {
+      CellEmitter.get(pos).burst(LeafParticle.GENERAL, 6);
+    }
+
+    if (Dungeon.hero.subClass == HeroSubClass.WARDEN) {
+      if (Random.Int(5) == 0) {
+        Dungeon.level.drop(Generator.random(Generator.Category.SEED), pos).sprite.drop();
+      }
+      if (Random.Int(5) == 0) {
+        Dungeon.level.drop(new Dewdrop(), pos).sprite.drop();
+      }
+    }
+  }
 }

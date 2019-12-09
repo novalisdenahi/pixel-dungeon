@@ -26,52 +26,52 @@ import com.watabou.pixeldungeon.ui.Window;
 
 public class WndTitledMessage extends Window {
 
-    private static final int WIDTH_P = 120;
-    private static final int WIDTH_L = 144;
+  private static final int WIDTH_P = 120;
+  private static final int WIDTH_L = 144;
 
-    private static final int GAP = 2;
+  private static final int GAP = 2;
 
-    private BitmapTextMultiline normal;
-    private BitmapTextMultiline highlighted;
+  private BitmapTextMultiline normal;
+  private BitmapTextMultiline highlighted;
 
-    public WndTitledMessage(final Component titlebar, final String message) {
+  public WndTitledMessage(final Component titlebar, final String message) {
 
-        super();
+    super();
 
-        int width = PixelDungeon.landscape() ? WIDTH_L : WIDTH_P;
+    int width = PixelDungeon.landscape() ? WIDTH_L : WIDTH_P;
 
-        titlebar.setRect(0, 0, width, 0);
-        add(titlebar);
+    titlebar.setRect(0, 0, width, 0);
+    add(titlebar);
 
-        Highlighter hl = new Highlighter(message);
+    Highlighter hl = new Highlighter(message);
 
-        normal = PixelScene.createMultiline(hl.text, 6);
-        normal.maxWidth = width;
-        normal.measure();
-        normal.x = titlebar.left();
-        normal.y = titlebar.bottom() + GAP;
-        add(normal);
+    normal = PixelScene.createMultiline(hl.text, 6);
+    normal.maxWidth = width;
+    normal.measure();
+    normal.x = titlebar.left();
+    normal.y = titlebar.bottom() + GAP;
+    add(normal);
 
-        if (hl.isHighlighted()) {
-            normal.mask = hl.inverted();
+    if (hl.isHighlighted()) {
+      normal.mask = hl.inverted();
 
-            highlighted = PixelScene.createMultiline(hl.text, 6);
-            highlighted.maxWidth = normal.maxWidth;
-            highlighted.measure();
-            highlighted.x = normal.x;
-            highlighted.y = normal.y;
-            add(highlighted);
+      highlighted = PixelScene.createMultiline(hl.text, 6);
+      highlighted.maxWidth = normal.maxWidth;
+      highlighted.measure();
+      highlighted.x = normal.x;
+      highlighted.y = normal.y;
+      add(highlighted);
 
-            highlighted.mask = hl.mask;
-            highlighted.hardlight(TITLE_COLOR);
-        }
-
-        resize(width, (int) (normal.y + normal.height()));
+      highlighted.mask = hl.mask;
+      highlighted.hardlight(TITLE_COLOR);
     }
 
-    public WndTitledMessage(final Image icon, final String title, final String message) {
+    resize(width, (int) (normal.y + normal.height()));
+  }
 
-        this(new IconTitle(icon, title), message);
+  public WndTitledMessage(final Image icon, final String title, final String message) {
 
-    }
+    this(new IconTitle(icon, title), message);
+
+  }
 }

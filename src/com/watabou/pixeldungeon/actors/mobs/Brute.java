@@ -31,76 +31,73 @@ import com.watabou.utils.Random;
 
 public class Brute extends Mob {
 
-    private static final String TXT_ENRAGED = "%s becomes enraged!";
+  private static final String TXT_ENRAGED = "%s becomes enraged!";
 
-    {
-        name = "gnoll brute";
-        spriteClass = BruteSprite.class;
+  {
+    name = "gnoll brute";
+    spriteClass = BruteSprite.class;
 
-        HP = HT = 40;
-        defenseSkill = 15;
+    HP = HT = 40;
+    defenseSkill = 15;
 
-        EXP = 8;
-        maxLvl = 15;
+    EXP = 8;
+    maxLvl = 15;
 
-        loot = Gold.class;
-        lootChance = 0.5f;
+    loot = Gold.class;
+    lootChance = 0.5f;
+  }
+
+  private boolean enraged = false;
+
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(Terror.class);
+  }
+
+  @Override
+  public int attackSkill(final Char target) {
+    return 20;
+  }
+
+  @Override
+  public void damage(final int dmg, final Object src) {
+    super.damage(dmg, src);
+
+    if (isAlive() && !enraged && (HP < (HT / 4))) {
+      enraged = true;
+      spend(TICK);
+      if (Dungeon.visible[pos]) {
+        GLog.w(TXT_ENRAGED, name);
+        sprite.showStatus(CharSprite.NEGATIVE, "enraged");
+      }
     }
+  }
 
-    private boolean enraged = false;
+  @Override
+  public int damageRoll() {
+    return enraged ? Random.NormalIntRange(10, 40) : Random.NormalIntRange(8, 18);
+  }
 
-    private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+  @Override
+  public String description() {
+    return "Brutes are the largest, strongest and toughest of all gnolls. When severely wounded, " +
+        "they go berserk, inflicting even more damage to their enemies.";
+  }
 
-    static {
-        IMMUNITIES.add(Terror.class);
-    }
+  @Override
+  public int dr() {
+    return 8;
+  }
 
-    @Override
-    public int attackSkill(final Char target) {
-        return 20;
-    }
+  @Override
+  public HashSet<Class<?>> immunities() {
+    return IMMUNITIES;
+  }
 
-    @Override
-    public void damage(final int dmg, final Object src) {
-        super.damage(dmg, src);
-
-        if (isAlive() && !enraged && (HP < (HT / 4))) {
-            enraged = true;
-            spend(TICK);
-            if (Dungeon.visible[pos]) {
-                GLog.w(TXT_ENRAGED, name);
-                sprite.showStatus(CharSprite.NEGATIVE, "enraged");
-            }
-        }
-    }
-
-    @Override
-    public int damageRoll() {
-        return enraged ?
-                Random.NormalIntRange(10, 40) :
-                Random.NormalIntRange(8, 18);
-    }
-
-    @Override
-    public String description() {
-        return
-        "Brutes are the largest, strongest and toughest of all gnolls. When severely wounded, " +
-                "they go berserk, inflicting even more damage to their enemies.";
-    }
-
-    @Override
-    public int dr() {
-        return 8;
-    }
-
-    @Override
-    public HashSet<Class<?>> immunities() {
-        return IMMUNITIES;
-    }
-
-    @Override
-    public void restoreFromBundle(final Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        enraged = HP < (HT / 4);
-    }
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    enraged = HP < (HT / 4);
+  }
 }

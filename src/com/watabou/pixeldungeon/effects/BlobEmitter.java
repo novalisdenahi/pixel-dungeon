@@ -25,35 +25,35 @@ import com.watabou.utils.Random;
 
 public class BlobEmitter extends Emitter {
 
-    private static final int WIDTH = Blob.WIDTH;
-    private static final int LENGTH = Blob.LENGTH;
+  private static final int WIDTH = Blob.WIDTH;
+  private static final int LENGTH = Blob.LENGTH;
 
-    private Blob blob;
+  private Blob blob;
 
-    public BlobEmitter(final Blob blob) {
+  public BlobEmitter(final Blob blob) {
 
-        super();
+    super();
 
-        this.blob = blob;
-        blob.use(this);
+    this.blob = blob;
+    blob.use(this);
+  }
+
+  @Override
+  protected void emit(final int index) {
+
+    if (blob.volume <= 0) {
+      return;
     }
 
-    @Override
-    protected void emit(final int index) {
+    int[] map = blob.cur;
+    float size = DungeonTilemap.SIZE;
 
-        if (blob.volume <= 0) {
-            return;
-        }
-
-        int[] map = blob.cur;
-        float size = DungeonTilemap.SIZE;
-
-        for (int i = 0; i < LENGTH; i++) {
-            if ((map[i] > 0) && Dungeon.visible[i]) {
-                float x = ((i % WIDTH) + Random.Float()) * size;
-                float y = ((i / WIDTH) + Random.Float()) * size;
-                factory.emit(this, index, x, y);
-            }
-        }
+    for (int i = 0; i < LENGTH; i++) {
+      if ((map[i] > 0) && Dungeon.visible[i]) {
+        float x = ((i % WIDTH) + Random.Float()) * size;
+        float y = ((i / WIDTH) + Random.Float()) * size;
+        factory.emit(this, index, x, y);
+      }
     }
+  }
 }

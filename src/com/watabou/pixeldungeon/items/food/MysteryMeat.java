@@ -31,48 +31,48 @@ import com.watabou.utils.Random;
 
 public class MysteryMeat extends Food {
 
-    {
-        name = "mystery meat";
-        image = ItemSpriteSheet.MEAT;
-        energy = Hunger.STARVING - Hunger.HUNGRY;
-        message = "That food tasted... strange.";
+  {
+    name = "mystery meat";
+    image = ItemSpriteSheet.MEAT;
+    energy = Hunger.STARVING - Hunger.HUNGRY;
+    message = "That food tasted... strange.";
+  }
+
+  @Override
+  public void execute(final Hero hero, final String action) {
+
+    super.execute(hero, action);
+
+    if (action.equals(AC_EAT)) {
+
+      switch (Random.Int(5)) {
+        case 0:
+          GLog.w("Oh it's hot!");
+          Buff.affect(hero, Burning.class).reignite(hero);
+          break;
+        case 1:
+          GLog.w("You can't feel your legs!");
+          Buff.prolong(hero, Roots.class, Paralysis.duration(hero));
+          break;
+        case 2:
+          GLog.w("You are not feeling well.");
+          Buff.affect(hero, Poison.class).set((Poison.durationFactor(hero) * hero.HT) / 5);
+          break;
+        case 3:
+          GLog.w("You are stuffed.");
+          Buff.prolong(hero, Slow.class, Slow.duration(hero));
+          break;
+      }
     }
+  }
 
-    @Override
-    public void execute(final Hero hero, final String action) {
+  @Override
+  public String info() {
+    return "Eat at your own risk!";
+  }
 
-        super.execute(hero, action);
-
-        if (action.equals(AC_EAT)) {
-
-            switch (Random.Int(5)) {
-            case 0:
-                GLog.w("Oh it's hot!");
-                Buff.affect(hero, Burning.class).reignite(hero);
-                break;
-            case 1:
-                GLog.w("You can't feel your legs!");
-                Buff.prolong(hero, Roots.class, Paralysis.duration(hero));
-                break;
-            case 2:
-                GLog.w("You are not feeling well.");
-                Buff.affect(hero, Poison.class).set((Poison.durationFactor(hero) * hero.HT) / 5);
-                break;
-            case 3:
-                GLog.w("You are stuffed.");
-                Buff.prolong(hero, Slow.class, Slow.duration(hero));
-                break;
-            }
-        }
-    }
-
-    @Override
-    public String info() {
-        return "Eat at your own risk!";
-    }
-
-    @Override
-    public int price() {
-        return 5 * quantity;
-    };
+  @Override
+  public int price() {
+    return 5 * quantity;
+  };
 }

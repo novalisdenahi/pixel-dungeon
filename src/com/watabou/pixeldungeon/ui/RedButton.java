@@ -28,88 +28,88 @@ import com.watabou.pixeldungeon.scenes.PixelScene;
 
 public class RedButton extends Button {
 
-    protected NinePatch bg;
-    protected BitmapText text;
-    protected Image icon;
+  protected NinePatch bg;
+  protected BitmapText text;
+  protected Image icon;
 
-    public RedButton(final String label) {
-        super();
+  public RedButton(final String label) {
+    super();
 
-        text.text(label);
-        text.measure();
+    text.text(label);
+    text.measure();
+  }
+
+  @Override
+  protected void createChildren() {
+    super.createChildren();
+
+    bg = Chrome.get(Chrome.Type.BUTTON);
+    add(bg);
+
+    text = PixelScene.createText(9);
+    add(text);
+  }
+
+  public void enable(final boolean value) {
+    active = value;
+    text.alpha(value ? 1.0f : 0.3f);
+  };
+
+  public void icon(final Image icon) {
+    if (this.icon != null) {
+      remove(this.icon);
     }
-
-    @Override
-    protected void createChildren() {
-        super.createChildren();
-
-        bg = Chrome.get(Chrome.Type.BUTTON);
-        add(bg);
-
-        text = PixelScene.createText(9);
-        add(text);
+    this.icon = icon;
+    if (this.icon != null) {
+      add(this.icon);
+      layout();
     }
+  };
 
-    public void enable(final boolean value) {
-        active = value;
-        text.alpha(value ? 1.0f : 0.3f);
-    };
+  @Override
+  protected void layout() {
 
-    public void icon(final Image icon) {
-        if (this.icon != null) {
-            remove(this.icon);
-        }
-        this.icon = icon;
-        if (this.icon != null) {
-            add(this.icon);
-            layout();
-        }
-    };
+    super.layout();
 
-    @Override
-    protected void layout() {
+    bg.x = x;
+    bg.y = y;
+    bg.size(width, height);
 
-        super.layout();
+    text.x = x + ((int) (width - text.width()) / 2);
+    text.y = y + ((int) (height - text.baseLine()) / 2);
 
-        bg.x = x;
-        bg.y = y;
-        bg.size(width, height);
-
-        text.x = x + ((int) (width - text.width()) / 2);
-        text.y = y + ((int) (height - text.baseLine()) / 2);
-
-        if (icon != null) {
-            icon.x = (x + text.x) - icon.width() - 2;
-            icon.y = y + ((height - icon.height()) / 2);
-        }
-    };
-
-    @Override
-    protected void onTouchDown() {
-        bg.brightness(1.2f);
-        Sample.INSTANCE.play(Assets.SND_CLICK);
+    if (icon != null) {
+      icon.x = (x + text.x) - icon.width() - 2;
+      icon.y = y + ((height - icon.height()) / 2);
     }
+  };
 
-    @Override
-    protected void onTouchUp() {
-        bg.resetColor();
-    }
+  @Override
+  protected void onTouchDown() {
+    bg.brightness(1.2f);
+    Sample.INSTANCE.play(Assets.SND_CLICK);
+  }
 
-    public float reqHeight() {
-        return text.baseLine() + 4;
-    }
+  @Override
+  protected void onTouchUp() {
+    bg.resetColor();
+  }
 
-    public float reqWidth() {
-        return text.width() + 4;
-    }
+  public float reqHeight() {
+    return text.baseLine() + 4;
+  }
 
-    public void text(final String value) {
-        text.text(value);
-        text.measure();
-        layout();
-    }
+  public float reqWidth() {
+    return text.width() + 4;
+  }
 
-    public void textColor(final int value) {
-        text.hardlight(value);
-    }
+  public void text(final String value) {
+    text.text(value);
+    text.measure();
+    layout();
+  }
+
+  public void textColor(final int value) {
+    text.hardlight(value);
+  }
 }

@@ -26,56 +26,55 @@ import com.watabou.utils.Random;
 
 public class Goblin extends Mob {
 
-    {
-        name = "goblin";
-        spriteClass = GoblinSprite.class;
+  {
+    name = "goblin";
+    spriteClass = GoblinSprite.class;
 
-        HP = HT = 12;
-        defenseSkill = 4;
+    HP = HT = 12;
+    defenseSkill = 4;
 
-        EXP = 2;
-        maxLvl = 8;
+    EXP = 2;
+    maxLvl = 8;
 
-        lootGenerator();
+    lootGenerator();
 
+  }
+
+  @Override
+  public int attackSkill(final Char target) {
+    return 11;
+  }
+
+  @Override
+  public int damageRoll() {
+    return Random.NormalIntRange(2, 5);
+  }
+
+  @Override
+  public String description() {
+    return "Goblins are small goblinoids. They organized in tribes living under the surface. If you see one goblin "
+        + "you can be sure there are more of them. The goblins sneaking into villages and towns by night to take what they can. ";
+  }
+
+  @Override
+  public void die(final Object cause) {
+    GoblinAsh.Quest.process(pos);
+    super.die(cause);
+  }
+
+  @Override
+  public int dr() {
+    return 2;
+  }
+
+  private void lootGenerator() {
+    if (Random.Int(2) == 0) {
+      loot = Gold.class;
+      lootChance = 0.5f;
+    } else {
+      loot = Rum.class;
+      lootChance = 0.3f;
     }
 
-    @Override
-    public int attackSkill(final Char target) {
-        return 11;
-    }
-
-    @Override
-    public int damageRoll() {
-        return Random.NormalIntRange(2, 5);
-    }
-
-    @Override
-    public String description() {
-        return
-                "Goblins are small goblinoids. They organized in tribes living under the surface. If you see one goblin "
-                + "you can be sure there are more of them. The goblins sneaking into villages and towns by night to take what they can. ";
-    }
-
-    @Override
-    public void die(final Object cause) {
-        GoblinAsh.Quest.process(pos);
-        super.die(cause);
-    }
-
-    @Override
-    public int dr() {
-        return 2;
-    }
-
-    private void lootGenerator() {
-        if (Random.Int(2) == 0) {
-            loot = Gold.class;
-            lootChance = 0.5f;
-        } else {
-            loot = Rum.class;
-            lootChance = 0.3f;
-        }
-
-    }
+  }
 }

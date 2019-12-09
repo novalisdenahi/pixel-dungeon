@@ -32,94 +32,94 @@ import com.watabou.utils.Random;
 
 public class GoblinMage extends Mob implements Callback {
 
-    private static final float TIME_TO_ZAP = 2f;
+  private static final float TIME_TO_ZAP = 2f;
 
-    private static final String TXT_MAGICMISSLE_KILLED = "%s's magic missle killed you...";
+  private static final String TXT_MAGICMISSLE_KILLED = "%s's magic missle killed you...";
 
-    {
-        name = "goblin mage";
-        spriteClass = GoblinMageSprite.class;
+  {
+    name = "goblin mage";
+    spriteClass = GoblinMageSprite.class;
 
-        HP = HT = 14;
-        defenseSkill = 6;
+    HP = HT = 14;
+    defenseSkill = 6;
 
-        EXP = 5;
-        maxLvl = 10;
+    EXP = 5;
+    maxLvl = 10;
 
-        loot = Generator.Category.SCROLL;
-        lootChance = 0.33f;
-    }
+    loot = Generator.Category.SCROLL;
+    lootChance = 0.33f;
+  }
 
-    @Override
-    public int attackSkill(final Char target) {
-        return 11;
-    }
+  @Override
+  public int attackSkill(final Char target) {
+    return 11;
+  }
 
-    @Override
-    public void call() {
-        next();
-    }
+  @Override
+  public void call() {
+    next();
+  }
 
-    @Override
-    protected boolean canAttack(final Char enemy) {
-        return Ballistica.cast(pos, enemy.pos, false, true) == enemy.pos;
-    }
+  @Override
+  protected boolean canAttack(final Char enemy) {
+    return Ballistica.cast(pos, enemy.pos, false, true) == enemy.pos;
+  }
 
-    @Override
-    public int damageRoll() {
-        return Random.NormalIntRange(2, 6);
-    }
+  @Override
+  public int damageRoll() {
+    return Random.NormalIntRange(2, 6);
+  }
 
-    @Override
-    public String description() {
-        return "The goblin mage is a honored member of the tribe. "
-                + " The tribe fears and respects the mage, not only because of the knowledge of magic, "
-                + "but also because of the cunning and meanness.";
-    }
+  @Override
+  public String description() {
+    return "The goblin mage is a honored member of the tribe. "
+        + " The tribe fears and respects the mage, not only because of the knowledge of magic, "
+        + "but also because of the cunning and meanness.";
+  }
 
-    @Override
-    protected boolean doAttack(final Char enemy) {
+  @Override
+  protected boolean doAttack(final Char enemy) {
 
-        if (Level.distance(pos, enemy.pos) <= 1) {
+    if (Level.distance(pos, enemy.pos) <= 1) {
 
-            return super.doAttack(enemy);
+      return super.doAttack(enemy);
 
-        } else {
+    } else {
 
-            boolean visible = Level.fieldOfView[pos] || Level.fieldOfView[enemy.pos];
-            if (visible) {
-                ((GoblinMageSprite) sprite).zap(enemy.pos);
-            } else {
-                zap();
-            }
-            return !visible;
-        }
-    }
-
-    @Override
-    public int dr() {
-        return 4;
-    }
-
-    public void onZapComplete() {
+      boolean visible = Level.fieldOfView[pos] || Level.fieldOfView[enemy.pos];
+      if (visible) {
+        ((GoblinMageSprite) sprite).zap(enemy.pos);
+      } else {
         zap();
-        next();
+      }
+      return !visible;
     }
+  }
 
-    private void zap() {
-        spend(TIME_TO_ZAP);
+  @Override
+  public int dr() {
+    return 4;
+  }
 
-        if (Char.hit(this, enemy, true)) {
-            int dmg = Random.Int(1, 10);
-            enemy.damage(dmg, this);
+  public void onZapComplete() {
+    zap();
+    next();
+  }
 
-            if (!enemy.isAlive() && (enemy == Dungeon.hero)) {
-                Dungeon.fail(Utils.format(ResultDescriptions.MOB,
-                        Utils.indefinite(name), Dungeon.depth));
-                GLog.n(TXT_MAGICMISSLE_KILLED, name);
-            }
-        } else {
-            enemy.sprite.showStatus(CharSprite.NEUTRAL, enemy.defenseVerb());
-        }
+  private void zap() {
+    spend(TIME_TO_ZAP);
+
+    if (Char.hit(this, enemy, true)) {
+      int dmg = Random.Int(1, 10);
+      enemy.damage(dmg, this);
+
+      if (!enemy.isAlive() && (enemy == Dungeon.hero)) {
+        Dungeon.fail(Utils.format(ResultDescriptions.MOB,
+            Utils.indefinite(name), Dungeon.depth));
+        GLog.n(TXT_MAGICMISSLE_KILLED, name);
+      }
+    } else {
+      enemy.sprite.showStatus(CharSprite.NEUTRAL, enemy.defenseVerb());
     }
+  }
 }

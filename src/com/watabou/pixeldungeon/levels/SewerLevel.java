@@ -33,190 +33,190 @@ import com.watabou.utils.Random;
 
 public class SewerLevel extends RegularLevel {
 
-    private static class Sink extends Emitter {
+  private static class Sink extends Emitter {
 
-        private int pos;
-        private float rippleDelay = 0;
+    private int pos;
+    private float rippleDelay = 0;
 
-        private static final Emitter.Factory factory = new Factory() {
+    private static final Emitter.Factory factory = new Factory() {
 
-            @Override
-            public void emit(final Emitter emitter, final int index, final float x, final float y) {
-                WaterParticle p = (WaterParticle) emitter.recycle(WaterParticle.class);
-                p.reset(x, y);
-            }
-        };
+      @Override
+      public void emit(final Emitter emitter, final int index, final float x, final float y) {
+        WaterParticle p = (WaterParticle) emitter.recycle(WaterParticle.class);
+        p.reset(x, y);
+      }
+    };
 
-        public Sink(final int pos) {
-            super();
+    public Sink(final int pos) {
+      super();
 
-            this.pos = pos;
+      this.pos = pos;
 
-            PointF p = DungeonTilemap.tileCenterToWorld(pos);
-            pos(p.x - 2, p.y + 1, 4, 0);
+      PointF p = DungeonTilemap.tileCenterToWorld(pos);
+      pos(p.x - 2, p.y + 1, 4, 0);
 
-            pour(factory, 0.05f);
-        }
-
-        @Override
-        public void update() {
-            if (visible = Dungeon.visible[pos]) {
-
-                super.update();
-
-                if ((rippleDelay -= Game.elapsed) <= 0) {
-                    GameScene.ripple(pos + WIDTH).y -= DungeonTilemap.SIZE / 2;
-                    rippleDelay = Random.Float(0.2f, 0.3f);
-                }
-            }
-        }
-    }
-
-    public static final class WaterParticle extends PixelParticle {
-
-        public WaterParticle() {
-            super();
-
-            acc.y = 50;
-            am = 0.5f;
-
-            color(ColorMath.random(0xb6ccc2, 0x3b6653));
-            size(2);
-        }
-
-        public void reset(final float x, final float y) {
-            revive();
-
-            this.x = x;
-            this.y = y;
-
-            speed.set(Random.Float(-2, +2), 0);
-
-            left = lifespan = 0.5f;
-        }
-    }
-
-    public static void addVisuals(final Level level, final Scene scene) {
-        for (int i = 0; i < LENGTH; i++) {
-            if (level.map[i] == Terrain.WALL_DECO) {
-                scene.add(new Sink(i));
-            }
-        }
-    }
-
-    {
-        color1 = 0x48763c;
-        color2 = 0x59994a;
+      pour(factory, 0.05f);
     }
 
     @Override
-    public void addVisuals(final Scene scene) {
-        super.addVisuals(scene);
-        SewerLevel.addVisuals(this, scene);
-    }
+    public void update() {
+      if (visible = Dungeon.visible[pos]) {
 
-    @Override
-    protected void createItems() {
-        if (Dungeon.dewVial && (Random.Int(4 - Dungeon.depth) == 0)) {
-            addItemToSpawn(new DewVial());
-            Dungeon.dewVial = false;
+        super.update();
+
+        if ((rippleDelay -= Game.elapsed) <= 0) {
+          GameScene.ripple(pos + WIDTH).y -= DungeonTilemap.SIZE / 2;
+          rippleDelay = Random.Float(0.2f, 0.3f);
         }
+      }
+    }
+  }
 
-        super.createItems();
+  public static final class WaterParticle extends PixelParticle {
+
+    public WaterParticle() {
+      super();
+
+      acc.y = 50;
+      am = 0.5f;
+
+      color(ColorMath.random(0xb6ccc2, 0x3b6653));
+      size(2);
     }
 
-    @Override
-    protected void createMobs() {
-        super.createMobs();
+    public void reset(final float x, final float y) {
+      revive();
 
-        Ghost.Quest.spawn(this);
+      this.x = x;
+      this.y = y;
+
+      speed.set(Random.Float(-2, +2), 0);
+
+      left = lifespan = 0.5f;
+    }
+  }
+
+  public static void addVisuals(final Level level, final Scene scene) {
+    for (int i = 0; i < LENGTH; i++) {
+      if (level.map[i] == Terrain.WALL_DECO) {
+        scene.add(new Sink(i));
+      }
+    }
+  }
+
+  {
+    color1 = 0x48763c;
+    color2 = 0x59994a;
+  }
+
+  @Override
+  public void addVisuals(final Scene scene) {
+    super.addVisuals(scene);
+    SewerLevel.addVisuals(this, scene);
+  }
+
+  @Override
+  protected void createItems() {
+    if (Dungeon.dewVial && (Random.Int(4 - Dungeon.depth) == 0)) {
+      addItemToSpawn(new DewVial());
+      Dungeon.dewVial = false;
     }
 
-    @Override
-    protected void decorate() {
+    super.createItems();
+  }
 
-        for (int i = 0; i < WIDTH; i++) {
-            if ((map[i] == Terrain.WALL) &&
-                    (map[i + WIDTH] == Terrain.WATER) &&
-                    (Random.Int(4) == 0)) {
+  @Override
+  protected void createMobs() {
+    super.createMobs();
 
-                map[i] = Terrain.WALL_DECO;
-            }
+    Ghost.Quest.spawn(this);
+  }
+
+  @Override
+  protected void decorate() {
+
+    for (int i = 0; i < WIDTH; i++) {
+      if ((map[i] == Terrain.WALL) &&
+          (map[i + WIDTH] == Terrain.WATER) &&
+          (Random.Int(4) == 0)) {
+
+        map[i] = Terrain.WALL_DECO;
+      }
+    }
+
+    for (int i = WIDTH; i < (LENGTH - WIDTH); i++) {
+      if ((map[i] == Terrain.WALL) &&
+          (map[i - WIDTH] == Terrain.WALL) &&
+          (map[i + WIDTH] == Terrain.WATER) &&
+          (Random.Int(2) == 0)) {
+
+        map[i] = Terrain.WALL_DECO;
+      }
+    }
+
+    for (int i = WIDTH + 1; i < (LENGTH - WIDTH - 1); i++) {
+      if (map[i] == Terrain.EMPTY) {
+
+        int count =
+            (map[i + 1] == Terrain.WALL ? 1 : 0) +
+                (map[i - 1] == Terrain.WALL ? 1 : 0) +
+                (map[i + WIDTH] == Terrain.WALL ? 1 : 0) +
+                (map[i - WIDTH] == Terrain.WALL ? 1 : 0);
+
+        if (Random.Int(16) < (count * count)) {
+          map[i] = Terrain.EMPTY_DECO;
         }
-
-        for (int i = WIDTH; i < (LENGTH - WIDTH); i++) {
-            if ((map[i] == Terrain.WALL) &&
-                    (map[i - WIDTH] == Terrain.WALL) &&
-                    (map[i + WIDTH] == Terrain.WATER) &&
-                    (Random.Int(2) == 0)) {
-
-                map[i] = Terrain.WALL_DECO;
-            }
-        }
-
-        for (int i = WIDTH + 1; i < (LENGTH - WIDTH - 1); i++) {
-            if (map[i] == Terrain.EMPTY) {
-
-                int count =
-                        (map[i + 1] == Terrain.WALL ? 1 : 0) +
-                                (map[i - 1] == Terrain.WALL ? 1 : 0) +
-                                (map[i + WIDTH] == Terrain.WALL ? 1 : 0) +
-                                (map[i - WIDTH] == Terrain.WALL ? 1 : 0);
-
-                if (Random.Int(16) < (count * count)) {
-                    map[i] = Terrain.EMPTY_DECO;
-                }
-            }
-        }
-
-        while (true) {
-            int pos = roomEntrance.random();
-            if (pos != entrance) {
-                map[pos] = Terrain.SIGN;
-                break;
-            }
-        }
+      }
     }
 
-    @Override
-    protected boolean[] grass() {
-        return Patch.generate(feeling == Feeling.GRASS ? 0.60f : 0.40f, 4);
+    while (true) {
+      int pos = roomEntrance.random();
+      if (pos != entrance) {
+        map[pos] = Terrain.SIGN;
+        break;
+      }
     }
+  }
 
-    @Override
-    public String tileDesc(final int tile) {
-        switch (tile) {
-        case Terrain.EMPTY_DECO:
-            return "Wet yellowish moss covers the floor.";
-        case Terrain.BOOKSHELF:
-            return "The bookshelf is packed with cheap useless books. Might it burn?";
-        default:
-            return super.tileDesc(tile);
-        }
-    }
+  @Override
+  protected boolean[] grass() {
+    return Patch.generate(feeling == Feeling.GRASS ? 0.60f : 0.40f, 4);
+  }
 
-    @Override
-    public String tileName(final int tile) {
-        switch (tile) {
-        case Terrain.WATER:
-            return "Murky water";
-        default:
-            return super.tileName(tile);
-        }
+  @Override
+  public String tileDesc(final int tile) {
+    switch (tile) {
+      case Terrain.EMPTY_DECO:
+        return "Wet yellowish moss covers the floor.";
+      case Terrain.BOOKSHELF:
+        return "The bookshelf is packed with cheap useless books. Might it burn?";
+      default:
+        return super.tileDesc(tile);
     }
+  }
 
-    @Override
-    public String tilesTex() {
-        return Assets.TILES_SEWERS;
+  @Override
+  public String tileName(final int tile) {
+    switch (tile) {
+      case Terrain.WATER:
+        return "Murky water";
+      default:
+        return super.tileName(tile);
     }
+  }
 
-    @Override
-    protected boolean[] water() {
-        return Patch.generate(feeling == Feeling.WATER ? 0.60f : 0.45f, 5);
-    }
+  @Override
+  public String tilesTex() {
+    return Assets.TILES_SEWERS;
+  }
 
-    @Override
-    public String waterTex() {
-        return Assets.WATER_SEWERS;
-    }
+  @Override
+  protected boolean[] water() {
+    return Patch.generate(feeling == Feeling.WATER ? 0.60f : 0.45f, 5);
+  }
+
+  @Override
+  public String waterTex() {
+    return Assets.WATER_SEWERS;
+  }
 }

@@ -44,419 +44,421 @@ import com.watabou.utils.Random;
 
 public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip.Listener {
 
-    private static class JumpTweener extends Tweener {
+  private static class JumpTweener extends Tweener {
 
-        public Visual visual;
+    public Visual visual;
 
-        public PointF start;
-        public PointF end;
+    public PointF start;
+    public PointF end;
 
-        public float height;
+    public float height;
 
-        public JumpTweener(final Visual visual, final PointF pos, final float height, final float time) {
-            super(visual, time);
+    public JumpTweener(final Visual visual, final PointF pos, final float height,
+        final float time) {
+      super(visual, time);
 
-            this.visual = visual;
-            start = visual.point();
-            end = pos;
+      this.visual = visual;
+      start = visual.point();
+      end = pos;
 
-            this.height = height;
-        }
-
-        @Override
-        protected void updateValues(final float progress) {
-            visual.point(PointF.inter(start, end, progress).offset(0, -height * 4 * progress * (1 - progress)));
-        }
+      this.height = height;
     }
 
-    public enum State {
-        BURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED
+    @Override
+    protected void updateValues(final float progress) {
+      visual.point(
+          PointF.inter(start, end, progress).offset(0, -height * 4 * progress * (1 - progress)));
     }
+  }
 
-    public static final int DEFAULT = 0xFFFFFF;
-    public static final int POSITIVE = 0x00FF00;
-    public static final int NEGATIVE = 0xFF0000;
+  public enum State {
+    BURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED
+  }
 
-    public static final int WARNING = 0xFF8800;
-    public static final int NEUTRAL = 0xFFFF00;
+  public static final int DEFAULT = 0xFFFFFF;
+  public static final int POSITIVE = 0x00FF00;
+  public static final int NEGATIVE = 0xFF0000;
 
-    private static final float MOVE_INTERVAL = 0.1f;
+  public static final int WARNING = 0xFF8800;
+  public static final int NEUTRAL = 0xFFFF00;
 
-    private static final float FLASH_INTERVAL = 0.05f;
-    protected Animation idle;
-    protected Animation run;
-    protected Animation attack;
-    protected Animation operate;
-    protected Animation zap;
+  private static final float MOVE_INTERVAL = 0.1f;
 
-    protected Animation die;
+  private static final float FLASH_INTERVAL = 0.05f;
+  protected Animation idle;
+  protected Animation run;
+  protected Animation attack;
+  protected Animation operate;
+  protected Animation zap;
 
-    protected Callback animCallback;
+  protected Animation die;
 
-    protected Tweener motion;
-    protected Emitter burning;
+  protected Callback animCallback;
 
-    protected Emitter levitation;
-    protected IceBlock iceBlock;
+  protected Tweener motion;
+  protected Emitter burning;
 
-    protected TorchHalo halo;
+  protected Emitter levitation;
+  protected IceBlock iceBlock;
 
-    protected EmoIcon emo;
-    private Tweener jumpTweener;
+  protected TorchHalo halo;
 
-    private Callback jumpCallback;
+  protected EmoIcon emo;
+  private Tweener jumpTweener;
 
-    private float flashTime = 0;
+  private Callback jumpCallback;
 
-    protected boolean sleeping = false;
+  private float flashTime = 0;
 
-    public Char ch;
+  protected boolean sleeping = false;
 
-    public boolean isMoving = false;
+  public Char ch;
 
-    public CharSprite() {
-        super();
-        listener = this;
-    }
+  public boolean isMoving = false;
 
-    public void add(final State state) {
-        switch (state) {
-        case BURNING:
-            burning = emitter();
-            burning.pour(FlameParticle.FACTORY, 0.06f);
-            if (visible) {
-                Sample.INSTANCE.play(Assets.SND_BURNING);
-            }
-            break;
-        case LEVITATING:
-            levitation = emitter();
-            levitation.pour(Speck.factory(Speck.JET), 0.02f);
-            break;
-        case INVISIBLE:
-            PotionOfInvisibility.melt(ch);
-            break;
-        case PARALYSED:
-            paused = true;
-            break;
-        case FROZEN:
-            iceBlock = IceBlock.freeze(this);
-            paused = true;
-            break;
-        case ILLUMINATED:
-            GameScene.effect(halo = new TorchHalo(this));
-            break;
-        }
-    }
+  public CharSprite() {
+    super();
+    listener = this;
+  }
 
-    public void attack(final int cell) {
-        turnTo(ch.pos, cell);
-        play(attack);
-    }
-
-    public void attack(final int cell, final Callback callback) {
-        animCallback = callback;
-        turnTo(ch.pos, cell);
-        play(attack);
-    }
-
-    public int blood() {
-        return 0xFFBB0000;
-    }
-
-    public void bloodBurstA(final PointF from, final int damage) {
+  public void add(final State state) {
+    switch (state) {
+      case BURNING:
+        burning = emitter();
+        burning.pour(FlameParticle.FACTORY, 0.06f);
         if (visible) {
-            PointF c = center();
-            int n = (int) Math.min(9 * Math.sqrt((double) damage / ch.HT), 9);
-            Splash.at(c, PointF.angle(from, c), 3.1415926f / 2, blood(), n);
+          Sample.INSTANCE.play(Assets.SND_BURNING);
         }
+        break;
+      case LEVITATING:
+        levitation = emitter();
+        levitation.pour(Speck.factory(Speck.JET), 0.02f);
+        break;
+      case INVISIBLE:
+        PotionOfInvisibility.melt(ch);
+        break;
+      case PARALYSED:
+        paused = true;
+        break;
+      case FROZEN:
+        iceBlock = IceBlock.freeze(this);
+        paused = true;
+        break;
+      case ILLUMINATED:
+        GameScene.effect(halo = new TorchHalo(this));
+        break;
+    }
+  }
+
+  public void attack(final int cell) {
+    turnTo(ch.pos, cell);
+    play(attack);
+  }
+
+  public void attack(final int cell, final Callback callback) {
+    animCallback = callback;
+    turnTo(ch.pos, cell);
+    play(attack);
+  }
+
+  public int blood() {
+    return 0xFFBB0000;
+  }
+
+  public void bloodBurstA(final PointF from, final int damage) {
+    if (visible) {
+      PointF c = center();
+      int n = (int) Math.min(9 * Math.sqrt((double) damage / ch.HT), 9);
+      Splash.at(c, PointF.angle(from, c), 3.1415926f / 2, blood(), n);
+    }
+  }
+
+  public Emitter bottomEmitter() {
+    Emitter emitter = GameScene.emitter();
+    emitter.pos(x, y + height, width, 0);
+    return emitter;
+  }
+
+  public void burst(final int color, final int n) {
+    if (visible) {
+      Splash.at(center(), color, n);
+    }
+  }
+
+  public Emitter centerEmitter() {
+    Emitter emitter = GameScene.emitter();
+    emitter.pos(center());
+    return emitter;
+  }
+
+  public void die() {
+    sleeping = false;
+    play(die);
+
+    if (emo != null) {
+      emo.killAndErase();
+    }
+  }
+
+  public Emitter emitter() {
+    Emitter emitter = GameScene.emitter();
+    emitter.pos(this);
+    return emitter;
+  }
+
+  public void flash() {
+    ra = ba = ga = 1f;
+    flashTime = FLASH_INTERVAL;
+  }
+
+  public void hideAlert() {
+    if (emo instanceof EmoIcon.Alert) {
+      emo.killAndErase();
+      emo = null;
+    }
+  }
+
+  public void hideSleep() {
+    if (emo instanceof EmoIcon.Sleep) {
+      emo.killAndErase();
+      emo = null;
+    }
+  }
+
+  public void idle() {
+    play(idle);
+  }
+
+  public void interruptMotion() {
+    if (motion != null) {
+      onComplete(motion);
+    }
+  }
+
+  public void jump(final int from, final int to, final Callback callback) {
+    jumpCallback = callback;
+
+    int distance = Level.distance(from, to);
+    jumpTweener = new JumpTweener(this, worldToCamera(to), distance * 4, distance * 0.1f);
+    jumpTweener.listener = this;
+    parent.add(jumpTweener);
+
+    turnTo(from, to);
+  }
+
+  @Override
+  public void kill() {
+    super.kill();
+
+    if (emo != null) {
+      emo.killAndErase();
+      emo = null;
+    }
+  }
+
+  public void link(final Char ch) {
+    this.ch = ch;
+    ch.sprite = this;
+
+    place(ch.pos);
+    turnTo(ch.pos, Random.Int(Level.LENGTH));
+
+    ch.updateSpriteState();
+  }
+
+  public void move(final int from, final int to) {
+    play(run);
+
+    motion = new PosTweener(this, worldToCamera(to), MOVE_INTERVAL);
+    motion.listener = this;
+    parent.add(motion);
+
+    isMoving = true;
+
+    turnTo(from, to);
+
+    if (visible && Level.water[from] && !ch.flying) {
+      GameScene.ripple(from);
     }
 
-    public Emitter bottomEmitter() {
-        Emitter emitter = GameScene.emitter();
-        emitter.pos(x, y + height, width, 0);
-        return emitter;
+    ch.onMotionComplete();
+  }
+
+  @Override
+  public void onComplete(final Animation anim) {
+
+    if (animCallback != null) {
+      animCallback.call();
+      animCallback = null;
+    } else {
+
+      if (anim == attack) {
+
+        idle();
+        ch.onAttackComplete();
+
+      } else if (anim == operate) {
+
+        idle();
+        ch.onOperateComplete();
+
+      }
+
     }
+  }
 
-    public void burst(final int color, final int n) {
-        if (visible) {
-            Splash.at(center(), color, n);
-        }
+  @Override
+  public void onComplete(final Tweener tweener) {
+    if (tweener == jumpTweener) {
+
+      if (visible && Level.water[ch.pos] && !ch.flying) {
+        GameScene.ripple(ch.pos);
+      }
+      if (jumpCallback != null) {
+        jumpCallback.call();
+      }
+
+    } else if (tweener == motion) {
+
+      isMoving = false;
+
+      motion.killAndErase();
+      motion = null;
     }
+  }
 
-    public Emitter centerEmitter() {
-        Emitter emitter = GameScene.emitter();
-        emitter.pos(center());
-        return emitter;
-    }
+  public void operate(final int cell) {
+    turnTo(ch.pos, cell);
+    play(operate);
+  }
 
-    public void die() {
-        sleeping = false;
-        play(die);
+  public void place(final int cell) {
+    point(worldToCamera(cell));
+  }
 
-        if (emo != null) {
-            emo.killAndErase();
-        }
-    }
-
-    public Emitter emitter() {
-        Emitter emitter = GameScene.emitter();
-        emitter.pos(this);
-        return emitter;
-    }
-
-    public void flash() {
-        ra = ba = ga = 1f;
-        flashTime = FLASH_INTERVAL;
-    }
-
-    public void hideAlert() {
-        if (emo instanceof EmoIcon.Alert) {
-            emo.killAndErase();
-            emo = null;
-        }
-    }
-
-    public void hideSleep() {
-        if (emo instanceof EmoIcon.Sleep) {
-            emo.killAndErase();
-            emo = null;
-        }
-    }
-
-    public void idle() {
-        play(idle);
-    }
-
-    public void interruptMotion() {
-        if (motion != null) {
-            onComplete(motion);
-        }
-    }
-
-    public void jump(final int from, final int to, final Callback callback) {
-        jumpCallback = callback;
-
-        int distance = Level.distance(from, to);
-        jumpTweener = new JumpTweener(this, worldToCamera(to), distance * 4, distance * 0.1f);
-        jumpTweener.listener = this;
-        parent.add(jumpTweener);
-
-        turnTo(from, to);
-    }
-
-    @Override
-    public void kill() {
-        super.kill();
-
-        if (emo != null) {
-            emo.killAndErase();
-            emo = null;
-        }
-    }
-
-    public void link(final Char ch) {
-        this.ch = ch;
-        ch.sprite = this;
-
-        place(ch.pos);
-        turnTo(ch.pos, Random.Int(Level.LENGTH));
-
-        ch.updateSpriteState();
-    }
-
-    public void move(final int from, final int to) {
-        play(run);
-
-        motion = new PosTweener(this, worldToCamera(to), MOVE_INTERVAL);
-        motion.listener = this;
-        parent.add(motion);
-
-        isMoving = true;
-
-        turnTo(from, to);
-
-        if (visible && Level.water[from] && !ch.flying) {
-            GameScene.ripple(from);
-        }
-
-        ch.onMotionComplete();
-    }
-
-    @Override
-    public void onComplete(final Animation anim) {
-
-        if (animCallback != null) {
-            animCallback.call();
-            animCallback = null;
-        } else {
-
-            if (anim == attack) {
-
-                idle();
-                ch.onAttackComplete();
-
-            } else if (anim == operate) {
-
-                idle();
-                ch.onOperateComplete();
-
-            }
-
-        }
-    }
-
-    @Override
-    public void onComplete(final Tweener tweener) {
-        if (tweener == jumpTweener) {
-
-            if (visible && Level.water[ch.pos] && !ch.flying) {
-                GameScene.ripple(ch.pos);
-            }
-            if (jumpCallback != null) {
-                jumpCallback.call();
-            }
-
-        } else if (tweener == motion) {
-
-            isMoving = false;
-
-            motion.killAndErase();
-            motion = null;
-        }
-    }
-
-    public void operate(final int cell) {
-        turnTo(ch.pos, cell);
-        play(operate);
-    }
-
-    public void place(final int cell) {
-        point(worldToCamera(cell));
-    }
-
-    public void remove(final State state) {
-        switch (state) {
-        case BURNING:
-            if (burning != null) {
-                burning.on = false;
-                burning = null;
-            }
-            break;
-        case LEVITATING:
-            if (levitation != null) {
-                levitation.on = false;
-                levitation = null;
-            }
-            break;
-        case INVISIBLE:
-            alpha(1f);
-            break;
-        case PARALYSED:
-            paused = false;
-            break;
-        case FROZEN:
-            if (iceBlock != null) {
-                iceBlock.melt();
-                iceBlock = null;
-            }
-            paused = false;
-            break;
-        case ILLUMINATED:
-            if (halo != null) {
-                halo.putOut();
-            }
-            break;
-        }
-    }
-
-    public void showAlert() {
-        if (emo instanceof EmoIcon.Alert) {
-
-        } else {
-            if (emo != null) {
-                emo.killAndErase();
-            }
-            emo = new EmoIcon.Alert(this);
-        }
-    }
-
-    public void showSleep() {
-        if (emo instanceof EmoIcon.Sleep) {
-
-        } else {
-            if (emo != null) {
-                emo.killAndErase();
-            }
-            emo = new EmoIcon.Sleep(this);
-        }
-    }
-
-    public void showStatus(final int color, String text, final Object... args) {
-        if (visible) {
-            if (args.length > 0) {
-                text = Utils.format(text, args);
-            }
-            if (ch != null) {
-                FloatingText.show(x + (width * 0.5f), y, ch.pos, text, color);
-            } else {
-                FloatingText.show(x + (width * 0.5f), y, text, color);
-            }
-        }
-    }
-
-    public void turnTo(final int from, final int to) {
-        int fx = from % Level.WIDTH;
-        int tx = to % Level.WIDTH;
-        if (tx > fx) {
-            flipHorizontal = false;
-        } else if (tx < fx) {
-            flipHorizontal = true;
-        }
-    }
-
-    @Override
-    public void update() {
-
-        super.update();
-
-        if (paused && (listener != null)) {
-            listener.onComplete(curAnim);
-        }
-
-        if ((flashTime > 0) && ((flashTime -= Game.elapsed) <= 0)) {
-            resetColor();
-        }
-
+  public void remove(final State state) {
+    switch (state) {
+      case BURNING:
         if (burning != null) {
-            burning.visible = visible;
+          burning.on = false;
+          burning = null;
         }
+        break;
+      case LEVITATING:
         if (levitation != null) {
-            levitation.visible = visible;
+          levitation.on = false;
+          levitation = null;
         }
+        break;
+      case INVISIBLE:
+        alpha(1f);
+        break;
+      case PARALYSED:
+        paused = false;
+        break;
+      case FROZEN:
         if (iceBlock != null) {
-            iceBlock.visible = visible;
+          iceBlock.melt();
+          iceBlock = null;
         }
-        if (sleeping) {
-            showSleep();
-        } else {
-            hideSleep();
+        paused = false;
+        break;
+      case ILLUMINATED:
+        if (halo != null) {
+          halo.putOut();
         }
-        if (emo != null) {
-            emo.visible = visible;
-        }
+        break;
+    }
+  }
+
+  public void showAlert() {
+    if (emo instanceof EmoIcon.Alert) {
+
+    } else {
+      if (emo != null) {
+        emo.killAndErase();
+      }
+      emo = new EmoIcon.Alert(this);
+    }
+  }
+
+  public void showSleep() {
+    if (emo instanceof EmoIcon.Sleep) {
+
+    } else {
+      if (emo != null) {
+        emo.killAndErase();
+      }
+      emo = new EmoIcon.Sleep(this);
+    }
+  }
+
+  public void showStatus(final int color, String text, final Object... args) {
+    if (visible) {
+      if (args.length > 0) {
+        text = Utils.format(text, args);
+      }
+      if (ch != null) {
+        FloatingText.show(x + (width * 0.5f), y, ch.pos, text, color);
+      } else {
+        FloatingText.show(x + (width * 0.5f), y, text, color);
+      }
+    }
+  }
+
+  public void turnTo(final int from, final int to) {
+    int fx = from % Level.WIDTH;
+    int tx = to % Level.WIDTH;
+    if (tx > fx) {
+      flipHorizontal = false;
+    } else if (tx < fx) {
+      flipHorizontal = true;
+    }
+  }
+
+  @Override
+  public void update() {
+
+    super.update();
+
+    if (paused && (listener != null)) {
+      listener.onComplete(curAnim);
     }
 
-    public PointF worldToCamera(final int cell) {
-
-        final int csize = DungeonTilemap.SIZE;
-
-        return new PointF(
-                (((cell % Level.WIDTH) + 0.5f) * csize) - (width * 0.5f),
-                (((cell / Level.WIDTH) + 1.0f) * csize) - height);
+    if ((flashTime > 0) && ((flashTime -= Game.elapsed) <= 0)) {
+      resetColor();
     }
 
-    public void zap(final int cell) {
-        turnTo(ch.pos, cell);
-        play(zap);
+    if (burning != null) {
+      burning.visible = visible;
     }
+    if (levitation != null) {
+      levitation.visible = visible;
+    }
+    if (iceBlock != null) {
+      iceBlock.visible = visible;
+    }
+    if (sleeping) {
+      showSleep();
+    } else {
+      hideSleep();
+    }
+    if (emo != null) {
+      emo.visible = visible;
+    }
+  }
+
+  public PointF worldToCamera(final int cell) {
+
+    final int csize = DungeonTilemap.SIZE;
+
+    return new PointF(
+        (((cell % Level.WIDTH) + 0.5f) * csize) - (width * 0.5f),
+        (((cell / Level.WIDTH) + 1.0f) * csize) - height);
+  }
+
+  public void zap(final int cell) {
+    turnTo(ch.pos, cell);
+    play(zap);
+  }
 }

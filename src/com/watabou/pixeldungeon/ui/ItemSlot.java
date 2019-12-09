@@ -31,176 +31,175 @@ import com.watabou.pixeldungeon.utils.Utils;
 
 public class ItemSlot extends Button {
 
-    public static final int DEGRADED = 0xFF4444;
-    public static final int UPGRADED = 0x44FF44;
-    public static final int WARNING = 0xFF8800;
+  public static final int DEGRADED = 0xFF4444;
+  public static final int UPGRADED = 0x44FF44;
+  public static final int WARNING = 0xFF8800;
 
-    private static final float ENABLED = 1.0f;
-    private static final float DISABLED = 0.3f;
+  private static final float ENABLED = 1.0f;
+  private static final float DISABLED = 0.3f;
 
-    protected ItemSprite icon;
-    protected BitmapText topLeft;
-    protected BitmapText topRight;
-    protected BitmapText bottomRight;
+  protected ItemSprite icon;
+  protected BitmapText topLeft;
+  protected BitmapText topRight;
+  protected BitmapText bottomRight;
 
-    private static final String TXT_STRENGTH = ":%d";
-    private static final String TXT_TYPICAL_STR = "%d?";
+  private static final String TXT_STRENGTH = ":%d";
+  private static final String TXT_TYPICAL_STR = "%d?";
 
-    private static final String TXT_LEVEL = "%+d";
-    private static final String TXT_CURSED = "";// "-";
+  private static final String TXT_LEVEL = "%+d";
+  private static final String TXT_CURSED = "";// "-";
 
-    // Special "virtual items"
-    public static final Item CHEST = new Item() {
-        @Override
-        public int image() {
-            return ItemSpriteSheet.CHEST;
-        };
-    };
-    public static final Item LOCKED_CHEST = new Item() {
-        @Override
-        public int image() {
-            return ItemSpriteSheet.LOCKED_CHEST;
-        };
-    };
-    public static final Item TOMB = new Item() {
-        @Override
-        public int image() {
-            return ItemSpriteSheet.TOMB;
-        };
-    };
-    public static final Item SKELETON = new Item() {
-        @Override
-        public int image() {
-            return ItemSpriteSheet.BONES;
-        };
-    };
-
-    public ItemSlot() {
-        super();
-    }
-
-    public ItemSlot(final Item item) {
-        this();
-        item(item);
-    }
-
+  // Special "virtual items"
+  public static final Item CHEST = new Item() {
     @Override
-    protected void createChildren() {
+    public int image() {
+      return ItemSpriteSheet.CHEST;
+    };
+  };
+  public static final Item LOCKED_CHEST = new Item() {
+    @Override
+    public int image() {
+      return ItemSpriteSheet.LOCKED_CHEST;
+    };
+  };
+  public static final Item TOMB = new Item() {
+    @Override
+    public int image() {
+      return ItemSpriteSheet.TOMB;
+    };
+  };
+  public static final Item SKELETON = new Item() {
+    @Override
+    public int image() {
+      return ItemSpriteSheet.BONES;
+    };
+  };
 
-        super.createChildren();
+  public ItemSlot() {
+    super();
+  }
 
-        icon = new ItemSprite();
-        add(icon);
+  public ItemSlot(final Item item) {
+    this();
+    item(item);
+  }
 
-        topLeft = new BitmapText(PixelScene.font1x);
-        add(topLeft);
+  @Override
+  protected void createChildren() {
 
-        topRight = new BitmapText(PixelScene.font1x);
-        add(topRight);
+    super.createChildren();
 
-        bottomRight = new BitmapText(PixelScene.font1x);
-        add(bottomRight);
-    }
+    icon = new ItemSprite();
+    add(icon);
 
-    public void enable(final boolean value) {
+    topLeft = new BitmapText(PixelScene.font1x);
+    add(topLeft);
 
-        active = value;
+    topRight = new BitmapText(PixelScene.font1x);
+    add(topRight);
 
-        float alpha = value ? ENABLED : DISABLED;
-        icon.alpha(alpha);
-        topLeft.alpha(alpha);
-        topRight.alpha(alpha);
-        bottomRight.alpha(alpha);
-    }
+    bottomRight = new BitmapText(PixelScene.font1x);
+    add(bottomRight);
+  }
 
-    public void item(final Item item) {
-        if (item == null) {
+  public void enable(final boolean value) {
 
-            active = false;
-            icon.visible = topLeft.visible = topRight.visible = bottomRight.visible = false;
+    active = value;
+
+    float alpha = value ? ENABLED : DISABLED;
+    icon.alpha(alpha);
+    topLeft.alpha(alpha);
+    topRight.alpha(alpha);
+    bottomRight.alpha(alpha);
+  }
+
+  public void item(final Item item) {
+    if (item == null) {
+
+      active = false;
+      icon.visible = topLeft.visible = topRight.visible = bottomRight.visible = false;
+
+    } else {
+
+      active = true;
+      icon.visible = topLeft.visible = topRight.visible = bottomRight.visible = true;
+
+      icon.view(item.image(), item.glowing());
+
+      topLeft.text(item.status());
+
+      boolean isArmor = item instanceof Armor;
+      boolean isWeapon = item instanceof Weapon;
+      if (isArmor || isWeapon) {
+
+        if (item.levelKnown || (isWeapon && !(item instanceof MeleeWeapon))) {
+
+          int str = isArmor ? ((Armor) item).STR : ((Weapon) item).STR;
+          topRight.text(Utils.format(TXT_STRENGTH, str));
+          if (str > Dungeon.hero.STR()) {
+            topRight.hardlight(DEGRADED);
+          } else {
+            topRight.resetColor();
+          }
 
         } else {
 
-            active = true;
-            icon.visible = topLeft.visible = topRight.visible = bottomRight.visible = true;
+          topRight.text(Utils.format(TXT_TYPICAL_STR,
+              isArmor ? ((Armor) item).typicalSTR() : ((MeleeWeapon) item).typicalSTR()));
+          topRight.hardlight(WARNING);
 
-            icon.view(item.image(), item.glowing());
-
-            topLeft.text(item.status());
-
-            boolean isArmor = item instanceof Armor;
-            boolean isWeapon = item instanceof Weapon;
-            if (isArmor || isWeapon) {
-
-                if (item.levelKnown || (isWeapon && !(item instanceof MeleeWeapon))) {
-
-                    int str = isArmor ? ((Armor) item).STR : ((Weapon) item).STR;
-                    topRight.text(Utils.format(TXT_STRENGTH, str));
-                    if (str > Dungeon.hero.STR()) {
-                        topRight.hardlight(DEGRADED);
-                    } else {
-                        topRight.resetColor();
-                    }
-
-                } else {
-
-                    topRight.text(Utils.format(TXT_TYPICAL_STR, isArmor ?
-                            ((Armor) item).typicalSTR() :
-                                ((MeleeWeapon) item).typicalSTR()));
-                    topRight.hardlight(WARNING);
-
-                }
-                topRight.measure();
-
-            } else {
-
-                topRight.text(null);
-
-            }
-
-            int level = item.visiblyUpgraded();
-            if ((level != 0) || (item.cursed && item.cursedKnown)) {
-                bottomRight.text(item.levelKnown ? Utils.format(TXT_LEVEL, level) : TXT_CURSED);
-                bottomRight.measure();
-                bottomRight.hardlight(level > 0 ? UPGRADED : DEGRADED);
-            } else {
-                bottomRight.text(null);
-            }
-
-            layout();
         }
+        topRight.measure();
+
+      } else {
+
+        topRight.text(null);
+
+      }
+
+      int level = item.visiblyUpgraded();
+      if ((level != 0) || (item.cursed && item.cursedKnown)) {
+        bottomRight.text(item.levelKnown ? Utils.format(TXT_LEVEL, level) : TXT_CURSED);
+        bottomRight.measure();
+        bottomRight.hardlight(level > 0 ? UPGRADED : DEGRADED);
+      } else {
+        bottomRight.text(null);
+      }
+
+      layout();
+    }
+  }
+
+  @Override
+  protected void layout() {
+    super.layout();
+
+    icon.x = x + ((width - icon.width) / 2);
+    icon.y = y + ((height - icon.height) / 2);
+
+    if (topLeft != null) {
+      topLeft.x = x;
+      topLeft.y = y;
     }
 
-    @Override
-    protected void layout() {
-        super.layout();
-
-        icon.x = x + ((width - icon.width) / 2);
-        icon.y = y + ((height - icon.height) / 2);
-
-        if (topLeft != null) {
-            topLeft.x = x;
-            topLeft.y = y;
-        }
-
-        if (topRight != null) {
-            topRight.x = x + (width - topRight.width());
-            topRight.y = y;
-        }
-
-        if (bottomRight != null) {
-            bottomRight.x = x + (width - bottomRight.width());
-            bottomRight.y = y + (height - bottomRight.height());
-        }
+    if (topRight != null) {
+      topRight.x = x + (width - topRight.width());
+      topRight.y = y;
     }
 
-    public void showParams(final boolean value) {
-        if (value) {
-            add(topRight);
-            add(bottomRight);
-        } else {
-            remove(topRight);
-            remove(bottomRight);
-        }
+    if (bottomRight != null) {
+      bottomRight.x = x + (width - bottomRight.width());
+      bottomRight.y = y + (height - bottomRight.height());
     }
+  }
+
+  public void showParams(final boolean value) {
+    if (value) {
+      add(topRight);
+      add(bottomRight);
+    } else {
+      remove(topRight);
+      remove(bottomRight);
+    }
+  }
 }

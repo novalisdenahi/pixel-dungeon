@@ -19,23 +19,23 @@ package com.watabou.pixeldungeon.items.rings;
 
 public class RingOfShadows extends Ring {
 
-    public class Shadows extends RingBuff {
-    }
+  public class Shadows extends RingBuff {
+  }
 
-    {
-        name = "Ring of Shadows";
-    }
+  {
+    name = "Ring of Shadows";
+  }
 
-    @Override
-    protected RingBuff buff() {
-        return new Shadows();
-    }
+  @Override
+  protected RingBuff buff() {
+    return new Shadows();
+  }
 
-    @Override
-    public String desc() {
-        return isKnown() ?
-                "Enemies will be less likely to notice you if you wear this ring. Degraded rings " +
-                        "of shadows will alert enemies who might otherwise not have noticed your presence." :
-                super.desc();
-    }
+  @Override
+  public String desc() {
+    return isKnown()
+        ? "Enemies will be less likely to notice you if you wear this ring. Degraded rings " +
+            "of shadows will alert enemies who might otherwise not have noticed your presence."
+        : super.desc();
+  }
 }

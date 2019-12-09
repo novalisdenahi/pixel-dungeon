@@ -35,81 +35,81 @@ import com.watabou.utils.Callback;
 
 public class BadgesScene extends PixelScene {
 
-    private static final String TXT_TITLE = "Your Badges";
+  private static final String TXT_TITLE = "Your Badges";
 
-    private static final int MAX_PANE_WIDTH = 160;
+  private static final int MAX_PANE_WIDTH = 160;
 
-    @Override
-    public void create() {
+  @Override
+  public void create() {
 
-        super.create();
+    super.create();
 
-        Music.INSTANCE.play(Assets.THEME, true);
-        Music.INSTANCE.volume(1f);
+    Music.INSTANCE.play(Assets.THEME, true);
+    Music.INSTANCE.volume(1f);
 
-        uiCamera.visible = false;
+    uiCamera.visible = false;
 
-        int w = Camera.main.width;
-        int h = Camera.main.height;
+    int w = Camera.main.width;
+    int h = Camera.main.height;
 
-        Archs archs = new Archs();
-        archs.setSize(w, h);
-        add(archs);
+    Archs archs = new Archs();
+    archs.setSize(w, h);
+    add(archs);
 
-        int pw = Math.min(MAX_PANE_WIDTH, w - 6);
-        int ph = h - 30;
+    int pw = Math.min(MAX_PANE_WIDTH, w - 6);
+    int ph = h - 30;
 
-        NinePatch panel = Chrome.get(Chrome.Type.WINDOW);
-        panel.size(pw, ph);
-        panel.x = (w - pw) / 2;
-        panel.y = (h - ph) / 2;
-        add(panel);
+    NinePatch panel = Chrome.get(Chrome.Type.WINDOW);
+    panel.size(pw, ph);
+    panel.x = (w - pw) / 2;
+    panel.y = (h - ph) / 2;
+    add(panel);
 
-        BitmapText title = PixelScene.createText(TXT_TITLE, 9);
-        title.hardlight(Window.TITLE_COLOR);
-        title.measure();
-        title.x = PixelScene.align((w - title.width()) / 2);
-        title.y = PixelScene.align((panel.y - title.baseLine()) / 2);
-        add(title);
+    BitmapText title = PixelScene.createText(TXT_TITLE, 9);
+    title.hardlight(Window.TITLE_COLOR);
+    title.measure();
+    title.x = PixelScene.align((w - title.width()) / 2);
+    title.y = PixelScene.align((panel.y - title.baseLine()) / 2);
+    add(title);
 
-        Badges.loadGlobal();
+    Badges.loadGlobal();
 
-        ScrollPane list = new BadgesList(true);
-        add(list);
+    ScrollPane list = new BadgesList(true);
+    add(list);
 
-        list.setRect(
-                panel.x + panel.marginLeft(),
-                panel.y + panel.marginTop(),
-                panel.innerWidth(),
-                panel.innerHeight());
+    list.setRect(
+        panel.x + panel.marginLeft(),
+        panel.y + panel.marginTop(),
+        panel.innerWidth(),
+        panel.innerHeight());
 
-        ExitButton btnExit = new ExitButton();
-        btnExit.setPos(Camera.main.width - btnExit.width(), 0);
-        add(btnExit);
+    ExitButton btnExit = new ExitButton();
+    btnExit.setPos(Camera.main.width - btnExit.width(), 0);
+    add(btnExit);
 
-        fadeIn();
+    fadeIn();
 
-        Badges.loadingListener = new Callback() {
-            @Override
-            public void call() {
-                if (Game.scene() == BadgesScene.this) {
-                    PixelDungeon.switchNoFade(BadgesScene.class);
-                }
-            }
-        };
-    }
+    Badges.loadingListener = new Callback() {
+      @Override
+      public void call() {
+        if (Game.scene() == BadgesScene.this) {
+          PixelDungeon.switchNoFade(BadgesScene.class);
+        }
+      }
+    };
+  }
 
-    @Override
-    public void destroy() {
+  @Override
+  public void destroy() {
 
-        Badges.saveGlobal();
-        Badges.loadingListener = null;
+    Badges.saveGlobal();
+    Badges.loadingListener = null;
 
-        super.destroy();
-    }
+    super.destroy();
+  }
 
-    @Override
-    protected void onBackPressed() {
-        PixelDungeon.switchNoFade(TitleScene.class);
-    }
+  @Override
+  protected void onBackPressed() {
+    PixelDungeon.switchNoFade(TitleScene.class);
+  }
 }

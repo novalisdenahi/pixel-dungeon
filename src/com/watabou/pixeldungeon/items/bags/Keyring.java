@@ -23,27 +23,26 @@ import com.watabou.pixeldungeon.sprites.ItemSpriteSheet;
 
 public class Keyring extends Bag {
 
-    {
-        name = "key ring";
-        image = ItemSpriteSheet.KEYRING;
+  {
+    name = "key ring";
+    image = ItemSpriteSheet.KEYRING;
 
-        size = 12;
-    }
+    size = 12;
+  }
 
-    @Override
-    public boolean grab(final Item item) {
-        return item instanceof Key;
-    }
+  @Override
+  public boolean grab(final Item item) {
+    return item instanceof Key;
+  }
 
-    @Override
-    public String info() {
-        return
-        "This is a copper key ring, that lets you keep all your keys " +
-                "separately from the rest of your belongings.";
-    }
+  @Override
+  public String info() {
+    return "This is a copper key ring, that lets you keep all your keys " +
+        "separately from the rest of your belongings.";
+  }
 
-    @Override
-    public int price() {
-        return 50;
-    }
+  @Override
+  public int price() {
+    return 50;
+  }
 }

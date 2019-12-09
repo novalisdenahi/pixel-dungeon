@@ -19,23 +19,22 @@ package com.watabou.pixeldungeon.items.rings;
 
 public class RingOfHaste extends Ring {
 
-    public class Haste extends RingBuff {
-    }
+  public class Haste extends RingBuff {
+  }
 
-    {
-        name = "Ring of Haste";
-    }
+  {
+    name = "Ring of Haste";
+  }
 
-    @Override
-    protected RingBuff buff() {
-        return new Haste();
-    }
+  @Override
+  protected RingBuff buff() {
+    return new Haste();
+  }
 
-    @Override
-    public String desc() {
-        return isKnown() ?
-                "This ring accelerates the wearer's flow of time, allowing one to perform all actions a little faster."
-                :
-                super.desc();
-    }
+  @Override
+  public String desc() {
+    return isKnown()
+        ? "This ring accelerates the wearer's flow of time, allowing one to perform all actions a little faster."
+        : super.desc();
+  }
 }

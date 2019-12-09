@@ -37,81 +37,81 @@ import com.watabou.utils.Random;
 
 public class WandOfLightning extends Wand {
 
-    {
-        name = "Wand of Lightning";
+  {
+    name = "Wand of Lightning";
+  }
+
+  private ArrayList<Char> affected = new ArrayList<Char>();
+
+  private int[] points = new int[20];
+  private int nPoints;
+
+  @Override
+  public String desc() {
+    return "This wand conjures forth deadly arcs of electricity, which deal damage " +
+        "to several creatures standing close to each other.";
+  }
+
+  @Override
+  protected void fx(final int cell, final Callback callback) {
+
+    nPoints = 0;
+    points[nPoints++] = Dungeon.hero.pos;
+
+    Char ch = Actor.findChar(cell);
+    if (ch != null) {
+
+      affected.clear();
+      int lvl = level();
+      hit(ch, Random.Int(5 + (lvl / 2), 10 + lvl));
+
+    } else {
+
+      points[nPoints++] = cell;
+      CellEmitter.center(cell).burst(SparkParticle.FACTORY, 3);
+
+    }
+    curUser.sprite.parent.add(new Lightning(points, nPoints, callback));
+  }
+
+  private void hit(final Char ch, final int damage) {
+
+    if (damage < 1) {
+      return;
     }
 
-    private ArrayList<Char> affected = new ArrayList<Char>();
-
-    private int[] points = new int[20];
-    private int nPoints;
-
-    @Override
-    public String desc() {
-        return
-                "This wand conjures forth deadly arcs of electricity, which deal damage " +
-                "to several creatures standing close to each other.";
+    if (ch == Dungeon.hero) {
+      Camera.main.shake(2, 0.3f);
     }
 
-    @Override
-    protected void fx(final int cell, final Callback callback) {
+    affected.add(ch);
+    ch.damage(Level.water[ch.pos] && !ch.flying ? (int) (damage * 2) : damage,
+        LightningTrap.LIGHTNING);
 
-        nPoints = 0;
-        points[nPoints++] = Dungeon.hero.pos;
+    ch.sprite.centerEmitter().burst(SparkParticle.FACTORY, 3);
+    ch.sprite.flash();
 
-        Char ch = Actor.findChar(cell);
-        if (ch != null) {
+    points[nPoints++] = ch.pos;
 
-            affected.clear();
-            int lvl = level();
-            hit(ch, Random.Int(5 + (lvl / 2), 10 + lvl));
-
-        } else {
-
-            points[nPoints++] = cell;
-            CellEmitter.center(cell).burst(SparkParticle.FACTORY, 3);
-
-        }
-        curUser.sprite.parent.add(new Lightning(points, nPoints, callback));
+    HashSet<Char> ns = new HashSet<Char>();
+    for (int element : Level.NEIGHBOURS8) {
+      Char n = Actor.findChar(ch.pos + element);
+      if ((n != null) && !affected.contains(n)) {
+        ns.add(n);
+      }
     }
 
-    private void hit(final Char ch, final int damage) {
-
-        if (damage < 1) {
-            return;
-        }
-
-        if (ch == Dungeon.hero) {
-            Camera.main.shake(2, 0.3f);
-        }
-
-        affected.add(ch);
-        ch.damage(Level.water[ch.pos] && !ch.flying ? (int) (damage * 2) : damage, LightningTrap.LIGHTNING);
-
-        ch.sprite.centerEmitter().burst(SparkParticle.FACTORY, 3);
-        ch.sprite.flash();
-
-        points[nPoints++] = ch.pos;
-
-        HashSet<Char> ns = new HashSet<Char>();
-        for (int element : Level.NEIGHBOURS8) {
-            Char n = Actor.findChar(ch.pos + element);
-            if ((n != null) && !affected.contains(n)) {
-                ns.add(n);
-            }
-        }
-
-        if (ns.size() > 0) {
-            hit(Random.element(ns), Random.Int(damage / 2, damage));
-        }
+    if (ns.size() > 0) {
+      hit(Random.element(ns), Random.Int(damage / 2, damage));
     }
+  }
 
-    @Override
-    protected void onZap(final int cell) {
-        // Everything is processed in fx() method
-        if (!curUser.isAlive()) {
-            Dungeon.fail(Utils.format(ResultDescriptions.WAND, name, Dungeon.depth));
-            GLog.n("You killed yourself with your own Wand of Lightning...");
-        }
+  @Override
+  protected void onZap(final int cell) {
+    // Everything is processed in fx() method
+    if (!curUser.isAlive()) {
+      Dungeon.fail(Utils.format(ResultDescriptions.WAND, name, Dungeon.depth));
+      GLog.n("You killed yourself with your own Wand of Lightning...");
     }
+  }
 }

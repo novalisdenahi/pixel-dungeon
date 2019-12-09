@@ -45,368 +45,370 @@ import com.watabou.utils.Random;
 
 public class Armor extends EquipableItem {
 
-    public static abstract class Glyph implements Bundlable {
+  public static abstract class Glyph implements Bundlable {
 
-        private static final Class<?>[] glyphs = new Class<?>[] {
-            Bounce.class, Affection.class, AntiEntropy.class, Multiplicity.class,
-            Potential.class, Metabolism.class, Stench.class, Viscosity.class,
-            Displacement.class, Entanglement.class };
+    private static final Class<?>[] glyphs = new Class<?>[] {
+        Bounce.class, Affection.class, AntiEntropy.class, Multiplicity.class,
+        Potential.class, Metabolism.class, Stench.class, Viscosity.class,
+        Displacement.class, Entanglement.class };
 
-        private static final float[] chances = new float[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+    private static final float[] chances = new float[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 
-        @SuppressWarnings("unchecked")
-        public static Glyph random() {
-            try {
-                return ((Class<Glyph>) glyphs[Random.chances(chances)]).newInstance();
-            } catch (Exception e) {
-                return null;
-            }
-        }
-
-        public boolean checkOwner(final Char owner) {
-            if (!owner.isAlive() && (owner instanceof Hero)) {
-
-                ((Hero) owner).killerGlyph = this;
-                Badges.validateDeathFromGlyph();
-                return true;
-
-            } else {
-                return false;
-            }
-        }
-
-        public ItemSprite.Glowing glowing() {
-            return ItemSprite.Glowing.WHITE;
-        }
-
-        public String name(final String armorName) {
-            return armorName;
-        }
-
-        public abstract int proc(Armor armor, Char attacker, Char defender, int damage);
-
-        @Override
-        public void restoreFromBundle(final Bundle bundle) {
-        }
-
-        @Override
-        public void storeInBundle(final Bundle bundle) {
-        }
-
+    @SuppressWarnings("unchecked")
+    public static Glyph random() {
+      try {
+        return ((Class<Glyph>) glyphs[Random.chances(chances)]).newInstance();
+      } catch (Exception e) {
+        return null;
+      }
     }
 
-    private static final int HITS_TO_KNOW = 10;
+    public boolean checkOwner(final Char owner) {
+      if (!owner.isAlive() && (owner instanceof Hero)) {
 
-    private static final String TXT_EQUIP_CURSED = "your %s constricts around you painfully";
+        ((Hero) owner).killerGlyph = this;
+        Badges.validateDeathFromGlyph();
+        return true;
 
-    private static final String TXT_IDENTIFY = "you are now familiar enough with your %s to identify it. It is %s.";
-
-    private static final String TXT_TO_STRING = "%s :%d";
-
-    private static final String TXT_INCOMPATIBLE =
-            "Interaction of different types of magic has erased the glyph on this armor!";
-
-    public int tier;
-    public int STR;
-
-    public int DR;
-
-    private int hitsToKnow = HITS_TO_KNOW;
-
-    public Glyph glyph;
-
-    private static final String UNFAMILIRIARITY = "unfamiliarity";
-    private static final String GLYPH = "glyph";
-
-    public Armor(final int tier) {
-
-        this.tier = tier;
-
-        STR = typicalSTR();
-        DR = typicalDR();
+      } else {
+        return false;
+      }
     }
 
-    @Override
-    public ArrayList<String> actions(final Hero hero) {
-        ArrayList<String> actions = super.actions(hero);
-        actions.add(isEquipped(hero) ? AC_UNEQUIP : AC_EQUIP);
-        return actions;
-    }
-
-    @Override
-    public Item degrade() {
-        DR -= tier;
-        STR++;
-
-        return super.degrade();
-    }
-
-    @Override
-    public boolean doEquip(final Hero hero) {
-
-        detach(hero.belongings.backpack);
-
-        if ((hero.belongings.armor == null) || hero.belongings.armor.doUnequip(hero, true, false)) {
-
-            hero.belongings.armor = this;
-
-            cursedKnown = true;
-            if (cursed) {
-                EquipableItem.equipCursed(hero);
-                GLog.n(TXT_EQUIP_CURSED, toString());
-            }
-
-            ((HeroSprite) hero.sprite).updateArmor();
-
-            hero.spendAndNext(time2equip(hero));
-            return true;
-
-        } else {
-
-            collect(hero.belongings.backpack);
-            return false;
-
-        }
-    }
-
-    @Override
-    public boolean doUnequip(final Hero hero, final boolean collect, final boolean single) {
-        if (super.doUnequip(hero, collect, single)) {
-
-            hero.belongings.armor = null;
-            ((HeroSprite) hero.sprite).updateArmor();
-
-            return true;
-
-        } else {
-
-            return false;
-
-        }
-    }
-
-    @Override
     public ItemSprite.Glowing glowing() {
-        return glyph != null ? glyph.glowing() : null;
+      return ItemSprite.Glowing.WHITE;
     }
 
-    @Override
-    public String info() {
-        String name = name();
-        StringBuilder info = new StringBuilder(desc());
-
-        if (levelKnown) {
-            info.append(
-                    "\n\nThis " + name + " provides damage absorption up to " +
-                            "" + Math.max(DR, 0) + " points per attack. ");
-
-            if (STR > Dungeon.hero.STR()) {
-
-                if (isEquipped(Dungeon.hero)) {
-                    info.append(
-                            "\n\nBecause of your inadequate strength your " +
-                            "movement speed and defense skill is decreased. ");
-                } else {
-                    info.append(
-                            "\n\nBecause of your inadequate strength wearing this armor " +
-                            "will decrease your movement speed and defense skill. ");
-                }
-
-            }
-        } else {
-            info.append(
-                    "\n\nTypical " + name + " provides damage absorption up to " + typicalDR() + " points per attack " +
-                            " and requires " + typicalSTR() + " points of strength. ");
-            if (typicalSTR() > Dungeon.hero.STR()) {
-                info.append("Probably this armor is too heavy for you. ");
-            }
-        }
-
-        if (glyph != null) {
-            info.append("It is enchanted.");
-        }
-
-        if (isEquipped(Dungeon.hero)) {
-            info.append("\n\nYou are wearing the " + name +
-                    (cursed ? ", and because it is cursed, you are powerless to remove it." : "."));
-        } else {
-            if (cursedKnown && cursed) {
-                info.append("\n\nYou can feel a malevolent magic lurking within the " + name + ".");
-            }
-        }
-
-        return info.toString();
+    public String name(final String armorName) {
+      return armorName;
     }
 
-    public Armor inscribe() {
-
-        Class<? extends Glyph> oldGlyphClass = glyph != null ? glyph.getClass() : null;
-        Glyph gl = Glyph.random();
-        while (gl.getClass() == oldGlyphClass) {
-            gl = Armor.Glyph.random();
-        }
-
-        return inscribe(gl);
-    }
-
-    public Armor inscribe(final Glyph glyph) {
-
-        if ((glyph != null) && (this.glyph == null)) {
-            DR += tier;
-        } else if ((glyph == null) && (this.glyph != null)) {
-            DR -= tier;
-        }
-
-        this.glyph = glyph;
-
-        return this;
-    }
-
-    @Override
-    public boolean isEquipped(final Hero hero) {
-        return hero.belongings.armor == this;
-    }
-
-    public boolean isInscribed() {
-        return glyph != null;
-    }
-
-    @Override
-    public int maxDurability(final int lvl) {
-        return 6 * (lvl < 16 ? 16 - lvl : 1);
-    }
-
-    @Override
-    public String name() {
-        return glyph == null ? super.name() : glyph.name(super.name());
-    }
-
-    @Override
-    public int price() {
-        int price = 10 * (1 << (tier - 1));
-        if (glyph != null) {
-            price *= 1.5;
-        }
-        if (cursed && cursedKnown) {
-            price /= 2;
-        }
-        if (levelKnown) {
-            if (level > 0) {
-                price *= (level + 1);
-            } else if (level < 0) {
-                price /= (1 - level);
-            }
-        }
-        if (price < 1) {
-            price = 1;
-        }
-        return price;
-    }
-
-    public int proc(final Char attacker, final Char defender, int damage) {
-
-        if (glyph != null) {
-            damage = glyph.proc(this, attacker, defender, damage);
-        }
-
-        if (!levelKnown) {
-            if (--hitsToKnow <= 0) {
-                levelKnown = true;
-                GLog.w(TXT_IDENTIFY, name(), toString());
-                Badges.validateItemLevelAquired(this);
-            }
-        }
-
-        use();
-
-        return damage;
-    }
-
-    @Override
-    public Item random() {
-        if (Random.Float() < 0.4) {
-            int n = 1;
-            if (Random.Int(3) == 0) {
-                n++;
-                if (Random.Int(3) == 0) {
-                    n++;
-                }
-            }
-            if (Random.Int(2) == 0) {
-                upgrade(n);
-            } else {
-                degrade(n);
-                cursed = true;
-            }
-        }
-
-        if (Random.Int(10) == 0) {
-            inscribe();
-        }
-
-        return this;
-    }
+    public abstract int proc(Armor armor, Char attacker, Char defender, int damage);
 
     @Override
     public void restoreFromBundle(final Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        if ((hitsToKnow = bundle.getInt(UNFAMILIRIARITY)) == 0) {
-            hitsToKnow = HITS_TO_KNOW;
-        }
-        inscribe((Glyph) bundle.get(GLYPH));
-    }
-
-    public Item safeUpgrade() {
-        return upgrade(glyph != null);
     }
 
     @Override
     public void storeInBundle(final Bundle bundle) {
-        super.storeInBundle(bundle);
-        bundle.put(UNFAMILIRIARITY, hitsToKnow);
-        bundle.put(GLYPH, glyph);
     }
 
-    @Override
-    protected float time2equip(final Hero hero) {
-        return 2 / hero.speed();
+  }
+
+  private static final int HITS_TO_KNOW = 10;
+
+  private static final String TXT_EQUIP_CURSED = "your %s constricts around you painfully";
+
+  private static final String TXT_IDENTIFY =
+      "you are now familiar enough with your %s to identify it. It is %s.";
+
+  private static final String TXT_TO_STRING = "%s :%d";
+
+  private static final String TXT_INCOMPATIBLE =
+      "Interaction of different types of magic has erased the glyph on this armor!";
+
+  public int tier;
+  public int STR;
+
+  public int DR;
+
+  private int hitsToKnow = HITS_TO_KNOW;
+
+  public Glyph glyph;
+
+  private static final String UNFAMILIRIARITY = "unfamiliarity";
+  private static final String GLYPH = "glyph";
+
+  public Armor(final int tier) {
+
+    this.tier = tier;
+
+    STR = typicalSTR();
+    DR = typicalDR();
+  }
+
+  @Override
+  public ArrayList<String> actions(final Hero hero) {
+    ArrayList<String> actions = super.actions(hero);
+    actions.add(isEquipped(hero) ? AC_UNEQUIP : AC_EQUIP);
+    return actions;
+  }
+
+  @Override
+  public Item degrade() {
+    DR -= tier;
+    STR++;
+
+    return super.degrade();
+  }
+
+  @Override
+  public boolean doEquip(final Hero hero) {
+
+    detach(hero.belongings.backpack);
+
+    if ((hero.belongings.armor == null) || hero.belongings.armor.doUnequip(hero, true, false)) {
+
+      hero.belongings.armor = this;
+
+      cursedKnown = true;
+      if (cursed) {
+        EquipableItem.equipCursed(hero);
+        GLog.n(TXT_EQUIP_CURSED, toString());
+      }
+
+      ((HeroSprite) hero.sprite).updateArmor();
+
+      hero.spendAndNext(time2equip(hero));
+      return true;
+
+    } else {
+
+      collect(hero.belongings.backpack);
+      return false;
+
     }
+  }
 
-    @Override
-    public String toString() {
-        return levelKnown ? Utils.format(TXT_TO_STRING, super.toString(), STR) : super.toString();
+  @Override
+  public boolean doUnequip(final Hero hero, final boolean collect, final boolean single) {
+    if (super.doUnequip(hero, collect, single)) {
+
+      hero.belongings.armor = null;
+      ((HeroSprite) hero.sprite).updateArmor();
+
+      return true;
+
+    } else {
+
+      return false;
+
     }
+  }
 
-    public int typicalDR() {
-        return tier * 2;
-    }
+  @Override
+  public ItemSprite.Glowing glowing() {
+    return glyph != null ? glyph.glowing() : null;
+  }
 
-    public int typicalSTR() {
-        return 7 + (tier * 2);
-    }
+  @Override
+  public String info() {
+    String name = name();
+    StringBuilder info = new StringBuilder(desc());
 
-    @Override
-    public Item upgrade() {
-        return upgrade(false);
-    }
+    if (levelKnown) {
+      info.append(
+          "\n\nThis " + name + " provides damage absorption up to " +
+              "" + Math.max(DR, 0) + " points per attack. ");
 
-    public Item upgrade(final boolean inscribe) {
+      if (STR > Dungeon.hero.STR()) {
 
-        if (glyph != null) {
-            if (!inscribe && (Random.Int(level) > 0)) {
-                GLog.w(TXT_INCOMPATIBLE);
-                inscribe(null);
-            }
+        if (isEquipped(Dungeon.hero)) {
+          info.append(
+              "\n\nBecause of your inadequate strength your " +
+                  "movement speed and defense skill is decreased. ");
         } else {
-            if (inscribe) {
-                inscribe();
-            }
+          info.append(
+              "\n\nBecause of your inadequate strength wearing this armor " +
+                  "will decrease your movement speed and defense skill. ");
         }
-        ;
 
-        DR += tier;
-        STR--;
-
-        return super.upgrade();
+      }
+    } else {
+      info.append(
+          "\n\nTypical " + name + " provides damage absorption up to " + typicalDR()
+              + " points per attack " +
+              " and requires " + typicalSTR() + " points of strength. ");
+      if (typicalSTR() > Dungeon.hero.STR()) {
+        info.append("Probably this armor is too heavy for you. ");
+      }
     }
+
+    if (glyph != null) {
+      info.append("It is enchanted.");
+    }
+
+    if (isEquipped(Dungeon.hero)) {
+      info.append("\n\nYou are wearing the " + name +
+          (cursed ? ", and because it is cursed, you are powerless to remove it." : "."));
+    } else {
+      if (cursedKnown && cursed) {
+        info.append("\n\nYou can feel a malevolent magic lurking within the " + name + ".");
+      }
+    }
+
+    return info.toString();
+  }
+
+  public Armor inscribe() {
+
+    Class<? extends Glyph> oldGlyphClass = glyph != null ? glyph.getClass() : null;
+    Glyph gl = Glyph.random();
+    while (gl.getClass() == oldGlyphClass) {
+      gl = Armor.Glyph.random();
+    }
+
+    return inscribe(gl);
+  }
+
+  public Armor inscribe(final Glyph glyph) {
+
+    if ((glyph != null) && (this.glyph == null)) {
+      DR += tier;
+    } else if ((glyph == null) && (this.glyph != null)) {
+      DR -= tier;
+    }
+
+    this.glyph = glyph;
+
+    return this;
+  }
+
+  @Override
+  public boolean isEquipped(final Hero hero) {
+    return hero.belongings.armor == this;
+  }
+
+  public boolean isInscribed() {
+    return glyph != null;
+  }
+
+  @Override
+  public int maxDurability(final int lvl) {
+    return 6 * (lvl < 16 ? 16 - lvl : 1);
+  }
+
+  @Override
+  public String name() {
+    return glyph == null ? super.name() : glyph.name(super.name());
+  }
+
+  @Override
+  public int price() {
+    int price = 10 * (1 << (tier - 1));
+    if (glyph != null) {
+      price *= 1.5;
+    }
+    if (cursed && cursedKnown) {
+      price /= 2;
+    }
+    if (levelKnown) {
+      if (level > 0) {
+        price *= (level + 1);
+      } else if (level < 0) {
+        price /= (1 - level);
+      }
+    }
+    if (price < 1) {
+      price = 1;
+    }
+    return price;
+  }
+
+  public int proc(final Char attacker, final Char defender, int damage) {
+
+    if (glyph != null) {
+      damage = glyph.proc(this, attacker, defender, damage);
+    }
+
+    if (!levelKnown) {
+      if (--hitsToKnow <= 0) {
+        levelKnown = true;
+        GLog.w(TXT_IDENTIFY, name(), toString());
+        Badges.validateItemLevelAquired(this);
+      }
+    }
+
+    use();
+
+    return damage;
+  }
+
+  @Override
+  public Item random() {
+    if (Random.Float() < 0.4) {
+      int n = 1;
+      if (Random.Int(3) == 0) {
+        n++;
+        if (Random.Int(3) == 0) {
+          n++;
+        }
+      }
+      if (Random.Int(2) == 0) {
+        upgrade(n);
+      } else {
+        degrade(n);
+        cursed = true;
+      }
+    }
+
+    if (Random.Int(10) == 0) {
+      inscribe();
+    }
+
+    return this;
+  }
+
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    if ((hitsToKnow = bundle.getInt(UNFAMILIRIARITY)) == 0) {
+      hitsToKnow = HITS_TO_KNOW;
+    }
+    inscribe((Glyph) bundle.get(GLYPH));
+  }
+
+  public Item safeUpgrade() {
+    return upgrade(glyph != null);
+  }
+
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(UNFAMILIRIARITY, hitsToKnow);
+    bundle.put(GLYPH, glyph);
+  }
+
+  @Override
+  protected float time2equip(final Hero hero) {
+    return 2 / hero.speed();
+  }
+
+  @Override
+  public String toString() {
+    return levelKnown ? Utils.format(TXT_TO_STRING, super.toString(), STR) : super.toString();
+  }
+
+  public int typicalDR() {
+    return tier * 2;
+  }
+
+  public int typicalSTR() {
+    return 7 + (tier * 2);
+  }
+
+  @Override
+  public Item upgrade() {
+    return upgrade(false);
+  }
+
+  public Item upgrade(final boolean inscribe) {
+
+    if (glyph != null) {
+      if (!inscribe && (Random.Int(level) > 0)) {
+        GLog.w(TXT_INCOMPATIBLE);
+        inscribe(null);
+      }
+    } else {
+      if (inscribe) {
+        inscribe();
+      }
+    }
+    ;
+
+    DR += tier;
+    STR--;
+
+    return super.upgrade();
+  }
 }

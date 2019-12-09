@@ -25,44 +25,44 @@ import com.watabou.pixeldungeon.sprites.CharSprite;
 
 public class IceBlock extends Gizmo {
 
-    public static IceBlock freeze(final CharSprite sprite) {
+  public static IceBlock freeze(final CharSprite sprite) {
 
-        IceBlock iceBlock = new IceBlock(sprite);
-        sprite.parent.add(iceBlock);
+    IceBlock iceBlock = new IceBlock(sprite);
+    sprite.parent.add(iceBlock);
 
-        return iceBlock;
+    return iceBlock;
+  }
+
+  private float phase;
+
+  private CharSprite target;
+
+  public IceBlock(final CharSprite target) {
+    super();
+
+    this.target = target;
+    phase = 0;
+  }
+
+  public void melt() {
+
+    target.resetColor();
+    killAndErase();
+
+    if (visible) {
+      Splash.at(target.center(), 0xFFB2D6FF, 5);
+      Sample.INSTANCE.play(Assets.SND_SHATTER);
     }
+  }
 
-    private float phase;
+  @Override
+  public void update() {
+    super.update();
 
-    private CharSprite target;
-
-    public IceBlock(final CharSprite target) {
-        super();
-
-        this.target = target;
-        phase = 0;
+    if ((phase += Game.elapsed * 2) < 1) {
+      target.tint(0.83f, 1.17f, 1.33f, phase * 0.6f);
+    } else {
+      target.tint(0.83f, 1.17f, 1.33f, 0.6f);
     }
-
-    public void melt() {
-
-        target.resetColor();
-        killAndErase();
-
-        if (visible) {
-            Splash.at(target.center(), 0xFFB2D6FF, 5);
-            Sample.INSTANCE.play(Assets.SND_SHATTER);
-        }
-    }
-
-    @Override
-    public void update() {
-        super.update();
-
-        if ((phase += Game.elapsed * 2) < 1) {
-            target.tint(0.83f, 1.17f, 1.33f, phase * 0.6f);
-        } else {
-            target.tint(0.83f, 1.17f, 1.33f, 0.6f);
-        }
-    }
+  }
 }

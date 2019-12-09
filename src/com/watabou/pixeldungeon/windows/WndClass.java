@@ -28,172 +28,172 @@ import com.watabou.pixeldungeon.utils.Utils;
 
 public class WndClass extends WndTabbed {
 
-    private class MasteryTab extends Group {
+  private class MasteryTab extends Group {
 
-        private static final int MARGIN = 4;
+    private static final int MARGIN = 4;
 
-        private BitmapTextMultiline normal;
-        private BitmapTextMultiline highlighted;
+    private BitmapTextMultiline normal;
+    private BitmapTextMultiline highlighted;
 
-        public float height;
-        public float width;
+    public float height;
+    public float width;
 
-        public MasteryTab() {
-            super();
+    public MasteryTab() {
+      super();
 
-            String text = null;
-            switch (cl) {
-            case WARRIOR:
-                text = HeroSubClass.GLADIATOR.desc() + "\n\n" + HeroSubClass.BERSERKER.desc();
-                break;
-            case MAGE:
-                text = HeroSubClass.BATTLEMAGE.desc() + "\n\n" + HeroSubClass.WARLOCK.desc();
-                break;
-            case ROGUE:
-                text = HeroSubClass.FREERUNNER.desc() + "\n\n" + HeroSubClass.ASSASSIN.desc();
-                break;
-            case HUNTRESS:
-                text = HeroSubClass.SNIPER.desc() + "\n\n" + HeroSubClass.WARDEN.desc();
-                break;
-            }
+      String text = null;
+      switch (cl) {
+        case WARRIOR:
+          text = HeroSubClass.GLADIATOR.desc() + "\n\n" + HeroSubClass.BERSERKER.desc();
+          break;
+        case MAGE:
+          text = HeroSubClass.BATTLEMAGE.desc() + "\n\n" + HeroSubClass.WARLOCK.desc();
+          break;
+        case ROGUE:
+          text = HeroSubClass.FREERUNNER.desc() + "\n\n" + HeroSubClass.ASSASSIN.desc();
+          break;
+        case HUNTRESS:
+          text = HeroSubClass.SNIPER.desc() + "\n\n" + HeroSubClass.WARDEN.desc();
+          break;
+      }
 
-            Highlighter hl = new Highlighter(text);
+      Highlighter hl = new Highlighter(text);
 
-            normal = PixelScene.createMultiline(hl.text, 6);
-            normal.maxWidth = WIDTH - (MARGIN * 2);
-            normal.measure();
-            normal.x = MARGIN;
-            normal.y = MARGIN;
-            add(normal);
+      normal = PixelScene.createMultiline(hl.text, 6);
+      normal.maxWidth = WIDTH - (MARGIN * 2);
+      normal.measure();
+      normal.x = MARGIN;
+      normal.y = MARGIN;
+      add(normal);
 
-            if (hl.isHighlighted()) {
-                normal.mask = hl.inverted();
+      if (hl.isHighlighted()) {
+        normal.mask = hl.inverted();
 
-                highlighted = PixelScene.createMultiline(hl.text, 6);
-                highlighted.maxWidth = normal.maxWidth;
-                highlighted.measure();
-                highlighted.x = normal.x;
-                highlighted.y = normal.y;
-                add(highlighted);
+        highlighted = PixelScene.createMultiline(hl.text, 6);
+        highlighted.maxWidth = normal.maxWidth;
+        highlighted.measure();
+        highlighted.x = normal.x;
+        highlighted.y = normal.y;
+        add(highlighted);
 
-                highlighted.mask = hl.mask;
-                highlighted.hardlight(TITLE_COLOR);
-            }
+        highlighted.mask = hl.mask;
+        highlighted.hardlight(TITLE_COLOR);
+      }
 
-            height = normal.y + normal.height() + MARGIN;
-            width = normal.x + normal.width() + MARGIN;
+      height = normal.y + normal.height() + MARGIN;
+      width = normal.x + normal.width() + MARGIN;
+    }
+  }
+
+  private class PerksTab extends Group {
+
+    private static final int MARGIN = 4;
+    private static final int GAP = 4;
+
+    private static final String DOT = "\u007F";
+
+    public float height;
+    public float width;
+
+    public PerksTab() {
+      super();
+
+      float dotWidth = 0;
+
+      String[] items = cl.perks();
+      float pos = MARGIN;
+
+      for (int i = 0; i < items.length; i++) {
+
+        if (i > 0) {
+          pos += GAP;
         }
+
+        BitmapText dot = PixelScene.createText(DOT, 6);
+        dot.x = MARGIN;
+        dot.y = pos;
+        if (dotWidth == 0) {
+          dot.measure();
+          dotWidth = dot.width();
+        }
+        add(dot);
+
+        BitmapTextMultiline item = PixelScene.createMultiline(items[i], 6);
+        item.x = dot.x + dotWidth;
+        item.y = pos;
+        item.maxWidth = (int) (WIDTH - (MARGIN * 2) - dotWidth);
+        item.measure();
+        add(item);
+
+        pos += item.height();
+        float w = item.width();
+        if (w > width) {
+          width = w;
+        }
+      }
+
+      width += MARGIN + dotWidth;
+      height = pos + MARGIN;
+    }
+  }
+
+  private class RankingTab extends LabeledTab {
+
+    private Group page;
+
+    public RankingTab(final String label, final Group page) {
+      super(label);
+      this.page = page;
     }
 
-    private class PerksTab extends Group {
+    @Override
+    protected void select(final boolean value) {
+      super.select(value);
+      if (page != null) {
+        page.visible = page.active = selected;
+      }
+    }
+  }
 
-        private static final int MARGIN = 4;
-        private static final int GAP = 4;
+  private static final String TXT_MASTERY = "Mastery";
 
-        private static final String DOT = "\u007F";
+  private static final int WIDTH = 110;
+  private static final int TAB_WIDTH = 50;
 
-        public float height;
-        public float width;
+  private HeroClass cl;
 
-        public PerksTab() {
-            super();
+  private PerksTab tabPerks;
 
-            float dotWidth = 0;
+  private MasteryTab tabMastery;
 
-            String[] items = cl.perks();
-            float pos = MARGIN;
+  public WndClass(final HeroClass cl) {
 
-            for (int i = 0; i < items.length; i++) {
+    super();
 
-                if (i > 0) {
-                    pos += GAP;
-                }
+    this.cl = cl;
 
-                BitmapText dot = PixelScene.createText(DOT, 6);
-                dot.x = MARGIN;
-                dot.y = pos;
-                if (dotWidth == 0) {
-                    dot.measure();
-                    dotWidth = dot.width();
-                }
-                add(dot);
+    tabPerks = new PerksTab();
+    add(tabPerks);
 
-                BitmapTextMultiline item = PixelScene.createMultiline(items[i], 6);
-                item.x = dot.x + dotWidth;
-                item.y = pos;
-                item.maxWidth = (int) (WIDTH - (MARGIN * 2) - dotWidth);
-                item.measure();
-                add(item);
+    Tab tab = new RankingTab(Utils.capitalize(cl.title()), tabPerks);
+    tab.setSize(TAB_WIDTH, tabHeight());
+    add(tab);
 
-                pos += item.height();
-                float w = item.width();
-                if (w > width) {
-                    width = w;
-                }
-            }
+    if (Badges.isUnlocked(cl.masteryBadge())) {
+      tabMastery = new MasteryTab();
+      add(tabMastery);
 
-            width += MARGIN + dotWidth;
-            height = pos + MARGIN;
-        }
+      tab = new RankingTab(TXT_MASTERY, tabMastery);
+      tab.setSize(TAB_WIDTH, tabHeight());
+      add(tab);
+
+      resize(
+          (int) Math.max(tabPerks.width, tabMastery.width),
+          (int) Math.max(tabPerks.height, tabMastery.height));
+    } else {
+      resize((int) tabPerks.width, (int) tabPerks.height);
     }
 
-    private class RankingTab extends LabeledTab {
-
-        private Group page;
-
-        public RankingTab(final String label, final Group page) {
-            super(label);
-            this.page = page;
-        }
-
-        @Override
-        protected void select(final boolean value) {
-            super.select(value);
-            if (page != null) {
-                page.visible = page.active = selected;
-            }
-        }
-    }
-
-    private static final String TXT_MASTERY = "Mastery";
-
-    private static final int WIDTH = 110;
-    private static final int TAB_WIDTH = 50;
-
-    private HeroClass cl;
-
-    private PerksTab tabPerks;
-
-    private MasteryTab tabMastery;
-
-    public WndClass(final HeroClass cl) {
-
-        super();
-
-        this.cl = cl;
-
-        tabPerks = new PerksTab();
-        add(tabPerks);
-
-        Tab tab = new RankingTab(Utils.capitalize(cl.title()), tabPerks);
-        tab.setSize(TAB_WIDTH, tabHeight());
-        add(tab);
-
-        if (Badges.isUnlocked(cl.masteryBadge())) {
-            tabMastery = new MasteryTab();
-            add(tabMastery);
-
-            tab = new RankingTab(TXT_MASTERY, tabMastery);
-            tab.setSize(TAB_WIDTH, tabHeight());
-            add(tab);
-
-            resize(
-                    (int) Math.max(tabPerks.width, tabMastery.width),
-                    (int) Math.max(tabPerks.height, tabMastery.height));
-        } else {
-            resize((int) tabPerks.width, (int) tabPerks.height);
-        }
-
-        select(0);
-    }
+    select(0);
+  }
 }

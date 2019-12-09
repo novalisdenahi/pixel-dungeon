@@ -23,38 +23,38 @@ import com.watabou.utils.Bundle;
 
 public class Terror extends FlavourBuff {
 
-    public static final float DURATION = 10f;
+  public static final float DURATION = 10f;
 
-    public static void recover(final Char target) {
-        Terror terror = target.buff(Terror.class);
-        if ((terror != null) && (terror.cooldown() < DURATION)) {
-            target.remove(terror);
-        }
+  public static void recover(final Char target) {
+    Terror terror = target.buff(Terror.class);
+    if ((terror != null) && (terror.cooldown() < DURATION)) {
+      target.remove(terror);
     }
+  }
 
-    public int object = 0;
+  public int object = 0;
 
-    private static final String OBJECT = "object";
+  private static final String OBJECT = "object";
 
-    @Override
-    public int icon() {
-        return BuffIndicator.TERROR;
-    }
+  @Override
+  public int icon() {
+    return BuffIndicator.TERROR;
+  }
 
-    @Override
-    public void restoreFromBundle(final Bundle bundle) {
-        super.restoreFromBundle(bundle);
-        object = bundle.getInt(OBJECT);
-    }
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    object = bundle.getInt(OBJECT);
+  }
 
-    @Override
-    public void storeInBundle(final Bundle bundle) {
-        super.storeInBundle(bundle);
-        bundle.put(OBJECT, object);
-    }
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(OBJECT, object);
+  }
 
-    @Override
-    public String toString() {
-        return "Terror";
-    }
+  @Override
+  public String toString() {
+    return "Terror";
+  }
 }

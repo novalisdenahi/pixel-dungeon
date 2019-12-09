@@ -37,159 +37,161 @@ import com.watabou.pixeldungeon.ui.PrefsButton;
 
 public class QuestChooseScene extends PixelScene {
 
-    private static class DashboardItem extends Button {
+  private static class DashboardItem extends Button {
 
-        public static final float SIZE = 48;
+    public static final float SIZE = 48;
 
-        private static final int IMAGE_SIZE = 32;
+    private static final int IMAGE_SIZE = 32;
 
-        private Image image;
-        private BitmapText label;
+    private Image image;
+    private BitmapText label;
 
-        public DashboardItem(final String text, final int index) {
-            super();
+    public DashboardItem(final String text, final int index) {
+      super();
 
-            image.frame(image.texture.uvRect(index * IMAGE_SIZE, 0, (index + 1) * IMAGE_SIZE, IMAGE_SIZE));
-            label.text(text);
-            label.measure();
+      image
+          .frame(image.texture.uvRect(index * IMAGE_SIZE, 0, (index + 1) * IMAGE_SIZE, IMAGE_SIZE));
+      label.text(text);
+      label.measure();
 
-            setSize(SIZE, SIZE);
-        }
-
-        @Override
-        protected void createChildren() {
-            super.createChildren();
-
-            image = new Image(Assets.QUESTBOARD);
-            add(image);
-
-            label = PixelScene.createText(9);
-            add(label);
-        }
-
-        @Override
-        protected void layout() {
-            super.layout();
-
-            image.x = PixelScene.align(x + ((width - image.width()) / 2));
-            image.y = PixelScene.align(y);
-
-            label.x = PixelScene.align(x + ((width - label.width()) / 2));
-            label.y = PixelScene.align(image.y + image.height() + 2);
-        }
-
-        @Override
-        protected void onTouchDown() {
-            image.brightness(1.5f);
-            Sample.INSTANCE.play(Assets.SND_CLICK, 1, 1, 0.8f);
-        }
-
-        @Override
-        protected void onTouchUp() {
-            image.resetColor();
-        }
+      setSize(SIZE, SIZE);
     }
-
-    public static int curDungeonType = DungeonType.YOG; // Default is YOG
-
-    private static final String TXT_DUNGEON_YOG_DZEWA = "Dungeon Of Yog-Dzewa";
-    private static final String TXT_DUNGEON_GOBLINS = "Dungeon Of Goblins";
-    private static final String TXT_DUNGEON_MAD_MAGE = "Dungeon Of The Made Mage";
 
     @Override
-    public void create() {
+    protected void createChildren() {
+      super.createChildren();
 
-        super.create();
+      image = new Image(Assets.QUESTBOARD);
+      add(image);
 
-        Music.INSTANCE.play(Assets.THEME, true);
-        Music.INSTANCE.volume(1f);
-
-        uiCamera.visible = false;
-
-        int w = Camera.main.width;
-        int h = Camera.main.height;
-
-        // float height = 150;
-
-        Archs archs = new Archs();
-        archs.setSize(w, h);
-        add(archs);
-
-        Image title = BannerSprites.get(BannerSprites.Type.SELECT_DUNGEON);
-        add(title);
-
-        float height = title.height +
-                (PixelDungeon.landscape() ? DashboardItem.SIZE : DashboardItem.SIZE * 3);
-
-        title.x = (w - title.width()) / 2;
-        title.y = (h - height) / 2;
-
-        placeTorch(title.x + 18, title.y - 10);
-        placeTorch((title.x + title.width) - 18, title.y - 10);
-
-        DashboardItem btnGoblins = new DashboardItem(TXT_DUNGEON_GOBLINS, 1) {
-            @Override
-            protected void onClick() {
-                switchNoFadeIntoSelectedDungeon(DungeonType.GOBLIN);
-            }
-        };
-        add(btnGoblins);
-
-        // TODO fix icon
-        DashboardItem btnMadMage = new DashboardItem(TXT_DUNGEON_MAD_MAGE, 1) {
-            @Override
-            protected void onClick() {
-                switchNoFadeIntoSelectedDungeon(DungeonType.YOG);
-            }
-        };
-        add(btnMadMage);
-
-        DashboardItem btnYogDzewa = new DashboardItem(TXT_DUNGEON_YOG_DZEWA, 0) {
-            @Override
-            protected void onClick() {
-                switchNoFadeIntoSelectedDungeon(DungeonType.YOG);
-            }
-        };
-        add(btnYogDzewa);
-
-        if (PixelDungeon.landscape()) {
-            btnGoblins.setPos(((w / 2) - (btnGoblins.width() / 2) - (DashboardItem.SIZE * 2)), (h / 2));
-            btnMadMage.setPos((w / 2) - (btnMadMage.width() / 2), (h / 2));
-            btnYogDzewa.setPos((((w / 2) - (btnYogDzewa.width() / 2)) + (DashboardItem.SIZE * 2)), (h / 2));
-        } else {
-            btnGoblins.setPos((w / 2) - (btnGoblins.width() / 2), ((h / 2) - DashboardItem.SIZE));
-            btnMadMage.setPos((w / 2) - (btnMadMage.width() / 2), (h / 2));
-            btnYogDzewa.setPos((w / 2) - (btnYogDzewa.width() / 2), ((h / 2) + DashboardItem.SIZE));
-        }
-
-        BitmapText version = new BitmapText("v " + Game.version, font1x);
-        version.measure();
-        version.hardlight(0x888888);
-        version.x = w - version.width();
-        version.y = h - version.height();
-        add(version);
-
-        PrefsButton btnPrefs = new PrefsButton();
-        btnPrefs.setPos(0, 0);
-        add(btnPrefs);
-
-        ExitButton btnExit = new ExitButton();
-        btnExit.setPos(w - btnExit.width(), 0);
-        add(btnExit);
-
-        fadeIn();
+      label = PixelScene.createText(9);
+      add(label);
     }
 
-    private void placeTorch(final float x, final float y) {
-        Fireball fb = new Fireball();
-        fb.setPos(x, y);
-        add(fb);
+    @Override
+    protected void layout() {
+      super.layout();
+
+      image.x = PixelScene.align(x + ((width - image.width()) / 2));
+      image.y = PixelScene.align(y);
+
+      label.x = PixelScene.align(x + ((width - label.width()) / 2));
+      label.y = PixelScene.align(image.y + image.height() + 2);
     }
 
-    private void switchNoFadeIntoSelectedDungeon(final int selectedDungeonType) {
-        Dungeon.hero = null;
-        curDungeonType = selectedDungeonType;
-        InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
-        Game.switchScene(IntroScene.class);
+    @Override
+    protected void onTouchDown() {
+      image.brightness(1.5f);
+      Sample.INSTANCE.play(Assets.SND_CLICK, 1, 1, 0.8f);
     }
+
+    @Override
+    protected void onTouchUp() {
+      image.resetColor();
+    }
+  }
+
+  public static int curDungeonType = DungeonType.YOG; // Default is YOG
+
+  private static final String TXT_DUNGEON_YOG_DZEWA = "Dungeon Of Yog-Dzewa";
+  private static final String TXT_DUNGEON_GOBLINS = "Dungeon Of Goblins";
+  private static final String TXT_DUNGEON_MAD_MAGE = "Dungeon Of The Made Mage";
+
+  @Override
+  public void create() {
+
+    super.create();
+
+    Music.INSTANCE.play(Assets.THEME, true);
+    Music.INSTANCE.volume(1f);
+
+    uiCamera.visible = false;
+
+    int w = Camera.main.width;
+    int h = Camera.main.height;
+
+    // float height = 150;
+
+    Archs archs = new Archs();
+    archs.setSize(w, h);
+    add(archs);
+
+    Image title = BannerSprites.get(BannerSprites.Type.SELECT_DUNGEON);
+    add(title);
+
+    float height = title.height +
+        (PixelDungeon.landscape() ? DashboardItem.SIZE : DashboardItem.SIZE * 3);
+
+    title.x = (w - title.width()) / 2;
+    title.y = (h - height) / 2;
+
+    placeTorch(title.x + 18, title.y - 10);
+    placeTorch((title.x + title.width) - 18, title.y - 10);
+
+    DashboardItem btnGoblins = new DashboardItem(TXT_DUNGEON_GOBLINS, 1) {
+      @Override
+      protected void onClick() {
+        switchNoFadeIntoSelectedDungeon(DungeonType.GOBLIN);
+      }
+    };
+    add(btnGoblins);
+
+    // TODO fix icon
+    DashboardItem btnMadMage = new DashboardItem(TXT_DUNGEON_MAD_MAGE, 1) {
+      @Override
+      protected void onClick() {
+        switchNoFadeIntoSelectedDungeon(DungeonType.YOG);
+      }
+    };
+    add(btnMadMage);
+
+    DashboardItem btnYogDzewa = new DashboardItem(TXT_DUNGEON_YOG_DZEWA, 0) {
+      @Override
+      protected void onClick() {
+        switchNoFadeIntoSelectedDungeon(DungeonType.YOG);
+      }
+    };
+    add(btnYogDzewa);
+
+    if (PixelDungeon.landscape()) {
+      btnGoblins.setPos(((w / 2) - (btnGoblins.width() / 2) - (DashboardItem.SIZE * 2)), (h / 2));
+      btnMadMage.setPos((w / 2) - (btnMadMage.width() / 2), (h / 2));
+      btnYogDzewa.setPos((((w / 2) - (btnYogDzewa.width() / 2)) + (DashboardItem.SIZE * 2)),
+          (h / 2));
+    } else {
+      btnGoblins.setPos((w / 2) - (btnGoblins.width() / 2), ((h / 2) - DashboardItem.SIZE));
+      btnMadMage.setPos((w / 2) - (btnMadMage.width() / 2), (h / 2));
+      btnYogDzewa.setPos((w / 2) - (btnYogDzewa.width() / 2), ((h / 2) + DashboardItem.SIZE));
+    }
+
+    BitmapText version = new BitmapText("v " + Game.version, font1x);
+    version.measure();
+    version.hardlight(0x888888);
+    version.x = w - version.width();
+    version.y = h - version.height();
+    add(version);
+
+    PrefsButton btnPrefs = new PrefsButton();
+    btnPrefs.setPos(0, 0);
+    add(btnPrefs);
+
+    ExitButton btnExit = new ExitButton();
+    btnExit.setPos(w - btnExit.width(), 0);
+    add(btnExit);
+
+    fadeIn();
+  }
+
+  private void placeTorch(final float x, final float y) {
+    Fireball fb = new Fireball();
+    fb.setPos(x, y);
+    add(fb);
+  }
+
+  private void switchNoFadeIntoSelectedDungeon(final int selectedDungeonType) {
+    Dungeon.hero = null;
+    curDungeonType = selectedDungeonType;
+    InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+    Game.switchScene(IntroScene.class);
+  }
 }

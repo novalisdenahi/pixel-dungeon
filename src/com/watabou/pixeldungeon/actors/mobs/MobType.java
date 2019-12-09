@@ -18,29 +18,27 @@
 package com.watabou.pixeldungeon.actors.mobs;
 
 public enum MobType {
-    NONE(null, null),
-    UNDEAD("undead",
-            "Just bones, rothing flash and evil aura. Nothing living."),
-    DEMON("demon",
-            "Creature from the Nine Hell. Pure evil or worse.");
+  NONE(null, null), UNDEAD("undead",
+      "Just bones, rothing flash and evil aura. Nothing living."), DEMON("demon",
+          "Creature from the Nine Hell. Pure evil or worse.");
 
-    private String title;
+  private String title;
 
-    private String desc;
+  private String desc;
 
-    private static final String MOBTYPE = "mobType";
+  private static final String MOBTYPE = "mobType";
 
-    private MobType(final String title, final String desc) {
-        this.title = title;
-        this.desc = desc;
-    }
+  private MobType(final String title, final String desc) {
+    this.title = title;
+    this.desc = desc;
+  }
 
-    public String desc() {
-        return desc;
-    }
+  public String desc() {
+    return desc;
+  }
 
-    public String title() {
-        return title;
-    }
+  public String title() {
+    return title;
+  }
 
 }

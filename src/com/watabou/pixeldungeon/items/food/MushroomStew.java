@@ -29,32 +29,32 @@ import com.watabou.pixeldungeon.sprites.ItemSpriteSheet;
 
 public class MushroomStew extends Food {
 
-    {
-        name = "mushroom stew";
-        image = ItemSpriteSheet.MUSHROOM_STEW;
-        energy = Hunger.STARVING;
-    }
+  {
+    name = "mushroom stew";
+    image = ItemSpriteSheet.MUSHROOM_STEW;
+    energy = Hunger.STARVING;
+  }
 
-    @Override
-    public void execute(final Hero hero, final String action) {
-        hero.HP = hero.HT;
-        Buff.detach(hero, Poison.class);
-        Buff.detach(hero, Cripple.class);
-        Buff.detach(hero, Weakness.class);
-        Buff.detach(hero, Bleeding.class);
+  @Override
+  public void execute(final Hero hero, final String action) {
+    hero.HP = hero.HT;
+    Buff.detach(hero, Poison.class);
+    Buff.detach(hero, Cripple.class);
+    Buff.detach(hero, Weakness.class);
+    Buff.detach(hero, Bleeding.class);
 
-        hero.sprite.emitter().start(Speck.factory(Speck.HEALING), 0.4f, 4);
+    hero.sprite.emitter().start(Speck.factory(Speck.HEALING), 0.4f, 4);
 
-        super.execute(hero, action);
-    }
+    super.execute(hero, action);
+  }
 
-    @Override
-    public String info() {
-        return "This stew made from purple magic mushroom. Smells good, looks... not bad. The cook said fine, worth a try.";
-    }
+  @Override
+  public String info() {
+    return "This stew made from purple magic mushroom. Smells good, looks... not bad. The cook said fine, worth a try.";
+  }
 
-    @Override
-    public int price() {
-        return 30 * quantity;
-    }
+  @Override
+  public int price() {
+    return 30 * quantity;
+  }
 }

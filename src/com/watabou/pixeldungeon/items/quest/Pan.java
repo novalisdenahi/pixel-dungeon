@@ -22,30 +22,30 @@ import com.watabou.pixeldungeon.sprites.ItemSpriteSheet;
 
 public class Pan extends Item {
 
-    {
-        name = "pan";
-        image = ItemSpriteSheet.PAN;
+  {
+    name = "pan";
+    image = ItemSpriteSheet.PAN;
 
-        unique = true;
-    }
+    unique = true;
+  }
 
-    @Override
-    public String info() {
-        return "Gotten worn old pan.";
-    }
+  @Override
+  public String info() {
+    return "Gotten worn old pan.";
+  }
 
-    @Override
-    public boolean isIdentified() {
-        return true;
-    }
+  @Override
+  public boolean isIdentified() {
+    return true;
+  }
 
-    @Override
-    public boolean isUpgradable() {
-        return false;
-    }
+  @Override
+  public boolean isUpgradable() {
+    return false;
+  }
 
-    @Override
-    public int price() {
-        return 2;
-    }
+  @Override
+  public int price() {
+    return 2;
+  }
 }

@@ -23,17 +23,17 @@ import com.watabou.pixeldungeon.levels.Terrain;
 
 public class EntrancePainter extends Painter {
 
-    public static void paint(final Level level, final Room room) {
+  public static void paint(final Level level, final Room room) {
 
-        Painter.fill(level, room, Terrain.WALL);
-        Painter.fill(level, room, 1, Terrain.EMPTY);
+    Painter.fill(level, room, Terrain.WALL);
+    Painter.fill(level, room, 1, Terrain.EMPTY);
 
-        for (Room.Door door : room.connected.values()) {
-            door.set(Room.Door.Type.REGULAR);
-        }
-
-        level.entrance = room.random(1);
-        Painter.set(level, level.entrance, Terrain.ENTRANCE);
+    for (Room.Door door : room.connected.values()) {
+      door.set(Room.Door.Type.REGULAR);
     }
+
+    level.entrance = room.random(1);
+    Painter.set(level, level.entrance, Terrain.ENTRANCE);
+  }
 
 }

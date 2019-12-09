@@ -27,97 +27,97 @@ import com.watabou.utils.Random;
 
 public class GooSprite extends MobSprite {
 
-    public static class GooParticle extends PixelParticle.Shrinking {
+  public static class GooParticle extends PixelParticle.Shrinking {
 
-        public static final Emitter.Factory FACTORY = new Factory() {
-            @Override
-            public void emit(final Emitter emitter, final int index, final float x, final float y) {
-                ((GooParticle) emitter.recycle(GooParticle.class)).reset(x, y);
-            }
-        };
+    public static final Emitter.Factory FACTORY = new Factory() {
+      @Override
+      public void emit(final Emitter emitter, final int index, final float x, final float y) {
+        ((GooParticle) emitter.recycle(GooParticle.class)).reset(x, y);
+      }
+    };
 
-        public GooParticle() {
-            super();
+    public GooParticle() {
+      super();
 
-            color(0x000000);
-            lifespan = 0.3f;
+      color(0x000000);
+      lifespan = 0.3f;
 
-            acc.set(0, +50);
-        }
-
-        public void reset(final float x, final float y) {
-            revive();
-
-            this.x = x;
-            this.y = y;
-
-            left = lifespan;
-
-            size = 4;
-            speed.polar(-Random.Float(PointF.PI), Random.Float(32, 48));
-        }
-
-        @Override
-        public void update() {
-            super.update();
-            float p = left / lifespan;
-            am = p > 0.5f ? (1 - p) * 2f : 1;
-        }
+      acc.set(0, +50);
     }
 
-    private Animation pump;
+    public void reset(final float x, final float y) {
+      revive();
 
-    private Animation jump;
+      this.x = x;
+      this.y = y;
 
-    private Emitter spray;
+      left = lifespan;
 
-    public GooSprite() {
-        super();
-
-        texture(Assets.GOO);
-
-        TextureFilm frames = new TextureFilm(texture, 20, 14);
-
-        idle = new Animation(10, true);
-        idle.frames(frames, 0, 1);
-
-        run = new Animation(10, true);
-        run.frames(frames, 0, 1);
-
-        pump = new Animation(20, true);
-        pump.frames(frames, 0, 1);
-
-        jump = new Animation(1, true);
-        jump.frames(frames, 6);
-
-        attack = new Animation(10, false);
-        attack.frames(frames, 5, 0, 6);
-
-        die = new Animation(10, false);
-        die.frames(frames, 2, 3, 4);
-
-        play(idle);
+      size = 4;
+      speed.polar(-Random.Float(PointF.PI), Random.Float(32, 48));
     }
 
     @Override
-    public int blood() {
-        return 0xFF000000;
+    public void update() {
+      super.update();
+      float p = left / lifespan;
+      am = p > 0.5f ? (1 - p) * 2f : 1;
     }
+  }
 
-    @Override
-    public void play(final Animation anim, final boolean force) {
-        super.play(anim, force);
+  private Animation pump;
 
-        if (anim == pump) {
-            spray = centerEmitter();
-            spray.pour(GooParticle.FACTORY, 0.04f);
-        } else if (spray != null) {
-            spray.on = false;
-            spray = null;
-        }
+  private Animation jump;
+
+  private Emitter spray;
+
+  public GooSprite() {
+    super();
+
+    texture(Assets.GOO);
+
+    TextureFilm frames = new TextureFilm(texture, 20, 14);
+
+    idle = new Animation(10, true);
+    idle.frames(frames, 0, 1);
+
+    run = new Animation(10, true);
+    run.frames(frames, 0, 1);
+
+    pump = new Animation(20, true);
+    pump.frames(frames, 0, 1);
+
+    jump = new Animation(1, true);
+    jump.frames(frames, 6);
+
+    attack = new Animation(10, false);
+    attack.frames(frames, 5, 0, 6);
+
+    die = new Animation(10, false);
+    die.frames(frames, 2, 3, 4);
+
+    play(idle);
+  }
+
+  @Override
+  public int blood() {
+    return 0xFF000000;
+  }
+
+  @Override
+  public void play(final Animation anim, final boolean force) {
+    super.play(anim, force);
+
+    if (anim == pump) {
+      spray = centerEmitter();
+      spray.pour(GooParticle.FACTORY, 0.04f);
+    } else if (spray != null) {
+      spray.on = false;
+      spray = null;
     }
+  }
 
-    public void pumpUp() {
-        play(pump);
-    }
+  public void pumpUp() {
+    play(pump);
+  }
 }

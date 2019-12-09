@@ -23,78 +23,81 @@ import com.watabou.pixeldungeon.ui.BuffIndicator;
 
 public class Buff extends Actor {
 
-    public static <T extends Buff> T affect(final Char target, final Class<T> buffClass) {
-        T buff = target.buff(buffClass);
-        if (buff != null) {
-            return buff;
-        } else {
-            return Buff.append(target, buffClass);
-        }
+  public static <T extends Buff> T affect(final Char target, final Class<T> buffClass) {
+    T buff = target.buff(buffClass);
+    if (buff != null) {
+      return buff;
+    } else {
+      return Buff.append(target, buffClass);
+    }
+  }
+
+  public static <T extends FlavourBuff> T affect(final Char target, final Class<T> buffClass,
+      final float duration) {
+    T buff = Buff.affect(target, buffClass);
+    buff.spend(duration);
+    return buff;
+  }
+
+  public static <T extends Buff> T append(final Char target, final Class<T> buffClass) {
+    try {
+      T buff = buffClass.newInstance();
+      buff.attachTo(target);
+      return buff;
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  public static <T extends FlavourBuff> T append(final Char target, final Class<T> buffClass,
+      final float duration) {
+    T buff = Buff.append(target, buffClass);
+    buff.spend(duration);
+    return buff;
+  }
+
+  public static void detach(final Buff buff) {
+    if (buff != null) {
+      buff.detach();
+    }
+  }
+
+  public static void detach(final Char target, final Class<? extends Buff> cl) {
+    Buff.detach(target.buff(cl));
+  }
+
+  public static <T extends FlavourBuff> T prolong(final Char target, final Class<T> buffClass,
+      final float duration) {
+    T buff = Buff.affect(target, buffClass);
+    buff.postpone(duration);
+    return buff;
+  }
+
+  public Char target;
+
+  @Override
+  public boolean act() {
+    diactivate();
+    return true;
+  }
+
+  public boolean attachTo(final Char target) {
+
+    if (target.immunities().contains(getClass())) {
+      return false;
     }
 
-    public static <T extends FlavourBuff> T affect(final Char target, final Class<T> buffClass, final float duration) {
-        T buff = Buff.affect(target, buffClass);
-        buff.spend(duration);
-        return buff;
-    }
+    this.target = target;
+    target.add(this);
 
-    public static <T extends Buff> T append(final Char target, final Class<T> buffClass) {
-        try {
-            T buff = buffClass.newInstance();
-            buff.attachTo(target);
-            return buff;
-        } catch (Exception e) {
-            return null;
-        }
-    }
+    return true;
+  }
 
-    public static <T extends FlavourBuff> T append(final Char target, final Class<T> buffClass, final float duration) {
-        T buff = Buff.append(target, buffClass);
-        buff.spend(duration);
-        return buff;
-    }
+  public void detach() {
+    target.remove(this);
+  }
 
-    public static void detach(final Buff buff) {
-        if (buff != null) {
-            buff.detach();
-        }
-    }
-
-    public static void detach(final Char target, final Class<? extends Buff> cl) {
-        Buff.detach(target.buff(cl));
-    }
-
-    public static <T extends FlavourBuff> T prolong(final Char target, final Class<T> buffClass, final float duration) {
-        T buff = Buff.affect(target, buffClass);
-        buff.postpone(duration);
-        return buff;
-    }
-
-    public Char target;
-
-    @Override
-    public boolean act() {
-        diactivate();
-        return true;
-    }
-
-    public boolean attachTo(final Char target) {
-
-        if (target.immunities().contains(getClass())) {
-            return false;
-        }
-
-        this.target = target;
-        target.add(this);
-
-        return true;
-    }
-
-    public void detach() {
-        target.remove(this);
-    }
-
-    public int icon() {
-        return BuffIndicator.NONE;
-    }
+  public int icon() {
+    return BuffIndicator.NONE;
+  }
 }

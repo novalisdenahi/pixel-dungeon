@@ -32,43 +32,43 @@ import com.watabou.utils.Random;
 
 public class LightningTrap {
 
-    public static class Electricity {
-    }
+  public static class Electricity {
+  }
 
-    // 00x66CCEE
+  // 00x66CCEE
 
-    private static final String name = "lightning trap";
+  private static final String name = "lightning trap";
 
-    public static final Electricity LIGHTNING = new Electricity();
+  public static final Electricity LIGHTNING = new Electricity();
 
-    public static void trigger(final int pos, final Char ch) {
+  public static void trigger(final int pos, final Char ch) {
 
-        if (ch != null) {
-            ch.damage(Math.max(1, Random.Int(ch.HP / 3, (2 * ch.HP) / 3)), LIGHTNING);
-            if (ch == Dungeon.hero) {
+    if (ch != null) {
+      ch.damage(Math.max(1, Random.Int(ch.HP / 3, (2 * ch.HP) / 3)), LIGHTNING);
+      if (ch == Dungeon.hero) {
 
-                Camera.main.shake(2, 0.3f);
+        Camera.main.shake(2, 0.3f);
 
-                if (!ch.isAlive()) {
-                    Dungeon.fail(Utils.format(ResultDescriptions.TRAP, name, Dungeon.depth));
-                    GLog.n("You were killed by a discharge of a lightning trap...");
-                } else {
-                    ((Hero) ch).belongings.charge(false);
-                }
-            }
-
-            int[] points = new int[2];
-
-            points[0] = pos - Level.WIDTH;
-            points[1] = pos + Level.WIDTH;
-            ch.sprite.parent.add(new Lightning(points, 2, null));
-
-            points[0] = pos - 1;
-            points[1] = pos + 1;
-            ch.sprite.parent.add(new Lightning(points, 2, null));
+        if (!ch.isAlive()) {
+          Dungeon.fail(Utils.format(ResultDescriptions.TRAP, name, Dungeon.depth));
+          GLog.n("You were killed by a discharge of a lightning trap...");
+        } else {
+          ((Hero) ch).belongings.charge(false);
         }
+      }
 
-        CellEmitter.center(pos).burst(SparkParticle.FACTORY, Random.IntRange(3, 4));
+      int[] points = new int[2];
 
+      points[0] = pos - Level.WIDTH;
+      points[1] = pos + Level.WIDTH;
+      ch.sprite.parent.add(new Lightning(points, 2, null));
+
+      points[0] = pos - 1;
+      points[1] = pos + 1;
+      ch.sprite.parent.add(new Lightning(points, 2, null));
     }
+
+    CellEmitter.center(pos).burst(SparkParticle.FACTORY, Random.IntRange(3, 4));
+
+  }
 }

@@ -23,20 +23,20 @@ import com.watabou.pixeldungeon.ui.BuffIndicator;
 
 public class Vertigo extends FlavourBuff {
 
-    public static final float DURATION = 10f;
+  public static final float DURATION = 10f;
 
-    public static float duration(final Char ch) {
-        Resistance r = ch.buff(Resistance.class);
-        return r != null ? r.durationFactor() * DURATION : DURATION;
-    }
+  public static float duration(final Char ch) {
+    Resistance r = ch.buff(Resistance.class);
+    return r != null ? r.durationFactor() * DURATION : DURATION;
+  }
 
-    @Override
-    public int icon() {
-        return BuffIndicator.VERTIGO;
-    }
+  @Override
+  public int icon() {
+    return BuffIndicator.VERTIGO;
+  }
 
-    @Override
-    public String toString() {
-        return "Vertigo";
-    }
+  @Override
+  public String toString() {
+    return "Vertigo";
+  }
 }

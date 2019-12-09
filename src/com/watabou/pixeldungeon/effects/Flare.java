@@ -36,132 +36,128 @@ import com.watabou.noosa.Visual;
 
 public class Flare extends Visual {
 
-    private float duration = 0;
-    private float lifespan;
+  private float duration = 0;
+  private float lifespan;
 
-    private boolean lightMode = true;
+  private boolean lightMode = true;
 
-    private SmartTexture texture;
+  private SmartTexture texture;
 
-    private FloatBuffer vertices;
-    private ShortBuffer indices;
+  private FloatBuffer vertices;
+  private ShortBuffer indices;
 
-    private int nRays;
+  private int nRays;
 
-    @SuppressLint("FloatMath")
-    public Flare(final int nRays, final float radius) {
+  @SuppressLint("FloatMath")
+  public Flare(final int nRays, final float radius) {
 
-        super(0, 0, 0, 0);
+    super(0, 0, 0, 0);
 
-        int gradient[] = { 0xFFFFFFFF, 0x00FFFFFF };
-        texture = new Gradient(gradient);
+    int gradient[] = { 0xFFFFFFFF, 0x00FFFFFF };
+    texture = new Gradient(gradient);
 
-        this.nRays = nRays;
+    this.nRays = nRays;
 
-        angle = 45;
-        angularSpeed = 180;
+    angle = 45;
+    angularSpeed = 180;
 
-        vertices = ByteBuffer.
-                allocateDirect(((nRays * 2) + 1) * 4 * (Float.SIZE / 8)).
-                order(ByteOrder.nativeOrder()).
-                asFloatBuffer();
+    vertices = ByteBuffer.allocateDirect(((nRays * 2) + 1) * 4 * (Float.SIZE / 8))
+        .order(ByteOrder.nativeOrder()).asFloatBuffer();
 
-        indices = ByteBuffer.
-                allocateDirect((nRays * 3 * Short.SIZE) / 8).
-                order(ByteOrder.nativeOrder()).
-                asShortBuffer();
+    indices = ByteBuffer.allocateDirect((nRays * 3 * Short.SIZE) / 8).order(ByteOrder.nativeOrder())
+        .asShortBuffer();
 
-        float v[] = new float[4];
+    float v[] = new float[4];
 
-        v[0] = 0;
-        v[1] = 0;
-        v[2] = 0.25f;
-        v[3] = 0;
-        vertices.put(v);
+    v[0] = 0;
+    v[1] = 0;
+    v[2] = 0.25f;
+    v[3] = 0;
+    vertices.put(v);
 
-        v[2] = 0.75f;
-        v[3] = 0;
+    v[2] = 0.75f;
+    v[3] = 0;
 
-        for (int i = 0; i < nRays; i++) {
+    for (int i = 0; i < nRays; i++) {
 
-            float a = (i * 3.1415926f * 2) / nRays;
-            v[0] = FloatMath.cos(a) * radius;
-            v[1] = FloatMath.sin(a) * radius;
-            vertices.put(v);
+      float a = (i * 3.1415926f * 2) / nRays;
+      v[0] = FloatMath.cos(a) * radius;
+      v[1] = FloatMath.sin(a) * radius;
+      vertices.put(v);
 
-            a += (3.1415926f * 2) / nRays / 2;
-            v[0] = FloatMath.cos(a) * radius;
-            v[1] = FloatMath.sin(a) * radius;
-            vertices.put(v);
+      a += (3.1415926f * 2) / nRays / 2;
+      v[0] = FloatMath.cos(a) * radius;
+      v[1] = FloatMath.sin(a) * radius;
+      vertices.put(v);
 
-            indices.put((short) 0);
-            indices.put((short) (1 + (i * 2)));
-            indices.put((short) (2 + (i * 2)));
-        }
-
-        indices.position(0);
+      indices.put((short) 0);
+      indices.put((short) (1 + (i * 2)));
+      indices.put((short) (2 + (i * 2)));
     }
 
-    public Flare color(final int color, final boolean lightMode) {
-        this.lightMode = lightMode;
-        hardlight(color);
+    indices.position(0);
+  }
 
-        return this;
+  public Flare color(final int color, final boolean lightMode) {
+    this.lightMode = lightMode;
+    hardlight(color);
+
+    return this;
+  }
+
+  @Override
+  public void draw() {
+
+    super.draw();
+
+    if (lightMode) {
+      GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
+      drawRays();
+      GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+    } else {
+      drawRays();
     }
+  }
 
-    @Override
-    public void draw() {
+  private void drawRays() {
 
-        super.draw();
+    NoosaScript script = NoosaScript.get();
 
-        if (lightMode) {
-            GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
-            drawRays();
-            GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-        } else {
-            drawRays();
-        }
+    texture.bind();
+
+    script.uModel.valueM4(matrix);
+    script.lighting(
+        rm, gm, bm, am,
+        ra, ga, ba, aa);
+
+    script.camera(camera);
+    script.drawElements(vertices, indices, nRays * 3);
+  }
+
+  public Flare show(final Visual visual, final float duration) {
+    point(visual.center());
+    visual.parent.addToBack(this);
+
+    lifespan = this.duration = duration;
+
+    return this;
+  }
+
+  @Override
+  public void update() {
+    super.update();
+
+    if (duration > 0) {
+      if ((lifespan -= Game.elapsed) > 0) {
+
+        float p = 1 - (lifespan / duration); // 0 -> 1
+        p = p < 0.25f ? p * 4 : (1 - p) * 1.333f;
+        scale.set(p);
+        alpha(p);
+
+      } else {
+        killAndErase();
+      }
     }
-
-    private void drawRays() {
-
-        NoosaScript script = NoosaScript.get();
-
-        texture.bind();
-
-        script.uModel.valueM4(matrix);
-        script.lighting(
-                rm, gm, bm, am,
-                ra, ga, ba, aa);
-
-        script.camera(camera);
-        script.drawElements(vertices, indices, nRays * 3);
-    }
-
-    public Flare show(final Visual visual, final float duration) {
-        point(visual.center());
-        visual.parent.addToBack(this);
-
-        lifespan = this.duration = duration;
-
-        return this;
-    }
-
-    @Override
-    public void update() {
-        super.update();
-
-        if (duration > 0) {
-            if ((lifespan -= Game.elapsed) > 0) {
-
-                float p = 1 - (lifespan / duration); // 0 -> 1
-                p = p < 0.25f ? p * 4 : (1 - p) * 1.333f;
-                scale.set(p);
-                alpha(p);
-
-            } else {
-                killAndErase();
-            }
-        }
-    }
+  }
 }

@@ -31,86 +31,87 @@ import com.watabou.pixeldungeon.scenes.GameScene;
 
 public class Fire extends Blob {
 
-    private void burn(final int pos) {
-        Char ch = Actor.findChar(pos);
-        if (ch != null) {
-            Buff.affect(ch, Burning.class).reignite(ch);
-        }
-
-        Heap heap = Dungeon.level.heaps.get(pos);
-        if (heap != null) {
-            heap.burn();
-        }
+  private void burn(final int pos) {
+    Char ch = Actor.findChar(pos);
+    if (ch != null) {
+      Buff.affect(ch, Burning.class).reignite(ch);
     }
 
-    @Override
-    protected void evolve() {
+    Heap heap = Dungeon.level.heaps.get(pos);
+    if (heap != null) {
+      heap.burn();
+    }
+  }
 
-        boolean[] flamable = Level.flamable;
+  @Override
+  protected void evolve() {
 
-        int from = WIDTH + 1;
-        int to = Level.LENGTH - WIDTH - 1;
+    boolean[] flamable = Level.flamable;
 
-        boolean observe = false;
+    int from = WIDTH + 1;
+    int to = Level.LENGTH - WIDTH - 1;
 
-        for (int pos = from; pos < to; pos++) {
+    boolean observe = false;
 
-            int fire;
+    for (int pos = from; pos < to; pos++) {
 
-            if (cur[pos] > 0) {
+      int fire;
 
-                burn(pos);
+      if (cur[pos] > 0) {
 
-                fire = cur[pos] - 1;
-                if ((fire <= 0) && flamable[pos]) {
+        burn(pos);
 
-                    int oldTile = Dungeon.level.map[pos];
-                    Level.set(pos, Terrain.EMBERS);
+        fire = cur[pos] - 1;
+        if ((fire <= 0) && flamable[pos]) {
 
-                    observe = true;
-                    GameScene.updateMap(pos);
-                    if (Dungeon.visible[pos]) {
-                        GameScene.discoverTile(pos, oldTile);
-                    }
-                }
+          int oldTile = Dungeon.level.map[pos];
+          Level.set(pos, Terrain.EMBERS);
 
-            } else {
-
-                if (flamable[pos]
-                        && ((cur[pos - 1] > 0) || (cur[pos + 1] > 0) || (cur[pos - WIDTH] > 0) || (cur[pos + WIDTH] > 0))) {
-                    fire = 4;
-                    burn(pos);
-                } else {
-                    fire = 0;
-                }
-
-            }
-
-            volume += (off[pos] = fire);
-
+          observe = true;
+          GameScene.updateMap(pos);
+          if (Dungeon.visible[pos]) {
+            GameScene.discoverTile(pos, oldTile);
+          }
         }
 
-        if (observe) {
-            Dungeon.observe();
+      } else {
+
+        if (flamable[pos]
+            && ((cur[pos - 1] > 0) || (cur[pos + 1] > 0) || (cur[pos - WIDTH] > 0)
+                || (cur[pos + WIDTH] > 0))) {
+          fire = 4;
+          burn(pos);
+        } else {
+          fire = 0;
         }
+
+      }
+
+      volume += (off[pos] = fire);
+
     }
 
-    @Override
-    public void seed(final int cell, final int amount) {
-        if (cur[cell] == 0) {
-            volume += amount;
-            cur[cell] = amount;
-        }
+    if (observe) {
+      Dungeon.observe();
     }
+  }
 
-    @Override
-    public String tileDesc() {
-        return "A fire is raging here.";
+  @Override
+  public void seed(final int cell, final int amount) {
+    if (cur[cell] == 0) {
+      volume += amount;
+      cur[cell] = amount;
     }
+  }
 
-    @Override
-    public void use(final BlobEmitter emitter) {
-        super.use(emitter);
-        emitter.start(FlameParticle.FACTORY, 0.03f, 0);
-    }
+  @Override
+  public String tileDesc() {
+    return "A fire is raging here.";
+  }
+
+  @Override
+  public void use(final BlobEmitter emitter) {
+    super.use(emitter);
+    emitter.start(FlameParticle.FACTORY, 0.03f, 0);
+  }
 }

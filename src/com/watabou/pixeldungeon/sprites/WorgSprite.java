@@ -22,25 +22,25 @@ import com.watabou.pixeldungeon.Assets;
 
 public class WorgSprite extends MobSprite {
 
-    public WorgSprite() {
-        super();
+  public WorgSprite() {
+    super();
 
-        texture(Assets.WORG);
+    texture(Assets.WORG);
 
-        TextureFilm frames = new TextureFilm(texture, 16, 16);
+    TextureFilm frames = new TextureFilm(texture, 16, 16);
 
-        idle = new Animation(2, true);
-        idle.frames(frames, 0, 0, 0, 1, 0, 0, 1, 1);
+    idle = new Animation(2, true);
+    idle.frames(frames, 0, 0, 0, 1, 0, 0, 1, 1);
 
-        run = new Animation(16, false);
-        run.frames(frames, 4, 5, 6, 7, 8, 9, 4);
+    run = new Animation(16, false);
+    run.frames(frames, 4, 5, 6, 7, 8, 9, 4);
 
-        attack = new Animation(12, false);
-        attack.frames(frames, 2, 3, 2);
+    attack = new Animation(12, false);
+    attack.frames(frames, 2, 3, 2);
 
-        die = new Animation(12, false);
-        die.frames(frames, 10, 11, 12, 13);
+    die = new Animation(12, false);
+    die.frames(frames, 10, 11, 12, 13);
 
-        play(idle);
-    }
+    play(idle);
+  }
 }

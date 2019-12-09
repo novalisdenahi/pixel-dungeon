@@ -28,73 +28,73 @@ import com.watabou.utils.Random;
 
 public class Bat extends Mob {
 
-    {
-        name = "vampire bat";
-        spriteClass = BatSprite.class;
+  {
+    name = "vampire bat";
+    spriteClass = BatSprite.class;
 
-        mobType = MobType.UNDEAD;
+    mobType = MobType.UNDEAD;
 
-        HP = HT = 30;
-        defenseSkill = 15;
-        baseSpeed = 2f;
+    HP = HT = 30;
+    defenseSkill = 15;
+    baseSpeed = 2f;
 
-        EXP = 7;
-        maxLvl = 15;
+    EXP = 7;
+    maxLvl = 15;
 
-        flying = true;
+    flying = true;
 
-        loot = new PotionOfHealing();
-        lootChance = 0.125f;
+    loot = new PotionOfHealing();
+    lootChance = 0.125f;
+  }
+
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(Leech.class);
+  }
+
+  @Override
+  public int attackProc(final Char enemy, final int damage) {
+
+    int reg = Math.min(damage, HT - HP);
+
+    if (reg > 0) {
+      HP += reg;
+      sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
     }
 
-    private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+    return damage;
+  }
 
-    static {
-        RESISTANCES.add(Leech.class);
-    }
+  @Override
+  public int attackSkill(final Char target) {
+    return 16;
+  }
 
-    @Override
-    public int attackProc(final Char enemy, final int damage) {
+  @Override
+  public int damageRoll() {
+    return Random.NormalIntRange(6, 12);
+  }
 
-        int reg = Math.min(damage, HT - HP);
+  @Override
+  public String defenseVerb() {
+    return "evaded";
+  }
 
-        if (reg > 0) {
-            HP += reg;
-            sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
-        }
+  @Override
+  public String description() {
+    return "These brisk and tenacious inhabitants of cave domes may defeat much larger opponents by "
+        +
+        "replenishing their health with each successful attack.";
+  }
 
-        return damage;
-    }
+  @Override
+  public int dr() {
+    return 4;
+  }
 
-    @Override
-    public int attackSkill(final Char target) {
-        return 16;
-    }
-
-    @Override
-    public int damageRoll() {
-        return Random.NormalIntRange(6, 12);
-    }
-
-    @Override
-    public String defenseVerb() {
-        return "evaded";
-    }
-
-    @Override
-    public String description() {
-        return
-                "These brisk and tenacious inhabitants of cave domes may defeat much larger opponents by " +
-                "replenishing their health with each successful attack.";
-    }
-
-    @Override
-    public int dr() {
-        return 4;
-    }
-
-    @Override
-    public HashSet<Class<?>> resistances() {
-        return RESISTANCES;
-    }
+  @Override
+  public HashSet<Class<?>> resistances() {
+    return RESISTANCES;
+  }
 }

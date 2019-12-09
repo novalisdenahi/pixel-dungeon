@@ -24,25 +24,25 @@ import com.watabou.pixeldungeon.windows.WndBag;
 
 public class AlchemyPot {
 
-    private static final String TXT_SELECT_SEED = "Select a seed to throw";
+  private static final String TXT_SELECT_SEED = "Select a seed to throw";
 
-    private static Hero hero;
-    private static int pos;
+  private static Hero hero;
+  private static int pos;
 
-    private static final WndBag.Listener itemSelector = new WndBag.Listener() {
-        @Override
-        public void onSelect(final Item item) {
-            if (item != null) {
-                item.cast(hero, pos);
-            }
-        }
-    };
-
-    public static void operate(final Hero hero, final int pos) {
-
-        AlchemyPot.hero = hero;
-        AlchemyPot.pos = pos;
-
-        GameScene.selectItem(itemSelector, WndBag.Mode.SEED, TXT_SELECT_SEED);
+  private static final WndBag.Listener itemSelector = new WndBag.Listener() {
+    @Override
+    public void onSelect(final Item item) {
+      if (item != null) {
+        item.cast(hero, pos);
+      }
     }
+  };
+
+  public static void operate(final Hero hero, final int pos) {
+
+    AlchemyPot.hero = hero;
+    AlchemyPot.pos = pos;
+
+    GameScene.selectItem(itemSelector, WndBag.Mode.SEED, TXT_SELECT_SEED);
+  }
 }

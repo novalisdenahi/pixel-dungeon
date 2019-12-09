@@ -32,35 +32,35 @@ import com.watabou.utils.Random;
 
 public class Entanglement extends Glyph {
 
-    private static final String TXT_ENTANGLEMENT = "%s of entanglement";
+  private static final String TXT_ENTANGLEMENT = "%s of entanglement";
 
-    private static ItemSprite.Glowing GREEN = new ItemSprite.Glowing(0x448822);
+  private static ItemSprite.Glowing GREEN = new ItemSprite.Glowing(0x448822);
 
-    @Override
-    public Glowing glowing() {
-        return GREEN;
+  @Override
+  public Glowing glowing() {
+    return GREEN;
+  }
+
+  @Override
+  public String name(final String weaponName) {
+    return String.format(TXT_ENTANGLEMENT, weaponName);
+  }
+
+  @Override
+  public int proc(final Armor armor, final Char attacker, final Char defender, final int damage) {
+
+    int level = Math.max(0, armor.level);
+
+    if (Random.Int(4) == 0) {
+
+      Buff.prolong(defender, Roots.class, 5 - (level / 5));
+      Buff.affect(defender, Earthroot.Armor.class).level(5 * (level + 1));
+      CellEmitter.bottom(defender.pos).start(EarthParticle.FACTORY, 0.05f, 8);
+      Camera.main.shake(1, 0.4f);
+
     }
 
-    @Override
-    public String name(final String weaponName) {
-        return String.format(TXT_ENTANGLEMENT, weaponName);
-    }
-
-    @Override
-    public int proc(final Armor armor, final Char attacker, final Char defender, final int damage) {
-
-        int level = Math.max(0, armor.level);
-
-        if (Random.Int(4) == 0) {
-
-            Buff.prolong(defender, Roots.class, 5 - (level / 5));
-            Buff.affect(defender, Earthroot.Armor.class).level(5 * (level + 1));
-            CellEmitter.bottom(defender.pos).start(EarthParticle.FACTORY, 0.05f, 8);
-            Camera.main.shake(1, 0.4f);
-
-        }
-
-        return damage;
-    }
+    return damage;
+  }
 
 }

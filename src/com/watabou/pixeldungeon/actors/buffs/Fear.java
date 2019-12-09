@@ -22,39 +22,39 @@ import com.watabou.pixeldungeon.ui.BuffIndicator;
 
 public class Fear extends FlavourBuff {
 
-    public static float duration(final Char ch) {
-        return DURATION;
-    }
+  public static float duration(final Char ch) {
+    return DURATION;
+  }
 
-    public static final float DURATION = 3f;
+  public static final float DURATION = 3f;
 
-    public static final String NO_WAY_TO_RUN = "AAAAAAAA!!!!";
+  public static final String NO_WAY_TO_RUN = "AAAAAAAA!!!!";
 
-    public Char theFearfulEnemy;
+  public Char theFearfulEnemy;
 
-    @Override
-    public boolean attachTo(final Char target) {
-        spend(DURATION);
-        return super.attachTo(target);
-    }
+  @Override
+  public boolean attachTo(final Char target) {
+    spend(DURATION);
+    return super.attachTo(target);
+  }
 
-    @Override
-    public void detach() {
-        super.detach();
-    }
+  @Override
+  public void detach() {
+    super.detach();
+  }
 
-    @Override
-    public int icon() {
-        return BuffIndicator.FEAR;
-    }
+  @Override
+  public int icon() {
+    return BuffIndicator.FEAR;
+  }
 
-    public void setTheFearfulEnemy(final Char theFearfulEnemy) {
-        this.theFearfulEnemy = theFearfulEnemy;
-    }
+  public void setTheFearfulEnemy(final Char theFearfulEnemy) {
+    this.theFearfulEnemy = theFearfulEnemy;
+  }
 
-    @Override
-    public String toString() {
-        return "In Fear";
-    }
+  @Override
+  public String toString() {
+    return "In Fear";
+  }
 
 }

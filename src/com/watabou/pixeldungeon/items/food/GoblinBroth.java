@@ -26,29 +26,29 @@ import com.watabou.pixeldungeon.utils.GLog;
 
 public class GoblinBroth extends Food {
 
-    {
-        name = "goblin broth";
-        image = ItemSpriteSheet.GOBLIN_BROTH;
-        energy = Hunger.STARVING;
-    }
+  {
+    name = "goblin broth";
+    image = ItemSpriteSheet.GOBLIN_BROTH;
+    energy = Hunger.STARVING;
+  }
 
-    @Override
-    public void execute(final Hero hero, final String action) {
-        hero.STR++;
-        hero.sprite.showStatus(CharSprite.POSITIVE, "+1 str");
-        GLog.p("Newfound strength surges through your body.");
+  @Override
+  public void execute(final Hero hero, final String action) {
+    hero.STR++;
+    hero.sprite.showStatus(CharSprite.POSITIVE, "+1 str");
+    GLog.p("Newfound strength surges through your body.");
 
-        Badges.validateStrengthAttained();
-        super.execute(hero, action);
-    }
+    Badges.validateStrengthAttained();
+    super.execute(hero, action);
+  }
 
-    @Override
-    public String info() {
-        return "Our little chefs put everything into this broth. Every good adventurer should taste the soup once.";
-    }
+  @Override
+  public String info() {
+    return "Our little chefs put everything into this broth. Every good adventurer should taste the soup once.";
+  }
 
-    @Override
-    public int price() {
-        return 10 * quantity;
-    }
+  @Override
+  public int price() {
+    return 10 * quantity;
+  }
 }

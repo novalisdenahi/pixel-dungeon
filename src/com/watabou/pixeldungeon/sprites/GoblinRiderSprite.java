@@ -22,39 +22,39 @@ import com.watabou.pixeldungeon.Assets;
 
 public class GoblinRiderSprite extends MobSprite {
 
-    private Animation dieWithoutGoblin;
+  private Animation dieWithoutGoblin;
 
-    public GoblinRiderSprite() {
-        super();
+  public GoblinRiderSprite() {
+    super();
 
-        texture(Assets.GOBLIN_RIDER);
+    texture(Assets.GOBLIN_RIDER);
 
-        TextureFilm frames = new TextureFilm(texture, 16, 18);
+    TextureFilm frames = new TextureFilm(texture, 16, 18);
 
-        idle = new Animation(2, true);
-        idle.frames(frames, 0, 0, 0, 1, 0, 0, 1, 1);
+    idle = new Animation(2, true);
+    idle.frames(frames, 0, 0, 0, 1, 0, 0, 1, 1);
 
-        run = new Animation(16, false);
-        run.frames(frames, 4, 5, 6, 7, 8, 9, 4);
+    run = new Animation(16, false);
+    run.frames(frames, 4, 5, 6, 7, 8, 9, 4);
 
-        attack = new Animation(12, false);
-        attack.frames(frames, 2, 3, 2);
+    attack = new Animation(12, false);
+    attack.frames(frames, 2, 3, 2);
 
-        die = new Animation(12, false);
-        die.frames(frames, 10, 11, 12, 13);
+    die = new Animation(12, false);
+    die.frames(frames, 10, 11, 12, 13);
 
-        dieWithoutGoblin = new Animation(12, false);
-        dieWithoutGoblin.frames(frames, 14, 15, 16, 17);
+    dieWithoutGoblin = new Animation(12, false);
+    dieWithoutGoblin.frames(frames, 14, 15, 16, 17);
 
-        play(idle);
+    play(idle);
+  }
+
+  public void dieWithoutGoblin() {
+    sleeping = false;
+    play(dieWithoutGoblin);
+
+    if (emo != null) {
+      emo.killAndErase();
     }
-
-    public void dieWithoutGoblin() {
-        sleeping = false;
-        play(dieWithoutGoblin);
-
-        if (emo != null) {
-            emo.killAndErase();
-        }
-    }
+  }
 }

@@ -31,79 +31,78 @@ import com.watabou.utils.Random;
 
 public class AlphaWorg extends Mob {
 
-    {
-        name = Dungeon.depth == Statistics.getDeepestFloor(Dungeon.dungeonType) ? "Alpha Worg"
-                : "cub of the Alpha Worg";
-        spriteClass = AlphaWorgSprite.class;
+  {
+    name = Dungeon.depth == Statistics.getDeepestFloor(Dungeon.dungeonType) ? "Alpha Worg"
+        : "cub of the Alpha Worg";
+    spriteClass = AlphaWorgSprite.class;
 
-        HP = HT = 55;
-        defenseSkill = 9;
-        baseSpeed = 2f;
+    HP = HT = 55;
+    defenseSkill = 9;
+    baseSpeed = 2f;
 
-        EXP = 10;
+    EXP = 10;
 
+  }
+
+  private static final float DELAY_OF_HOWLS = 1f;
+
+  @Override
+  public int attackSkill(final Char target) {
+    return 13;
+  }
+
+  @Override
+  public int damageRoll() {
+    return Random.NormalIntRange(3, 12);
+  }
+
+  @Override
+  public String defenseVerb() {
+    return "dodge";
+  }
+
+  @Override
+  public String description() { // TODO FIXME
+    return "Worgs are like the surface wolf. Except they are bigger, strongger and more bloodthirsty. "
+        + "The goblins often tame them with the purpose of riding. The worg meat is not realy tasty, "
+        + "but eatable if you are hungry. ";
+  }
+
+  @Override
+  public void die(final Object cause) {
+
+    super.die(cause);
+
+    ((GoblinSewerBossLevel) Dungeon.level).unseal();
+
+    GameScene.bossSlain();
+    Dungeon.level.drop(new SkeletonKey(), pos).sprite.drop();
+
+    // Badges.validateBossSlain(); // TODO fix
+
+    yell("AWOOUUuuuu...");
+  }
+
+  @Override
+  protected boolean doAttack(final Char enemy) {
+    if (Random.Int(5) > 0) {
+      // Normal attack
+      return super.doAttack(enemy);
+    } else {
+      // TODO add howls sound
+      // Sample.INSTANCE.play(Assets.SND_LULLABY);
+      sprite.centerEmitter().start(Speck.factory(Speck.BLACK_NOTE), 0.3f, 3);
+      ((AlphaWorgSprite) sprite).howls();
+      yell("AWOOUUUUU!!");
+      Buff.affect(enemy, Fear.class).setTheFearfulEnemy(this);
+      spend(DELAY_OF_HOWLS);
+      return true;
     }
 
-    private static final float DELAY_OF_HOWLS = 1f;
+  }
 
-    @Override
-    public int attackSkill(final Char target) {
-        return 13;
-    }
-
-    @Override
-    public int damageRoll() {
-        return Random.NormalIntRange(3, 12);
-    }
-
-    @Override
-    public String defenseVerb() {
-        return "dodge";
-    }
-
-    @Override
-    public String description() { // TODO FIXME
-        return
-                "Worgs are like the surface wolf. Except they are bigger, strongger and more bloodthirsty. "
-                + "The goblins often tame them with the purpose of riding. The worg meat is not realy tasty, "
-                + "but eatable if you are hungry. ";
-    }
-
-    @Override
-    public void die(final Object cause) {
-
-        super.die(cause);
-
-        ((GoblinSewerBossLevel) Dungeon.level).unseal();
-
-        GameScene.bossSlain();
-        Dungeon.level.drop(new SkeletonKey(), pos).sprite.drop();
-
-        // Badges.validateBossSlain(); // TODO fix
-
-        yell("AWOOUUuuuu...");
-    }
-
-    @Override
-    protected boolean doAttack(final Char enemy) {
-        if (Random.Int(5) > 0) {
-            // Normal attack
-            return super.doAttack(enemy);
-        } else {
-            // TODO add howls sound
-            // Sample.INSTANCE.play(Assets.SND_LULLABY);
-            sprite.centerEmitter().start(Speck.factory(Speck.BLACK_NOTE), 0.3f, 3);
-            ((AlphaWorgSprite) sprite).howls();
-            yell("AWOOUUUUU!!");
-            Buff.affect(enemy, Fear.class).setTheFearfulEnemy(this);
-            spend(DELAY_OF_HOWLS);
-            return true;
-        }
-
-    }
-
-    @Override
-    public int dr() {
-        return 4;
-    }
+  @Override
+  public int dr() {
+    return 4;
+  }
 }
