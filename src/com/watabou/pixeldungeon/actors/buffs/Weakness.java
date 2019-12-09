@@ -26,18 +26,13 @@ public class Weakness extends FlavourBuff {
 
   private static final float DURATION = 40f;
 
-  @Override
-  public int icon() {
-    return BuffIndicator.WEAKNESS;
+  public static float duration(final Char ch) {
+    Resistance r = ch.buff(Resistance.class);
+    return r != null ? r.durationFactor() * DURATION : DURATION;
   }
 
   @Override
-  public String toString() {
-    return "Weakened";
-  }
-
-  @Override
-  public boolean attachTo(Char target) {
+  public boolean attachTo(final Char target) {
     if (super.attachTo(target)) {
       Hero hero = (Hero) target;
       hero.weakened = true;
@@ -55,8 +50,13 @@ public class Weakness extends FlavourBuff {
     ((Hero) target).weakened = false;
   }
 
-  public static float duration(Char ch) {
-    Resistance r = ch.buff(Resistance.class);
-    return r != null ? r.durationFactor() * DURATION : DURATION;
+  @Override
+  public int icon() {
+    return BuffIndicator.WEAKNESS;
+  }
+
+  @Override
+  public String toString() {
+    return "Weakened";
   }
 }

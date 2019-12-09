@@ -41,18 +41,13 @@ public class Crab extends Mob {
   }
 
   @Override
-  public int damageRoll() {
-    return Random.NormalIntRange(3, 6);
-  }
-
-  @Override
-  public int attackSkill(Char target) {
+  public int attackSkill(final Char target) {
     return 12;
   }
 
   @Override
-  public int dr() {
-    return 4;
+  public int damageRoll() {
+    return Random.NormalIntRange(3, 6);
   }
 
   @Override
@@ -61,15 +56,20 @@ public class Crab extends Mob {
   }
 
   @Override
-  public void die(Object cause) {
+  public String description() {
+    return "These huge crabs are at the top of the food chain in the sewers. " +
+        "They are extremely fast and their thick exoskeleton can withstand " +
+        "heavy blows.";
+  }
+
+  @Override
+  public void die(final Object cause) {
     Ghost.Quest.processSewersKill(pos);
     super.die(cause);
   }
 
   @Override
-  public String description() {
-    return "These huge crabs are at the top of the food chain in the sewers. " +
-        "They are extremely fast and their thick exoskeleton can withstand " +
-        "heavy blows.";
+  public int dr() {
+    return 4;
   }
 }

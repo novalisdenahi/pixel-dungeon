@@ -28,16 +28,17 @@ import com.watabou.pixeldungeon.scenes.GameScene;
 
 public class SpellSprite extends Image {
 
+  private enum Phase {
+    FADE_IN, STATIC, FADE_OUT
+  }
+
   public static final int FOOD = 0;
   public static final int MAP = 1;
   public static final int CHARGE = 2;
+
   public static final int MASTERY = 3;
 
-  private static final int SIZE = 16;
-
-  private enum Phase {
-    FADE_IN, STATIC, FADE_OUT
-  };
+  private static final int SIZE = 16;;
 
   private static final float FADE_IN_TIME = 0.2f;
   private static final float STATIC_TIME = 0.8f;
@@ -45,13 +46,32 @@ public class SpellSprite extends Image {
 
   private static TextureFilm film;
 
-  private Char target;
-
-  private Phase phase;
-  private float duration;
-  private float passed;
-
   private static HashMap<Char, SpellSprite> all = new HashMap<Char, SpellSprite>();
+
+  public static void show(final Char ch, final int index) {
+
+    if (!ch.sprite.visible) {
+      return;
+    }
+
+    SpellSprite old = all.get(ch);
+    if (old != null) {
+      old.kill();
+    }
+
+    SpellSprite sprite = GameScene.spellSprite();
+    sprite.revive();
+    sprite.reset(index);
+    sprite.target = ch;
+    all.put(ch, sprite);
+  }
+
+  private Char target;
+  private Phase phase;
+
+  private float duration;
+
+  private float passed;
 
   public SpellSprite() {
     super(Assets.SPELL_ICONS);
@@ -61,7 +81,13 @@ public class SpellSprite extends Image {
     }
   }
 
-  public void reset(int index) {
+  @Override
+  public void kill() {
+    super.kill();
+    all.remove(target);
+  }
+
+  public void reset(final int index) {
     frame(film.get(index));
     origin.set(width / 2, height / 2);
 
@@ -75,7 +101,7 @@ public class SpellSprite extends Image {
   public void update() {
     super.update();
 
-    x = target.sprite.center().x - SIZE / 2;
+    x = target.sprite.center().x - (SIZE / 2);
     y = target.sprite.y - SIZE;
 
     switch (phase) {
@@ -86,7 +112,7 @@ public class SpellSprite extends Image {
       case STATIC:
         break;
       case FADE_OUT:
-        alpha(1 - passed / duration);
+        alpha(1 - (passed / duration));
         break;
     }
 
@@ -107,29 +133,5 @@ public class SpellSprite extends Image {
 
       passed = 0;
     }
-  }
-
-  @Override
-  public void kill() {
-    super.kill();
-    all.remove(target);
-  }
-
-  public static void show(Char ch, int index) {
-
-    if (!ch.sprite.visible) {
-      return;
-    }
-
-    SpellSprite old = all.get(ch);
-    if (old != null) {
-      old.kill();
-    }
-
-    SpellSprite sprite = GameScene.spellSprite();
-    sprite.revive();
-    sprite.reset(index);
-    sprite.target = ch;
-    all.put(ch, sprite);
   }
 }

@@ -36,11 +36,21 @@ public class Potential extends Glyph {
   private static ItemSprite.Glowing BLUE = new ItemSprite.Glowing(0x66CCEE);
 
   @Override
-  public int proc(Armor armor, Char attacker, Char defender, int damage) {
+  public Glowing glowing() {
+    return BLUE;
+  }
+
+  @Override
+  public String name(final String weaponName) {
+    return String.format(TXT_POTENTIAL, weaponName);
+  }
+
+  @Override
+  public int proc(final Armor armor, final Char attacker, final Char defender, final int damage) {
 
     int level = Math.max(0, armor.effectiveLevel());
 
-    if (Level.adjacent(attacker.pos, defender.pos) && Random.Int(level + 7) >= 6) {
+    if (Level.adjacent(attacker.pos, defender.pos) && (Random.Int(level + 7) >= 6)) {
 
       int dmg = Random.IntRange(1, damage);
       attacker.damage(dmg, LightningTrap.LIGHTNING);
@@ -58,15 +68,5 @@ public class Potential extends Glyph {
     }
 
     return damage;
-  }
-
-  @Override
-  public String name(String weaponName) {
-    return String.format(TXT_POTENTIAL, weaponName);
-  }
-
-  @Override
-  public Glowing glowing() {
-    return BLUE;
   }
 }

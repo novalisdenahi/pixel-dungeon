@@ -28,19 +28,82 @@ import com.watabou.utils.PointF;
 
 public class ScrollPane extends Component {
 
-  protected static final int THUMB_COLOR = 0xFF7b8073;
-  protected static final float THUMB_ALPHA = 0.5f;
+  public class TouchController extends TouchArea {
 
+    private float dragThreshold;
+
+    private boolean dragging = false;
+
+    private PointF lastPos = new PointF();
+
+    public TouchController() {
+      super(0, 0, 0, 0);
+      dragThreshold = PixelScene.defaultZoom * 8;
+    }
+
+    @Override
+    protected void onClick(final Touch touch) {
+      if (dragging) {
+
+        dragging = false;
+        thumb.am = THUMB_ALPHA;
+
+      } else {
+
+        PointF p = content.camera.screenToCamera((int) touch.current.x, (int) touch.current.y);
+        ScrollPane.this.onClick(p.x, p.y);
+
+      }
+    }
+
+    @Override
+    protected void onDrag(final Touch t) {
+      if (dragging) {
+
+        Camera c = content.camera;
+
+        c.scroll.offset(PointF.diff(lastPos, t.current).invScale(c.zoom));
+        if ((c.scroll.x + width) > content.width()) {
+          c.scroll.x = content.width() - width;
+        }
+        if (c.scroll.x < 0) {
+          c.scroll.x = 0;
+        }
+        if ((c.scroll.y + height) > content.height()) {
+          c.scroll.y = content.height() - height;
+        }
+        if (c.scroll.y < 0) {
+          c.scroll.y = 0;
+        }
+
+        thumb.y = y + ((height * c.scroll.y) / content.height());
+
+        lastPos.set(t.current);
+
+      } else if (PointF.distance(t.current, t.start) > dragThreshold) {
+
+        dragging = true;
+        lastPos.set(t.current);
+        thumb.am = 1;
+
+      }
+    }
+  }
+
+  protected static final int THUMB_COLOR = 0xFF7b8073;
+
+  protected static final float THUMB_ALPHA = 0.5f;
   protected TouchController controller;
   protected Component content;
-  protected ColorBlock thumb;
 
+  protected ColorBlock thumb;
   protected float minX;
   protected float minY;
   protected float maxX;
+
   protected float maxY;
 
-  public ScrollPane(Component content) {
+  public ScrollPane(final Component content) {
     super();
 
     this.content = content;
@@ -53,14 +116,8 @@ public class ScrollPane extends Component {
     Camera.add(content.camera);
   }
 
-  @Override
-  public void destroy() {
-    super.destroy();
-    Camera.remove(content.camera);
-  }
-
-  public void scrollTo(float x, float y) {
-    content.camera.scroll.set(x, y);
+  public Component content() {
+    return content;
   }
 
   @Override
@@ -71,6 +128,12 @@ public class ScrollPane extends Component {
     thumb = new ColorBlock(1, 1, THUMB_COLOR);
     thumb.am = THUMB_ALPHA;
     add(thumb);
+  }
+
+  @Override
+  public void destroy() {
+    super.destroy();
+    Camera.remove(content.camera);
   }
 
   @Override
@@ -90,77 +153,16 @@ public class ScrollPane extends Component {
 
     thumb.visible = height < content.height();
     if (thumb.visible) {
-      thumb.scale.set(2, height * height / content.height());
+      thumb.scale.set(2, (height * height) / content.height());
       thumb.x = right() - thumb.width();
       thumb.y = y;
     }
   }
 
-  public Component content() {
-    return content;
+  public void onClick(final float x, final float y) {
   }
 
-  public void onClick(float x, float y) {
-  }
-
-  public class TouchController extends TouchArea {
-
-    private float dragThreshold;
-
-    public TouchController() {
-      super(0, 0, 0, 0);
-      dragThreshold = PixelScene.defaultZoom * 8;
-    }
-
-    @Override
-    protected void onClick(Touch touch) {
-      if (dragging) {
-
-        dragging = false;
-        thumb.am = THUMB_ALPHA;
-
-      } else {
-
-        PointF p = content.camera.screenToCamera((int) touch.current.x, (int) touch.current.y);
-        ScrollPane.this.onClick(p.x, p.y);
-
-      }
-    }
-
-    private boolean dragging = false;
-    private PointF lastPos = new PointF();
-
-    @Override
-    protected void onDrag(Touch t) {
-      if (dragging) {
-
-        Camera c = content.camera;
-
-        c.scroll.offset(PointF.diff(lastPos, t.current).invScale(c.zoom));
-        if (c.scroll.x + width > content.width()) {
-          c.scroll.x = content.width() - width;
-        }
-        if (c.scroll.x < 0) {
-          c.scroll.x = 0;
-        }
-        if (c.scroll.y + height > content.height()) {
-          c.scroll.y = content.height() - height;
-        }
-        if (c.scroll.y < 0) {
-          c.scroll.y = 0;
-        }
-
-        thumb.y = y + height * c.scroll.y / content.height();
-
-        lastPos.set(t.current);
-
-      } else if (PointF.distance(t.current, t.start) > dragThreshold) {
-
-        dragging = true;
-        lastPos.set(t.current);
-        thumb.am = 1;
-
-      }
-    }
+  public void scrollTo(final float x, final float y) {
+    content.camera.scroll.set(x, y);
   }
 }

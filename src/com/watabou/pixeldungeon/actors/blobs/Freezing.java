@@ -30,7 +30,7 @@ import com.watabou.utils.Random;
 public class Freezing {
 
   // Returns true, if this cell is visible
-  public static boolean affect(int cell, Fire fire) {
+  public static boolean affect(final int cell, final Fire fire) {
 
     Char ch = Actor.findChar(cell);
     if (ch != null) {

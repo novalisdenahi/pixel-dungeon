@@ -26,10 +26,10 @@ public class Levitation extends FlavourBuff {
   public static final float DURATION = 20f;
 
   @Override
-  public boolean attachTo(Char target) {
+  public boolean attachTo(final Char target) {
     if (super.attachTo(target)) {
       target.flying = true;
-      Roots.detach(target, Roots.class);
+      Buff.detach(target, Roots.class);
       return true;
     } else {
       return false;

@@ -17,13 +17,13 @@
  */
 package com.watabou.pixeldungeon.effects;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-
 import com.watabou.gltextures.SmartTexture;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.noosa.Image;
+
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 
 public class Halo extends Image {
 
@@ -53,7 +53,7 @@ public class Halo extends Image {
     origin.set(RADIUS);
   }
 
-  public Halo(float radius, int color, float brightness) {
+  public Halo(final float radius, final int color, final float brightness) {
 
     this();
 
@@ -62,13 +62,13 @@ public class Halo extends Image {
     radius(radius);
   }
 
-  public Halo point(float x, float y) {
+  public Halo point(final float x, final float y) {
     this.x = x - RADIUS;
     this.y = y - RADIUS;
     return this;
   }
 
-  public void radius(float value) {
-    scale.set((this.radius = value) / RADIUS);
+  public void radius(final float value) {
+    scale.set((radius = value) / RADIUS);
   }
 }

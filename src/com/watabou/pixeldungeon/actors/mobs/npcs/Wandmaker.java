@@ -36,9 +36,9 @@ import com.watabou.pixeldungeon.items.wands.WandOfDisintegration;
 import com.watabou.pixeldungeon.items.wands.WandOfFirebolt;
 import com.watabou.pixeldungeon.items.wands.WandOfLightning;
 import com.watabou.pixeldungeon.items.wands.WandOfPoison;
+import com.watabou.pixeldungeon.items.wands.WandOfReach;
 import com.watabou.pixeldungeon.items.wands.WandOfRegrowth;
 import com.watabou.pixeldungeon.items.wands.WandOfSlowness;
-import com.watabou.pixeldungeon.items.wands.WandOfReach;
 import com.watabou.pixeldungeon.levels.Level;
 import com.watabou.pixeldungeon.levels.PrisonLevel;
 import com.watabou.pixeldungeon.levels.Room;
@@ -54,56 +54,6 @@ import com.watabou.utils.Random;
 
 public class Wandmaker extends NPC {
 
-  {
-    name = "old wandmaker";
-    spriteClass = WandmakerSprite.class;
-  }
-
-  @Override
-  protected boolean act() {
-    throwItem();
-    return super.act();
-  }
-
-  @Override
-  public int defenseSkill(Char enemy) {
-    return 1000;
-  }
-
-  @Override
-  public String defenseVerb() {
-    return "absorbed";
-  }
-
-  @Override
-  public void damage(int dmg, Object src) {
-  }
-
-  @Override
-  public void add(Buff buff) {
-  }
-
-  @Override
-  public boolean reset() {
-    return true;
-  }
-
-  @Override
-  public void interact() {
-    sprite.turnTo(pos, Dungeon.hero.pos);
-    Quest.type.handler.interact(this);
-  }
-
-  private void tell(String format, Object... args) {
-    GameScene.show(new WndQuest(this, Utils.format(format, args)));
-  }
-
-  @Override
-  public String description() {
-    return "This old but hale gentleman wears a slightly confused " +
-        "expression. He is protected by a magic shield.";
-  }
-
   public static class Quest {
 
     enum Type {
@@ -111,7 +61,7 @@ public class Wandmaker extends NPC {
 
       public QuestHandler handler;
 
-      private Type(QuestHandler handler) {
+      private Type(final QuestHandler handler) {
         this.handler = handler;
       }
     }
@@ -124,6 +74,23 @@ public class Wandmaker extends NPC {
     public static Wand wand1;
     public static Wand wand2;
 
+    private static final String NODE = "wandmaker";
+
+    private static final String SPAWNED = "spawned";
+
+    private static final String TYPE = "type";
+    private static final String ALTERNATIVE = "alternative";
+    private static final String GIVEN = "given";
+    private static final String WAND1 = "wand1";
+    private static final String WAND2 = "wand2";
+
+    public static void complete() {
+      wand1 = null;
+      wand2 = null;
+
+      Journal.remove(Journal.Feature.WANDMAKER);
+    }
+
     public static void reset() {
       spawned = false;
 
@@ -131,35 +98,7 @@ public class Wandmaker extends NPC {
       wand2 = null;
     }
 
-    private static final String NODE = "wandmaker";
-
-    private static final String SPAWNED = "spawned";
-    private static final String TYPE = "type";
-    private static final String ALTERNATIVE = "alternative";
-    private static final String GIVEN = "given";
-    private static final String WAND1 = "wand1";
-    private static final String WAND2 = "wand2";
-
-    public static void storeInBundle(Bundle bundle) {
-
-      Bundle node = new Bundle();
-
-      node.put(SPAWNED, spawned);
-
-      if (spawned) {
-
-        node.put(TYPE, type.toString());
-
-        node.put(GIVEN, given);
-
-        node.put(WAND1, wand1);
-        node.put(WAND2, wand2);
-      }
-
-      bundle.put(NODE, node);
-    }
-
-    public static void restoreFromBundle(Bundle bundle) {
+    public static void restoreFromBundle(final Bundle bundle) {
 
       Bundle node = bundle.getBundle(NODE);
 
@@ -175,17 +114,17 @@ public class Wandmaker extends NPC {
         wand1 = (Wand) node.get(WAND1);
         wand2 = (Wand) node.get(WAND2);
       } else {
-        reset();
+        Quest.reset();
       }
     }
 
-    public static void spawn(PrisonLevel level, Room room) {
-      if (!spawned && Dungeon.depth > 6 && Random.Int(10 - Dungeon.depth) == 0) {
+    public static void spawn(final PrisonLevel level, final Room room) {
+      if (!spawned && (Dungeon.depth > 6) && (Random.Int(10 - Dungeon.depth) == 0)) {
 
         Wandmaker npc = new Wandmaker();
         do {
           npc.pos = room.random();
-        } while (level.map[npc.pos] == Terrain.ENTRANCE || level.map[npc.pos] == Terrain.SIGN);
+        } while ((level.map[npc.pos] == Terrain.ENTRANCE) || (level.map[npc.pos] == Terrain.SIGN));
         level.mobs.add(npc);
         Actor.occupyCell(npc);
 
@@ -202,7 +141,7 @@ public class Wandmaker extends NPC {
             int water = 0;
             for (int i = 0; i < Level.LENGTH; i++) {
               if (Level.water[i]) {
-                if (++water > Level.LENGTH / 16) {
+                if (++water > (Level.LENGTH / 16)) {
                   type = Random.Int(2) == 0 ? Type.BERRY : Type.DUST;
                   break;
                 }
@@ -253,11 +192,23 @@ public class Wandmaker extends NPC {
       }
     }
 
-    public static void complete() {
-      wand1 = null;
-      wand2 = null;
+    public static void storeInBundle(final Bundle bundle) {
 
-      Journal.remove(Journal.Feature.WANDMAKER);
+      Bundle node = new Bundle();
+
+      node.put(SPAWNED, spawned);
+
+      if (spawned) {
+
+        node.put(TYPE, type.toString());
+
+        node.put(GIVEN, given);
+
+        node.put(WAND1, wand1);
+        node.put(WAND2, wand2);
+      }
+
+      bundle.put(NODE, node);
     }
   }
 
@@ -266,7 +217,9 @@ public class Wandmaker extends NPC {
     protected String txtQuest1;
     protected String txtQuest2;
 
-    public void interact(Wandmaker wandmaker) {
+    abstract protected Item checkItem();
+
+    public void interact(final Wandmaker wandmaker) {
       if (Quest.given) {
 
         Item item = checkItem();
@@ -285,8 +238,6 @@ public class Wandmaker extends NPC {
         Journal.add(Journal.Feature.WANDMAKER);
       }
     }
-
-    abstract protected Item checkItem();
 
     abstract protected void placeItem();
   }
@@ -343,7 +294,7 @@ public class Wandmaker extends NPC {
     protected void placeItem() {
       ArrayList<Heap> candidates = new ArrayList<Heap>();
       for (Heap heap : Dungeon.level.heaps.values()) {
-        if (heap.type == Heap.Type.SKELETON && !Dungeon.visible[heap.pos]) {
+        if ((heap.type == Heap.Type.SKELETON) && !Dungeon.visible[heap.pos]) {
           candidates.add(heap);
         }
       }
@@ -404,4 +355,54 @@ public class Wandmaker extends NPC {
       }
     }
   };
+
+  {
+    name = "old wandmaker";
+    spriteClass = WandmakerSprite.class;
+  }
+
+  @Override
+  protected boolean act() {
+    throwItem();
+    return super.act();
+  }
+
+  @Override
+  public void add(final Buff buff) {
+  }
+
+  @Override
+  public void damage(final int dmg, final Object src) {
+  }
+
+  @Override
+  public int defenseSkill(final Char enemy) {
+    return 1000;
+  }
+
+  @Override
+  public String defenseVerb() {
+    return "absorbed";
+  }
+
+  @Override
+  public String description() {
+    return "This old but hale gentleman wears a slightly confused " +
+        "expression. He is protected by a magic shield.";
+  }
+
+  @Override
+  public void interact() {
+    sprite.turnTo(pos, Dungeon.hero.pos);
+    Quest.type.handler.interact(this);
+  }
+
+  @Override
+  public boolean reset() {
+    return true;
+  }
+
+  private void tell(final String format, final Object... args) {
+    GameScene.show(new WndQuest(this, Utils.format(format, args)));
+  }
 }

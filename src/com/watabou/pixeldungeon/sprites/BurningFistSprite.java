@@ -25,6 +25,8 @@ import com.watabou.utils.Callback;
 
 public class BurningFistSprite extends MobSprite {
 
+  private int posToShoot;
+
   public BurningFistSprite() {
     super();
 
@@ -47,16 +49,14 @@ public class BurningFistSprite extends MobSprite {
     play(idle);
   }
 
-  private int posToShoot;
-
   @Override
-  public void attack(int cell) {
+  public void attack(final int cell) {
     posToShoot = cell;
     super.attack(cell);
   }
 
   @Override
-  public void onComplete(Animation anim) {
+  public void onComplete(final Animation anim) {
     if (anim == attack) {
 
       Sample.INSTANCE.play(Assets.SND_ZAP);

@@ -26,7 +26,7 @@ public class Effects {
     RIPPLE, LIGHTNING, WOUND, RAY
   };
 
-  public static Image get(Type type) {
+  public static Image get(final Type type) {
     Image icon = new Image(Assets.EFFECTS);
     switch (type) {
       case RIPPLE:

@@ -23,6 +23,9 @@ import com.watabou.pixeldungeon.items.Item;
 
 public class RingOfThorns extends Ring {
 
+  public class Thorns extends RingBuff {
+  }
+
   {
     name = "Ring of Thorns";
   }
@@ -33,13 +36,14 @@ public class RingOfThorns extends Ring {
   }
 
   @Override
-  public Item random() {
-    level(+1);
-    return this;
+  public String desc() {
+    return isKnown() ? "Though this ring doesn't provide real thorns, an enemy that attacks you " +
+        "will itself be wounded by a fraction of the damage that it inflicts. " +
+        "Upgrading this ring won't give any additional bonuses." : super.desc();
   }
 
   @Override
-  public boolean doPickUp(Hero hero) {
+  public boolean doPickUp(final Hero hero) {
     identify();
     Badges.validateRingOfThorns();
     Badges.validateItemLevelAquired(this);
@@ -52,17 +56,13 @@ public class RingOfThorns extends Ring {
   }
 
   @Override
-  public void use() {
-    // Do nothing (it can't degrade)
+  public Item random() {
+    level(+1);
+    return this;
   }
 
   @Override
-  public String desc() {
-    return isKnown() ? "Though this ring doesn't provide real thorns, an enemy that attacks you " +
-        "will itself be wounded by a fraction of the damage that it inflicts. " +
-        "Upgrading this ring won't give any additional bonuses." : super.desc();
-  }
-
-  public class Thorns extends RingBuff {
+  public void use() {
+    // Do nothing (it can't degrade)
   }
 }

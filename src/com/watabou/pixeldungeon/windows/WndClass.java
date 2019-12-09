@@ -29,63 +29,39 @@ import com.watabou.pixeldungeon.utils.Utils;
 
 public class WndClass extends WndTabbed {
 
-  private static final String TXT_MASTERY = "Mastery";
+  private class MasteryTab extends Group {
 
-  private static final int WIDTH = 110;
+    private static final int MARGIN = 4;
 
-  private static final int TAB_WIDTH = 50;
+    public float height;
+    public float width;
 
-  private HeroClass cl;
+    public MasteryTab() {
+      super();
 
-  private PerksTab tabPerks;
-  private MasteryTab tabMastery;
-
-  public WndClass(HeroClass cl) {
-
-    super();
-
-    this.cl = cl;
-
-    tabPerks = new PerksTab();
-    add(tabPerks);
-
-    Tab tab = new RankingTab(Utils.capitalize(cl.title()), tabPerks);
-    tab.setSize(TAB_WIDTH, tabHeight());
-    add(tab);
-
-    if (Badges.isUnlocked(cl.masteryBadge())) {
-      tabMastery = new MasteryTab();
-      add(tabMastery);
-
-      tab = new RankingTab(TXT_MASTERY, tabMastery);
-      tab.setSize(TAB_WIDTH, tabHeight());
-      add(tab);
-
-      resize(
-          (int) Math.max(tabPerks.width, tabMastery.width),
-          (int) Math.max(tabPerks.height, tabMastery.height));
-    } else {
-      resize((int) tabPerks.width, (int) tabPerks.height);
-    }
-
-    select(0);
-  }
-
-  private class RankingTab extends LabeledTab {
-
-    private Group page;
-
-    public RankingTab(String label, Group page) {
-      super(label);
-      this.page = page;
-    }
-
-    @Override
-    protected void select(boolean value) {
-      super.select(value);
-      if (page != null) {
-        page.visible = page.active = selected;
+      String message = null;
+      switch (cl) {
+        case WARRIOR:
+          message = HeroSubClass.GLADIATOR.desc() + "\n\n" + HeroSubClass.BERSERKER.desc();
+          break;
+        case MAGE:
+          message = HeroSubClass.BATTLEMAGE.desc() + "\n\n" + HeroSubClass.WARLOCK.desc();
+          break;
+        case ROGUE:
+          message = HeroSubClass.FREERUNNER.desc() + "\n\n" + HeroSubClass.ASSASSIN.desc();
+          break;
+        case HUNTRESS:
+          message = HeroSubClass.SNIPER.desc() + "\n\n" + HeroSubClass.WARDEN.desc();
+          break;
       }
+
+      HighlightedText text = new HighlightedText(6);
+      text.text(message, WIDTH - (MARGIN * 2));
+      text.setPos(MARGIN, MARGIN);
+      add(text);
+
+      height = text.bottom() + MARGIN;
+      width = text.right() + MARGIN;
     }
   }
 
@@ -125,7 +101,7 @@ public class WndClass extends WndTabbed {
         BitmapTextMultiline item = PixelScene.createMultiline(items[i], 6);
         item.x = dot.x + dotWidth;
         item.y = pos;
-        item.maxWidth = (int) (WIDTH - MARGIN * 2 - dotWidth);
+        item.maxWidth = (int) (WIDTH - (MARGIN * 2) - dotWidth);
         item.measure();
         add(item);
 
@@ -141,39 +117,63 @@ public class WndClass extends WndTabbed {
     }
   }
 
-  private class MasteryTab extends Group {
+  private class RankingTab extends LabeledTab {
 
-    private static final int MARGIN = 4;
+    private Group page;
 
-    public float height;
-    public float width;
-
-    public MasteryTab() {
-      super();
-
-      String message = null;
-      switch (cl) {
-        case WARRIOR:
-          message = HeroSubClass.GLADIATOR.desc() + "\n\n" + HeroSubClass.BERSERKER.desc();
-          break;
-        case MAGE:
-          message = HeroSubClass.BATTLEMAGE.desc() + "\n\n" + HeroSubClass.WARLOCK.desc();
-          break;
-        case ROGUE:
-          message = HeroSubClass.FREERUNNER.desc() + "\n\n" + HeroSubClass.ASSASSIN.desc();
-          break;
-        case HUNTRESS:
-          message = HeroSubClass.SNIPER.desc() + "\n\n" + HeroSubClass.WARDEN.desc();
-          break;
-      }
-
-      HighlightedText text = new HighlightedText(6);
-      text.text(message, WIDTH - MARGIN * 2);
-      text.setPos(MARGIN, MARGIN);
-      add(text);
-
-      height = text.bottom() + MARGIN;
-      width = text.right() + MARGIN;
+    public RankingTab(final String label, final Group page) {
+      super(label);
+      this.page = page;
     }
+
+    @Override
+    protected void select(final boolean value) {
+      super.select(value);
+      if (page != null) {
+        page.visible = page.active = selected;
+      }
+    }
+  }
+
+  private static final String TXT_MASTERY = "Mastery";
+
+  private static final int WIDTH = 110;
+  private static final int TAB_WIDTH = 50;
+
+  private HeroClass cl;
+
+  private PerksTab tabPerks;
+
+  private MasteryTab tabMastery;
+
+  public WndClass(final HeroClass cl) {
+
+    super();
+
+    this.cl = cl;
+
+    tabPerks = new PerksTab();
+    add(tabPerks);
+
+    Tab tab = new RankingTab(Utils.capitalize(cl.title()), tabPerks);
+    tab.setSize(TAB_WIDTH, tabHeight());
+    add(tab);
+
+    if (Badges.isUnlocked(cl.masteryBadge())) {
+      tabMastery = new MasteryTab();
+      add(tabMastery);
+
+      tab = new RankingTab(TXT_MASTERY, tabMastery);
+      tab.setSize(TAB_WIDTH, tabHeight());
+      add(tab);
+
+      resize(
+          (int) Math.max(tabPerks.width, tabMastery.width),
+          (int) Math.max(tabPerks.height, tabMastery.height));
+    } else {
+      resize((int) tabPerks.width, (int) tabPerks.height);
+    }
+
+    select(0);
   }
 }

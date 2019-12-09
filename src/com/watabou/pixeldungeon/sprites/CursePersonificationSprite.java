@@ -26,7 +26,15 @@ public class CursePersonificationSprite extends WraithSprite {
   private Emitter cloud;
 
   @Override
-  public void link(Char ch) {
+  public void kill() {
+    super.kill();
+    if (cloud != null) {
+      cloud.on = false;
+    }
+  }
+
+  @Override
+  public void link(final Char ch) {
     super.link(ch);
 
     if (cloud == null) {
@@ -42,14 +50,6 @@ public class CursePersonificationSprite extends WraithSprite {
 
     if (cloud != null) {
       cloud.visible = visible;
-    }
-  }
-
-  @Override
-  public void kill() {
-    super.kill();
-    if (cloud != null) {
-      cloud.on = false;
     }
   }
 }

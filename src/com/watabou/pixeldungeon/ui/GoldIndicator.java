@@ -44,7 +44,7 @@ public class GoldIndicator extends Component {
 
   @Override
   protected void layout() {
-    tf.x = x + (width - tf.width()) / 2;
+    tf.x = x + ((width - tf.width()) / 2);
     tf.y = bottom() - tf.height();
   }
 
@@ -56,7 +56,7 @@ public class GoldIndicator extends Component {
 
       time -= Game.elapsed;
       if (time > 0) {
-        tf.alpha(time > TIME / 2 ? 1f : time * 2 / TIME);
+        tf.alpha(time > (TIME / 2) ? 1f : (time * 2) / TIME);
       } else {
         visible = false;
       }

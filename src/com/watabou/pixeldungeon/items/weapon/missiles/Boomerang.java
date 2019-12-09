@@ -35,54 +35,15 @@ public class Boomerang extends MissileWeapon {
     stackable = false;
   }
 
-  @Override
-  public int min() {
-    return isBroken() ? 1 : 1 + level();
-  }
+  private boolean throwEquiped;
 
   @Override
-  public int max() {
-    return isBroken() ? 4 : 4 + 2 * level();
+  public void cast(final Hero user, final int dst) {
+    throwEquiped = isEquipped(user);
+    super.cast(user, dst);
   }
 
-  @Override
-  public boolean isUpgradable() {
-    return true;
-  }
-
-  @Override
-  public Item upgrade() {
-    return upgrade(false);
-  }
-
-  @Override
-  public Item upgrade(boolean enchant) {
-    super.upgrade(enchant);
-
-    updateQuickslot();
-
-    return this;
-  }
-
-  @Override
-  public int maxDurability(int lvl) {
-    return 8 * (lvl < 16 ? 16 - lvl : 1);
-  }
-
-  @Override
-  public void proc(Char attacker, Char defender, int damage) {
-    super.proc(attacker, defender, damage);
-    if (attacker instanceof Hero && ((Hero) attacker).rangedWeapon == this) {
-      circleBack(defender.pos, (Hero) attacker);
-    }
-  }
-
-  @Override
-  protected void miss(int cell) {
-    circleBack(cell, curUser);
-  }
-
-  private void circleBack(int from, Hero owner) {
+  private void circleBack(final int from, final Hero owner) {
 
     ((MissileSprite) curUser.sprite.parent.recycle(MissileSprite.class)).reset(from, curUser.pos,
         curItem, null);
@@ -95,16 +56,55 @@ public class Boomerang extends MissileWeapon {
     }
   }
 
-  private boolean throwEquiped;
-
-  @Override
-  public void cast(Hero user, int dst) {
-    throwEquiped = isEquipped(user);
-    super.cast(user, dst);
-  }
-
   @Override
   public String desc() {
     return "Thrown to the enemy this flat curved wooden missile will return to the hands of its thrower.";
+  }
+
+  @Override
+  public boolean isUpgradable() {
+    return true;
+  }
+
+  @Override
+  public int max() {
+    return isBroken() ? 4 : 4 + (2 * level());
+  }
+
+  @Override
+  public int maxDurability(final int lvl) {
+    return 8 * (lvl < 16 ? 16 - lvl : 1);
+  }
+
+  @Override
+  public int min() {
+    return isBroken() ? 1 : 1 + level();
+  }
+
+  @Override
+  protected void miss(final int cell) {
+    circleBack(cell, curUser);
+  }
+
+  @Override
+  public void proc(final Char attacker, final Char defender, final int damage) {
+    super.proc(attacker, defender, damage);
+    if ((attacker instanceof Hero) && (((Hero) attacker).rangedWeapon == this)) {
+      circleBack(defender.pos, (Hero) attacker);
+    }
+  }
+
+  @Override
+  public Item upgrade() {
+    return upgrade(false);
+  }
+
+  @Override
+  public Item upgrade(final boolean enchant) {
+    super.upgrade(enchant);
+
+    updateQuickslot();
+
+    return this;
   }
 }

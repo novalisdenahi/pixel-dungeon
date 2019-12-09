@@ -29,6 +29,23 @@ import com.watabou.utils.PathFinder;
 
 public class Icecap extends Plant {
 
+  public static class Seed extends Plant.Seed {
+    {
+      plantName = "Icecap";
+
+      name = "seed of " + plantName;
+      image = ItemSpriteSheet.SEED_ICECAP;
+
+      plantClass = Icecap.class;
+      alchemyClass = PotionOfFrost.class;
+    }
+
+    @Override
+    public String desc() {
+      return TXT_DESC;
+    }
+  }
+
   private static final String TXT_DESC =
       "Upon touching an Icecap excretes a pollen, which freezes everything in its vicinity.";
 
@@ -38,7 +55,7 @@ public class Icecap extends Plant {
   }
 
   @Override
-  public void activate(Char ch) {
+  public void activate(final Char ch) {
     super.activate(ch);
 
     PathFinder.buildDistanceMap(pos, BArray.not(Level.losBlocking, null), 1);
@@ -55,22 +72,5 @@ public class Icecap extends Plant {
   @Override
   public String desc() {
     return TXT_DESC;
-  }
-
-  public static class Seed extends Plant.Seed {
-    {
-      plantName = "Icecap";
-
-      name = "seed of " + plantName;
-      image = ItemSpriteSheet.SEED_ICECAP;
-
-      plantClass = Icecap.class;
-      alchemyClass = PotionOfFrost.class;
-    }
-
-    @Override
-    public String desc() {
-      return TXT_DESC;
-    }
   }
 }

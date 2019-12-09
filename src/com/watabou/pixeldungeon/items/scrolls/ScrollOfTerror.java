@@ -35,6 +35,12 @@ public class ScrollOfTerror extends Scroll {
   }
 
   @Override
+  public String desc() {
+    return "A flash of red light will overwhelm all creatures in your field of view with terror, " +
+        "and they will turn and flee. Attacking a fleeing enemy will dispel the effect.";
+  }
+
+  @Override
   protected void doRead() {
 
     new Flare(5, 32).color(0xFF0000, true).show(curUser.sprite, 2f);
@@ -66,12 +72,6 @@ public class ScrollOfTerror extends Scroll {
     setKnown();
 
     readAnimation();
-  }
-
-  @Override
-  public String desc() {
-    return "A flash of red light will overwhelm all creatures in your field of view with terror, " +
-        "and they will turn and flee. Attacking a fleeing enemy will dispel the effect.";
   }
 
   @Override

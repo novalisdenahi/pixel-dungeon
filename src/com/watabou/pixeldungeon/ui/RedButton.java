@@ -32,7 +32,7 @@ public class RedButton extends Button {
   protected BitmapText text;
   protected Image icon;
 
-  public RedButton(String label) {
+  public RedButton(final String label) {
     super();
 
     text.text(label);
@@ -50,6 +50,22 @@ public class RedButton extends Button {
     add(text);
   }
 
+  public void enable(final boolean value) {
+    active = value;
+    text.alpha(value ? 1.0f : 0.3f);
+  };
+
+  public void icon(final Image icon) {
+    if (this.icon != null) {
+      remove(this.icon);
+    }
+    this.icon = icon;
+    if (this.icon != null) {
+      add(this.icon);
+      layout();
+    }
+  };
+
   @Override
   protected void layout() {
 
@@ -59,12 +75,12 @@ public class RedButton extends Button {
     bg.y = y;
     bg.size(width, height);
 
-    text.x = x + (int) (width - text.width()) / 2;
-    text.y = y + (int) (height - text.baseLine()) / 2;
+    text.x = x + ((int) (width - text.width()) / 2);
+    text.y = y + ((int) (height - text.baseLine()) / 2);
 
     if (icon != null) {
-      icon.x = x + text.x - icon.width() - 2;
-      icon.y = y + (height - icon.height()) / 2;
+      icon.x = (x + text.x) - icon.width() - 2;
+      icon.y = y + ((height - icon.height()) / 2);
     }
   };
 
@@ -72,44 +88,28 @@ public class RedButton extends Button {
   protected void onTouchDown() {
     bg.brightness(1.2f);
     Sample.INSTANCE.play(Assets.SND_CLICK);
-  };
+  }
 
   @Override
   protected void onTouchUp() {
     bg.resetColor();
-  };
-
-  public void enable(boolean value) {
-    active = value;
-    text.alpha(value ? 1.0f : 0.3f);
   }
 
-  public void text(String value) {
-    text.text(value);
-    text.measure();
-    layout();
-  }
-
-  public void textColor(int value) {
-    text.hardlight(value);
-  }
-
-  public void icon(Image icon) {
-    if (this.icon != null) {
-      remove(this.icon);
-    }
-    this.icon = icon;
-    if (this.icon != null) {
-      add(this.icon);
-      layout();
-    }
+  public float reqHeight() {
+    return text.baseLine() + 4;
   }
 
   public float reqWidth() {
     return text.width() + 4;
   }
 
-  public float reqHeight() {
-    return text.baseLine() + 4;
+  public void text(final String value) {
+    text.text(value);
+    text.measure();
+    layout();
+  }
+
+  public void textColor(final int value) {
+    text.hardlight(value);
   }
 }

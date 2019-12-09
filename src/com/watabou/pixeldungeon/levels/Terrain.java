@@ -135,12 +135,12 @@ public class Terrain {
     flags[SECRET_SUMMONING_TRAP] = flags[EMPTY] | SECRET;
     flags[INACTIVE_TRAP] = flags[EMPTY];
 
-    for (int i = WATER_TILES; i < WATER_TILES + 16; i++) {
+    for (int i = WATER_TILES; i < (WATER_TILES + 16); i++) {
       flags[i] = flags[WATER];
     }
   };
 
-  public static int discover(int terr) {
+  public static int discover(final int terr) {
     switch (terr) {
       case SECRET_DOOR:
         return DOOR;

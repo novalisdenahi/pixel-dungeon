@@ -23,11 +23,11 @@ import com.watabou.pixeldungeon.items.Item;
 import com.watabou.pixeldungeon.sprites.ItemSprite;
 
 public class Enchanting extends ItemSprite {
-  private static final int SIZE = 16;
-
   private enum Phase {
     FADE_IN, STATIC, FADE_OUT
   }
+
+  private static final int SIZE = 16;
 
   private static final float FADE_IN_TIME = 0.2f;
   private static final float STATIC_TIME = 1.0f;
@@ -35,15 +35,26 @@ public class Enchanting extends ItemSprite {
 
   private static final float ALPHA = 0.6f;
 
+  public static void show(final Char ch, final Item item) {
+
+    if (!ch.sprite.visible) {
+      return;
+    }
+
+    Enchanting sprite = new Enchanting(item);
+    sprite.target = ch;
+    ch.sprite.parent.add(sprite);
+  }
+
   private int color;
 
   private Char target;
-
   private Phase phase;
   private float duration;
+
   private float passed;
 
-  public Enchanting(Item item) {
+  public Enchanting(final Item item) {
     super(item.image(), null);
     originToCenter();
 
@@ -58,20 +69,20 @@ public class Enchanting extends ItemSprite {
   public void update() {
     super.update();
 
-    x = target.sprite.center().x - SIZE / 2;
+    x = target.sprite.center().x - (SIZE / 2);
     y = target.sprite.y - SIZE;
 
     switch (phase) {
       case FADE_IN:
-        alpha(passed / duration * ALPHA);
+        alpha((passed / duration) * ALPHA);
         scale.set(passed / duration);
         break;
       case STATIC:
-        tint(color, passed / duration * 0.8f);
+        tint(color, (passed / duration) * 0.8f);
         break;
       case FADE_OUT:
-        alpha((1 - passed / duration) * ALPHA);
-        scale.set(1 + passed / duration);
+        alpha((1 - (passed / duration)) * ALPHA);
+        scale.set(1 + (passed / duration));
         break;
     }
 
@@ -92,16 +103,5 @@ public class Enchanting extends ItemSprite {
 
       passed = 0;
     }
-  }
-
-  public static void show(Char ch, Item item) {
-
-    if (!ch.sprite.visible) {
-      return;
-    }
-
-    Enchanting sprite = new Enchanting(item);
-    sprite.target = ch;
-    ch.sprite.parent.add(sprite);
   }
 }

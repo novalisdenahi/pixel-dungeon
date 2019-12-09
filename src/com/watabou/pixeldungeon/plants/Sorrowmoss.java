@@ -28,32 +28,6 @@ import com.watabou.pixeldungeon.sprites.ItemSpriteSheet;
 
 public class Sorrowmoss extends Plant {
 
-  private static final String TXT_DESC =
-      "A Sorrowmoss is a flower (not a moss) with razor-sharp petals, coated with a deadly venom.";
-
-  {
-    image = 2;
-    plantName = "Sorrowmoss";
-  }
-
-  @Override
-  public void activate(Char ch) {
-    super.activate(ch);
-
-    if (ch != null) {
-      Buff.affect(ch, Poison.class).set(Poison.durationFactor(ch) * (4 + Dungeon.depth / 2));
-    }
-
-    if (Dungeon.visible[pos]) {
-      CellEmitter.center(pos).burst(PoisonParticle.SPLASH, 3);
-    }
-  }
-
-  @Override
-  public String desc() {
-    return TXT_DESC;
-  }
-
   public static class Seed extends Plant.Seed {
     {
       plantName = "Sorrowmoss";
@@ -69,5 +43,31 @@ public class Sorrowmoss extends Plant {
     public String desc() {
       return TXT_DESC;
     }
+  }
+
+  private static final String TXT_DESC =
+      "A Sorrowmoss is a flower (not a moss) with razor-sharp petals, coated with a deadly venom.";
+
+  {
+    image = 2;
+    plantName = "Sorrowmoss";
+  }
+
+  @Override
+  public void activate(final Char ch) {
+    super.activate(ch);
+
+    if (ch != null) {
+      Buff.affect(ch, Poison.class).set(Poison.durationFactor(ch) * (4 + (Dungeon.depth / 2)));
+    }
+
+    if (Dungeon.visible[pos]) {
+      CellEmitter.center(pos).burst(PoisonParticle.SPLASH, 3);
+    }
+  }
+
+  @Override
+  public String desc() {
+    return TXT_DESC;
   }
 }

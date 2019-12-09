@@ -25,7 +25,31 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import com.watabou.pixeldungeon.PixelDungeon;
-import com.watabou.pixeldungeon.levels.painters.*;
+import com.watabou.pixeldungeon.levels.painters.AltarPainter;
+import com.watabou.pixeldungeon.levels.painters.ArmoryPainter;
+import com.watabou.pixeldungeon.levels.painters.BlacksmithPainter;
+import com.watabou.pixeldungeon.levels.painters.BossExitPainter;
+import com.watabou.pixeldungeon.levels.painters.CryptPainter;
+import com.watabou.pixeldungeon.levels.painters.EntrancePainter;
+import com.watabou.pixeldungeon.levels.painters.ExitPainter;
+import com.watabou.pixeldungeon.levels.painters.GardenPainter;
+import com.watabou.pixeldungeon.levels.painters.LaboratoryPainter;
+import com.watabou.pixeldungeon.levels.painters.LibraryPainter;
+import com.watabou.pixeldungeon.levels.painters.MagicWellPainter;
+import com.watabou.pixeldungeon.levels.painters.Painter;
+import com.watabou.pixeldungeon.levels.painters.PassagePainter;
+import com.watabou.pixeldungeon.levels.painters.PitPainter;
+import com.watabou.pixeldungeon.levels.painters.PoolPainter;
+import com.watabou.pixeldungeon.levels.painters.RatKingPainter;
+import com.watabou.pixeldungeon.levels.painters.ShopPainter;
+import com.watabou.pixeldungeon.levels.painters.StandardPainter;
+import com.watabou.pixeldungeon.levels.painters.StatuePainter;
+import com.watabou.pixeldungeon.levels.painters.StoragePainter;
+import com.watabou.pixeldungeon.levels.painters.TrapsPainter;
+import com.watabou.pixeldungeon.levels.painters.TreasuryPainter;
+import com.watabou.pixeldungeon.levels.painters.TunnelPainter;
+import com.watabou.pixeldungeon.levels.painters.VaultPainter;
+import com.watabou.pixeldungeon.levels.painters.WeakFloorPainter;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Graph;
@@ -35,11 +59,24 @@ import com.watabou.utils.Rect;
 
 public class Room extends Rect implements Graph.Node, Bundlable {
 
-  public HashSet<Room> neigbours = new HashSet<Room>();
-  public HashMap<Room, Door> connected = new HashMap<Room, Door>();
+  public static class Door extends Point {
 
-  public int distance;
-  public int price = 1;
+    public static enum Type {
+      EMPTY, TUNNEL, REGULAR, UNLOCKED, HIDDEN, BARRICADE, LOCKED
+    }
+
+    public Type type = Type.EMPTY;
+
+    public Door(final int x, final int y) {
+      super(x, y);
+    }
+
+    public void set(final Type type) {
+      if (type.compareTo(this.type) > 0) {
+        this.type = type;
+      }
+    }
+  }
 
   public static enum Type {
     NULL(null), STANDARD(StandardPainter.class), ENTRANCE(EntrancePainter.class), EXIT(
@@ -58,7 +95,7 @@ public class Room extends Rect implements Graph.Node, Bundlable {
 
     private Method paint;
 
-    private Type(Class<? extends Painter> painter) {
+    private Type(final Class<? extends Painter> painter) {
       try {
         paint = painter.getMethod("paint", Level.class, Room.class);
       } catch (Exception e) {
@@ -66,117 +103,36 @@ public class Room extends Rect implements Graph.Node, Bundlable {
       }
     }
 
-    public void paint(Level level, Room room) {
+    public void paint(final Level level, final Room room) {
       try {
         paint.invoke(null, level, room);
       } catch (Exception e) {
         PixelDungeon.reportException(e);
       }
     }
-  };
+  }
 
   public static final ArrayList<Type> SPECIALS = new ArrayList<Type>(Arrays.asList(
       Type.ARMORY, Type.WEAK_FLOOR, Type.MAGIC_WELL, Type.CRYPT, Type.POOL, Type.GARDEN,
       Type.LIBRARY,
       Type.TREASURY, Type.TRAPS, Type.STORAGE, Type.STATUE, Type.LABORATORY, Type.VAULT,
       Type.ALTAR));
+  private static final String ROOMS = "rooms";
 
-  public Type type = Type.NULL;
-
-  public int random() {
-    return random(0);
-  }
-
-  public int random(int m) {
-    int x = Random.Int(left + 1 + m, right - m);
-    int y = Random.Int(top + 1 + m, bottom - m);
-    return x + y * Level.WIDTH;
-  }
-
-  public void addNeigbour(Room other) {
-
-    Rect i = intersect(other);
-    if ((i.width() == 0 && i.height() >= 3) ||
-        (i.height() == 0 && i.width() >= 3)) {
-      neigbours.add(other);
-      other.neigbours.add(this);
+  public static void restoreRoomsFromBundle(final Bundle bundle) {
+    if (bundle.contains(ROOMS)) {
+      SPECIALS.clear();
+      for (String type : bundle.getStringArray(ROOMS)) {
+        SPECIALS.add(Type.valueOf(type));
+      }
+    } else {
+      Room.shuffleTypes();
     }
-
-  }
-
-  public void connect(Room room) {
-    if (!connected.containsKey(room)) {
-      connected.put(room, null);
-      room.connected.put(this, null);
-    }
-  }
-
-  public Door entrance() {
-    return connected.values().iterator().next();
-  }
-
-  public boolean inside(int p) {
-    int x = p % Level.WIDTH;
-    int y = p / Level.WIDTH;
-    return x > left && y > top && x < right && y < bottom;
-  }
-
-  public Point center() {
-    return new Point(
-        (left + right) / 2 + (((right - left) & 1) == 1 ? Random.Int(2) : 0),
-        (top + bottom) / 2 + (((bottom - top) & 1) == 1 ? Random.Int(2) : 0));
-  }
-
-  // **** Graph.Node interface ****
-
-  @Override
-  public int distance() {
-    return distance;
-  }
-
-  @Override
-  public void distance(int value) {
-    distance = value;
-  }
-
-  @Override
-  public int price() {
-    return price;
-  }
-
-  @Override
-  public void price(int value) {
-    price = value;
-  }
-
-  @Override
-  public Collection<Room> edges() {
-    return neigbours;
-  }
-
-  // FIXME: use proper string constants
-
-  @Override
-  public void storeInBundle(Bundle bundle) {
-    bundle.put("left", left);
-    bundle.put("top", top);
-    bundle.put("right", right);
-    bundle.put("bottom", bottom);
-    bundle.put("type", type.toString());
-  }
-
-  @Override
-  public void restoreFromBundle(Bundle bundle) {
-    left = bundle.getInt("left");
-    top = bundle.getInt("top");
-    right = bundle.getInt("right");
-    bottom = bundle.getInt("bottom");
-    type = Type.valueOf(bundle.getString("type"));
-  }
+  };
 
   public static void shuffleTypes() {
     int size = SPECIALS.size();
-    for (int i = 0; i < size - 1; i++) {
+    for (int i = 0; i < (size - 1); i++) {
       int j = Random.Int(i, size);
       if (j != i) {
         Type t = SPECIALS.get(i);
@@ -186,26 +142,7 @@ public class Room extends Rect implements Graph.Node, Bundlable {
     }
   }
 
-  public static void useType(Type type) {
-    if (SPECIALS.remove(type)) {
-      SPECIALS.add(type);
-    }
-  }
-
-  private static final String ROOMS = "rooms";
-
-  public static void restoreRoomsFromBundle(Bundle bundle) {
-    if (bundle.contains(ROOMS)) {
-      SPECIALS.clear();
-      for (String type : bundle.getStringArray(ROOMS)) {
-        SPECIALS.add(Type.valueOf(type));
-      }
-    } else {
-      shuffleTypes();
-    }
-  }
-
-  public static void storeRoomsInBundle(Bundle bundle) {
+  public static void storeRoomsInBundle(final Bundle bundle) {
     String[] array = new String[SPECIALS.size()];
     for (int i = 0; i < array.length; i++) {
       array[i] = SPECIALS.get(i).toString();
@@ -213,22 +150,110 @@ public class Room extends Rect implements Graph.Node, Bundlable {
     bundle.put(ROOMS, array);
   }
 
-  public static class Door extends Point {
+  public static void useType(final Type type) {
+    if (SPECIALS.remove(type)) {
+      SPECIALS.add(type);
+    }
+  }
 
-    public static enum Type {
-      EMPTY, TUNNEL, REGULAR, UNLOCKED, HIDDEN, BARRICADE, LOCKED
+  public HashSet<Room> neigbours = new HashSet<Room>();
+
+  public HashMap<Room, Door> connected = new HashMap<Room, Door>();
+
+  public int distance;
+
+  public int price = 1;
+
+  public Type type = Type.NULL;
+
+  public void addNeigbour(final Room other) {
+
+    Rect i = intersect(other);
+    if (((i.width() == 0) && (i.height() >= 3)) ||
+        ((i.height() == 0) && (i.width() >= 3))) {
+      neigbours.add(other);
+      other.neigbours.add(this);
     }
 
-    public Type type = Type.EMPTY;
+  }
 
-    public Door(int x, int y) {
-      super(x, y);
-    }
+  // **** Graph.Node interface ****
 
-    public void set(Type type) {
-      if (type.compareTo(this.type) > 0) {
-        this.type = type;
-      }
+  public Point center() {
+    return new Point(
+        ((left + right) / 2) + (((right - left) & 1) == 1 ? Random.Int(2) : 0),
+        ((top + bottom) / 2) + (((bottom - top) & 1) == 1 ? Random.Int(2) : 0));
+  }
+
+  public void connect(final Room room) {
+    if (!connected.containsKey(room)) {
+      connected.put(room, null);
+      room.connected.put(this, null);
     }
+  }
+
+  @Override
+  public int distance() {
+    return distance;
+  }
+
+  @Override
+  public void distance(final int value) {
+    distance = value;
+  }
+
+  @Override
+  public Collection<Room> edges() {
+    return neigbours;
+  }
+
+  // FIXME: use proper string constants
+
+  public Door entrance() {
+    return connected.values().iterator().next();
+  }
+
+  public boolean inside(final int p) {
+    int x = p % Level.WIDTH;
+    int y = p / Level.WIDTH;
+    return (x > left) && (y > top) && (x < right) && (y < bottom);
+  }
+
+  @Override
+  public int price() {
+    return price;
+  }
+
+  @Override
+  public void price(final int value) {
+    price = value;
+  }
+
+  public int random() {
+    return random(0);
+  }
+
+  public int random(final int m) {
+    int x = Random.Int(left + 1 + m, right - m);
+    int y = Random.Int(top + 1 + m, bottom - m);
+    return x + (y * Level.WIDTH);
+  }
+
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    left = bundle.getInt("left");
+    top = bundle.getInt("top");
+    right = bundle.getInt("right");
+    bottom = bundle.getInt("bottom");
+    type = Type.valueOf(bundle.getString("type"));
+  }
+
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    bundle.put("left", left);
+    bundle.put("top", top);
+    bundle.put("right", right);
+    bundle.put("bottom", bottom);
+    bundle.put("type", type.toString());
   }
 }

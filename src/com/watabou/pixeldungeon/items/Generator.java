@@ -21,19 +21,97 @@ import java.util.HashMap;
 
 import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.actors.hero.Hero;
-import com.watabou.pixeldungeon.items.armor.*;
+import com.watabou.pixeldungeon.items.armor.Armor;
+import com.watabou.pixeldungeon.items.armor.ClothArmor;
+import com.watabou.pixeldungeon.items.armor.LeatherArmor;
+import com.watabou.pixeldungeon.items.armor.MailArmor;
+import com.watabou.pixeldungeon.items.armor.PlateArmor;
+import com.watabou.pixeldungeon.items.armor.ScaleArmor;
 import com.watabou.pixeldungeon.items.bags.Bag;
 import com.watabou.pixeldungeon.items.food.Food;
 import com.watabou.pixeldungeon.items.food.MysteryMeat;
 import com.watabou.pixeldungeon.items.food.Pasty;
-import com.watabou.pixeldungeon.items.potions.*;
-import com.watabou.pixeldungeon.items.rings.*;
-import com.watabou.pixeldungeon.items.scrolls.*;
-import com.watabou.pixeldungeon.items.wands.*;
-import com.watabou.pixeldungeon.items.weapon.*;
-import com.watabou.pixeldungeon.items.weapon.melee.*;
-import com.watabou.pixeldungeon.items.weapon.missiles.*;
-import com.watabou.pixeldungeon.plants.*;
+import com.watabou.pixeldungeon.items.potions.Potion;
+import com.watabou.pixeldungeon.items.potions.PotionOfExperience;
+import com.watabou.pixeldungeon.items.potions.PotionOfFrost;
+import com.watabou.pixeldungeon.items.potions.PotionOfHealing;
+import com.watabou.pixeldungeon.items.potions.PotionOfInvisibility;
+import com.watabou.pixeldungeon.items.potions.PotionOfLevitation;
+import com.watabou.pixeldungeon.items.potions.PotionOfLiquidFlame;
+import com.watabou.pixeldungeon.items.potions.PotionOfMight;
+import com.watabou.pixeldungeon.items.potions.PotionOfMindVision;
+import com.watabou.pixeldungeon.items.potions.PotionOfParalyticGas;
+import com.watabou.pixeldungeon.items.potions.PotionOfPurity;
+import com.watabou.pixeldungeon.items.potions.PotionOfStrength;
+import com.watabou.pixeldungeon.items.potions.PotionOfToxicGas;
+import com.watabou.pixeldungeon.items.rings.Ring;
+import com.watabou.pixeldungeon.items.rings.RingOfAccuracy;
+import com.watabou.pixeldungeon.items.rings.RingOfDetection;
+import com.watabou.pixeldungeon.items.rings.RingOfElements;
+import com.watabou.pixeldungeon.items.rings.RingOfEvasion;
+import com.watabou.pixeldungeon.items.rings.RingOfHaggler;
+import com.watabou.pixeldungeon.items.rings.RingOfHaste;
+import com.watabou.pixeldungeon.items.rings.RingOfHerbalism;
+import com.watabou.pixeldungeon.items.rings.RingOfMending;
+import com.watabou.pixeldungeon.items.rings.RingOfPower;
+import com.watabou.pixeldungeon.items.rings.RingOfSatiety;
+import com.watabou.pixeldungeon.items.rings.RingOfShadows;
+import com.watabou.pixeldungeon.items.rings.RingOfThorns;
+import com.watabou.pixeldungeon.items.scrolls.Scroll;
+import com.watabou.pixeldungeon.items.scrolls.ScrollOfChallenge;
+import com.watabou.pixeldungeon.items.scrolls.ScrollOfEnchantment;
+import com.watabou.pixeldungeon.items.scrolls.ScrollOfIdentify;
+import com.watabou.pixeldungeon.items.scrolls.ScrollOfLullaby;
+import com.watabou.pixeldungeon.items.scrolls.ScrollOfMagicMapping;
+import com.watabou.pixeldungeon.items.scrolls.ScrollOfMirrorImage;
+import com.watabou.pixeldungeon.items.scrolls.ScrollOfPsionicBlast;
+import com.watabou.pixeldungeon.items.scrolls.ScrollOfRecharging;
+import com.watabou.pixeldungeon.items.scrolls.ScrollOfRemoveCurse;
+import com.watabou.pixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.watabou.pixeldungeon.items.scrolls.ScrollOfTerror;
+import com.watabou.pixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.watabou.pixeldungeon.items.wands.Wand;
+import com.watabou.pixeldungeon.items.wands.WandOfAmok;
+import com.watabou.pixeldungeon.items.wands.WandOfAvalanche;
+import com.watabou.pixeldungeon.items.wands.WandOfBlink;
+import com.watabou.pixeldungeon.items.wands.WandOfDisintegration;
+import com.watabou.pixeldungeon.items.wands.WandOfFirebolt;
+import com.watabou.pixeldungeon.items.wands.WandOfFlock;
+import com.watabou.pixeldungeon.items.wands.WandOfLightning;
+import com.watabou.pixeldungeon.items.wands.WandOfMagicMissile;
+import com.watabou.pixeldungeon.items.wands.WandOfPoison;
+import com.watabou.pixeldungeon.items.wands.WandOfReach;
+import com.watabou.pixeldungeon.items.wands.WandOfRegrowth;
+import com.watabou.pixeldungeon.items.wands.WandOfSlowness;
+import com.watabou.pixeldungeon.items.wands.WandOfTeleportation;
+import com.watabou.pixeldungeon.items.weapon.Weapon;
+import com.watabou.pixeldungeon.items.weapon.melee.BattleAxe;
+import com.watabou.pixeldungeon.items.weapon.melee.Dagger;
+import com.watabou.pixeldungeon.items.weapon.melee.Glaive;
+import com.watabou.pixeldungeon.items.weapon.melee.Knuckles;
+import com.watabou.pixeldungeon.items.weapon.melee.Longsword;
+import com.watabou.pixeldungeon.items.weapon.melee.Mace;
+import com.watabou.pixeldungeon.items.weapon.melee.Quarterstaff;
+import com.watabou.pixeldungeon.items.weapon.melee.ShortSword;
+import com.watabou.pixeldungeon.items.weapon.melee.Spear;
+import com.watabou.pixeldungeon.items.weapon.melee.Sword;
+import com.watabou.pixeldungeon.items.weapon.melee.WarHammer;
+import com.watabou.pixeldungeon.items.weapon.missiles.Boomerang;
+import com.watabou.pixeldungeon.items.weapon.missiles.CurareDart;
+import com.watabou.pixeldungeon.items.weapon.missiles.Dart;
+import com.watabou.pixeldungeon.items.weapon.missiles.IncendiaryDart;
+import com.watabou.pixeldungeon.items.weapon.missiles.Javelin;
+import com.watabou.pixeldungeon.items.weapon.missiles.Shuriken;
+import com.watabou.pixeldungeon.items.weapon.missiles.Tamahawk;
+import com.watabou.pixeldungeon.plants.Dreamweed;
+import com.watabou.pixeldungeon.plants.Earthroot;
+import com.watabou.pixeldungeon.plants.Fadeleaf;
+import com.watabou.pixeldungeon.plants.Firebloom;
+import com.watabou.pixeldungeon.plants.Icecap;
+import com.watabou.pixeldungeon.plants.Plant;
+import com.watabou.pixeldungeon.plants.Rotberry;
+import com.watabou.pixeldungeon.plants.Sorrowmoss;
+import com.watabou.pixeldungeon.plants.Sungrass;
 import com.watabou.utils.Random;
 
 public class Generator {
@@ -43,25 +121,26 @@ public class Generator {
         Scroll.class), WAND(4, Wand.class), RING(2, Ring.class), SEED(5,
             Plant.Seed.class), FOOD(0, Food.class), GOLD(50, Gold.class), MISC(5, Item.class);
 
-    public Class<?>[] classes;
-    public float[] probs;
-
-    public float prob;
-    public Class<? extends Item> superClass;
-
-    private Category(float prob, Class<? extends Item> superClass) {
-      this.prob = prob;
-      this.superClass = superClass;
-    }
-
-    public static int order(Item item) {
-      for (int i = 0; i < values().length; i++) {
-        if (values()[i].superClass.isInstance(item)) {
+    public static int order(final Item item) {
+      for (int i = 0; i < Category.values().length; i++) {
+        if (Category.values()[i].superClass.isInstance(item)) {
           return i;
         }
       }
 
       return item instanceof Bag ? Integer.MAX_VALUE : Integer.MAX_VALUE - 1;
+    }
+
+    public Class<?>[] classes;
+
+    public float[] probs;
+    public float prob;
+
+    public Class<? extends Item> superClass;
+
+    private Category(final float prob, final Class<? extends Item> superClass) {
+      this.prob = prob;
+      this.superClass = superClass;
     }
   };
 
@@ -186,26 +265,20 @@ public class Generator {
     Category.MISC.probs = new float[] { 2, 1 };
   }
 
-  public static void reset() {
-    for (Category cat : Category.values()) {
-      categoryProbs.put(cat, cat.prob);
-    }
-  }
-
   public static Item random() {
-    return random(Random.chances(categoryProbs));
+    return Generator.random(Random.chances(categoryProbs));
   }
 
-  public static Item random(Category cat) {
+  public static Item random(final Category cat) {
     try {
 
       categoryProbs.put(cat, categoryProbs.get(cat) / 2);
 
       switch (cat) {
         case ARMOR:
-          return randomArmor();
+          return Generator.randomArmor();
         case WEAPON:
-          return randomWeapon();
+          return Generator.randomWeapon();
         default:
           return ((Item) cat.classes[Random.chances(cat.probs)].newInstance()).random();
       }
@@ -217,7 +290,7 @@ public class Generator {
     }
   }
 
-  public static Item random(Class<? extends Item> cl) {
+  public static Item random(final Class<? extends Item> cl) {
     try {
 
       return ((Item) cl.newInstance()).random();
@@ -257,5 +330,11 @@ public class Generator {
     w2.random();
 
     return Math.abs(curStr - w1.STR) < Math.abs(curStr - w2.STR) ? w1 : w2;
+  }
+
+  public static void reset() {
+    for (Category cat : Category.values()) {
+      categoryProbs.put(cat, cat.prob);
+    }
   }
 }

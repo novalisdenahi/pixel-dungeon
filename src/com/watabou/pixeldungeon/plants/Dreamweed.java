@@ -26,28 +26,6 @@ import com.watabou.pixeldungeon.sprites.ItemSpriteSheet;
 
 public class Dreamweed extends Plant {
 
-  private static final String TXT_DESC =
-      "Upon touching a Dreamweed it secretes a glittering cloud of confusing gas.";
-
-  {
-    image = 3;
-    plantName = "Dreamweed";
-  }
-
-  @Override
-  public void activate(Char ch) {
-    super.activate(ch);
-
-    if (ch != null) {
-      GameScene.add(Blob.seed(pos, 400, ConfusionGas.class));
-    }
-  }
-
-  @Override
-  public String desc() {
-    return TXT_DESC;
-  }
-
   public static class Seed extends Plant.Seed {
     {
       plantName = "Dreamweed";
@@ -63,5 +41,27 @@ public class Dreamweed extends Plant {
     public String desc() {
       return TXT_DESC;
     }
+  }
+
+  private static final String TXT_DESC =
+      "Upon touching a Dreamweed it secretes a glittering cloud of confusing gas.";
+
+  {
+    image = 3;
+    plantName = "Dreamweed";
+  }
+
+  @Override
+  public void activate(final Char ch) {
+    super.activate(ch);
+
+    if (ch != null) {
+      GameScene.add(Blob.seed(pos, 400, ConfusionGas.class));
+    }
+  }
+
+  @Override
+  public String desc() {
+    return TXT_DESC;
   }
 }

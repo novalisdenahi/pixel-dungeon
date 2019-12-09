@@ -35,7 +35,7 @@ public class WndInfoCell extends Window {
 
   private static final String TXT_NOTHING = "There is nothing here.";
 
-  public WndInfoCell(int cell) {
+  public WndInfoCell(final int cell) {
 
     super();
 
@@ -65,7 +65,7 @@ public class WndInfoCell extends Window {
 
     final char newLine = '\n';
     for (Blob blob : Dungeon.level.blobs.values()) {
-      if (blob.cur[cell] > 0 && blob.tileDesc() != null) {
+      if ((blob.cur[cell] > 0) && (blob.tileDesc() != null)) {
         if (desc.length() > 0) {
           desc.append(newLine);
         }

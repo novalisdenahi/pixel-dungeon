@@ -56,6 +56,11 @@ public class LloydsBeacon extends Item {
   public static final String AC_SET = "SET";
   public static final String AC_RETURN = "RETURN";
 
+  private static final String DEPTH = "depth";
+  private static final String POS = "pos";
+
+  private static final Glowing WHITE = new Glowing(0xFFFFFF);
+
   private int returnDepth = -1;
   private int returnPos;
 
@@ -66,27 +71,8 @@ public class LloydsBeacon extends Item {
     unique = true;
   }
 
-  private static final String DEPTH = "depth";
-  private static final String POS = "pos";
-
   @Override
-  public void storeInBundle(Bundle bundle) {
-    super.storeInBundle(bundle);
-    bundle.put(DEPTH, returnDepth);
-    if (returnDepth != -1) {
-      bundle.put(POS, returnPos);
-    }
-  }
-
-  @Override
-  public void restoreFromBundle(Bundle bundle) {
-    super.restoreFromBundle(bundle);
-    returnDepth = bundle.getInt(DEPTH);
-    returnPos = bundle.getInt(POS);
-  }
-
-  @Override
-  public ArrayList<String> actions(Hero hero) {
+  public ArrayList<String> actions(final Hero hero) {
     ArrayList<String> actions = super.actions(hero);
     actions.add(AC_SET);
     if (returnDepth != -1) {
@@ -96,9 +82,9 @@ public class LloydsBeacon extends Item {
   }
 
   @Override
-  public void execute(Hero hero, String action) {
+  public void execute(final Hero hero, final String action) {
 
-    if (action == AC_SET || action == AC_RETURN) {
+    if ((action == AC_SET) || (action == AC_RETURN)) {
 
       if (Dungeon.bossLevel()) {
         hero.spend(LloydsBeacon.TIME_TO_USE);
@@ -149,22 +135,6 @@ public class LloydsBeacon extends Item {
     }
   }
 
-  public void reset() {
-    returnDepth = -1;
-  }
-
-  @Override
-  public boolean isUpgradable() {
-    return false;
-  }
-
-  @Override
-  public boolean isIdentified() {
-    return true;
-  }
-
-  private static final Glowing WHITE = new Glowing(0xFFFFFF);
-
   @Override
   public Glowing glowing() {
     return returnDepth != -1 ? WHITE : null;
@@ -173,5 +143,35 @@ public class LloydsBeacon extends Item {
   @Override
   public String info() {
     return TXT_INFO + (returnDepth == -1 ? "" : Utils.format(TXT_SET, returnDepth));
+  }
+
+  @Override
+  public boolean isIdentified() {
+    return true;
+  }
+
+  @Override
+  public boolean isUpgradable() {
+    return false;
+  }
+
+  public void reset() {
+    returnDepth = -1;
+  }
+
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    returnDepth = bundle.getInt(DEPTH);
+    returnPos = bundle.getInt(POS);
+  }
+
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(DEPTH, returnDepth);
+    if (returnDepth != -1) {
+      bundle.put(POS, returnPos);
+    }
   }
 }

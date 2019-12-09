@@ -29,30 +29,6 @@ import com.watabou.pixeldungeon.sprites.ItemSpriteSheet;
 
 public class Firebloom extends Plant {
 
-  private static final String TXT_DESC =
-      "When something touches a Firebloom, it bursts into flames.";
-
-  {
-    image = 0;
-    plantName = "Firebloom";
-  }
-
-  @Override
-  public void activate(Char ch) {
-    super.activate(ch);
-
-    GameScene.add(Blob.seed(pos, 2, Fire.class));
-
-    if (Dungeon.visible[pos]) {
-      CellEmitter.get(pos).burst(FlameParticle.FACTORY, 5);
-    }
-  }
-
-  @Override
-  public String desc() {
-    return TXT_DESC;
-  }
-
   public static class Seed extends Plant.Seed {
     {
       plantName = "Firebloom";
@@ -68,5 +44,29 @@ public class Firebloom extends Plant {
     public String desc() {
       return TXT_DESC;
     }
+  }
+
+  private static final String TXT_DESC =
+      "When something touches a Firebloom, it bursts into flames.";
+
+  {
+    image = 0;
+    plantName = "Firebloom";
+  }
+
+  @Override
+  public void activate(final Char ch) {
+    super.activate(ch);
+
+    GameScene.add(Blob.seed(pos, 2, Fire.class));
+
+    if (Dungeon.visible[pos]) {
+      CellEmitter.get(pos).burst(FlameParticle.FACTORY, 5);
+    }
+  }
+
+  @Override
+  public String desc() {
+    return TXT_DESC;
   }
 }

@@ -35,20 +35,21 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
     originToCenter();
   }
 
-  public void reset(int from, int to, Item item, Callback listener) {
-    if (item == null) {
-      reset(from, to, 0, null, listener);
-    } else {
-      reset(from, to, item.image(), item.glowing(), listener);
+  @Override
+  public void onComplete(final Tweener tweener) {
+    kill();
+    if (callback != null) {
+      callback.call();
     }
   }
 
-  public void reset(int from, int to, int image, Glowing glowing, Callback listener) {
+  public void reset(final int from, final int to, final int image, final Glowing glowing,
+      final Callback listener) {
     revive();
 
     view(image, glowing);
 
-    this.callback = listener;
+    callback = listener;
 
     point(DungeonTilemap.tileToWorld(from));
     PointF dest = DungeonTilemap.tileToWorld(to);
@@ -56,14 +57,14 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
     PointF d = PointF.diff(dest, point());
     speed.set(d).normalize().scale(SPEED);
 
-    if (image == 31 || image == 108 || image == 109 || image == 110) {
+    if ((image == 31) || (image == 108) || (image == 109) || (image == 110)) {
 
       angularSpeed = 0;
-      angle = 135 - (float) (Math.atan2(d.x, d.y) / 3.1415926 * 180);
+      angle = 135 - (float) ((Math.atan2(d.x, d.y) / 3.1415926) * 180);
 
     } else {
 
-      angularSpeed = image == 15 || image == 106 ? 1440 : 720;
+      angularSpeed = (image == 15) || (image == 106) ? 1440 : 720;
 
     }
 
@@ -72,11 +73,11 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
     parent.add(tweener);
   }
 
-  @Override
-  public void onComplete(Tweener tweener) {
-    kill();
-    if (callback != null) {
-      callback.call();
+  public void reset(final int from, final int to, final Item item, final Callback listener) {
+    if (item == null) {
+      reset(from, to, 0, null, listener);
+    } else {
+      reset(from, to, item.image(), item.glowing(), listener);
     }
   }
 }

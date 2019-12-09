@@ -26,25 +26,31 @@ import com.watabou.utils.Bundle;
 
 public class Shadows extends Invisibility {
 
-  protected float left;
-
   private static final String LEFT = "left";
 
-  @Override
-  public void storeInBundle(Bundle bundle) {
-    super.storeInBundle(bundle);
-    bundle.put(LEFT, left);
+  protected float left;
 
+  @Override
+  public boolean act() {
+    if (target.isAlive()) {
+
+      spend(TICK * 2);
+
+      if ((--left <= 0) || (Dungeon.hero.visibleEnemies() > 0)) {
+        detach();
+      }
+
+    } else {
+
+      detach();
+
+    }
+
+    return true;
   }
 
   @Override
-  public void restoreFromBundle(Bundle bundle) {
-    super.restoreFromBundle(bundle);
-    left = bundle.getFloat(LEFT);
-  }
-
-  @Override
-  public boolean attachTo(Char target) {
+  public boolean attachTo(final Char target) {
     if (super.attachTo(target)) {
       Sample.INSTANCE.play(Assets.SND_MELD);
       Dungeon.observe();
@@ -61,22 +67,8 @@ public class Shadows extends Invisibility {
   }
 
   @Override
-  public boolean act() {
-    if (target.isAlive()) {
-
-      spend(TICK * 2);
-
-      if (--left <= 0 || Dungeon.hero.visibleEnemies() > 0) {
-        detach();
-      }
-
-    } else {
-
-      detach();
-
-    }
-
-    return true;
+  public int icon() {
+    return BuffIndicator.SHADOWS;
   }
 
   public void prolong() {
@@ -84,8 +76,16 @@ public class Shadows extends Invisibility {
   }
 
   @Override
-  public int icon() {
-    return BuffIndicator.SHADOWS;
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    left = bundle.getFloat(LEFT);
+  }
+
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(LEFT, left);
+
   }
 
   @Override

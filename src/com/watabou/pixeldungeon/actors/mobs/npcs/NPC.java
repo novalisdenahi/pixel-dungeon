@@ -33,6 +33,12 @@ public abstract class NPC extends Mob {
     state = PASSIVE;
   }
 
+  @Override
+  public void beckon(final int cell) {
+  }
+
+  abstract public void interact();
+
   protected void throwItem() {
     Heap heap = Dungeon.level.heaps.get(pos);
     if (heap != null) {
@@ -43,10 +49,4 @@ public abstract class NPC extends Mob {
       Dungeon.level.drop(heap.pickUp(), n).sprite.drop(pos);
     }
   }
-
-  @Override
-  public void beckon(int cell) {
-  }
-
-  abstract public void interact();
 }

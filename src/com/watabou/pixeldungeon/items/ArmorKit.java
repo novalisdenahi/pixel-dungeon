@@ -47,15 +47,24 @@ public class ArmorKit extends Item {
     unique = true;
   }
 
+  private final WndBag.Listener itemSelector = new WndBag.Listener() {
+    @Override
+    public void onSelect(final Item item) {
+      if (item != null) {
+        ArmorKit.this.upgrade((Armor) item);
+      }
+    }
+  };
+
   @Override
-  public ArrayList<String> actions(Hero hero) {
+  public ArrayList<String> actions(final Hero hero) {
     ArrayList<String> actions = super.actions(hero);
     actions.add(AC_APPLY);
     return actions;
   }
 
   @Override
-  public void execute(Hero hero, String action) {
+  public void execute(final Hero hero, final String action) {
     if (action == AC_APPLY) {
 
       curUser = hero;
@@ -69,8 +78,12 @@ public class ArmorKit extends Item {
   }
 
   @Override
-  public boolean isUpgradable() {
-    return false;
+  public String info() {
+    return "Using this kit of small tools and materials anybody can transform any armor into an \"epic armor\", "
+        +
+        "which will keep all properties of the original armor, but will also provide its wearer a special ability "
+        +
+        "depending on his class. No skills in tailoring, leatherworking or blacksmithing are required.";
   }
 
   @Override
@@ -78,7 +91,12 @@ public class ArmorKit extends Item {
     return true;
   }
 
-  private void upgrade(Armor armor) {
+  @Override
+  public boolean isUpgradable() {
+    return false;
+  }
+
+  private void upgrade(final Armor armor) {
 
     detach(curUser.belongings.backpack);
 
@@ -104,22 +122,4 @@ public class ArmorKit extends Item {
     curUser.sprite.operate(curUser.pos);
     Sample.INSTANCE.play(Assets.SND_EVOKE);
   }
-
-  @Override
-  public String info() {
-    return "Using this kit of small tools and materials anybody can transform any armor into an \"epic armor\", "
-        +
-        "which will keep all properties of the original armor, but will also provide its wearer a special ability "
-        +
-        "depending on his class. No skills in tailoring, leatherworking or blacksmithing are required.";
-  }
-
-  private final WndBag.Listener itemSelector = new WndBag.Listener() {
-    @Override
-    public void onSelect(Item item) {
-      if (item != null) {
-        ArmorKit.this.upgrade((Armor) item);
-      }
-    }
-  };
 }

@@ -31,6 +31,22 @@ public class DungeonTilemap extends Tilemap {
 
   private static DungeonTilemap instance;
 
+  public static Image tile(final int index) {
+    Image img = new Image(instance.texture);
+    img.frame(instance.tileset.get(index));
+    return img;
+  }
+
+  public static PointF tileCenterToWorld(final int pos) {
+    return new PointF(
+        ((pos % Level.WIDTH) + 0.5f) * SIZE,
+        ((pos / Level.WIDTH) + 0.5f) * SIZE);
+  }
+
+  public static PointF tileToWorld(final int pos) {
+    return new PointF(pos % Level.WIDTH, pos / Level.WIDTH).scale(SIZE);
+  }
+
   public DungeonTilemap() {
     super(
         Dungeon.level.tilesTex(),
@@ -40,21 +56,10 @@ public class DungeonTilemap extends Tilemap {
     instance = this;
   }
 
-  public int screenToTile(int x, int y) {
-    Point p = camera().screenToCamera(x, y).offset(this.point().negate()).invScale(SIZE).floor();
-    return p.x >= 0 && p.x < Level.WIDTH && p.y >= 0 && p.y < Level.HEIGHT ? p.x + p.y * Level.WIDTH
-        : -1;
-  }
+  public void discover(final int pos, final int oldValue) {
 
-  @Override
-  public boolean overlapsPoint(float x, float y) {
-    return true;
-  }
-
-  public void discover(int pos, int oldValue) {
-
-    final Image tile = tile(oldValue);
-    tile.point(tileToWorld(pos));
+    final Image tile = DungeonTilemap.tile(oldValue);
+    tile.point(DungeonTilemap.tileToWorld(pos));
 
     // For bright mode
     tile.rm = tile.gm = tile.bm = rm;
@@ -62,6 +67,7 @@ public class DungeonTilemap extends Tilemap {
     parent.add(tile);
 
     parent.add(new AlphaTweener(tile, 0, 0.6f) {
+      @Override
       protected void onComplete() {
         tile.killAndErase();
         killAndErase();
@@ -69,24 +75,20 @@ public class DungeonTilemap extends Tilemap {
     });
   }
 
-  public static PointF tileToWorld(int pos) {
-    return new PointF(pos % Level.WIDTH, pos / Level.WIDTH).scale(SIZE);
-  }
-
-  public static PointF tileCenterToWorld(int pos) {
-    return new PointF(
-        (pos % Level.WIDTH + 0.5f) * SIZE,
-        (pos / Level.WIDTH + 0.5f) * SIZE);
-  }
-
-  public static Image tile(int index) {
-    Image img = new Image(instance.texture);
-    img.frame(instance.tileset.get(index));
-    return img;
+  @Override
+  public boolean overlapsPoint(final float x, final float y) {
+    return true;
   }
 
   @Override
-  public boolean overlapsScreenPoint(int x, int y) {
+  public boolean overlapsScreenPoint(final int x, final int y) {
     return true;
+  }
+
+  public int screenToTile(final int x, final int y) {
+    Point p = camera().screenToCamera(x, y).offset(this.point().negate()).invScale(SIZE).floor();
+    return (p.x >= 0) && (p.x < Level.WIDTH) && (p.y >= 0) && (p.y < Level.HEIGHT)
+        ? p.x + (p.y * Level.WIDTH)
+        : -1;
   }
 }

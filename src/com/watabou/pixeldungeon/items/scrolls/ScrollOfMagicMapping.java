@@ -33,8 +33,20 @@ public class ScrollOfMagicMapping extends Scroll {
 
   private static final String TXT_LAYOUT = "You are now aware of the level layout.";
 
+  public static void discover(final int cell) {
+    CellEmitter.get(cell).start(Speck.factory(Speck.DISCOVER), 0.1f, 4);
+  }
+
   {
     name = "Scroll of Magic Mapping";
+  }
+
+  @Override
+  public String desc() {
+    return "When this scroll is read, an image of crystal clarity will be etched into your memory, "
+        +
+        "alerting you to the precise layout of the level and revealing all hidden secrets. " +
+        "The locations of items and creatures will remain unknown.";
   }
 
   @Override
@@ -61,7 +73,7 @@ public class ScrollOfMagicMapping extends Scroll {
 
           if (Dungeon.visible[i]) {
             GameScene.discoverTile(i, terr);
-            discover(i);
+            ScrollOfMagicMapping.discover(i);
 
             noticed = true;
           }
@@ -85,19 +97,7 @@ public class ScrollOfMagicMapping extends Scroll {
   }
 
   @Override
-  public String desc() {
-    return "When this scroll is read, an image of crystal clarity will be etched into your memory, "
-        +
-        "alerting you to the precise layout of the level and revealing all hidden secrets. " +
-        "The locations of items and creatures will remain unknown.";
-  }
-
-  @Override
   public int price() {
     return isKnown() ? 25 * quantity : super.price();
-  }
-
-  public static void discover(int cell) {
-    CellEmitter.get(cell).start(Speck.factory(Speck.DISCOVER), 0.1f, 4);
   }
 }

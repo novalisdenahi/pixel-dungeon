@@ -39,25 +39,9 @@ public class CurareDart extends MissileWeapon {
     this(1);
   }
 
-  public CurareDart(int number) {
+  public CurareDart(final int number) {
     super();
     quantity = number;
-  }
-
-  @Override
-  public int min() {
-    return 1;
-  }
-
-  @Override
-  public int max() {
-    return 3;
-  }
-
-  @Override
-  public void proc(Char attacker, Char defender, int damage) {
-    Buff.prolong(defender, Paralysis.class, DURATION);
-    super.proc(attacker, defender, damage);
   }
 
   @Override
@@ -67,13 +51,29 @@ public class CurareDart extends MissileWeapon {
   }
 
   @Override
-  public Item random() {
-    quantity = Random.Int(2, 5);
-    return this;
+  public int max() {
+    return 3;
+  }
+
+  @Override
+  public int min() {
+    return 1;
   }
 
   @Override
   public int price() {
     return 12 * quantity;
+  }
+
+  @Override
+  public void proc(final Char attacker, final Char defender, final int damage) {
+    Buff.prolong(defender, Paralysis.class, DURATION);
+    super.proc(attacker, defender, damage);
+  }
+
+  @Override
+  public Item random() {
+    quantity = Random.Int(2, 5);
+    return this;
   }
 }

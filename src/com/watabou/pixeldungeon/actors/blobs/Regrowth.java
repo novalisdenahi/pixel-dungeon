@@ -42,9 +42,9 @@ public class Regrowth extends Blob {
         if (off[i] > 0) {
           int c = Dungeon.level.map[i];
           int c1 = c;
-          if (c == Terrain.EMPTY || c == Terrain.EMBERS || c == Terrain.EMPTY_DECO) {
+          if ((c == Terrain.EMPTY) || (c == Terrain.EMBERS) || (c == Terrain.EMPTY_DECO)) {
             c1 = cur[i] > 9 ? Terrain.HIGH_GRASS : Terrain.GRASS;
-          } else if (c == Terrain.GRASS && cur[i] > 9) {
+          } else if ((c == Terrain.GRASS) && (cur[i] > 9)) {
             c1 = Terrain.HIGH_GRASS;
           }
 
@@ -72,7 +72,7 @@ public class Regrowth extends Blob {
   }
 
   @Override
-  public void use(BlobEmitter emitter) {
+  public void use(final BlobEmitter emitter) {
     super.use(emitter);
 
     emitter.start(LeafParticle.LEVEL_SPECIFIC, 0.2f, 0);

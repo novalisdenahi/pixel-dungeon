@@ -40,9 +40,104 @@ import com.watabou.utils.Random;
 
 public class Imp extends NPC {
 
-  {
-    name = "ambitious imp";
-    spriteClass = ImpSprite.class;
+  public static class Quest {
+
+    private static boolean alternative;
+
+    private static boolean spawned;
+    private static boolean given;
+    private static boolean completed;
+
+    public static Ring reward;
+
+    private static final String NODE = "demon";
+
+    private static final String ALTERNATIVE = "alternative";
+
+    private static final String SPAWNED = "spawned";
+    private static final String GIVEN = "given";
+    private static final String COMPLETED = "completed";
+    private static final String REWARD = "reward";
+
+    public static void complete() {
+      reward = null;
+      completed = true;
+
+      Journal.remove(Journal.Feature.IMP);
+    }
+
+    public static boolean isCompleted() {
+      return completed;
+    }
+
+    public static void process(final Mob mob) {
+      if (spawned && given && !completed) {
+        if ((alternative && (mob instanceof Monk)) ||
+            (!alternative && (mob instanceof Golem))) {
+
+          Dungeon.level.drop(new DwarfToken(), mob.pos).sprite.drop();
+        }
+      }
+    }
+
+    public static void reset() {
+      spawned = false;
+
+      reward = null;
+    }
+
+    public static void restoreFromBundle(final Bundle bundle) {
+
+      Bundle node = bundle.getBundle(NODE);
+
+      if (!node.isNull() && (spawned = node.getBoolean(SPAWNED))) {
+        alternative = node.getBoolean(ALTERNATIVE);
+
+        given = node.getBoolean(GIVEN);
+        completed = node.getBoolean(COMPLETED);
+        reward = (Ring) node.get(REWARD);
+      }
+    }
+
+    public static void spawn(final CityLevel level, final Room room) {
+      if (!spawned && (Dungeon.depth > 16) && (Random.Int(20 - Dungeon.depth) == 0)) {
+
+        Imp npc = new Imp();
+        do {
+          npc.pos = level.randomRespawnCell();
+        } while ((npc.pos == -1) || (level.heaps.get(npc.pos) != null));
+        level.mobs.add(npc);
+        Actor.occupyCell(npc);
+
+        spawned = true;
+        alternative = Random.Int(2) == 0;
+
+        given = false;
+
+        do {
+          reward = (Ring) Generator.random(Generator.Category.RING);
+        } while (reward.cursed);
+        reward.upgrade(2);
+        reward.cursed = true;
+      }
+    }
+
+    public static void storeInBundle(final Bundle bundle) {
+
+      Bundle node = new Bundle();
+
+      node.put(SPAWNED, spawned);
+
+      if (spawned) {
+        node.put(ALTERNATIVE, alternative);
+
+        node.put(GIVEN, given);
+        node.put(COMPLETED, completed);
+        node.put(REWARD, reward);
+      }
+
+      bundle.put(NODE, node);
+    }
   }
 
   private static final String TXT_GOLEMS1 =
@@ -71,6 +166,11 @@ public class Imp extends NPC {
   private static final String TXT_CYA = "See you, %s!";
   private static final String TXT_HEY = "Psst, %s!";
 
+  {
+    name = "ambitious imp";
+    spriteClass = ImpSprite.class;
+  }
+
   private boolean seenBefore = false;
 
   @Override
@@ -91,7 +191,15 @@ public class Imp extends NPC {
   }
 
   @Override
-  public int defenseSkill(Char enemy) {
+  public void add(final Buff buff) {
+  }
+
+  @Override
+  public void damage(final int dmg, final Object src) {
+  }
+
+  @Override
+  public int defenseSkill(final Char enemy) {
     return 1000;
   }
 
@@ -101,16 +209,18 @@ public class Imp extends NPC {
   }
 
   @Override
-  public void damage(int dmg, Object src) {
+  public String description() {
+    return "Imps are lesser demons. They are notable for neither their strength nor their magic talent, "
+        +
+        "but they are quite smart and sociable. Many imps prefer to live among non-demons.";
   }
 
-  @Override
-  public void add(Buff buff) {
-  }
+  public void flee() {
 
-  @Override
-  public boolean reset() {
-    return true;
+    yell(Utils.format(TXT_CYA, Dungeon.hero.className()));
+
+    destroy();
+    sprite.die();
   }
 
   @Override
@@ -120,8 +230,8 @@ public class Imp extends NPC {
     if (Quest.given) {
 
       DwarfToken tokens = Dungeon.hero.belongings.getItem(DwarfToken.class);
-      if (tokens != null
-          && (tokens.quantity() >= 8 || (!Quest.alternative && tokens.quantity() >= 6))) {
+      if ((tokens != null)
+          && ((tokens.quantity() >= 8) || (!Quest.alternative && (tokens.quantity() >= 6)))) {
         GameScene.show(new WndImp(this, tokens));
       } else {
         tell(Quest.alternative ? TXT_MONKS2 : TXT_GOLEMS2, Dungeon.hero.className());
@@ -136,122 +246,13 @@ public class Imp extends NPC {
     }
   }
 
-  private void tell(String format, Object... args) {
+  @Override
+  public boolean reset() {
+    return true;
+  }
+
+  private void tell(final String format, final Object... args) {
     GameScene.show(
         new WndQuest(this, Utils.format(format, args)));
-  }
-
-  public void flee() {
-
-    yell(Utils.format(TXT_CYA, Dungeon.hero.className()));
-
-    destroy();
-    sprite.die();
-  }
-
-  @Override
-  public String description() {
-    return "Imps are lesser demons. They are notable for neither their strength nor their magic talent, "
-        +
-        "but they are quite smart and sociable. Many imps prefer to live among non-demons.";
-  }
-
-  public static class Quest {
-
-    private static boolean alternative;
-
-    private static boolean spawned;
-    private static boolean given;
-    private static boolean completed;
-
-    public static Ring reward;
-
-    public static void reset() {
-      spawned = false;
-
-      reward = null;
-    }
-
-    private static final String NODE = "demon";
-
-    private static final String ALTERNATIVE = "alternative";
-    private static final String SPAWNED = "spawned";
-    private static final String GIVEN = "given";
-    private static final String COMPLETED = "completed";
-    private static final String REWARD = "reward";
-
-    public static void storeInBundle(Bundle bundle) {
-
-      Bundle node = new Bundle();
-
-      node.put(SPAWNED, spawned);
-
-      if (spawned) {
-        node.put(ALTERNATIVE, alternative);
-
-        node.put(GIVEN, given);
-        node.put(COMPLETED, completed);
-        node.put(REWARD, reward);
-      }
-
-      bundle.put(NODE, node);
-    }
-
-    public static void restoreFromBundle(Bundle bundle) {
-
-      Bundle node = bundle.getBundle(NODE);
-
-      if (!node.isNull() && (spawned = node.getBoolean(SPAWNED))) {
-        alternative = node.getBoolean(ALTERNATIVE);
-
-        given = node.getBoolean(GIVEN);
-        completed = node.getBoolean(COMPLETED);
-        reward = (Ring) node.get(REWARD);
-      }
-    }
-
-    public static void spawn(CityLevel level, Room room) {
-      if (!spawned && Dungeon.depth > 16 && Random.Int(20 - Dungeon.depth) == 0) {
-
-        Imp npc = new Imp();
-        do {
-          npc.pos = level.randomRespawnCell();
-        } while (npc.pos == -1 || level.heaps.get(npc.pos) != null);
-        level.mobs.add(npc);
-        Actor.occupyCell(npc);
-
-        spawned = true;
-        alternative = Random.Int(2) == 0;
-
-        given = false;
-
-        do {
-          reward = (Ring) Generator.random(Generator.Category.RING);
-        } while (reward.cursed);
-        reward.upgrade(2);
-        reward.cursed = true;
-      }
-    }
-
-    public static void process(Mob mob) {
-      if (spawned && given && !completed) {
-        if ((alternative && mob instanceof Monk) ||
-            (!alternative && mob instanceof Golem)) {
-
-          Dungeon.level.drop(new DwarfToken(), mob.pos).sprite.drop();
-        }
-      }
-    }
-
-    public static void complete() {
-      reward = null;
-      completed = true;
-
-      Journal.remove(Journal.Feature.IMP);
-    }
-
-    public static boolean isCompleted() {
-      return completed;
-    }
   }
 }

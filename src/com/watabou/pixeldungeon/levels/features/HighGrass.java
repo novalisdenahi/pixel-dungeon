@@ -36,7 +36,7 @@ import com.watabou.utils.Random;
 
 public class HighGrass {
 
-  public static void trample(Level level, int pos, Char ch) {
+  public static void trample(final Level level, final int pos, final Char ch) {
 
     Level.set(pos, Terrain.GRASS);
     GameScene.updateMap(pos);
@@ -50,12 +50,12 @@ public class HighGrass {
         }
       }
       // Seed
-      if (herbalismLevel >= 0 && Random.Int(18) <= Random.Int(herbalismLevel + 1)) {
+      if ((herbalismLevel >= 0) && (Random.Int(18) <= Random.Int(herbalismLevel + 1))) {
         level.drop(Generator.random(Generator.Category.SEED), pos).sprite.drop();
       }
 
       // Dew
-      if (herbalismLevel >= 0 && Random.Int(6) <= Random.Int(herbalismLevel + 1)) {
+      if ((herbalismLevel >= 0) && (Random.Int(6) <= Random.Int(herbalismLevel + 1))) {
         level.drop(new Dewdrop(), pos).sprite.drop();
       }
     }
@@ -63,7 +63,7 @@ public class HighGrass {
     int leaves = 4;
 
     // Warlock's barkskin
-    if (ch instanceof Hero && ((Hero) ch).subClass == HeroSubClass.WARDEN) {
+    if ((ch instanceof Hero) && (((Hero) ch).subClass == HeroSubClass.WARDEN)) {
       Buff.affect(ch, Barkskin.class).level(ch.HT / 3);
       leaves = 8;
     }

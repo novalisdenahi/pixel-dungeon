@@ -36,6 +36,20 @@ import com.watabou.utils.Random;
 
 public class Statue extends Mob {
 
+  private static final String WEAPON = "weapon";
+
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(ToxicGas.class);
+    RESISTANCES.add(Poison.class);
+    RESISTANCES.add(Death.class);
+    RESISTANCES.add(ScrollOfPsionicBlast.class);
+    IMMUNITIES.add(Leech.class);
+  }
+
   {
     name = "animated statue";
     spriteClass = StatueSprite.class;
@@ -51,27 +65,13 @@ public class Statue extends Mob {
 
     do {
       weapon = (Weapon) Generator.random(Generator.Category.WEAPON);
-    } while (!(weapon instanceof MeleeWeapon) || weapon.level() < 0);
+    } while (!(weapon instanceof MeleeWeapon) || (weapon.level() < 0));
 
     weapon.identify();
     weapon.enchant();
 
-    HP = HT = 15 + Dungeon.depth * 5;
+    HP = HT = 15 + (Dungeon.depth * 5);
     defenseSkill = 4 + Dungeon.depth;
-  }
-
-  private static final String WEAPON = "weapon";
-
-  @Override
-  public void storeInBundle(Bundle bundle) {
-    super.storeInBundle(bundle);
-    bundle.put(WEAPON, weapon);
-  }
-
-  @Override
-  public void restoreFromBundle(Bundle bundle) {
-    super.restoreFromBundle(bundle);
-    weapon = (Weapon) bundle.get(WEAPON);
   }
 
   @Override
@@ -83,27 +83,28 @@ public class Statue extends Mob {
   }
 
   @Override
-  public int damageRoll() {
-    return Random.NormalIntRange(weapon.min(), weapon.max());
-  }
-
-  @Override
-  public int attackSkill(Char target) {
-    return (int) ((9 + Dungeon.depth) * weapon.ACU);
-  }
-
-  @Override
   protected float attackDelay() {
     return weapon.DLY;
   }
 
   @Override
-  public int dr() {
-    return Dungeon.depth;
+  public int attackProc(final Char enemy, final int damage) {
+    weapon.proc(this, enemy, damage);
+    return damage;
   }
 
   @Override
-  public void damage(int dmg, Object src) {
+  public int attackSkill(final Char target) {
+    return (int) ((9 + Dungeon.depth) * weapon.ACU);
+  }
+
+  @Override
+  public void beckon(final int cell) {
+    // Do nothing
+  }
+
+  @Override
+  public void damage(final int dmg, final Object src) {
 
     if (state == PASSIVE) {
       state = HUNTING;
@@ -113,32 +114,8 @@ public class Statue extends Mob {
   }
 
   @Override
-  public int attackProc(Char enemy, int damage) {
-    weapon.proc(this, enemy, damage);
-    return damage;
-  }
-
-  @Override
-  public void beckon(int cell) {
-    // Do nothing
-  }
-
-  @Override
-  public void die(Object cause) {
-    Dungeon.level.drop(weapon, pos).sprite.drop();
-    super.die(cause);
-  }
-
-  @Override
-  public void destroy() {
-    Journal.remove(Journal.Feature.STATUE);
-    super.destroy();
-  }
-
-  @Override
-  public boolean reset() {
-    state = PASSIVE;
-    return true;
+  public int damageRoll() {
+    return Random.NormalIntRange(weapon.min(), weapon.max());
   }
 
   @Override
@@ -149,14 +126,32 @@ public class Statue extends Mob {
         + "_, it's wielding, looks real.";
   }
 
-  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
-  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-  static {
-    RESISTANCES.add(ToxicGas.class);
-    RESISTANCES.add(Poison.class);
-    RESISTANCES.add(Death.class);
-    RESISTANCES.add(ScrollOfPsionicBlast.class);
-    IMMUNITIES.add(Leech.class);
+  @Override
+  public void destroy() {
+    Journal.remove(Journal.Feature.STATUE);
+    super.destroy();
+  }
+
+  @Override
+  public void die(final Object cause) {
+    Dungeon.level.drop(weapon, pos).sprite.drop();
+    super.die(cause);
+  }
+
+  @Override
+  public int dr() {
+    return Dungeon.depth;
+  }
+
+  @Override
+  public HashSet<Class<?>> immunities() {
+    return IMMUNITIES;
+  }
+
+  @Override
+  public boolean reset() {
+    state = PASSIVE;
+    return true;
   }
 
   @Override
@@ -165,7 +160,14 @@ public class Statue extends Mob {
   }
 
   @Override
-  public HashSet<Class<?>> immunities() {
-    return IMMUNITIES;
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    weapon = (Weapon) bundle.get(WEAPON);
+  }
+
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(WEAPON, weapon);
   }
 }

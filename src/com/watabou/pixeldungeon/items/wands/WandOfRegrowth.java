@@ -37,14 +37,25 @@ public class WandOfRegrowth extends Wand {
   }
 
   @Override
-  protected void onZap(int cell) {
+  public String desc() {
+    return "\"When life ceases new life always begins to grow... The eternal cycle always remains!\"";
+  }
 
-    for (int i = 1; i < Ballistica.distance - 1; i++) {
+  @Override
+  protected void fx(final int cell, final Callback callback) {
+    MagicMissile.foliage(curUser.sprite.parent, curUser.pos, cell, callback);
+    Sample.INSTANCE.play(Assets.SND_ZAP);
+  }
+
+  @Override
+  protected void onZap(final int cell) {
+
+    for (int i = 1; i < (Ballistica.distance - 1); i++) {
       int p = Ballistica.trace[i];
       int c = Dungeon.level.map[p];
-      if (c == Terrain.EMPTY ||
-          c == Terrain.EMBERS ||
-          c == Terrain.EMPTY_DECO) {
+      if ((c == Terrain.EMPTY) ||
+          (c == Terrain.EMBERS) ||
+          (c == Terrain.EMPTY_DECO)) {
 
         Level.set(p, Terrain.GRASS);
         GameScene.updateMap(p);
@@ -56,11 +67,11 @@ public class WandOfRegrowth extends Wand {
     }
 
     int c = Dungeon.level.map[cell];
-    if (c == Terrain.EMPTY ||
-        c == Terrain.EMBERS ||
-        c == Terrain.EMPTY_DECO ||
-        c == Terrain.GRASS ||
-        c == Terrain.HIGH_GRASS) {
+    if ((c == Terrain.EMPTY) ||
+        (c == Terrain.EMBERS) ||
+        (c == Terrain.EMPTY_DECO) ||
+        (c == Terrain.GRASS) ||
+        (c == Terrain.HIGH_GRASS)) {
 
       GameScene.add(Blob.seed(cell, (power() + 2) * 20, Regrowth.class));
 
@@ -69,15 +80,5 @@ public class WandOfRegrowth extends Wand {
       GLog.i("nothing happened");
 
     }
-  }
-
-  protected void fx(int cell, Callback callback) {
-    MagicMissile.foliage(curUser.sprite.parent, curUser.pos, cell, callback);
-    Sample.INSTANCE.play(Assets.SND_ZAP);
-  }
-
-  @Override
-  public String desc() {
-    return "\"When life ceases new life always begins to grow... The eternal cycle always remains!\"";
   }
 }

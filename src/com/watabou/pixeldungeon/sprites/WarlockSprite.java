@@ -50,7 +50,16 @@ public class WarlockSprite extends MobSprite {
     play(idle);
   }
 
-  public void zap(int cell) {
+  @Override
+  public void onComplete(final Animation anim) {
+    if (anim == zap) {
+      idle();
+    }
+    super.onComplete(anim);
+  }
+
+  @Override
+  public void zap(final int cell) {
 
     turnTo(ch.pos, cell);
     play(zap);
@@ -63,13 +72,5 @@ public class WarlockSprite extends MobSprite {
           }
         });
     Sample.INSTANCE.play(Assets.SND_ZAP);
-  }
-
-  @Override
-  public void onComplete(Animation anim) {
-    if (anim == zap) {
-      idle();
-    }
-    super.onComplete(anim);
   }
 }

@@ -19,13 +19,13 @@ package com.watabou.pixeldungeon.effects;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import android.opengl.GLES20;
-
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.utils.PointF;
+
+import android.opengl.GLES20;
 
 public class DeathRay extends Image {
 
@@ -35,7 +35,7 @@ public class DeathRay extends Image {
 
   private float timeLeft;
 
-  public DeathRay(PointF s, PointF e) {
+  public DeathRay(final PointF s, final PointF e) {
     super(Effects.get(Effects.Type.RAY));
 
     origin.set(0, height / 2);
@@ -46,11 +46,18 @@ public class DeathRay extends Image {
     float dx = e.x - s.x;
     float dy = e.y - s.y;
     angle = (float) (Math.atan2(dy, dx) * A);
-    scale.x = (float) Math.sqrt(dx * dx + dy * dy) / width;
+    scale.x = (float) Math.sqrt((dx * dx) + (dy * dy)) / width;
 
     Sample.INSTANCE.play(Assets.SND_RAY);
 
     timeLeft = DURATION;
+  }
+
+  @Override
+  public void draw() {
+    GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
+    super.draw();
+    GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
   }
 
   @Override
@@ -64,12 +71,5 @@ public class DeathRay extends Image {
     if ((timeLeft -= Game.elapsed) <= 0) {
       killAndErase();
     }
-  }
-
-  @Override
-  public void draw() {
-    GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
-    super.draw();
-    GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
   }
 }

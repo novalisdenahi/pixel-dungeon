@@ -45,6 +45,13 @@ public class Goo extends Mob {
 
   private static final float PUMP_UP_DELAY = 2f;
 
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(ToxicGas.class);
+    RESISTANCES.add(Death.class);
+    RESISTANCES.add(ScrollOfPsionicBlast.class);
+  }
   {
     name = Dungeon.depth == Statistics.deepestFloor ? "Goo" : "spawn of Goo";
 
@@ -58,7 +65,46 @@ public class Goo extends Mob {
   }
 
   private boolean pumpedUp = false;
+
   private boolean jumped = false;
+
+  @Override
+  public boolean act() {
+
+    if (Level.water[pos] && (HP < HT)) {
+      sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
+      HP++;
+    }
+
+    return super.act();
+  }
+
+  @Override
+  public boolean attack(final Char enemy) {
+    boolean result = super.attack(enemy);
+    pumpedUp = false;
+    return result;
+  }
+
+  @Override
+  public int attackProc(final Char enemy, final int damage) {
+    if (Random.Int(3) == 0) {
+      Buff.affect(enemy, Ooze.class);
+      enemy.sprite.burst(0x000000, 5);
+    }
+
+    return damage;
+  }
+
+  @Override
+  public int attackSkill(final Char target) {
+    return pumpedUp && !jumped ? 30 : 15;
+  }
+
+  @Override
+  protected boolean canAttack(final Char enemy) {
+    return pumpedUp ? distance(enemy) <= 2 : super.canAttack(enemy);
+  }
 
   @Override
   public int damageRoll() {
@@ -70,39 +116,25 @@ public class Goo extends Mob {
   }
 
   @Override
-  public int attackSkill(Char target) {
-    return pumpedUp && !jumped ? 30 : 15;
+  public String description() {
+    return "Little known about The Goo. It's quite possible that it is not even a creature, but rather a "
+        +
+        "conglomerate of substances from the sewers that gained rudiments of free will.";
   }
 
   @Override
-  public int dr() {
-    return 2;
-  }
+  public void die(final Object cause) {
 
-  @Override
-  public boolean act() {
+    super.die(cause);
 
-    if (Level.water[pos] && HP < HT) {
-      sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
-      HP++;
-    }
+    ((SewerBossLevel) Dungeon.level).unseal();
 
-    return super.act();
-  }
+    GameScene.bossSlain();
+    Dungeon.level.drop(new SkeletonKey(), pos).sprite.drop();
 
-  @Override
-  protected boolean canAttack(Char enemy) {
-    return pumpedUp ? distance(enemy) <= 2 : super.canAttack(enemy);
-  }
+    Badges.validateBossSlain();
 
-  @Override
-  public int attackProc(Char enemy, int damage) {
-    if (Random.Int(3) == 0) {
-      Buff.affect(enemy, Ooze.class);
-      enemy.sprite.burst(0x000000, 5);
-    }
-
-    return damage;
+    yell("glurp... glurp...");
   }
 
   @Override
@@ -173,57 +205,26 @@ public class Goo extends Mob {
   }
 
   @Override
-  public boolean attack(Char enemy) {
-    boolean result = super.attack(enemy);
-    pumpedUp = false;
-    return result;
+  public int dr() {
+    return 2;
   }
 
   @Override
-  protected boolean getCloser(int target) {
+  protected boolean getCloser(final int target) {
     pumpedUp = false;
     return super.getCloser(target);
   }
 
   @Override
-  public void move(int step) {
+  public void move(final int step) {
     ((SewerBossLevel) Dungeon.level).seal();
     super.move(step);
-  }
-
-  @Override
-  public void die(Object cause) {
-
-    super.die(cause);
-
-    ((SewerBossLevel) Dungeon.level).unseal();
-
-    GameScene.bossSlain();
-    Dungeon.level.drop(new SkeletonKey(), pos).sprite.drop();
-
-    Badges.validateBossSlain();
-
-    yell("glurp... glurp...");
   }
 
   @Override
   public void notice() {
     super.notice();
     yell("GLURP-GLURP!");
-  }
-
-  @Override
-  public String description() {
-    return "Little known about The Goo. It's quite possible that it is not even a creature, but rather a "
-        +
-        "conglomerate of substances from the sewers that gained rudiments of free will.";
-  }
-
-  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
-  static {
-    RESISTANCES.add(ToxicGas.class);
-    RESISTANCES.add(Death.class);
-    RESISTANCES.add(ScrollOfPsionicBlast.class);
   }
 
   @Override

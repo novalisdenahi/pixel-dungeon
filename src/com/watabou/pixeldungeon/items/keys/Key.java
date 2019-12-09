@@ -25,6 +25,8 @@ public class Key extends Item {
 
   public static final float TIME_TO_UNLOCK = 1f;
 
+  private static final String DEPTH = "depth";
+
   {
     stackable = false;
   }
@@ -36,18 +38,9 @@ public class Key extends Item {
     depth = Dungeon.depth;
   }
 
-  private static final String DEPTH = "depth";
-
   @Override
-  public void storeInBundle(Bundle bundle) {
-    super.storeInBundle(bundle);
-    bundle.put(DEPTH, depth);
-  }
-
-  @Override
-  public void restoreFromBundle(Bundle bundle) {
-    super.restoreFromBundle(bundle);
-    depth = bundle.getInt(DEPTH);
+  public boolean isIdentified() {
+    return true;
   }
 
   @Override
@@ -56,12 +49,19 @@ public class Key extends Item {
   }
 
   @Override
-  public boolean isIdentified() {
-    return true;
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    depth = bundle.getInt(DEPTH);
   }
 
   @Override
   public String status() {
     return depth + "\u007F";
+  }
+
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(DEPTH, depth);
   }
 }

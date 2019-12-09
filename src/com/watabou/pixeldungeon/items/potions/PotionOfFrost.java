@@ -35,7 +35,19 @@ public class PotionOfFrost extends Potion {
   }
 
   @Override
-  public void shatter(int cell) {
+  public String desc() {
+    return "Upon exposure to open air, this chemical will evaporate into a freezing cloud, causing "
+        +
+        "any creature that contacts it to be frozen in place, unable to act and move.";
+  }
+
+  @Override
+  public int price() {
+    return isKnown() ? 50 * quantity : super.price();
+  }
+
+  @Override
+  public void shatter(final int cell) {
 
     PathFinder.buildDistanceMap(cell, BArray.not(Level.losBlocking, null), DISTANCE);
 
@@ -54,17 +66,5 @@ public class PotionOfFrost extends Potion {
 
       setKnown();
     }
-  }
-
-  @Override
-  public String desc() {
-    return "Upon exposure to open air, this chemical will evaporate into a freezing cloud, causing "
-        +
-        "any creature that contacts it to be frozen in place, unable to act and move.";
-  }
-
-  @Override
-  public int price() {
-    return isKnown() ? 50 * quantity : super.price();
   }
 }

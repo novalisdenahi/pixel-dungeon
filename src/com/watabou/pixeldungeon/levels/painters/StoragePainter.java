@@ -27,12 +27,12 @@ import com.watabou.utils.Random;
 
 public class StoragePainter extends Painter {
 
-  public static void paint(Level level, Room room) {
+  public static void paint(final Level level, final Room room) {
 
     final int floor = Terrain.EMPTY_SP;
 
-    fill(level, room, Terrain.WALL);
-    fill(level, room, 1, floor);
+    Painter.fill(level, room, Terrain.WALL);
+    Painter.fill(level, room, 1, floor);
 
     int n = Random.IntRange(3, 4);
     for (int i = 0; i < n; i++) {
@@ -40,14 +40,14 @@ public class StoragePainter extends Painter {
       do {
         pos = room.random();
       } while (level.map[pos] != floor);
-      level.drop(prize(level), pos);
+      level.drop(StoragePainter.prize(level), pos);
     }
 
     room.entrance().set(Room.Door.Type.BARRICADE);
     level.addItemToSpawn(new PotionOfLiquidFlame());
   }
 
-  private static Item prize(Level level) {
+  private static Item prize(final Level level) {
 
     Item prize = level.itemToSpanAsPrize();
     if (prize != null) {

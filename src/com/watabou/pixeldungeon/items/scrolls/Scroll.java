@@ -71,11 +71,16 @@ public abstract class Scroll extends Item {
 
   private static ItemStatusHandler<Scroll> handler;
 
-  private String rune;
+  public static boolean allKnown() {
+    return handler.known().size() == scrolls.length;
+  }
 
-  {
-    stackable = true;
-    defaultAction = AC_READ;
+  public static HashSet<Class<? extends Scroll>> getKnown() {
+    return handler.known();
+  }
+
+  public static HashSet<Class<? extends Scroll>> getUnknown() {
+    return handler.unknown();
   }
 
   @SuppressWarnings("unchecked")
@@ -83,14 +88,21 @@ public abstract class Scroll extends Item {
     handler = new ItemStatusHandler<Scroll>((Class<? extends Scroll>[]) scrolls, runes, images);
   }
 
-  public static void save(Bundle bundle) {
+  @SuppressWarnings("unchecked")
+  public static void restore(final Bundle bundle) {
+    handler =
+        new ItemStatusHandler<Scroll>((Class<? extends Scroll>[]) scrolls, runes, images, bundle);
+  }
+
+  public static void save(final Bundle bundle) {
     handler.save(bundle);
   }
 
-  @SuppressWarnings("unchecked")
-  public static void restore(Bundle bundle) {
-    handler =
-        new ItemStatusHandler<Scroll>((Class<? extends Scroll>[]) scrolls, runes, images, bundle);
+  private String rune;
+
+  {
+    stackable = true;
+    defaultAction = AC_READ;
   }
 
   public Scroll() {
@@ -100,14 +112,16 @@ public abstract class Scroll extends Item {
   }
 
   @Override
-  public ArrayList<String> actions(Hero hero) {
+  public ArrayList<String> actions(final Hero hero) {
     ArrayList<String> actions = super.actions(hero);
     actions.add(AC_READ);
     return actions;
   }
 
+  abstract protected void doRead();
+
   @Override
-  public void execute(Hero hero, String action) {
+  public void execute(final Hero hero, final String action) {
     if (action.equals(AC_READ)) {
 
       if (hero.buff(Blindness.class) != null) {
@@ -125,35 +139,10 @@ public abstract class Scroll extends Item {
     }
   }
 
-  abstract protected void doRead();
-
-  protected void readAnimation() {
-    curUser.spend(TIME_TO_READ);
-    curUser.busy();
-    ((HeroSprite) curUser.sprite).read();
-  }
-
-  public boolean isKnown() {
-    return handler.isKnown(this);
-  }
-
-  public void setKnown() {
-    if (!isKnown()) {
-      handler.know(this);
-    }
-
-    Badges.validateAllScrollsIdentified();
-  }
-
   @Override
   public Item identify() {
     setKnown();
     return super.identify();
-  }
-
-  @Override
-  public String name() {
-    return isKnown() ? name : "scroll \"" + rune + "\"";
   }
 
   @Override
@@ -164,29 +153,40 @@ public abstract class Scroll extends Item {
   }
 
   @Override
+  public boolean isIdentified() {
+    return isKnown();
+  }
+
+  public boolean isKnown() {
+    return handler.isKnown(this);
+  }
+
+  @Override
   public boolean isUpgradable() {
     return false;
   }
 
   @Override
-  public boolean isIdentified() {
-    return isKnown();
-  }
-
-  public static HashSet<Class<? extends Scroll>> getKnown() {
-    return handler.known();
-  }
-
-  public static HashSet<Class<? extends Scroll>> getUnknown() {
-    return handler.unknown();
-  }
-
-  public static boolean allKnown() {
-    return handler.known().size() == scrolls.length;
+  public String name() {
+    return isKnown() ? name : "scroll \"" + rune + "\"";
   }
 
   @Override
   public int price() {
     return 15 * quantity;
+  }
+
+  protected void readAnimation() {
+    curUser.spend(TIME_TO_READ);
+    curUser.busy();
+    ((HeroSprite) curUser.sprite).read();
+  }
+
+  public void setKnown() {
+    if (!isKnown()) {
+      handler.know(this);
+    }
+
+    Badges.validateAllScrollsIdentified();
   }
 }

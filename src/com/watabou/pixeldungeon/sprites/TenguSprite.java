@@ -53,24 +53,7 @@ public class TenguSprite extends MobSprite {
   }
 
   @Override
-  public void move(int from, int to) {
-
-    place(to);
-
-    play(run);
-    turnTo(from, to);
-
-    isMoving = true;
-
-    if (Level.water[to]) {
-      GameScene.ripple(to);
-    }
-
-    ch.onMotionComplete();
-  }
-
-  @Override
-  public void attack(int cell) {
+  public void attack(final int cell) {
     if (!Level.adjacent(cell, ch.pos)) {
 
       ((MissileSprite) parent.recycle(MissileSprite.class)).reset(ch.pos, cell, new Shuriken(),
@@ -92,7 +75,24 @@ public class TenguSprite extends MobSprite {
   }
 
   @Override
-  public void onComplete(Animation anim) {
+  public void move(final int from, final int to) {
+
+    place(to);
+
+    play(run);
+    turnTo(from, to);
+
+    isMoving = true;
+
+    if (Level.water[to]) {
+      GameScene.ripple(to);
+    }
+
+    ch.onMotionComplete();
+  }
+
+  @Override
+  public void onComplete(final Animation anim) {
     if (anim == run) {
       isMoving = false;
       idle();

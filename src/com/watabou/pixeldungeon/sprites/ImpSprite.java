@@ -48,7 +48,7 @@ public class ImpSprite extends MobSprite {
   }
 
   @Override
-  public void link(Char ch) {
+  public void link(final Char ch) {
     super.link(ch);
 
     if (ch instanceof Imp) {
@@ -57,7 +57,7 @@ public class ImpSprite extends MobSprite {
   }
 
   @Override
-  public void onComplete(Animation anim) {
+  public void onComplete(final Animation anim) {
     if (anim == die) {
 
       emitter().burst(Speck.factory(Speck.WOOL), 15);

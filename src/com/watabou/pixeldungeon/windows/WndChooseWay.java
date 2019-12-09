@@ -31,6 +31,40 @@ public class WndChooseWay extends Window {
   private static final int BTN_HEIGHT = 18;
   private static final float GAP = 2;
 
+  public WndChooseWay(final TomeOfMastery tome, final HeroSubClass way) {
+
+    super();
+
+    final String TXT_REMASTERY = "Do you want to respec into %s?";
+
+    final String TXT_OK = "Yes, I want to respec";
+    final String TXT_CANCEL = "Maybe later";
+
+    float bottom = createCommonStuff(tome,
+        way.desc() + "\n\n" + Utils.format(TXT_REMASTERY, Utils.indefinite(way.title())));
+
+    RedButton btnWay = new RedButton(TXT_OK) {
+      @Override
+      protected void onClick() {
+        hide();
+        tome.choose(way);
+      }
+    };
+    btnWay.setRect(0, bottom + GAP, WIDTH, BTN_HEIGHT);
+    add(btnWay);
+
+    RedButton btnCancel = new RedButton(TXT_CANCEL) {
+      @Override
+      protected void onClick() {
+        hide();
+      }
+    };
+    btnCancel.setRect(0, btnWay.bottom() + GAP, WIDTH, BTN_HEIGHT);
+    add(btnCancel);
+
+    resize(WIDTH, (int) btnCancel.bottom());
+  }
+
   public WndChooseWay(final TomeOfMastery tome, final HeroSubClass way1, final HeroSubClass way2) {
 
     super();
@@ -73,41 +107,7 @@ public class WndChooseWay extends Window {
     resize(WIDTH, (int) btnCancel.bottom());
   }
 
-  public WndChooseWay(final TomeOfMastery tome, final HeroSubClass way) {
-
-    super();
-
-    final String TXT_REMASTERY = "Do you want to respec into %s?";
-
-    final String TXT_OK = "Yes, I want to respec";
-    final String TXT_CANCEL = "Maybe later";
-
-    float bottom = createCommonStuff(tome,
-        way.desc() + "\n\n" + Utils.format(TXT_REMASTERY, Utils.indefinite(way.title())));
-
-    RedButton btnWay = new RedButton(TXT_OK) {
-      @Override
-      protected void onClick() {
-        hide();
-        tome.choose(way);
-      }
-    };
-    btnWay.setRect(0, bottom + GAP, WIDTH, BTN_HEIGHT);
-    add(btnWay);
-
-    RedButton btnCancel = new RedButton(TXT_CANCEL) {
-      @Override
-      protected void onClick() {
-        hide();
-      }
-    };
-    btnCancel.setRect(0, btnWay.bottom() + GAP, WIDTH, BTN_HEIGHT);
-    add(btnCancel);
-
-    resize(WIDTH, (int) btnCancel.bottom());
-  }
-
-  private float createCommonStuff(TomeOfMastery tome, String text) {
+  private float createCommonStuff(final TomeOfMastery tome, final String text) {
     IconTitle titlebar = new IconTitle();
     titlebar.icon(new ItemSprite(tome.image(), null));
     titlebar.label(tome.name());

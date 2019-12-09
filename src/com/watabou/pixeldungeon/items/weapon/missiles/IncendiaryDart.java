@@ -43,14 +43,15 @@ public class IncendiaryDart extends MissileWeapon {
     this(1);
   }
 
-  public IncendiaryDart(int number) {
+  public IncendiaryDart(final int number) {
     super();
     quantity = number;
   }
 
   @Override
-  public int min() {
-    return 1;
+  public String desc() {
+    return "The spike on each of these darts is designed to pin it to its target " +
+        "while the unstable compounds strapped to its length burst into brilliant flames.";
   }
 
   @Override
@@ -59,9 +60,14 @@ public class IncendiaryDart extends MissileWeapon {
   }
 
   @Override
-  protected void onThrow(int cell) {
+  public int min() {
+    return 1;
+  }
+
+  @Override
+  protected void onThrow(final int cell) {
     Char enemy = Actor.findChar(cell);
-    if (enemy == null || enemy == curUser) {
+    if ((enemy == null) || (enemy == curUser)) {
       if (Level.flamable[cell]) {
         GameScene.add(Blob.seed(cell, 4, Fire.class));
       } else {
@@ -75,25 +81,19 @@ public class IncendiaryDart extends MissileWeapon {
   }
 
   @Override
-  public void proc(Char attacker, Char defender, int damage) {
-    Buff.affect(defender, Burning.class).reignite(defender);
-    super.proc(attacker, defender, damage);
+  public int price() {
+    return 10 * quantity;
   }
 
   @Override
-  public String desc() {
-    return "The spike on each of these darts is designed to pin it to its target " +
-        "while the unstable compounds strapped to its length burst into brilliant flames.";
+  public void proc(final Char attacker, final Char defender, final int damage) {
+    Buff.affect(defender, Burning.class).reignite(defender);
+    super.proc(attacker, defender, damage);
   }
 
   @Override
   public Item random() {
     quantity = Random.Int(3, 6);
     return this;
-  }
-
-  @Override
-  public int price() {
-    return 10 * quantity;
   }
 }

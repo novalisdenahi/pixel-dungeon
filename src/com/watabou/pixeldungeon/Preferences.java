@@ -19,6 +19,7 @@ package com.watabou.pixeldungeon;
 
 import com.watabou.noosa.Game;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 
 enum Preferences {
@@ -42,32 +43,32 @@ enum Preferences {
 
   private SharedPreferences get() {
     if (prefs == null) {
-      prefs = Game.instance.getPreferences(Game.MODE_PRIVATE);
+      prefs = Game.instance.getPreferences(Context.MODE_PRIVATE);
     }
     return prefs;
   }
 
-  int getInt(String key, int defValue) {
-    return get().getInt(key, defValue);
-  }
-
-  boolean getBoolean(String key, boolean defValue) {
+  boolean getBoolean(final String key, final boolean defValue) {
     return get().getBoolean(key, defValue);
   }
 
-  String getString(String key, String defValue) {
+  int getInt(final String key, final int defValue) {
+    return get().getInt(key, defValue);
+  }
+
+  String getString(final String key, final String defValue) {
     return get().getString(key, defValue);
   }
 
-  void put(String key, int value) {
-    get().edit().putInt(key, value).commit();
-  }
-
-  void put(String key, boolean value) {
+  void put(final String key, final boolean value) {
     get().edit().putBoolean(key, value).commit();
   }
 
-  void put(String key, String value) {
+  void put(final String key, final int value) {
+    get().edit().putInt(key, value).commit();
+  }
+
+  void put(final String key, final String value) {
     get().edit().putString(key, value).commit();
   }
 }

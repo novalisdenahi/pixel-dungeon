@@ -19,13 +19,6 @@ package com.watabou.pixeldungeon;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import android.annotation.SuppressLint;
-import android.content.pm.ActivityInfo;
-import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.View;
-
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
@@ -33,7 +26,157 @@ import com.watabou.pixeldungeon.scenes.GameScene;
 import com.watabou.pixeldungeon.scenes.PixelScene;
 import com.watabou.pixeldungeon.scenes.TitleScene;
 
+import android.annotation.SuppressLint;
+import android.content.pm.ActivityInfo;
+import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.View;
+
 public class PixelDungeon extends Game {
+
+  private static boolean immersiveModeChanged = false;
+
+  public static boolean brightness() {
+    return Preferences.INSTANCE.getBoolean(Preferences.KEY_BRIGHTNESS, false);
+  }
+
+  public static void brightness(final boolean value) {
+    Preferences.INSTANCE.put(Preferences.KEY_BRIGHTNESS, value);
+    if (Game.scene() instanceof GameScene) {
+      ((GameScene) Game.scene()).brightness(value);
+    }
+  }
+
+  public static int challenges() {
+    return Preferences.INSTANCE.getInt(Preferences.KEY_CHALLENGES, 0);
+  }
+
+  /*
+   * ---> Prefernces
+   */
+
+  public static void challenges(final int value) {
+    Preferences.INSTANCE.put(Preferences.KEY_CHALLENGES, value);
+  }
+
+  public static String donated() {
+    return Preferences.INSTANCE.getString(Preferences.KEY_DONATED, "");
+  }
+
+  // *** IMMERSIVE MODE ****
+
+  public static void donated(final String value) {
+    Preferences.INSTANCE.put(Preferences.KEY_DONATED, value);
+  }
+
+  @SuppressLint("NewApi")
+  public static void immerse(final boolean value) {
+    Preferences.INSTANCE.put(Preferences.KEY_IMMERSIVE, value);
+
+    instance.runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        PixelDungeon.updateImmersiveMode();
+        immersiveModeChanged = true;
+      }
+    });
+  }
+
+  public static boolean immersed() {
+    return Preferences.INSTANCE.getBoolean(Preferences.KEY_IMMERSIVE, false);
+  }
+
+  public static boolean intro() {
+    return Preferences.INSTANCE.getBoolean(Preferences.KEY_INTRO, true);
+  }
+
+  public static void intro(final boolean value) {
+    Preferences.INSTANCE.put(Preferences.KEY_INTRO, value);
+  }
+
+  // *****************************
+
+  public static boolean landscape() {
+    return width > height;
+  }
+
+  public static void landscape(final boolean value) {
+    Game.instance.setRequestedOrientation(value ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    Preferences.INSTANCE.put(Preferences.KEY_LANDSCAPE, value);
+  }
+
+  public static int lastClass() {
+    return Preferences.INSTANCE.getInt(Preferences.KEY_LAST_CLASS, 0);
+  }
+
+  public static void lastClass(final int value) {
+    Preferences.INSTANCE.put(Preferences.KEY_LAST_CLASS, value);
+  }
+
+  public static boolean music() {
+    return Preferences.INSTANCE.getBoolean(Preferences.KEY_MUSIC, true);
+  }
+
+  public static void music(final boolean value) {
+    Music.INSTANCE.enable(value);
+    Preferences.INSTANCE.put(Preferences.KEY_MUSIC, value);
+  }
+
+  public static void reportException(final Throwable tr) {
+    Log.e("PD", Log.getStackTraceString(tr));
+  }
+
+  public static boolean scaleUp() {
+    return Preferences.INSTANCE.getBoolean(Preferences.KEY_SCALE_UP, true);
+  }
+
+  public static void scaleUp(final boolean value) {
+    Preferences.INSTANCE.put(Preferences.KEY_SCALE_UP, value);
+    Game.switchScene(TitleScene.class);
+  }
+
+  public static boolean soundFx() {
+    return Preferences.INSTANCE.getBoolean(Preferences.KEY_SOUND_FX, true);
+  }
+
+  public static void soundFx(final boolean value) {
+    Sample.INSTANCE.enable(value);
+    Preferences.INSTANCE.put(Preferences.KEY_SOUND_FX, value);
+  }
+
+  public static void switchNoFade(final Class<? extends PixelScene> c) {
+    PixelScene.noFade = true;
+    Game.switchScene(c);
+  }
+
+  @SuppressLint("NewApi")
+  public static void updateImmersiveMode() {
+    if (android.os.Build.VERSION.SDK_INT >= 19) {
+      try {
+        // Sometime NullPointerException happens here
+        instance.getWindow().getDecorView().setSystemUiVisibility(
+            PixelDungeon.immersed() ? View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                View.SYSTEM_UI_FLAG_FULLSCREEN |
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                : 0);
+      } catch (Exception e) {
+        PixelDungeon.reportException(e);
+      }
+    }
+  }
+
+  public static int zoom() {
+    return Preferences.INSTANCE.getInt(Preferences.KEY_ZOOM, 0);
+  }
+
+  public static void zoom(final int value) {
+    Preferences.INSTANCE.put(Preferences.KEY_ZOOM, value);
+  }
 
   public PixelDungeon() {
     super(TitleScene.class);
@@ -123,21 +266,21 @@ public class PixelDungeon extends Game {
   }
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    updateImmersiveMode();
+    PixelDungeon.updateImmersiveMode();
 
     DisplayMetrics metrics = new DisplayMetrics();
     instance.getWindowManager().getDefaultDisplay().getMetrics(metrics);
     boolean landscape = metrics.widthPixels > metrics.heightPixels;
 
     if (Preferences.INSTANCE.getBoolean(Preferences.KEY_LANDSCAPE, false) != landscape) {
-      landscape(!landscape);
+      PixelDungeon.landscape(!landscape);
     }
 
-    Music.INSTANCE.enable(music());
-    Sample.INSTANCE.enable(soundFx());
+    Music.INSTANCE.enable(PixelDungeon.music());
+    Sample.INSTANCE.enable(PixelDungeon.soundFx());
 
     Sample.INSTANCE.load(
         Assets.SND_CLICK,
@@ -190,53 +333,7 @@ public class PixelDungeon extends Game {
   }
 
   @Override
-  public void onWindowFocusChanged(boolean hasFocus) {
-
-    super.onWindowFocusChanged(hasFocus);
-
-    if (hasFocus) {
-      updateImmersiveMode();
-    }
-  }
-
-  public static void switchNoFade(Class<? extends PixelScene> c) {
-    PixelScene.noFade = true;
-    switchScene(c);
-  }
-
-  /*
-   * ---> Prefernces
-   */
-
-  public static void landscape(boolean value) {
-    Game.instance.setRequestedOrientation(value ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-    Preferences.INSTANCE.put(Preferences.KEY_LANDSCAPE, value);
-  }
-
-  public static boolean landscape() {
-    return width > height;
-  }
-
-  // *** IMMERSIVE MODE ****
-
-  private static boolean immersiveModeChanged = false;
-
-  @SuppressLint("NewApi")
-  public static void immerse(boolean value) {
-    Preferences.INSTANCE.put(Preferences.KEY_IMMERSIVE, value);
-
-    instance.runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        updateImmersiveMode();
-        immersiveModeChanged = true;
-      }
-    });
-  }
-
-  @Override
-  public void onSurfaceChanged(GL10 gl, int width, int height) {
+  public void onSurfaceChanged(final GL10 gl, final int width, final int height) {
     super.onSurfaceChanged(gl, width, height);
 
     if (immersiveModeChanged) {
@@ -245,114 +342,17 @@ public class PixelDungeon extends Game {
     }
   }
 
-  @SuppressLint("NewApi")
-  public static void updateImmersiveMode() {
-    if (android.os.Build.VERSION.SDK_INT >= 19) {
-      try {
-        // Sometime NullPointerException happens here
-        instance.getWindow().getDecorView().setSystemUiVisibility(
-            immersed() ? View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                View.SYSTEM_UI_FLAG_FULLSCREEN |
-                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                : 0);
-      } catch (Exception e) {
-        reportException(e);
-      }
-    }
-  }
-
-  public static boolean immersed() {
-    return Preferences.INSTANCE.getBoolean(Preferences.KEY_IMMERSIVE, false);
-  }
-
-  // *****************************
-
-  public static void scaleUp(boolean value) {
-    Preferences.INSTANCE.put(Preferences.KEY_SCALE_UP, value);
-    switchScene(TitleScene.class);
-  }
-
-  public static boolean scaleUp() {
-    return Preferences.INSTANCE.getBoolean(Preferences.KEY_SCALE_UP, true);
-  }
-
-  public static void zoom(int value) {
-    Preferences.INSTANCE.put(Preferences.KEY_ZOOM, value);
-  }
-
-  public static int zoom() {
-    return Preferences.INSTANCE.getInt(Preferences.KEY_ZOOM, 0);
-  }
-
-  public static void music(boolean value) {
-    Music.INSTANCE.enable(value);
-    Preferences.INSTANCE.put(Preferences.KEY_MUSIC, value);
-  }
-
-  public static boolean music() {
-    return Preferences.INSTANCE.getBoolean(Preferences.KEY_MUSIC, true);
-  }
-
-  public static void soundFx(boolean value) {
-    Sample.INSTANCE.enable(value);
-    Preferences.INSTANCE.put(Preferences.KEY_SOUND_FX, value);
-  }
-
-  public static boolean soundFx() {
-    return Preferences.INSTANCE.getBoolean(Preferences.KEY_SOUND_FX, true);
-  }
-
-  public static void brightness(boolean value) {
-    Preferences.INSTANCE.put(Preferences.KEY_BRIGHTNESS, value);
-    if (scene() instanceof GameScene) {
-      ((GameScene) scene()).brightness(value);
-    }
-  }
-
-  public static boolean brightness() {
-    return Preferences.INSTANCE.getBoolean(Preferences.KEY_BRIGHTNESS, false);
-  }
-
-  public static void donated(String value) {
-    Preferences.INSTANCE.put(Preferences.KEY_DONATED, value);
-  }
-
-  public static String donated() {
-    return Preferences.INSTANCE.getString(Preferences.KEY_DONATED, "");
-  }
-
-  public static void lastClass(int value) {
-    Preferences.INSTANCE.put(Preferences.KEY_LAST_CLASS, value);
-  }
-
-  public static int lastClass() {
-    return Preferences.INSTANCE.getInt(Preferences.KEY_LAST_CLASS, 0);
-  }
-
-  public static void challenges(int value) {
-    Preferences.INSTANCE.put(Preferences.KEY_CHALLENGES, value);
-  }
-
-  public static int challenges() {
-    return Preferences.INSTANCE.getInt(Preferences.KEY_CHALLENGES, 0);
-  }
-
-  public static void intro(boolean value) {
-    Preferences.INSTANCE.put(Preferences.KEY_INTRO, value);
-  }
-
-  public static boolean intro() {
-    return Preferences.INSTANCE.getBoolean(Preferences.KEY_INTRO, true);
-  }
-
   /*
    * <--- Preferences
    */
 
-  public static void reportException(Throwable tr) {
-    Log.e("PD", Log.getStackTraceString(tr));
+  @Override
+  public void onWindowFocusChanged(final boolean hasFocus) {
+
+    super.onWindowFocusChanged(hasFocus);
+
+    if (hasFocus) {
+      PixelDungeon.updateImmersiveMode();
+    }
   }
 }

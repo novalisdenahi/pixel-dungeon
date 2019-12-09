@@ -27,12 +27,12 @@ import com.watabou.utils.Random;
 
 public class TreasuryPainter extends Painter {
 
-  public static void paint(Level level, Room room) {
+  public static void paint(final Level level, final Room room) {
 
-    fill(level, room, Terrain.WALL);
-    fill(level, room, 1, Terrain.EMPTY);
+    Painter.fill(level, room, Terrain.WALL);
+    Painter.fill(level, room, 1, Terrain.EMPTY);
 
-    set(level, room.center(), Terrain.STATUE);
+    Painter.set(level, room.center(), Terrain.STATUE);
 
     Heap.Type heapType = Random.Int(2) == 0 ? Heap.Type.CHEST : Heap.Type.HEAP;
 
@@ -41,9 +41,9 @@ public class TreasuryPainter extends Painter {
       int pos;
       do {
         pos = room.random();
-      } while (level.map[pos] != Terrain.EMPTY || level.heaps.get(pos) != null);
+      } while ((level.map[pos] != Terrain.EMPTY) || (level.heaps.get(pos) != null));
       level.drop(new Gold().random(), pos).type =
-          (i == 0 && heapType == Heap.Type.CHEST ? Heap.Type.MIMIC : heapType);
+          ((i == 0) && (heapType == Heap.Type.CHEST) ? Heap.Type.MIMIC : heapType);
     }
 
     if (heapType == Heap.Type.HEAP) {

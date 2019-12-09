@@ -44,11 +44,23 @@ public class WandOfFirebolt extends Wand {
   }
 
   @Override
-  protected void onZap(int cell) {
+  public String desc() {
+    return "This wand unleashes bursts of magical fire. It will ignite " +
+        "flammable terrain, and will damage and burn a creature it hits.";
+  }
+
+  @Override
+  protected void fx(final int cell, final Callback callback) {
+    MagicMissile.fire(curUser.sprite.parent, curUser.pos, cell, callback);
+    Sample.INSTANCE.play(Assets.SND_ZAP);
+  }
+
+  @Override
+  protected void onZap(final int cell) {
 
     int level = power();
 
-    for (int i = 1; i < Ballistica.distance - 1; i++) {
+    for (int i = 1; i < (Ballistica.distance - 1); i++) {
       int c = Ballistica.trace[i];
       if (Level.flamable[c]) {
         GameScene.add(Blob.seed(c, 1, Fire.class));
@@ -60,26 +72,15 @@ public class WandOfFirebolt extends Wand {
     Char ch = Actor.findChar(cell);
     if (ch != null) {
 
-      ch.damage(Random.Int(1, 8 + level * level), this);
+      ch.damage(Random.Int(1, 8 + (level * level)), this);
       Buff.affect(ch, Burning.class).reignite(ch);
 
       ch.sprite.emitter().burst(FlameParticle.FACTORY, 5);
 
-      if (ch == curUser && !ch.isAlive()) {
+      if ((ch == curUser) && !ch.isAlive()) {
         Dungeon.fail(Utils.format(ResultDescriptions.WAND, name, Dungeon.depth));
         GLog.n("You killed yourself with your own Wand of Firebolt...");
       }
     }
-  }
-
-  protected void fx(int cell, Callback callback) {
-    MagicMissile.fire(curUser.sprite.parent, curUser.pos, cell, callback);
-    Sample.INSTANCE.play(Assets.SND_ZAP);
-  }
-
-  @Override
-  public String desc() {
-    return "This wand unleashes bursts of magical fire. It will ignite " +
-        "flammable terrain, and will damage and burn a creature it hits.";
   }
 }

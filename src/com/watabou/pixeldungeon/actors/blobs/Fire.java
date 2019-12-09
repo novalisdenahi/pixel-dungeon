@@ -30,6 +30,18 @@ import com.watabou.pixeldungeon.scenes.GameScene;
 
 public class Fire extends Blob {
 
+  private void burn(final int pos) {
+    Char ch = Actor.findChar(pos);
+    if (ch != null) {
+      Buff.affect(ch, Burning.class).reignite(ch);
+    }
+
+    Heap heap = Dungeon.level.heaps.get(pos);
+    if (heap != null) {
+      heap.burn();
+    }
+  }
+
   @Override
   protected void evolve() {
 
@@ -49,7 +61,7 @@ public class Fire extends Blob {
         burn(pos);
 
         fire = cur[pos] - 1;
-        if (fire <= 0 && flamable[pos]) {
+        if ((fire <= 0) && flamable[pos]) {
 
           int oldTile = Dungeon.level.map[pos];
           Dungeon.level.destroy(pos);
@@ -63,8 +75,8 @@ public class Fire extends Blob {
 
       } else {
 
-        if (flamable[pos] && (cur[pos - 1] > 0 || cur[pos + 1] > 0 || cur[pos - WIDTH] > 0
-            || cur[pos + WIDTH] > 0)) {
+        if (flamable[pos] && ((cur[pos - 1] > 0) || (cur[pos + 1] > 0) || (cur[pos - WIDTH] > 0)
+            || (cur[pos + WIDTH] > 0))) {
           fire = 4;
           burn(pos);
         } else {
@@ -82,19 +94,8 @@ public class Fire extends Blob {
     }
   }
 
-  private void burn(int pos) {
-    Char ch = Actor.findChar(pos);
-    if (ch != null) {
-      Buff.affect(ch, Burning.class).reignite(ch);
-    }
-
-    Heap heap = Dungeon.level.heaps.get(pos);
-    if (heap != null) {
-      heap.burn();
-    }
-  }
-
-  public void seed(int cell, int amount) {
+  @Override
+  public void seed(final int cell, final int amount) {
     if (cur[cell] == 0) {
       volume += amount;
       cur[cell] = amount;
@@ -102,13 +103,13 @@ public class Fire extends Blob {
   }
 
   @Override
-  public void use(BlobEmitter emitter) {
-    super.use(emitter);
-    emitter.start(FlameParticle.FACTORY, 0.03f, 0);
+  public String tileDesc() {
+    return "A fire is raging here.";
   }
 
   @Override
-  public String tileDesc() {
-    return "A fire is raging here.";
+  public void use(final BlobEmitter emitter) {
+    super.use(emitter);
+    emitter.start(FlameParticle.FACTORY, 0.03f, 0);
   }
 }

@@ -48,7 +48,19 @@ public class WandOfAvalanche extends Wand {
   }
 
   @Override
-  protected void onZap(int cell) {
+  public String desc() {
+    return "When a discharge of this wand hits a wall (or any other solid obstacle) it causes " +
+        "an avalanche of stones, damaging and stunning all creatures in the affected area.";
+  }
+
+  @Override
+  protected void fx(final int cell, final Callback callback) {
+    MagicMissile.earth(curUser.sprite.parent, curUser.pos, cell, callback);
+    Sample.INSTANCE.play(Assets.SND_ZAP);
+  }
+
+  @Override
+  protected void onZap(final int cell) {
 
     Sample.INSTANCE.play(Assets.SND_ROCKS);
 
@@ -56,7 +68,7 @@ public class WandOfAvalanche extends Wand {
 
     Ballistica.distance = Math.min(Ballistica.distance, 8 + level);
 
-    int size = 1 + level / 3;
+    int size = 1 + (level / 3);
     PathFinder.buildDistanceMap(cell, BArray.not(Level.solid, null), size);
 
     int shake = 0;
@@ -70,14 +82,14 @@ public class WandOfAvalanche extends Wand {
         if (ch != null) {
 
           ch.sprite.flash();
-          ch.damage(Random.Int(2, 6 + (size - d) * 2), this);
+          ch.damage(Random.Int(2, 6 + ((size - d) * 2)), this);
 
-          if (ch.isAlive() && Random.Int(2 + d) == 0) {
+          if (ch.isAlive() && (Random.Int(2 + d) == 0)) {
             Buff.prolong(ch, Paralysis.class, Random.IntRange(2, 6));
           }
         }
 
-        if (ch != null && ch.isAlive()) {
+        if ((ch != null) && ch.isAlive()) {
           if (ch instanceof Mob) {
             Dungeon.level.mobPress((Mob) ch);
           } else {
@@ -92,7 +104,7 @@ public class WandOfAvalanche extends Wand {
           if (Level.water[i]) {
             GameScene.ripple(i);
           }
-          if (shake < size - d) {
+          if (shake < (size - d)) {
             shake = size - d;
           }
         }
@@ -105,16 +117,5 @@ public class WandOfAvalanche extends Wand {
       Dungeon.fail(Utils.format(ResultDescriptions.WAND, name, Dungeon.depth));
       GLog.n("You killed yourself with your own Wand of Avalanche...");
     }
-  }
-
-  protected void fx(int cell, Callback callback) {
-    MagicMissile.earth(curUser.sprite.parent, curUser.pos, cell, callback);
-    Sample.INSTANCE.play(Assets.SND_ZAP);
-  }
-
-  @Override
-  public String desc() {
-    return "When a discharge of this wand hits a wall (or any other solid obstacle) it causes " +
-        "an avalanche of stones, damaging and stunning all creatures in the affected area.";
   }
 }

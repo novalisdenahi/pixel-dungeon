@@ -23,18 +23,62 @@ import com.watabou.pixeldungeon.levels.Level;
 
 public final class ShadowCaster {
 
+  private static final class Obstacles {
+
+    private static int SIZE = ((MAX_DISTANCE + 1) * (MAX_DISTANCE + 1)) / 2;
+    private static float[] a1 = new float[SIZE];
+    private static float[] a2 = new float[SIZE];
+
+    private int length;
+    private int limit;
+
+    public void add(final float o1, final float o2) {
+
+      if ((length > limit) && (o1 <= a2[length - 1])) {
+
+        // Merging several blocking cells
+        a2[length - 1] = o2;
+
+      } else {
+
+        a1[length] = o1;
+        a2[length++] = o2;
+
+      }
+
+    }
+
+    public boolean isBlocked(final float a) {
+      for (int i = 0; i < limit; i++) {
+        if ((a >= a1[i]) && (a <= a2[i])) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    public void nextRow() {
+      limit = length;
+    }
+
+    public void reset() {
+      length = 0;
+      limit = 0;
+    }
+  }
+
   private static final int MAX_DISTANCE = 8;
-
   private static final int WIDTH = Level.WIDTH;
+
   private static final int HEIGHT = Level.HEIGHT;
-
   private static int distance;
+
   private static int limits[];
-
   private static boolean[] losBlocking;
-  private static boolean[] fieldOfView;
 
+  private static boolean[] fieldOfView;
   private static int[][] rounding;
+
   static {
     rounding = new int[MAX_DISTANCE + 1][];
     for (int i = 1; i <= MAX_DISTANCE; i++) {
@@ -47,7 +91,8 @@ public final class ShadowCaster {
 
   private static Obstacles obs = new Obstacles();
 
-  public static void castShadow(int x, int y, boolean[] fieldOfView, int distance) {
+  public static void castShadow(final int x, final int y, final boolean[] fieldOfView,
+      final int distance) {
 
     losBlocking = Level.losBlocking;
 
@@ -56,19 +101,20 @@ public final class ShadowCaster {
 
     ShadowCaster.fieldOfView = fieldOfView;
     Arrays.fill(fieldOfView, false);
-    fieldOfView[y * WIDTH + x] = true;
+    fieldOfView[(y * WIDTH) + x] = true;
 
-    scanSector(x, y, +1, +1, 0, 0);
-    scanSector(x, y, -1, +1, 0, 0);
-    scanSector(x, y, +1, -1, 0, 0);
-    scanSector(x, y, -1, -1, 0, 0);
-    scanSector(x, y, 0, 0, +1, +1);
-    scanSector(x, y, 0, 0, -1, +1);
-    scanSector(x, y, 0, 0, +1, -1);
-    scanSector(x, y, 0, 0, -1, -1);
+    ShadowCaster.scanSector(x, y, +1, +1, 0, 0);
+    ShadowCaster.scanSector(x, y, -1, +1, 0, 0);
+    ShadowCaster.scanSector(x, y, +1, -1, 0, 0);
+    ShadowCaster.scanSector(x, y, -1, -1, 0, 0);
+    ShadowCaster.scanSector(x, y, 0, 0, +1, +1);
+    ShadowCaster.scanSector(x, y, 0, 0, -1, +1);
+    ShadowCaster.scanSector(x, y, 0, 0, +1, -1);
+    ShadowCaster.scanSector(x, y, 0, 0, -1, -1);
   }
 
-  private static void scanSector(int cx, int cy, int m1, int m2, int m3, int m4) {
+  private static void scanSector(final int cx, final int cy, final int m1, final int m2,
+      final int m3, final int m4) {
 
     obs.reset();
 
@@ -79,16 +125,16 @@ public final class ShadowCaster {
       int pp = limits[p];
       for (int q = 0; q <= pp; q++) {
 
-        int x = cx + q * m1 + p * m3;
-        int y = cy + p * m2 + q * m4;
+        int x = cx + (q * m1) + (p * m3);
+        int y = cy + (p * m2) + (q * m4);
 
-        if (y >= 0 && y < HEIGHT && x >= 0 && x < WIDTH) {
+        if ((y >= 0) && (y < HEIGHT) && (x >= 0) && (x < WIDTH)) {
 
           float a0 = (float) q / p;
           float a1 = a0 - dq2;
           float a2 = a0 + dq2;
 
-          int pos = y * WIDTH + x;
+          int pos = (y * WIDTH) + x;
 
           if (obs.isBlocked(a0) && obs.isBlocked(a1) && obs.isBlocked(a2)) {
             // Do nothing
@@ -104,50 +150,6 @@ public final class ShadowCaster {
       }
 
       obs.nextRow();
-    }
-  }
-
-  private static final class Obstacles {
-
-    private static int SIZE = (MAX_DISTANCE + 1) * (MAX_DISTANCE + 1) / 2;
-    private static float[] a1 = new float[SIZE];
-    private static float[] a2 = new float[SIZE];
-
-    private int length;
-    private int limit;
-
-    public void reset() {
-      length = 0;
-      limit = 0;
-    }
-
-    public void add(float o1, float o2) {
-
-      if (length > limit && o1 <= a2[length - 1]) {
-
-        // Merging several blocking cells
-        a2[length - 1] = o2;
-
-      } else {
-
-        a1[length] = o1;
-        a2[length++] = o2;
-
-      }
-
-    }
-
-    public boolean isBlocked(float a) {
-      for (int i = 0; i < limit; i++) {
-        if (a >= a1[i] && a <= a2[i]) {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    public void nextRow() {
-      limit = length;
     }
   }
 }

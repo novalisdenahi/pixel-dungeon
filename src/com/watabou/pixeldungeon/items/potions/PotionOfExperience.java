@@ -26,7 +26,7 @@ public class PotionOfExperience extends Potion {
   }
 
   @Override
-  protected void apply(Hero hero) {
+  protected void apply(final Hero hero) {
     setKnown();
     hero.earnExp(hero.maxExp() - hero.exp);
   }

@@ -41,29 +41,80 @@ import com.watabou.pixeldungeon.windows.WndHero;
 
 public class StatusPane extends Component {
 
+  private static class MenuButton extends Button {
+
+    private Image image;
+
+    public MenuButton() {
+      super();
+
+      width = image.width + 4;
+      height = image.height + 4;
+    }
+
+    @Override
+    protected void createChildren() {
+      super.createChildren();
+
+      image = new Image(Assets.STATUS, 114, 3, 12, 11);
+      add(image);
+    }
+
+    @Override
+    protected void layout() {
+      super.layout();
+
+      image.x = x + 2;
+      image.y = y + 2;
+    }
+
+    @Override
+    protected void onClick() {
+      GameScene.show(new WndGame());
+    }
+
+    @Override
+    protected void onTouchDown() {
+      image.brightness(1.5f);
+      Sample.INSTANCE.play(Assets.SND_CLICK);
+    }
+
+    @Override
+    protected void onTouchUp() {
+      image.resetColor();
+    }
+  }
+
   private NinePatch shield;
   private Image avatar;
+
   private Emitter blood;
 
   private int lastTier = 0;
-
   private Image hp;
+
   private Image exp;
-
   private int lastLvl = -1;
-  private int lastKeys = -1;
 
+  private int lastKeys = -1;
   private BitmapText level;
   private BitmapText depth;
-  private BitmapText keys;
 
+  private BitmapText keys;
   private DangerIndicator danger;
   private LootIndicator loot;
   private ResumeButton resume;
   private BuffIndicator buffs;
+
   private Compass compass;
 
   private MenuButton btnMenu;
+
+  private boolean tagDanger = false;
+
+  private boolean tagLoot = false;
+
+  private boolean tagResume = false;
 
   @Override
   protected void createChildren() {
@@ -73,7 +124,7 @@ public class StatusPane extends Component {
 
     add(new TouchArea(0, 1, 30, 30) {
       @Override
-      protected void onClick(Touch touch) {
+      protected void onClick(final Touch touch) {
         Image sprite = Dungeon.hero.sprite;
         if (!sprite.isVisible()) {
           Camera.main.focusOn(sprite);
@@ -137,11 +188,11 @@ public class StatusPane extends Component {
 
     shield.size(width, shield.height);
 
-    avatar.x = PixelScene.align(camera(), shield.x + 15 - avatar.width / 2);
-    avatar.y = PixelScene.align(camera(), shield.y + 16 - avatar.height / 2);
+    avatar.x = PixelScene.align(camera(), (shield.x + 15) - (avatar.width / 2));
+    avatar.y = PixelScene.align(camera(), (shield.y + 16) - (avatar.height / 2));
 
-    compass.x = avatar.x + avatar.width / 2 - compass.origin.x;
-    compass.y = avatar.y + avatar.height / 2 - compass.origin.y;
+    compass.x = (avatar.x + (avatar.width / 2)) - compass.origin.x;
+    compass.y = (avatar.y + (avatar.height / 2)) - compass.origin.y;
 
     hp.x = 30;
     hp.y = 3;
@@ -177,15 +228,12 @@ public class StatusPane extends Component {
     }
   }
 
-  private boolean tagDanger = false;
-  private boolean tagLoot = false;
-  private boolean tagResume = false;
-
   @Override
   public void update() {
     super.update();
 
-    if (tagDanger != danger.visible || tagLoot != loot.visible || tagResume != resume.visible) {
+    if ((tagDanger != danger.visible) || (tagLoot != loot.visible)
+        || (tagResume != resume.visible)) {
 
       tagDanger = danger.visible;
       tagLoot = loot.visible;
@@ -208,7 +256,7 @@ public class StatusPane extends Component {
     }
 
     hp.scale.x = health;
-    exp.scale.x = (width / exp.width) * Dungeon.hero.exp / Dungeon.hero.maxExp();
+    exp.scale.x = ((width / exp.width) * Dungeon.hero.exp) / Dungeon.hero.maxExp();
 
     if (Dungeon.hero.lvl != lastLvl) {
 
@@ -222,8 +270,8 @@ public class StatusPane extends Component {
       lastLvl = Dungeon.hero.lvl;
       level.text(Integer.toString(lastLvl));
       level.measure();
-      level.x = PixelScene.align(27.5f - level.width() / 2);
-      level.y = PixelScene.align(28.0f - level.baseLine() / 2);
+      level.x = PixelScene.align(27.5f - (level.width() / 2));
+      level.y = PixelScene.align(28.0f - (level.baseLine() / 2));
     }
 
     int k = IronKey.curDepthQuantity;
@@ -238,50 +286,6 @@ public class StatusPane extends Component {
     if (tier != lastTier) {
       lastTier = tier;
       avatar.copy(HeroSprite.avatar(Dungeon.hero.heroClass, tier));
-    }
-  }
-
-  private static class MenuButton extends Button {
-
-    private Image image;
-
-    public MenuButton() {
-      super();
-
-      width = image.width + 4;
-      height = image.height + 4;
-    }
-
-    @Override
-    protected void createChildren() {
-      super.createChildren();
-
-      image = new Image(Assets.STATUS, 114, 3, 12, 11);
-      add(image);
-    }
-
-    @Override
-    protected void layout() {
-      super.layout();
-
-      image.x = x + 2;
-      image.y = y + 2;
-    }
-
-    @Override
-    protected void onTouchDown() {
-      image.brightness(1.5f);
-      Sample.INSTANCE.play(Assets.SND_CLICK);
-    }
-
-    @Override
-    protected void onTouchUp() {
-      image.resetColor();
-    }
-
-    @Override
-    protected void onClick() {
-      GameScene.show(new WndGame());
     }
   }
 }

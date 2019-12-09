@@ -31,29 +31,16 @@ public abstract class EquipableItem extends Item {
   public static final String AC_EQUIP = "EQUIP";
   public static final String AC_UNEQUIP = "UNEQUIP";
 
-  @Override
-  public void execute(Hero hero, String action) {
-    if (action.equals(AC_EQUIP)) {
-      doEquip(hero);
-    } else if (action.equals(AC_UNEQUIP)) {
-      doUnequip(hero, true);
-    } else {
-      super.execute(hero, action);
-    }
+  protected static void equipCursed(final Hero hero) {
+    hero.sprite.emitter().burst(ShadowParticle.CURSE, 6);
+    Sample.INSTANCE.play(Assets.SND_CURSED);
   }
 
   @Override
-  public void doDrop(Hero hero) {
-    if (!isEquipped(hero) || doUnequip(hero, false, false)) {
-      super.doDrop(hero);
-    }
-  }
-
-  @Override
-  public void cast(final Hero user, int dst) {
+  public void cast(final Hero user, final int dst) {
 
     if (isEquipped(user)) {
-      if (quantity == 1 && !this.doUnequip(user, false, false)) {
+      if ((quantity == 1) && !this.doUnequip(user, false, false)) {
         return;
       }
     }
@@ -61,18 +48,20 @@ public abstract class EquipableItem extends Item {
     super.cast(user, dst);
   }
 
-  protected static void equipCursed(Hero hero) {
-    hero.sprite.emitter().burst(ShadowParticle.CURSE, 6);
-    Sample.INSTANCE.play(Assets.SND_CURSED);
-  }
-
-  protected float time2equip(Hero hero) {
-    return 1;
+  @Override
+  public void doDrop(final Hero hero) {
+    if (!isEquipped(hero) || doUnequip(hero, false, false)) {
+      super.doDrop(hero);
+    }
   }
 
   public abstract boolean doEquip(Hero hero);
 
-  public boolean doUnequip(Hero hero, boolean collect, boolean single) {
+  public final boolean doUnequip(final Hero hero, final boolean collect) {
+    return doUnequip(hero, collect, true);
+  }
+
+  public boolean doUnequip(final Hero hero, final boolean collect, final boolean single) {
 
     if (cursed) {
       GLog.w(TXT_UNEQUIP_CURSED, name());
@@ -92,7 +81,18 @@ public abstract class EquipableItem extends Item {
     return true;
   }
 
-  public final boolean doUnequip(Hero hero, boolean collect) {
-    return doUnequip(hero, collect, true);
+  @Override
+  public void execute(final Hero hero, final String action) {
+    if (action.equals(AC_EQUIP)) {
+      doEquip(hero);
+    } else if (action.equals(AC_UNEQUIP)) {
+      doUnequip(hero, true);
+    } else {
+      super.execute(hero, action);
+    }
+  }
+
+  protected float time2equip(final Hero hero) {
+    return 1;
   }
 }

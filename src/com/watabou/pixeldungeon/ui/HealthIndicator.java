@@ -51,14 +51,26 @@ public class HealthIndicator extends Component {
     add(level);
   }
 
+  public Char target() {
+    return target;
+  }
+
+  public void target(final Char ch) {
+    if ((ch != null) && ch.isAlive()) {
+      target = ch;
+    } else {
+      target = null;
+    }
+  }
+
   @Override
   public void update() {
     super.update();
 
-    if (target != null && target.isAlive() && target.sprite.visible) {
+    if ((target != null) && target.isAlive() && target.sprite.visible) {
       CharSprite sprite = target.sprite;
       bg.scale.x = sprite.width;
-      level.scale.x = sprite.width * target.HP / target.HT;
+      level.scale.x = (sprite.width * target.HP) / target.HT;
       bg.x = level.x = sprite.x;
       bg.y = level.y = sprite.y - HEIGHT - 1;
 
@@ -66,17 +78,5 @@ public class HealthIndicator extends Component {
     } else {
       visible = false;
     }
-  }
-
-  public void target(Char ch) {
-    if (ch != null && ch.isAlive()) {
-      target = ch;
-    } else {
-      target = null;
-    }
-  }
-
-  public Char target() {
-    return target;
   }
 }

@@ -50,11 +50,11 @@ public class WndInfoItem extends Window {
 
   private static final int WIDTH = 120;
 
-  public WndInfoItem(Heap heap) {
+  public WndInfoItem(final Heap heap) {
 
     super();
 
-    if (heap.type == Heap.Type.HEAP || heap.type == Heap.Type.FOR_SALE) {
+    if ((heap.type == Heap.Type.HEAP) || (heap.type == Heap.Type.FOR_SALE)) {
 
       Item item = heap.peek();
 
@@ -73,7 +73,7 @@ public class WndInfoItem extends Window {
       String title;
       String info;
 
-      if (heap.type == Type.CHEST || heap.type == Type.MIMIC) {
+      if ((heap.type == Type.CHEST) || (heap.type == Type.MIMIC)) {
         title = TXT_CHEST;
         info = TXT_WONT_KNOW;
       } else if (heap.type == Type.TOMB) {
@@ -95,13 +95,13 @@ public class WndInfoItem extends Window {
     }
   }
 
-  public WndInfoItem(Item item) {
+  public WndInfoItem(final Item item) {
 
     super();
 
     int color = TITLE_COLOR;
     if (item.levelKnown) {
-      if (item.level() < 0 || item.isBroken()) {
+      if ((item.level() < 0) || item.isBroken()) {
         color = ItemSlot.DEGRADED;
       } else if (item.level() > 0) {
         color = ItemSlot.UPGRADED;
@@ -111,8 +111,9 @@ public class WndInfoItem extends Window {
     fillFields(item.image(), item.glowing(), color, item.toString(), item.info());
   }
 
-  private void fillFields(int image, ItemSprite.Glowing glowing, int titleColor, String title,
-      String info) {
+  private void fillFields(final int image, final ItemSprite.Glowing glowing, final int titleColor,
+      final String title,
+      final String info) {
 
     IconTitle titlebar = new IconTitle();
     titlebar.icon(new ItemSprite(image, glowing));

@@ -18,8 +18,8 @@
 package com.watabou.pixeldungeon.effects.particles;
 
 import com.watabou.noosa.particles.Emitter;
-import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.noosa.particles.Emitter.Factory;
+import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.ColorMath;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
@@ -28,26 +28,26 @@ public class ShadowParticle extends PixelParticle.Shrinking {
 
   public static final Emitter.Factory MISSILE = new Factory() {
     @Override
-    public void emit(Emitter emitter, int index, float x, float y) {
+    public void emit(final Emitter emitter, final int index, final float x, final float y) {
       ((ShadowParticle) emitter.recycle(ShadowParticle.class)).reset(x, y);
     }
   };
 
   public static final Emitter.Factory CURSE = new Factory() {
     @Override
-    public void emit(Emitter emitter, int index, float x, float y) {
+    public void emit(final Emitter emitter, final int index, final float x, final float y) {
       ((ShadowParticle) emitter.recycle(ShadowParticle.class)).resetCurse(x, y);
     }
   };
 
   public static final Emitter.Factory UP = new Factory() {
     @Override
-    public void emit(Emitter emitter, int index, float x, float y) {
+    public void emit(final Emitter emitter, final int index, final float x, final float y) {
       ((ShadowParticle) emitter.recycle(ShadowParticle.class)).resetUp(x, y);
     }
   };
 
-  public void reset(float x, float y) {
+  public void reset(final float x, final float y) {
     revive();
 
     this.x = x;
@@ -59,18 +59,18 @@ public class ShadowParticle extends PixelParticle.Shrinking {
     left = lifespan = 0.5f;
   }
 
-  public void resetCurse(float x, float y) {
+  public void resetCurse(final float x, final float y) {
     revive();
 
     size = 8;
     left = lifespan = 0.5f;
 
     speed.polar(Random.Float(PointF.PI2), Random.Float(16, 32));
-    this.x = x - speed.x * lifespan;
-    this.y = y - speed.y * lifespan;
+    this.x = x - (speed.x * lifespan);
+    this.y = y - (speed.y * lifespan);
   }
 
-  public void resetUp(float x, float y) {
+  public void resetUp(final float x, final float y) {
     revive();
 
     speed.set(Random.Float(-8, +8), Random.Float(-32, -48));

@@ -44,9 +44,9 @@ abstract public class MissileWeapon extends Weapon {
   }
 
   @Override
-  public ArrayList<String> actions(Hero hero) {
+  public ArrayList<String> actions(final Hero hero) {
     ArrayList<String> actions = super.actions(hero);
-    if (hero.heroClass != HeroClass.HUNTRESS && hero.heroClass != HeroClass.ROGUE) {
+    if ((hero.heroClass != HeroClass.HUNTRESS) && (hero.heroClass != HeroClass.ROGUE)) {
       actions.remove(AC_EQUIP);
       actions.remove(AC_UNEQUIP);
     }
@@ -54,42 +54,11 @@ abstract public class MissileWeapon extends Weapon {
   }
 
   @Override
-  protected void onThrow(int cell) {
-    Char enemy = Actor.findChar(cell);
-    if (enemy == null || enemy == curUser) {
-      super.onThrow(cell);
-    } else {
-      if (!curUser.shoot(enemy, this)) {
-        miss(cell);
-      }
-    }
-  }
-
-  protected void miss(int cell) {
-    super.onThrow(cell);
-  }
-
-  @Override
-  public void proc(Char attacker, Char defender, int damage) {
-
-    super.proc(attacker, defender, damage);
-
-    Hero hero = (Hero) attacker;
-    if (hero.rangedWeapon == null && stackable) {
-      if (quantity == 1) {
-        doUnequip(hero, false, false);
-      } else {
-        detach(null);
-      }
-    }
-  }
-
-  @Override
   public boolean doEquip(final Hero hero) {
     GameScene.show(
         new WndOptions(TXT_MISSILES, TXT_R_U_SURE, TXT_YES, TXT_NO) {
           @Override
-          protected void onSelect(int index) {
+          protected void onSelect(final int index) {
             if (index == 0) {
               MissileWeapon.super.doEquip(hero);
             }
@@ -100,28 +69,13 @@ abstract public class MissileWeapon extends Weapon {
   }
 
   @Override
-  public Item random() {
-    return this;
-  }
-
-  @Override
-  public boolean isUpgradable() {
-    return false;
-  }
-
-  @Override
-  public boolean isIdentified() {
-    return true;
-  }
-
-  @Override
   public String info() {
 
     StringBuilder info = new StringBuilder(desc());
 
     int min = min();
     int max = max();
-    info.append("\n\nAverage damage of this weapon equals to " + (min + (max - min) / 2)
+    info.append("\n\nAverage damage of this weapon equals to " + (min + ((max - min) / 2))
         + " points per hit. ");
 
     if (Dungeon.hero.belongings.backpack.items.contains(this)) {
@@ -142,5 +96,51 @@ abstract public class MissileWeapon extends Weapon {
     }
 
     return info.toString();
+  }
+
+  @Override
+  public boolean isIdentified() {
+    return true;
+  }
+
+  @Override
+  public boolean isUpgradable() {
+    return false;
+  }
+
+  protected void miss(final int cell) {
+    super.onThrow(cell);
+  }
+
+  @Override
+  protected void onThrow(final int cell) {
+    Char enemy = Actor.findChar(cell);
+    if ((enemy == null) || (enemy == curUser)) {
+      super.onThrow(cell);
+    } else {
+      if (!curUser.shoot(enemy, this)) {
+        miss(cell);
+      }
+    }
+  }
+
+  @Override
+  public void proc(final Char attacker, final Char defender, final int damage) {
+
+    super.proc(attacker, defender, damage);
+
+    Hero hero = (Hero) attacker;
+    if ((hero.rangedWeapon == null) && stackable) {
+      if (quantity == 1) {
+        doUnequip(hero, false, false);
+      } else {
+        detach(null);
+      }
+    }
+  }
+
+  @Override
+  public Item random() {
+    return this;
   }
 }

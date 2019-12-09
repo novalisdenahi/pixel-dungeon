@@ -32,19 +32,9 @@ public class Dart extends MissileWeapon {
     this(1);
   }
 
-  public Dart(int number) {
+  public Dart(final int number) {
     super();
     quantity = number;
-  }
-
-  @Override
-  public int min() {
-    return 1;
-  }
-
-  @Override
-  public int max() {
-    return 4;
   }
 
   @Override
@@ -54,13 +44,23 @@ public class Dart extends MissileWeapon {
   }
 
   @Override
-  public Item random() {
-    quantity = Random.Int(5, 15);
-    return this;
+  public int max() {
+    return 4;
+  }
+
+  @Override
+  public int min() {
+    return 1;
   }
 
   @Override
   public int price() {
     return quantity * 2;
+  }
+
+  @Override
+  public Item random() {
+    quantity = Random.Int(5, 15);
+    return this;
   }
 }

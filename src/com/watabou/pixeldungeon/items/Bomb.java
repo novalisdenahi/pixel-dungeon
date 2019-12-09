@@ -45,7 +45,22 @@ public class Bomb extends Item {
   }
 
   @Override
-  protected void onThrow(int cell) {
+  public String info() {
+    return "This is a relatively small bomb, filled with black powder. Conveniently, its fuse is lit automatically when the bomb is thrown.";
+  }
+
+  @Override
+  public boolean isIdentified() {
+    return true;
+  }
+
+  @Override
+  public boolean isUpgradable() {
+    return false;
+  }
+
+  @Override
+  protected void onThrow(final int cell) {
     if (Level.pit[cell]) {
       super.onThrow(cell);
     } else {
@@ -58,7 +73,7 @@ public class Bomb extends Item {
       boolean terrainAffected = false;
       for (int n : Level.NEIGHBOURS9) {
         int c = cell + n;
-        if (c >= 0 && c < Level.LENGTH) {
+        if ((c >= 0) && (c < Level.LENGTH)) {
           if (Dungeon.visible[c]) {
             CellEmitter.get(c).burst(SmokeParticle.FACTORY, 4);
           }
@@ -71,7 +86,7 @@ public class Bomb extends Item {
 
           Char ch = Actor.findChar(c);
           if (ch != null) {
-            int dmg = Random.Int(1 + Dungeon.depth, 10 + Dungeon.depth * 2) - Random.Int(ch.dr());
+            int dmg = Random.Int(1 + Dungeon.depth, 10 + (Dungeon.depth * 2)) - Random.Int(ch.dr());
             if (dmg > 0) {
               ch.damage(dmg, this);
               if (ch.isAlive()) {
@@ -92,28 +107,13 @@ public class Bomb extends Item {
   }
 
   @Override
-  public boolean isUpgradable() {
-    return false;
-  }
-
-  @Override
-  public boolean isIdentified() {
-    return true;
+  public int price() {
+    return 10 * quantity;
   }
 
   @Override
   public Item random() {
     quantity = Random.IntRange(1, 3);
     return this;
-  }
-
-  @Override
-  public int price() {
-    return 10 * quantity;
-  }
-
-  @Override
-  public String info() {
-    return "This is a relatively small bomb, filled with black powder. Conveniently, its fuse is lit automatically when the bomb is thrown.";
   }
 }

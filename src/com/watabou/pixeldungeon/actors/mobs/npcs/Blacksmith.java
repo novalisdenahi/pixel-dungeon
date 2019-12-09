@@ -44,6 +44,82 @@ import com.watabou.utils.Random;
 
 public class Blacksmith extends NPC {
 
+  public static class Quest {
+
+    private static boolean spawned;
+
+    private static boolean alternative;
+    private static boolean given;
+    private static boolean completed;
+    private static boolean reforged;
+
+    private static final String NODE = "blacksmith";
+
+    private static final String SPAWNED = "spawned";
+
+    private static final String ALTERNATIVE = "alternative";
+    private static final String GIVEN = "given";
+    private static final String COMPLETED = "completed";
+    private static final String REFORGED = "reforged";
+
+    public static void reset() {
+      spawned = false;
+      given = false;
+      completed = false;
+      reforged = false;
+    }
+
+    public static void restoreFromBundle(final Bundle bundle) {
+
+      Bundle node = bundle.getBundle(NODE);
+
+      if (!node.isNull() && (spawned = node.getBoolean(SPAWNED))) {
+        alternative = node.getBoolean(ALTERNATIVE);
+        given = node.getBoolean(GIVEN);
+        completed = node.getBoolean(COMPLETED);
+        reforged = node.getBoolean(REFORGED);
+      } else {
+        Quest.reset();
+      }
+    }
+
+    public static void spawn(final Collection<Room> rooms) {
+      if (!spawned && (Dungeon.depth > 11) && (Random.Int(15 - Dungeon.depth) == 0)) {
+
+        Room blacksmith = null;
+        for (Room r : rooms) {
+          if ((r.type == Type.STANDARD) && (r.width() > 4) && (r.height() > 4)) {
+            blacksmith = r;
+            blacksmith.type = Type.BLACKSMITH;
+
+            spawned = true;
+            alternative = Random.Int(2) == 0;
+
+            given = false;
+
+            break;
+          }
+        }
+      }
+    }
+
+    public static void storeInBundle(final Bundle bundle) {
+
+      Bundle node = new Bundle();
+
+      node.put(SPAWNED, spawned);
+
+      if (spawned) {
+        node.put(ALTERNATIVE, alternative);
+        node.put(GIVEN, given);
+        node.put(COMPLETED, completed);
+        node.put(REFORGED, reforged);
+      }
+
+      bundle.put(NODE, node);
+    }
+  }
+
   private static final String TXT_GOLD_1 =
       "Hey human! Wanna be useful, eh? Take dis pickaxe and mine me some _dark gold ore_, _15 pieces_ should be enough. "
           +
@@ -66,10 +142,73 @@ public class Blacksmith extends NPC {
       "I said I need bat blood on the pickaxe. Chop chop!";
   private static final String TXT_COMPLETED =
       "Oh, you have returned... Better late dan never.";
+
   private static final String TXT_GET_LOST =
       "I'm busy. Get lost!";
 
   private static final String TXT_LOOKS_BETTER = "your %s certainly looks better now";
+
+  public static void upgrade(final Item item1, final Item item2) {
+
+    Item first, second;
+    if (item2.level() > item1.level()) {
+      first = item2;
+      second = item1;
+    } else {
+      first = item1;
+      second = item2;
+    }
+
+    Sample.INSTANCE.play(Assets.SND_EVOKE);
+    ScrollOfUpgrade.upgrade(Dungeon.hero);
+    Item.evoke(Dungeon.hero);
+
+    if (first.isEquipped(Dungeon.hero)) {
+      ((EquipableItem) first).doUnequip(Dungeon.hero, true);
+    }
+    first.upgrade();
+    GLog.p(TXT_LOOKS_BETTER, first.name());
+    Dungeon.hero.spendAndNext(2f);
+    Badges.validateItemLevelAquired(first);
+
+    if (second.isEquipped(Dungeon.hero)) {
+      ((EquipableItem) second).doUnequip(Dungeon.hero, false);
+    }
+    second.detachAll(Dungeon.hero.belongings.backpack);
+
+    Quest.reforged = true;
+
+    Journal.remove(Journal.Feature.TROLL);
+  }
+
+  public static String verify(final Item item1, final Item item2) {
+
+    if (item1 == item2) {
+      return "Select 2 different items, not the same item twice!";
+    }
+
+    if (item1.getClass() != item2.getClass()) {
+      return "Select 2 items of the same type!";
+    }
+
+    if (!item1.isIdentified() || !item2.isIdentified()) {
+      return "I need to know what I'm working with, identify them first!";
+    }
+
+    if (item1.cursed || item2.cursed) {
+      return "I don't work with cursed items!";
+    }
+
+    if ((item1.level() < 0) || (item2.level() < 0)) {
+      return "It's a junk, the quality is too poor!";
+    }
+
+    if (!item1.isUpgradable() || !item2.isUpgradable()) {
+      return "I can't reforge these items!";
+    }
+
+    return null;
+  }
 
   {
     name = "troll blacksmith";
@@ -80,6 +219,26 @@ public class Blacksmith extends NPC {
   protected boolean act() {
     throwItem();
     return super.act();
+  }
+
+  @Override
+  public void add(final Buff buff) {
+  }
+
+  @Override
+  public void damage(final int dmg, final Object src) {
+  }
+
+  @Override
+  public int defenseSkill(final Char enemy) {
+    return 1000;
+  }
+
+  @Override
+  public String description() {
+    return "This troll blacksmith looks like all trolls look: he is tall and lean, and his skin resembles stone "
+        +
+        "in both color and texture. The troll blacksmith is tinkering with unproportionally small tools.";
   }
 
   @Override
@@ -135,7 +294,7 @@ public class Blacksmith extends NPC {
         DarkGold gold = Dungeon.hero.belongings.getItem(DarkGold.class);
         if (pick == null) {
           tell(TXT2);
-        } else if (gold == null || gold.quantity() < 15) {
+        } else if ((gold == null) || (gold.quantity() < 15)) {
           tell(TXT3);
         } else {
           if (pick.isEquipped(Dungeon.hero)) {
@@ -161,169 +320,12 @@ public class Blacksmith extends NPC {
     }
   }
 
-  private void tell(String text) {
-    GameScene.show(new WndQuest(this, text));
-  }
-
-  public static String verify(Item item1, Item item2) {
-
-    if (item1 == item2) {
-      return "Select 2 different items, not the same item twice!";
-    }
-
-    if (item1.getClass() != item2.getClass()) {
-      return "Select 2 items of the same type!";
-    }
-
-    if (!item1.isIdentified() || !item2.isIdentified()) {
-      return "I need to know what I'm working with, identify them first!";
-    }
-
-    if (item1.cursed || item2.cursed) {
-      return "I don't work with cursed items!";
-    }
-
-    if (item1.level() < 0 || item2.level() < 0) {
-      return "It's a junk, the quality is too poor!";
-    }
-
-    if (!item1.isUpgradable() || !item2.isUpgradable()) {
-      return "I can't reforge these items!";
-    }
-
-    return null;
-  }
-
-  public static void upgrade(Item item1, Item item2) {
-
-    Item first, second;
-    if (item2.level() > item1.level()) {
-      first = item2;
-      second = item1;
-    } else {
-      first = item1;
-      second = item2;
-    }
-
-    Sample.INSTANCE.play(Assets.SND_EVOKE);
-    ScrollOfUpgrade.upgrade(Dungeon.hero);
-    Item.evoke(Dungeon.hero);
-
-    if (first.isEquipped(Dungeon.hero)) {
-      ((EquipableItem) first).doUnequip(Dungeon.hero, true);
-    }
-    first.upgrade();
-    GLog.p(TXT_LOOKS_BETTER, first.name());
-    Dungeon.hero.spendAndNext(2f);
-    Badges.validateItemLevelAquired(first);
-
-    if (second.isEquipped(Dungeon.hero)) {
-      ((EquipableItem) second).doUnequip(Dungeon.hero, false);
-    }
-    second.detachAll(Dungeon.hero.belongings.backpack);
-
-    Quest.reforged = true;
-
-    Journal.remove(Journal.Feature.TROLL);
-  }
-
-  @Override
-  public int defenseSkill(Char enemy) {
-    return 1000;
-  }
-
-  @Override
-  public void damage(int dmg, Object src) {
-  }
-
-  @Override
-  public void add(Buff buff) {
-  }
-
   @Override
   public boolean reset() {
     return true;
   }
 
-  @Override
-  public String description() {
-    return "This troll blacksmith looks like all trolls look: he is tall and lean, and his skin resembles stone "
-        +
-        "in both color and texture. The troll blacksmith is tinkering with unproportionally small tools.";
-  }
-
-  public static class Quest {
-
-    private static boolean spawned;
-
-    private static boolean alternative;
-    private static boolean given;
-    private static boolean completed;
-    private static boolean reforged;
-
-    public static void reset() {
-      spawned = false;
-      given = false;
-      completed = false;
-      reforged = false;
-    }
-
-    private static final String NODE = "blacksmith";
-
-    private static final String SPAWNED = "spawned";
-    private static final String ALTERNATIVE = "alternative";
-    private static final String GIVEN = "given";
-    private static final String COMPLETED = "completed";
-    private static final String REFORGED = "reforged";
-
-    public static void storeInBundle(Bundle bundle) {
-
-      Bundle node = new Bundle();
-
-      node.put(SPAWNED, spawned);
-
-      if (spawned) {
-        node.put(ALTERNATIVE, alternative);
-        node.put(GIVEN, given);
-        node.put(COMPLETED, completed);
-        node.put(REFORGED, reforged);
-      }
-
-      bundle.put(NODE, node);
-    }
-
-    public static void restoreFromBundle(Bundle bundle) {
-
-      Bundle node = bundle.getBundle(NODE);
-
-      if (!node.isNull() && (spawned = node.getBoolean(SPAWNED))) {
-        alternative = node.getBoolean(ALTERNATIVE);
-        given = node.getBoolean(GIVEN);
-        completed = node.getBoolean(COMPLETED);
-        reforged = node.getBoolean(REFORGED);
-      } else {
-        reset();
-      }
-    }
-
-    public static void spawn(Collection<Room> rooms) {
-      if (!spawned && Dungeon.depth > 11 && Random.Int(15 - Dungeon.depth) == 0) {
-
-        Room blacksmith = null;
-        for (Room r : rooms) {
-          if (r.type == Type.STANDARD && r.width() > 4 && r.height() > 4) {
-            blacksmith = r;
-            blacksmith.type = Type.BLACKSMITH;
-
-            spawned = true;
-            alternative = Random.Int(2) == 0;
-
-            given = false;
-
-            break;
-          }
-        }
-      }
-    }
+  private void tell(final String text) {
+    GameScene.show(new WndQuest(this, text));
   }
 }

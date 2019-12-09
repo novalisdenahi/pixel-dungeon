@@ -31,27 +31,48 @@ import com.watabou.utils.Random;
 
 public class PrisonLevel extends RegularLevel {
 
+  private static class Torch extends Emitter {
+
+    private int pos;
+
+    public Torch(final int pos) {
+      super();
+
+      this.pos = pos;
+
+      PointF p = DungeonTilemap.tileCenterToWorld(pos);
+      pos(p.x - 1, p.y + 3, 2, 0);
+
+      pour(FlameParticle.FACTORY, 0.15f);
+
+      add(new Halo(16, 0xFFFFCC, 0.2f).point(p.x, p.y));
+    }
+
+    @Override
+    public void update() {
+      if (visible = Dungeon.visible[pos]) {
+        super.update();
+      }
+    }
+  }
+
+  public static void addVisuals(final Level level, final Scene scene) {
+    for (int i = 0; i < LENGTH; i++) {
+      if (level.map[i] == Terrain.WALL_DECO) {
+        scene.add(new Torch(i));
+      }
+    }
+  }
+
   {
     color1 = 0x6a723d;
     color2 = 0x88924c;
   }
 
   @Override
-  public String tilesTex() {
-    return Assets.TILES_PRISON;
-  }
-
-  @Override
-  public String waterTex() {
-    return Assets.WATER_PRISON;
-  }
-
-  protected boolean[] water() {
-    return Patch.generate(feeling == Feeling.WATER ? 0.65f : 0.45f, 4);
-  }
-
-  protected boolean[] grass() {
-    return Patch.generate(feeling == Feeling.GRASS ? 0.60f : 0.40f, 3);
+  public void addVisuals(final Scene scene) {
+    super.addVisuals(scene);
+    PrisonLevel.addVisuals(this, scene);
   }
 
   @Override
@@ -75,20 +96,20 @@ public class PrisonLevel extends RegularLevel {
   @Override
   protected void decorate() {
 
-    for (int i = WIDTH + 1; i < LENGTH - WIDTH - 1; i++) {
+    for (int i = WIDTH + 1; i < (LENGTH - WIDTH - 1); i++) {
       if (map[i] == Terrain.EMPTY) {
 
         float c = 0.05f;
-        if (map[i + 1] == Terrain.WALL && map[i + WIDTH] == Terrain.WALL) {
+        if ((map[i + 1] == Terrain.WALL) && (map[i + WIDTH] == Terrain.WALL)) {
           c += 0.2f;
         }
-        if (map[i - 1] == Terrain.WALL && map[i + WIDTH] == Terrain.WALL) {
+        if ((map[i - 1] == Terrain.WALL) && (map[i + WIDTH] == Terrain.WALL)) {
           c += 0.2f;
         }
-        if (map[i + 1] == Terrain.WALL && map[i - WIDTH] == Terrain.WALL) {
+        if ((map[i + 1] == Terrain.WALL) && (map[i - WIDTH] == Terrain.WALL)) {
           c += 0.2f;
         }
-        if (map[i - 1] == Terrain.WALL && map[i - WIDTH] == Terrain.WALL) {
+        if ((map[i - 1] == Terrain.WALL) && (map[i - WIDTH] == Terrain.WALL)) {
           c += 0.2f;
         }
 
@@ -99,19 +120,19 @@ public class PrisonLevel extends RegularLevel {
     }
 
     for (int i = 0; i < WIDTH; i++) {
-      if (map[i] == Terrain.WALL &&
-          (map[i + WIDTH] == Terrain.EMPTY || map[i + WIDTH] == Terrain.EMPTY_SP) &&
-          Random.Int(6) == 0) {
+      if ((map[i] == Terrain.WALL) &&
+          ((map[i + WIDTH] == Terrain.EMPTY) || (map[i + WIDTH] == Terrain.EMPTY_SP)) &&
+          (Random.Int(6) == 0)) {
 
         map[i] = Terrain.WALL_DECO;
       }
     }
 
-    for (int i = WIDTH; i < LENGTH - WIDTH; i++) {
-      if (map[i] == Terrain.WALL &&
-          map[i - WIDTH] == Terrain.WALL &&
-          (map[i + WIDTH] == Terrain.EMPTY || map[i + WIDTH] == Terrain.EMPTY_SP) &&
-          Random.Int(3) == 0) {
+    for (int i = WIDTH; i < (LENGTH - WIDTH); i++) {
+      if ((map[i] == Terrain.WALL) &&
+          (map[i - WIDTH] == Terrain.WALL) &&
+          ((map[i + WIDTH] == Terrain.EMPTY) || (map[i + WIDTH] == Terrain.EMPTY_SP)) &&
+          (Random.Int(3) == 0)) {
 
         map[i] = Terrain.WALL_DECO;
       }
@@ -127,17 +148,12 @@ public class PrisonLevel extends RegularLevel {
   }
 
   @Override
-  public String tileName(int tile) {
-    switch (tile) {
-      case Terrain.WATER:
-        return "Dark cold water.";
-      default:
-        return super.tileName(tile);
-    }
+  protected boolean[] grass() {
+    return Patch.generate(feeling == Feeling.GRASS ? 0.60f : 0.40f, 3);
   }
 
   @Override
-  public String tileDesc(int tile) {
+  public String tileDesc(final int tile) {
     switch (tile) {
       case Terrain.EMPTY_DECO:
         return "There are old blood stains on the floor.";
@@ -149,41 +165,27 @@ public class PrisonLevel extends RegularLevel {
   }
 
   @Override
-  public void addVisuals(Scene scene) {
-    super.addVisuals(scene);
-    addVisuals(this, scene);
-  }
-
-  public static void addVisuals(Level level, Scene scene) {
-    for (int i = 0; i < LENGTH; i++) {
-      if (level.map[i] == Terrain.WALL_DECO) {
-        scene.add(new Torch(i));
-      }
+  public String tileName(final int tile) {
+    switch (tile) {
+      case Terrain.WATER:
+        return "Dark cold water.";
+      default:
+        return super.tileName(tile);
     }
   }
 
-  private static class Torch extends Emitter {
+  @Override
+  public String tilesTex() {
+    return Assets.TILES_PRISON;
+  }
 
-    private int pos;
+  @Override
+  protected boolean[] water() {
+    return Patch.generate(feeling == Feeling.WATER ? 0.65f : 0.45f, 4);
+  }
 
-    public Torch(int pos) {
-      super();
-
-      this.pos = pos;
-
-      PointF p = DungeonTilemap.tileCenterToWorld(pos);
-      pos(p.x - 1, p.y + 3, 2, 0);
-
-      pour(FlameParticle.FACTORY, 0.15f);
-
-      add(new Halo(16, 0xFFFFCC, 0.2f).point(p.x, p.y));
-    }
-
-    @Override
-    public void update() {
-      if (visible = Dungeon.visible[pos]) {
-        super.update();
-      }
-    }
+  @Override
+  public String waterTex() {
+    return Assets.WATER_PRISON;
   }
 }

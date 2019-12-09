@@ -39,6 +39,8 @@ public class Gold extends Item {
   private static final String TXT_INFO_1 = "One gold coin. " + TXT_COLLECT;
   private static final String TXT_VALUE = "%+d";
 
+  private static final String VALUE = "value";
+
   {
     name = "gold";
     image = ItemSpriteSheet.GOLD;
@@ -49,17 +51,17 @@ public class Gold extends Item {
     this(1);
   }
 
-  public Gold(int value) {
-    this.quantity = value;
+  public Gold(final int value) {
+    quantity = value;
   }
 
   @Override
-  public ArrayList<String> actions(Hero hero) {
+  public ArrayList<String> actions(final Hero hero) {
     return new ArrayList<String>();
   }
 
   @Override
-  public boolean doPickUp(Hero hero) {
+  public boolean doPickUp(final Hero hero) {
 
     Dungeon.gold += quantity;
     Statistics.goldCollected += quantity;
@@ -71,16 +73,6 @@ public class Gold extends Item {
 
     Sample.INSTANCE.play(Assets.SND_GOLD, 1, 1, Random.Float(0.9f, 1.1f));
 
-    return true;
-  }
-
-  @Override
-  public boolean isUpgradable() {
-    return false;
-  }
-
-  @Override
-  public boolean isIdentified() {
     return true;
   }
 
@@ -97,22 +89,30 @@ public class Gold extends Item {
   }
 
   @Override
+  public boolean isIdentified() {
+    return true;
+  }
+
+  @Override
+  public boolean isUpgradable() {
+    return false;
+  }
+
+  @Override
   public Item random() {
-    quantity = Random.Int(20 + Dungeon.depth * 10, 40 + Dungeon.depth * 20);
+    quantity = Random.Int(20 + (Dungeon.depth * 10), 40 + (Dungeon.depth * 20));
     return this;
   }
 
-  private static final String VALUE = "value";
-
   @Override
-  public void storeInBundle(Bundle bundle) {
-    super.storeInBundle(bundle);
-    bundle.put(VALUE, quantity);
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    quantity = bundle.getInt(VALUE);
   }
 
   @Override
-  public void restoreFromBundle(Bundle bundle) {
-    super.restoreFromBundle(bundle);
-    quantity = bundle.getInt(VALUE);
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(VALUE, quantity);
   }
 }

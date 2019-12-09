@@ -34,7 +34,18 @@ public class Horror extends Weapon.Enchantment {
   private static ItemSprite.Glowing GREY = new ItemSprite.Glowing(0x222222);
 
   @Override
-  public boolean proc(Weapon weapon, Char attacker, Char defender, int damage) {
+  public Glowing glowing() {
+    return GREY;
+  }
+
+  @Override
+  public String name(final String weaponName) {
+    return String.format(TXT_ELDRITCH, weaponName);
+  }
+
+  @Override
+  public boolean proc(final Weapon weapon, final Char attacker, final Char defender,
+      final int damage) {
     // lvl 0 - 20%
     // lvl 1 - 33%
     // lvl 2 - 43%
@@ -52,16 +63,6 @@ public class Horror extends Weapon.Enchantment {
     } else {
       return false;
     }
-  }
-
-  @Override
-  public Glowing glowing() {
-    return GREY;
-  }
-
-  @Override
-  public String name(String weaponName) {
-    return String.format(TXT_ELDRITCH, weaponName);
   }
 
 }

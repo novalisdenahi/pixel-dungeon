@@ -29,19 +29,20 @@ public class Tempering extends Weapon.Enchantment {
   private static ItemSprite.Glowing GRAY = new ItemSprite.Glowing(0xCC8888);
 
   @Override
-  public boolean proc(Weapon weapon, Char attacker, Char defender, int damage) {
-    weapon.polish();
-    return true;
-  }
-
-  @Override
   public Glowing glowing() {
     return GRAY;
   }
 
   @Override
-  public String name(String weaponName) {
+  public String name(final String weaponName) {
     return String.format(TXT_TEMPERED, weaponName);
+  }
+
+  @Override
+  public boolean proc(final Weapon weapon, final Char attacker, final Char defender,
+      final int damage) {
+    weapon.polish();
+    return true;
   }
 
 }

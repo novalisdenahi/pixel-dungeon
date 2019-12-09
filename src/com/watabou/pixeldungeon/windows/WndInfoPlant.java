@@ -29,7 +29,7 @@ public class WndInfoPlant extends Window {
 
   private static final int WIDTH = 120;
 
-  public WndInfoPlant(Plant plant) {
+  public WndInfoPlant(final Plant plant) {
 
     super();
 

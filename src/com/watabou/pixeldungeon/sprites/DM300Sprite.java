@@ -46,17 +46,17 @@ public class DM300Sprite extends MobSprite {
   }
 
   @Override
-  public void onComplete(Animation anim) {
+  public int blood() {
+    return 0xFFFFFF88;
+  }
+
+  @Override
+  public void onComplete(final Animation anim) {
 
     super.onComplete(anim);
 
     if (anim == die) {
       emitter().burst(Speck.factory(Speck.WOOL), 15);
     }
-  }
-
-  @Override
-  public int blood() {
-    return 0xFFFFFF88;
   }
 }

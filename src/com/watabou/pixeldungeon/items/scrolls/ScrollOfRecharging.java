@@ -27,15 +27,25 @@ import com.watabou.pixeldungeon.utils.GLog;
 
 public class ScrollOfRecharging extends Scroll {
 
+  public static void charge(final Hero hero) {
+    hero.sprite.centerEmitter().burst(EnergyParticle.FACTORY, 15);
+  }
+
   {
     name = "Scroll of Recharging";
+  }
+
+  @Override
+  public String desc() {
+    return "The raw magical power bound up in this parchment will, when released, " +
+        "recharge all of the reader's wands to full power.";
   }
 
   @Override
   protected void doRead() {
 
     int count = curUser.belongings.charge(true);
-    charge(curUser);
+    ScrollOfRecharging.charge(curUser);
 
     Sample.INSTANCE.play(Assets.SND_READ);
     Invisibility.dispel();
@@ -50,16 +60,6 @@ public class ScrollOfRecharging extends Scroll {
     setKnown();
 
     readAnimation();
-  }
-
-  @Override
-  public String desc() {
-    return "The raw magical power bound up in this parchment will, when released, " +
-        "recharge all of the reader's wands to full power.";
-  }
-
-  public static void charge(Hero hero) {
-    hero.sprite.centerEmitter().burst(EnergyParticle.FACTORY, 15);
   }
 
   @Override

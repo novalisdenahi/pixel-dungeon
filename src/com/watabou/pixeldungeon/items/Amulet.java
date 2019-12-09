@@ -40,27 +40,14 @@ public class Amulet extends Item {
   }
 
   @Override
-  public ArrayList<String> actions(Hero hero) {
+  public ArrayList<String> actions(final Hero hero) {
     ArrayList<String> actions = super.actions(hero);
     actions.add(AC_END);
     return actions;
   }
 
   @Override
-  public void execute(Hero hero, String action) {
-    if (action == AC_END) {
-
-      showAmuletScene(false);
-
-    } else {
-
-      super.execute(hero, action);
-
-    }
-  }
-
-  @Override
-  public boolean doPickUp(Hero hero) {
+  public boolean doPickUp(final Hero hero) {
     if (super.doPickUp(hero)) {
 
       if (!Statistics.amuletObtained) {
@@ -76,13 +63,24 @@ public class Amulet extends Item {
     }
   }
 
-  private void showAmuletScene(boolean showText) {
-    try {
-      Dungeon.saveAll();
-      AmuletScene.noText = !showText;
-      Game.switchScene(AmuletScene.class);
-    } catch (IOException e) {
+  @Override
+  public void execute(final Hero hero, final String action) {
+    if (action == AC_END) {
+
+      showAmuletScene(false);
+
+    } else {
+
+      super.execute(hero, action);
+
     }
+  }
+
+  @Override
+  public String info() {
+    return "The Amulet of Yendor is the most powerful known artifact of unknown origin. It is said that the amulet "
+        +
+        "is able to fulfil any wish if its owner's will-power is strong enough to \"persuade\" it to do it.";
   }
 
   @Override
@@ -95,10 +93,12 @@ public class Amulet extends Item {
     return false;
   }
 
-  @Override
-  public String info() {
-    return "The Amulet of Yendor is the most powerful known artifact of unknown origin. It is said that the amulet "
-        +
-        "is able to fulfil any wish if its owner's will-power is strong enough to \"persuade\" it to do it.";
+  private void showAmuletScene(final boolean showText) {
+    try {
+      Dungeon.saveAll();
+      AmuletScene.noText = !showText;
+      Game.switchScene(AmuletScene.class);
+    } catch (IOException e) {
+    }
   }
 }

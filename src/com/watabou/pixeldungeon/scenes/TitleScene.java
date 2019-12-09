@@ -19,8 +19,6 @@ package com.watabou.pixeldungeon.scenes;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import android.opengl.GLES20;
-
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
@@ -36,11 +34,68 @@ import com.watabou.pixeldungeon.ui.Archs;
 import com.watabou.pixeldungeon.ui.ExitButton;
 import com.watabou.pixeldungeon.ui.PrefsButton;
 
+import android.opengl.GLES20;
+
 public class TitleScene extends PixelScene {
+
+  private static class DashboardItem extends Button {
+
+    public static final float SIZE = 48;
+
+    private static final int IMAGE_SIZE = 32;
+
+    private Image image;
+    private BitmapText label;
+
+    public DashboardItem(final String text, final int index) {
+      super();
+
+      image
+          .frame(image.texture.uvRect(index * IMAGE_SIZE, 0, (index + 1) * IMAGE_SIZE, IMAGE_SIZE));
+      label.text(text);
+      label.measure();
+
+      setSize(SIZE, SIZE);
+    }
+
+    @Override
+    protected void createChildren() {
+      super.createChildren();
+
+      image = new Image(Assets.DASHBOARD);
+      add(image);
+
+      label = PixelScene.createText(9);
+      add(label);
+    }
+
+    @Override
+    protected void layout() {
+      super.layout();
+
+      image.x = PixelScene.align(x + ((width - image.width()) / 2));
+      image.y = PixelScene.align(y);
+
+      label.x = PixelScene.align(x + ((width - label.width()) / 2));
+      label.y = PixelScene.align(image.y + image.height() + 2);
+    }
+
+    @Override
+    protected void onTouchDown() {
+      image.brightness(1.5f);
+      Sample.INSTANCE.play(Assets.SND_CLICK, 1, 1, 0.8f);
+    }
+
+    @Override
+    protected void onTouchUp() {
+      image.resetColor();
+    }
+  }
 
   private static final String TXT_PLAY = "Play";
   private static final String TXT_HIGHSCORES = "Rankings";
   private static final String TXT_BADGES = "Badges";
+
   private static final String TXT_ABOUT = "About";
 
   @Override
@@ -70,22 +125,22 @@ public class TitleScene extends PixelScene {
     title.y = (h - height) / 2;
 
     placeTorch(title.x + 18, title.y + 20);
-    placeTorch(title.x + title.width - 18, title.y + 20);
+    placeTorch((title.x + title.width) - 18, title.y + 20);
 
     Image signs = new Image(BannerSprites.get(BannerSprites.Type.PIXEL_DUNGEON_SIGNS)) {
       private float time = 0;
-
-      @Override
-      public void update() {
-        super.update();
-        am = (float) Math.sin(-(time += Game.elapsed));
-      }
 
       @Override
       public void draw() {
         GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
         super.draw();
         GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+      }
+
+      @Override
+      public void update() {
+        super.update();
+        am = (float) Math.sin(-(time += Game.elapsed));
       }
     };
     signs.x = title.x;
@@ -125,15 +180,15 @@ public class TitleScene extends PixelScene {
     add(btnHighscores);
 
     if (PixelDungeon.landscape()) {
-      float y = (h + height) / 2 - DashboardItem.SIZE;
-      btnHighscores.setPos(w / 2 - btnHighscores.width(), y);
+      float y = ((h + height) / 2) - DashboardItem.SIZE;
+      btnHighscores.setPos((w / 2) - btnHighscores.width(), y);
       btnBadges.setPos(w / 2, y);
       btnPlay.setPos(btnHighscores.left() - btnPlay.width(), y);
       btnAbout.setPos(btnBadges.right(), y);
     } else {
-      btnBadges.setPos(w / 2 - btnBadges.width(), (h + height) / 2 - DashboardItem.SIZE);
-      btnAbout.setPos(w / 2, (h + height) / 2 - DashboardItem.SIZE);
-      btnPlay.setPos(w / 2 - btnPlay.width(), btnAbout.top() - DashboardItem.SIZE);
+      btnBadges.setPos((w / 2) - btnBadges.width(), ((h + height) / 2) - DashboardItem.SIZE);
+      btnAbout.setPos(w / 2, ((h + height) / 2) - DashboardItem.SIZE);
+      btnPlay.setPos((w / 2) - btnPlay.width(), btnAbout.top() - DashboardItem.SIZE);
       btnHighscores.setPos(w / 2, btnPlay.top());
     }
 
@@ -155,63 +210,9 @@ public class TitleScene extends PixelScene {
     fadeIn();
   }
 
-  private void placeTorch(float x, float y) {
+  private void placeTorch(final float x, final float y) {
     Fireball fb = new Fireball();
     fb.setPos(x, y);
     add(fb);
-  }
-
-  private static class DashboardItem extends Button {
-
-    public static final float SIZE = 48;
-
-    private static final int IMAGE_SIZE = 32;
-
-    private Image image;
-    private BitmapText label;
-
-    public DashboardItem(String text, int index) {
-      super();
-
-      image
-          .frame(image.texture.uvRect(index * IMAGE_SIZE, 0, (index + 1) * IMAGE_SIZE, IMAGE_SIZE));
-      this.label.text(text);
-      this.label.measure();
-
-      setSize(SIZE, SIZE);
-    }
-
-    @Override
-    protected void createChildren() {
-      super.createChildren();
-
-      image = new Image(Assets.DASHBOARD);
-      add(image);
-
-      label = createText(9);
-      add(label);
-    }
-
-    @Override
-    protected void layout() {
-      super.layout();
-
-      image.x = align(x + (width - image.width()) / 2);
-      image.y = align(y);
-
-      label.x = align(x + (width - label.width()) / 2);
-      label.y = align(image.y + image.height() + 2);
-    }
-
-    @Override
-    protected void onTouchDown() {
-      image.brightness(1.5f);
-      Sample.INSTANCE.play(Assets.SND_CLICK, 1, 1, 0.8f);
-    }
-
-    @Override
-    protected void onTouchUp() {
-      image.resetColor();
-    }
   }
 }

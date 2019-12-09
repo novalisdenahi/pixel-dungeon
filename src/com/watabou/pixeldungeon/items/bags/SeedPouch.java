@@ -31,17 +31,17 @@ public class SeedPouch extends Bag {
   }
 
   @Override
-  public boolean grab(Item item) {
+  public boolean grab(final Item item) {
     return item instanceof Plant.Seed;
-  }
-
-  @Override
-  public int price() {
-    return 50;
   }
 
   @Override
   public String info() {
     return "This small velvet pouch allows you to store any number of seeds in it. Very convenient.";
+  }
+
+  @Override
+  public int price() {
+    return 50;
   }
 }

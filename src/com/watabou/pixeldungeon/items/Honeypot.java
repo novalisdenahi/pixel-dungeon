@@ -45,14 +45,14 @@ public class Honeypot extends Item {
   }
 
   @Override
-  public ArrayList<String> actions(Hero hero) {
+  public ArrayList<String> actions(final Hero hero) {
     ArrayList<String> actions = super.actions(hero);
     actions.add(AC_SHATTER);
     return actions;
   }
 
   @Override
-  public void execute(final Hero hero, String action) {
+  public void execute(final Hero hero, final String action) {
     if (action.equals(AC_SHATTER)) {
 
       hero.sprite.zap(hero.pos);
@@ -67,7 +67,22 @@ public class Honeypot extends Item {
   }
 
   @Override
-  protected void onThrow(int cell) {
+  public String info() {
+    return "There is not much honey in this small honeypot, but there is a golden bee there and it doesn't want to leave it.";
+  }
+
+  @Override
+  public boolean isIdentified() {
+    return true;
+  }
+
+  @Override
+  public boolean isUpgradable() {
+    return false;
+  }
+
+  @Override
+  protected void onThrow(final int cell) {
     if (Level.pit[cell]) {
       super.onThrow(cell);
     } else {
@@ -75,7 +90,12 @@ public class Honeypot extends Item {
     }
   }
 
-  private void shatter(int pos) {
+  @Override
+  public int price() {
+    return 50 * quantity;
+  }
+
+  private void shatter(final int pos) {
     Sample.INSTANCE.play(Assets.SND_SHATTER);
 
     if (Dungeon.visible[pos]) {
@@ -89,7 +109,7 @@ public class Honeypot extends Item {
 
       for (int n : Level.NEIGHBOURS4) {
         int c = pos + n;
-        if (passable[c] && Actor.findChar(c) == null) {
+        if (passable[c] && (Actor.findChar(c) == null)) {
           candidates.add(c);
         }
       }
@@ -111,25 +131,5 @@ public class Honeypot extends Item {
 
       Sample.INSTANCE.play(Assets.SND_BEE);
     }
-  }
-
-  @Override
-  public boolean isUpgradable() {
-    return false;
-  }
-
-  @Override
-  public boolean isIdentified() {
-    return true;
-  }
-
-  @Override
-  public int price() {
-    return 50 * quantity;
-  }
-
-  @Override
-  public String info() {
-    return "There is not much honey in this small honeypot, but there is a golden bee there and it doesn't want to leave it.";
   }
 }

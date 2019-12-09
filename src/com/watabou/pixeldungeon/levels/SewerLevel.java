@@ -33,143 +33,21 @@ import com.watabou.utils.Random;
 
 public class SewerLevel extends RegularLevel {
 
-  {
-    color1 = 0x48763c;
-    color2 = 0x59994a;
-  }
-
-  @Override
-  public String tilesTex() {
-    return Assets.TILES_SEWERS;
-  }
-
-  @Override
-  public String waterTex() {
-    return Assets.WATER_SEWERS;
-  }
-
-  protected boolean[] water() {
-    return Patch.generate(feeling == Feeling.WATER ? 0.60f : 0.45f, 5);
-  }
-
-  protected boolean[] grass() {
-    return Patch.generate(feeling == Feeling.GRASS ? 0.60f : 0.40f, 4);
-  }
-
-  @Override
-  protected void decorate() {
-
-    for (int i = 0; i < WIDTH; i++) {
-      if (map[i] == Terrain.WALL &&
-          map[i + WIDTH] == Terrain.WATER &&
-          Random.Int(4) == 0) {
-
-        map[i] = Terrain.WALL_DECO;
-      }
-    }
-
-    for (int i = WIDTH; i < LENGTH - WIDTH; i++) {
-      if (map[i] == Terrain.WALL &&
-          map[i - WIDTH] == Terrain.WALL &&
-          map[i + WIDTH] == Terrain.WATER &&
-          Random.Int(2) == 0) {
-
-        map[i] = Terrain.WALL_DECO;
-      }
-    }
-
-    for (int i = WIDTH + 1; i < LENGTH - WIDTH - 1; i++) {
-      if (map[i] == Terrain.EMPTY) {
-
-        int count =
-            (map[i + 1] == Terrain.WALL ? 1 : 0) +
-                (map[i - 1] == Terrain.WALL ? 1 : 0) +
-                (map[i + WIDTH] == Terrain.WALL ? 1 : 0) +
-                (map[i - WIDTH] == Terrain.WALL ? 1 : 0);
-
-        if (Random.Int(16) < count * count) {
-          map[i] = Terrain.EMPTY_DECO;
-        }
-      }
-    }
-
-    while (true) {
-      int pos = roomEntrance.random();
-      if (pos != entrance) {
-        map[pos] = Terrain.SIGN;
-        break;
-      }
-    }
-  }
-
-  @Override
-  protected void createMobs() {
-    super.createMobs();
-
-    Ghost.Quest.spawn(this);
-  }
-
-  @Override
-  protected void createItems() {
-    if (Dungeon.dewVial && Random.Int(4 - Dungeon.depth) == 0) {
-      addItemToSpawn(new DewVial());
-      Dungeon.dewVial = false;
-    }
-
-    super.createItems();
-  }
-
-  @Override
-  public void addVisuals(Scene scene) {
-    super.addVisuals(scene);
-    addVisuals(this, scene);
-  }
-
-  public static void addVisuals(Level level, Scene scene) {
-    for (int i = 0; i < LENGTH; i++) {
-      if (level.map[i] == Terrain.WALL_DECO) {
-        scene.add(new Sink(i));
-      }
-    }
-  }
-
-  @Override
-  public String tileName(int tile) {
-    switch (tile) {
-      case Terrain.WATER:
-        return "Murky water";
-      default:
-        return super.tileName(tile);
-    }
-  }
-
-  @Override
-  public String tileDesc(int tile) {
-    switch (tile) {
-      case Terrain.EMPTY_DECO:
-        return "Wet yellowish moss covers the floor.";
-      case Terrain.BOOKSHELF:
-        return "The bookshelf is packed with cheap useless books. Might it burn?";
-      default:
-        return super.tileDesc(tile);
-    }
-  }
-
   private static class Sink extends Emitter {
-
-    private int pos;
-    private float rippleDelay = 0;
 
     private static final Emitter.Factory factory = new Factory() {
 
       @Override
-      public void emit(Emitter emitter, int index, float x, float y) {
+      public void emit(final Emitter emitter, final int index, final float x, final float y) {
         WaterParticle p = (WaterParticle) emitter.recycle(WaterParticle.class);
         p.reset(x, y);
       }
     };
+    private int pos;
 
-    public Sink(int pos) {
+    private float rippleDelay = 0;
+
+    public Sink(final int pos) {
       super();
 
       this.pos = pos;
@@ -206,7 +84,7 @@ public class SewerLevel extends RegularLevel {
       size(2);
     }
 
-    public void reset(float x, float y) {
+    public void reset(final float x, final float y) {
       revive();
 
       this.x = x;
@@ -216,5 +94,129 @@ public class SewerLevel extends RegularLevel {
 
       left = lifespan = 0.5f;
     }
+  }
+
+  public static void addVisuals(final Level level, final Scene scene) {
+    for (int i = 0; i < LENGTH; i++) {
+      if (level.map[i] == Terrain.WALL_DECO) {
+        scene.add(new Sink(i));
+      }
+    }
+  }
+
+  {
+    color1 = 0x48763c;
+    color2 = 0x59994a;
+  }
+
+  @Override
+  public void addVisuals(final Scene scene) {
+    super.addVisuals(scene);
+    SewerLevel.addVisuals(this, scene);
+  }
+
+  @Override
+  protected void createItems() {
+    if (Dungeon.dewVial && (Random.Int(4 - Dungeon.depth) == 0)) {
+      addItemToSpawn(new DewVial());
+      Dungeon.dewVial = false;
+    }
+
+    super.createItems();
+  }
+
+  @Override
+  protected void createMobs() {
+    super.createMobs();
+
+    Ghost.Quest.spawn(this);
+  }
+
+  @Override
+  protected void decorate() {
+
+    for (int i = 0; i < WIDTH; i++) {
+      if ((map[i] == Terrain.WALL) &&
+          (map[i + WIDTH] == Terrain.WATER) &&
+          (Random.Int(4) == 0)) {
+
+        map[i] = Terrain.WALL_DECO;
+      }
+    }
+
+    for (int i = WIDTH; i < (LENGTH - WIDTH); i++) {
+      if ((map[i] == Terrain.WALL) &&
+          (map[i - WIDTH] == Terrain.WALL) &&
+          (map[i + WIDTH] == Terrain.WATER) &&
+          (Random.Int(2) == 0)) {
+
+        map[i] = Terrain.WALL_DECO;
+      }
+    }
+
+    for (int i = WIDTH + 1; i < (LENGTH - WIDTH - 1); i++) {
+      if (map[i] == Terrain.EMPTY) {
+
+        int count =
+            (map[i + 1] == Terrain.WALL ? 1 : 0) +
+                (map[i - 1] == Terrain.WALL ? 1 : 0) +
+                (map[i + WIDTH] == Terrain.WALL ? 1 : 0) +
+                (map[i - WIDTH] == Terrain.WALL ? 1 : 0);
+
+        if (Random.Int(16) < (count * count)) {
+          map[i] = Terrain.EMPTY_DECO;
+        }
+      }
+    }
+
+    while (true) {
+      int pos = roomEntrance.random();
+      if (pos != entrance) {
+        map[pos] = Terrain.SIGN;
+        break;
+      }
+    }
+  }
+
+  @Override
+  protected boolean[] grass() {
+    return Patch.generate(feeling == Feeling.GRASS ? 0.60f : 0.40f, 4);
+  }
+
+  @Override
+  public String tileDesc(final int tile) {
+    switch (tile) {
+      case Terrain.EMPTY_DECO:
+        return "Wet yellowish moss covers the floor.";
+      case Terrain.BOOKSHELF:
+        return "The bookshelf is packed with cheap useless books. Might it burn?";
+      default:
+        return super.tileDesc(tile);
+    }
+  }
+
+  @Override
+  public String tileName(final int tile) {
+    switch (tile) {
+      case Terrain.WATER:
+        return "Murky water";
+      default:
+        return super.tileName(tile);
+    }
+  }
+
+  @Override
+  public String tilesTex() {
+    return Assets.TILES_SEWERS;
+  }
+
+  @Override
+  protected boolean[] water() {
+    return Patch.generate(feeling == Feeling.WATER ? 0.60f : 0.45f, 5);
+  }
+
+  @Override
+  public String waterTex() {
+    return Assets.WATER_SEWERS;
   }
 }

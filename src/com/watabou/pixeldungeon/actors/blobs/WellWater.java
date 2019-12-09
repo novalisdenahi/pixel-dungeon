@@ -31,40 +31,32 @@ import com.watabou.utils.Random;
 
 public class WellWater extends Blob {
 
+  public static void affectCell(final int cell) {
+
+    Class<?>[] waters = { WaterOfHealth.class, WaterOfAwareness.class, WaterOfTransmutation.class };
+
+    for (Class<?> waterClass : waters) {
+      WellWater water = (WellWater) Dungeon.level.blobs.get(waterClass);
+      if ((water != null) &&
+          (water.volume > 0) &&
+          (water.pos == cell) &&
+          water.affect()) {
+
+        Level.set(cell, Terrain.EMPTY_WELL);
+        GameScene.updateMap(cell);
+
+        return;
+      }
+    }
+  }
+
   protected int pos;
-
-  @Override
-  public void restoreFromBundle(Bundle bundle) {
-    super.restoreFromBundle(bundle);
-
-    for (int i = 0; i < LENGTH; i++) {
-      if (cur[i] > 0) {
-        pos = i;
-        break;
-      }
-    }
-  }
-
-  @Override
-  protected void evolve() {
-    volume = off[pos] = cur[pos];
-
-    if (Dungeon.visible[pos]) {
-      if (this instanceof WaterOfAwareness) {
-        Journal.add(Feature.WELL_OF_AWARENESS);
-      } else if (this instanceof WaterOfHealth) {
-        Journal.add(Feature.WELL_OF_HEALTH);
-      } else if (this instanceof WaterOfTransmutation) {
-        Journal.add(Feature.WELL_OF_TRANSMUTATION);
-      }
-    }
-  }
 
   protected boolean affect() {
 
     Heap heap;
 
-    if (pos == Dungeon.hero.pos && affectHero(Dungeon.hero)) {
+    if ((pos == Dungeon.hero.pos) && affectHero(Dungeon.hero)) {
 
       volume = off[pos] = cur[pos] = 0;
       return true;
@@ -111,37 +103,45 @@ public class WellWater extends Blob {
     }
   }
 
-  protected boolean affectHero(Hero hero) {
+  protected boolean affectHero(final Hero hero) {
     return false;
   }
 
-  protected Item affectItem(Item item) {
+  protected Item affectItem(final Item item) {
     return null;
   }
 
   @Override
-  public void seed(int cell, int amount) {
+  protected void evolve() {
+    volume = off[pos] = cur[pos];
+
+    if (Dungeon.visible[pos]) {
+      if (this instanceof WaterOfAwareness) {
+        Journal.add(Feature.WELL_OF_AWARENESS);
+      } else if (this instanceof WaterOfHealth) {
+        Journal.add(Feature.WELL_OF_HEALTH);
+      } else if (this instanceof WaterOfTransmutation) {
+        Journal.add(Feature.WELL_OF_TRANSMUTATION);
+      }
+    }
+  }
+
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+
+    for (int i = 0; i < LENGTH; i++) {
+      if (cur[i] > 0) {
+        pos = i;
+        break;
+      }
+    }
+  }
+
+  @Override
+  public void seed(final int cell, final int amount) {
     cur[pos] = 0;
     pos = cell;
     volume = cur[pos] = amount;
-  }
-
-  public static void affectCell(int cell) {
-
-    Class<?>[] waters = { WaterOfHealth.class, WaterOfAwareness.class, WaterOfTransmutation.class };
-
-    for (Class<?> waterClass : waters) {
-      WellWater water = (WellWater) Dungeon.level.blobs.get(waterClass);
-      if (water != null &&
-          water.volume > 0 &&
-          water.pos == cell &&
-          water.affect()) {
-
-        Level.set(cell, Terrain.EMPTY_WELL);
-        GameScene.updateMap(cell);
-
-        return;
-      }
-    }
   }
 }

@@ -39,13 +39,13 @@ public class WaterOfHealth extends WellWater {
       "As you take a sip, you feel your wounds heal completely.";
 
   @Override
-  protected boolean affectHero(Hero hero) {
+  protected boolean affectHero(final Hero hero) {
 
     Sample.INSTANCE.play(Assets.SND_DRINK);
 
     PotionOfHealing.heal(hero);
     hero.belongings.uncurseEquipped();
-    ((Hunger) hero.buff(Hunger.class)).satisfy(Hunger.STARVING);
+    hero.buff(Hunger.class).satisfy(Hunger.STARVING);
 
     CellEmitter.get(pos).start(ShaftParticle.FACTORY, 0.2f, 3);
 
@@ -59,8 +59,8 @@ public class WaterOfHealth extends WellWater {
   }
 
   @Override
-  protected Item affectItem(Item item) {
-    if (item instanceof DewVial && !((DewVial) item).isFull()) {
+  protected Item affectItem(final Item item) {
+    if ((item instanceof DewVial) && !((DewVial) item).isFull()) {
       ((DewVial) item).fill();
       Journal.remove(Feature.WELL_OF_HEALTH);
       return item;
@@ -70,14 +70,14 @@ public class WaterOfHealth extends WellWater {
   }
 
   @Override
-  public void use(BlobEmitter emitter) {
-    super.use(emitter);
-    emitter.start(Speck.factory(Speck.HEALING), 0.5f, 0);
-  }
-
-  @Override
   public String tileDesc() {
     return "Power of health radiates from the water of this well. " +
         "Take a sip from it to heal your wounds and satisfy hunger.";
+  }
+
+  @Override
+  public void use(final BlobEmitter emitter) {
+    super.use(emitter);
+    emitter.start(Speck.factory(Speck.HEALING), 0.5f, 0);
   }
 }

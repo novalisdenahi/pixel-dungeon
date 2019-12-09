@@ -33,23 +33,7 @@ public class ScrollOfTeleportation extends Scroll {
   public static final String TXT_NO_TELEPORT =
       "Strong magic aura of this place prevents you from teleporting!";
 
-  {
-    name = "Scroll of Teleportation";
-  }
-
-  @Override
-  protected void doRead() {
-
-    Sample.INSTANCE.play(Assets.SND_READ);
-    Invisibility.dispel();
-
-    teleportHero(curUser);
-    setKnown();
-
-    readAnimation();
-  }
-
-  public static void teleportHero(Hero hero) {
+  public static void teleportHero(final Hero hero) {
 
     int count = 10;
     int pos;
@@ -75,12 +59,28 @@ public class ScrollOfTeleportation extends Scroll {
     }
   }
 
+  {
+    name = "Scroll of Teleportation";
+  }
+
   @Override
   public String desc() {
     return "The spell on this parchment instantly transports the reader " +
         "to a random location on the dungeon level. It can be used " +
         "to escape a dangerous situation, but the unlucky reader might " +
         "find himself in an even more dangerous place.";
+  }
+
+  @Override
+  protected void doRead() {
+
+    Sample.INSTANCE.play(Assets.SND_READ);
+    Invisibility.dispel();
+
+    ScrollOfTeleportation.teleportHero(curUser);
+    setKnown();
+
+    readAnimation();
   }
 
   @Override

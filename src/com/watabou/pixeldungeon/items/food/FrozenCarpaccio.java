@@ -33,6 +33,12 @@ import com.watabou.utils.Random;
 
 public class FrozenCarpaccio extends Food {
 
+  public static Food cook(final MysteryMeat ingredient) {
+    FrozenCarpaccio result = new FrozenCarpaccio();
+    result.quantity = ingredient.quantity();
+    return result;
+  }
+
   {
     name = "frozen carpaccio";
     image = ItemSpriteSheet.CARPACCIO;
@@ -40,7 +46,7 @@ public class FrozenCarpaccio extends Food {
   }
 
   @Override
-  public void execute(Hero hero, String action) {
+  public void execute(final Hero hero, final String action) {
 
     super.execute(hero, action);
 
@@ -65,7 +71,7 @@ public class FrozenCarpaccio extends Food {
         case 3:
           GLog.i("You feel better!");
           if (hero.HP < hero.HT) {
-            hero.HP = Math.min(hero.HP + hero.HT / 4, hero.HT);
+            hero.HP = Math.min(hero.HP + (hero.HT / 4), hero.HT);
             hero.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
           }
           break;
@@ -77,15 +83,10 @@ public class FrozenCarpaccio extends Food {
   public String info() {
     return "It's a piece of frozen raw meat. The only way to eat it is " +
         "by cutting thin slices of it. And this way it's suprisingly good.";
-  }
-
-  public int price() {
-    return 10 * quantity;
   };
 
-  public static Food cook(MysteryMeat ingredient) {
-    FrozenCarpaccio result = new FrozenCarpaccio();
-    result.quantity = ingredient.quantity();
-    return result;
+  @Override
+  public int price() {
+    return 10 * quantity;
   }
 }

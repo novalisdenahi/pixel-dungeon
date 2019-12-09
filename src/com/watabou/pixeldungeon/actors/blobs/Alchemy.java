@@ -27,19 +27,18 @@ import com.watabou.utils.Bundle;
 
 public class Alchemy extends Blob {
 
-  protected int pos;
+  public static void transmute(final int cell) {
+    Heap heap = Dungeon.level.heaps.get(cell);
+    if (heap != null) {
 
-  @Override
-  public void restoreFromBundle(Bundle bundle) {
-    super.restoreFromBundle(bundle);
-
-    for (int i = 0; i < LENGTH; i++) {
-      if (cur[i] > 0) {
-        pos = i;
-        break;
+      Item result = heap.transmute();
+      if (result != null) {
+        Dungeon.level.drop(result, cell).sprite.drop(cell);
       }
     }
   }
+
+  protected int pos;
 
   @Override
   protected void evolve() {
@@ -51,25 +50,26 @@ public class Alchemy extends Blob {
   }
 
   @Override
-  public void seed(int cell, int amount) {
-    cur[pos] = 0;
-    pos = cell;
-    volume = cur[pos] = amount;
-  }
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
 
-  public static void transmute(int cell) {
-    Heap heap = Dungeon.level.heaps.get(cell);
-    if (heap != null) {
-
-      Item result = heap.transmute();
-      if (result != null) {
-        Dungeon.level.drop(result, cell).sprite.drop(cell);
+    for (int i = 0; i < LENGTH; i++) {
+      if (cur[i] > 0) {
+        pos = i;
+        break;
       }
     }
   }
 
   @Override
-  public void use(BlobEmitter emitter) {
+  public void seed(final int cell, final int amount) {
+    cur[pos] = 0;
+    pos = cell;
+    volume = cur[pos] = amount;
+  }
+
+  @Override
+  public void use(final BlobEmitter emitter) {
     super.use(emitter);
     emitter.start(Speck.factory(Speck.BUBBLE), 0.4f, 0);
   }

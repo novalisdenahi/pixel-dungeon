@@ -43,7 +43,7 @@ public class WndResurrect extends Window {
   public static WndResurrect instance;
   public static Object causeOfDeath;
 
-  public WndResurrect(final Ankh ankh, Object causeOfDeath) {
+  public WndResurrect(final Ankh ankh, final Object causeOfDeath) {
 
     super();
 

@@ -42,55 +42,35 @@ import com.watabou.utils.Random;
 
 public class SacrificialFire extends Blob {
 
+  public static class Marked extends FlavourBuff {
+
+    public static final float DURATION = 5f;
+
+    @Override
+    public void detach() {
+      if (!target.isAlive()) {
+        SacrificialFire.sacrifice(target);
+      }
+      super.detach();
+    }
+
+    @Override
+    public int icon() {
+      return BuffIndicator.SACRIFICE;
+    }
+
+    @Override
+    public String toString() {
+      return "Marked for sacrifice";
+    }
+  }
+
   private static final String TXT_WORTHY = "\"Your sacrifice is worthy...\" ";
   private static final String TXT_UNWORTHY = "\"Your sacrifice is unworthy...\" ";
+
   private static final String TXT_REWARD = "\"Your sacrifice is worthy and so you are!\" ";
 
-  protected int pos;
-
-  @Override
-  public void restoreFromBundle(Bundle bundle) {
-    super.restoreFromBundle(bundle);
-
-    for (int i = 0; i < LENGTH; i++) {
-      if (cur[i] > 0) {
-        pos = i;
-        break;
-      }
-    }
-  }
-
-  @Override
-  protected void evolve() {
-    volume = off[pos] = cur[pos];
-    Char ch = Actor.findChar(pos);
-    if (ch != null) {
-      if (Dungeon.visible[pos] && ch.buff(Marked.class) == null) {
-        ch.sprite.emitter().burst(SacrificialParticle.FACTORY, 20);
-        Sample.INSTANCE.play(Assets.SND_BURNING);
-      }
-      Buff.prolong(ch, Marked.class, Marked.DURATION);
-    }
-    if (Dungeon.visible[pos]) {
-      Journal.add(Feature.SACRIFICIAL_FIRE);
-    }
-  }
-
-  @Override
-  public void seed(int cell, int amount) {
-    cur[pos] = 0;
-    pos = cell;
-    volume = cur[pos] = amount;
-  }
-
-  @Override
-  public void use(BlobEmitter emitter) {
-    super.use(emitter);
-
-    emitter.pour(SacrificialParticle.FACTORY, 0.04f);
-  }
-
-  public static void sacrifice(Char ch) {
+  public static void sacrifice(final Char ch) {
 
     Wound.hit(ch);
 
@@ -127,32 +107,53 @@ public class SacrificialFire extends Blob {
     }
   }
 
+  protected int pos;
+
+  @Override
+  protected void evolve() {
+    volume = off[pos] = cur[pos];
+    Char ch = Actor.findChar(pos);
+    if (ch != null) {
+      if (Dungeon.visible[pos] && (ch.buff(Marked.class) == null)) {
+        ch.sprite.emitter().burst(SacrificialParticle.FACTORY, 20);
+        Sample.INSTANCE.play(Assets.SND_BURNING);
+      }
+      Buff.prolong(ch, Marked.class, Marked.DURATION);
+    }
+    if (Dungeon.visible[pos]) {
+      Journal.add(Feature.SACRIFICIAL_FIRE);
+    }
+  }
+
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+
+    for (int i = 0; i < LENGTH; i++) {
+      if (cur[i] > 0) {
+        pos = i;
+        break;
+      }
+    }
+  }
+
+  @Override
+  public void seed(final int cell, final int amount) {
+    cur[pos] = 0;
+    pos = cell;
+    volume = cur[pos] = amount;
+  }
+
   @Override
   public String tileDesc() {
     return "Sacrificial fire burns here. Every creature touched by this fire is marked as an offering for the spirits of the dungeon.";
   }
 
-  public static class Marked extends FlavourBuff {
+  @Override
+  public void use(final BlobEmitter emitter) {
+    super.use(emitter);
 
-    public static final float DURATION = 5f;
-
-    @Override
-    public int icon() {
-      return BuffIndicator.SACRIFICE;
-    }
-
-    @Override
-    public String toString() {
-      return "Marked for sacrifice";
-    }
-
-    @Override
-    public void detach() {
-      if (!target.isAlive()) {
-        sacrifice(target);
-      }
-      super.detach();
-    }
+    emitter.pour(SacrificialParticle.FACTORY, 0.04f);
   }
 
 }

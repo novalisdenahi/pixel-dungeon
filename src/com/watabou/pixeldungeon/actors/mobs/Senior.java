@@ -32,12 +32,7 @@ public class Senior extends Monk {
   }
 
   @Override
-  public int damageRoll() {
-    return Random.NormalIntRange(12, 20);
-  }
-
-  @Override
-  public int attackProc(Char enemy, int damage) {
+  public int attackProc(final Char enemy, final int damage) {
     if (Random.Int(10) == 0) {
       Buff.prolong(enemy, Paralysis.class, 1.1f);
     }
@@ -45,7 +40,12 @@ public class Senior extends Monk {
   }
 
   @Override
-  public void die(Object cause) {
+  public int damageRoll() {
+    return Random.NormalIntRange(12, 20);
+  }
+
+  @Override
+  public void die(final Object cause) {
     super.die(cause);
     Badges.validateRare(this);
   }

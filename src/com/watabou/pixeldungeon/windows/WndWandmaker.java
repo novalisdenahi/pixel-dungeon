@@ -46,7 +46,7 @@ public class WndWandmaker extends WndQuest {
   }
 
   @Override
-  protected void onSelect(int index) {
+  protected void onSelect(final int index) {
 
     questItem.detach(Dungeon.hero.belongings.backpack);
 

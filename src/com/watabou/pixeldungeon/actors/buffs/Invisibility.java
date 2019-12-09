@@ -25,8 +25,15 @@ public class Invisibility extends FlavourBuff {
 
   public static final float DURATION = 15f;
 
+  public static void dispel() {
+    Invisibility buff = Dungeon.hero.buff(Invisibility.class);
+    if ((buff != null) && (Dungeon.hero.visibleEnemies() > 0)) {
+      buff.detach();
+    }
+  }
+
   @Override
-  public boolean attachTo(Char target) {
+  public boolean attachTo(final Char target) {
     if (super.attachTo(target)) {
       target.invisible++;
       return true;
@@ -49,12 +56,5 @@ public class Invisibility extends FlavourBuff {
   @Override
   public String toString() {
     return "Invisible";
-  }
-
-  public static void dispel() {
-    Invisibility buff = Dungeon.hero.buff(Invisibility.class);
-    if (buff != null && Dungeon.hero.visibleEnemies() > 0) {
-      buff.detach();
-    }
   }
 }

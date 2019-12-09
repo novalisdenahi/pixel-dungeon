@@ -30,10 +30,10 @@ import com.watabou.utils.Random;
 
 public class LaboratoryPainter extends Painter {
 
-  public static void paint(Level level, Room room) {
+  public static void paint(final Level level, final Room room) {
 
-    fill(level, room, Terrain.WALL);
-    fill(level, room, 1, Terrain.EMPTY_SP);
+    Painter.fill(level, room, Terrain.WALL);
+    Painter.fill(level, room, 1, Terrain.EMPTY_SP);
 
     Room.Door entrance = room.entrance();
 
@@ -47,10 +47,10 @@ public class LaboratoryPainter extends Painter {
     } else if (entrance.y == room.bottom) {
       pot = new Point(Random.Int(2) == 0 ? room.left + 1 : room.right - 1, room.top + 1);
     }
-    set(level, pot, Terrain.ALCHEMY);
+    Painter.set(level, pot, Terrain.ALCHEMY);
 
     Alchemy alchemy = new Alchemy();
-    alchemy.seed(pot.x + Level.WIDTH * pot.y, 1);
+    alchemy.seed(pot.x + (Level.WIDTH * pot.y), 1);
     level.blobs.put(Alchemy.class, alchemy);
 
     int n = Random.IntRange(2, 3);
@@ -58,16 +58,16 @@ public class LaboratoryPainter extends Painter {
       int pos;
       do {
         pos = room.random();
-      } while (level.map[pos] != Terrain.EMPTY_SP ||
-          level.heaps.get(pos) != null);
-      level.drop(prize(level), pos);
+      } while ((level.map[pos] != Terrain.EMPTY_SP) ||
+          (level.heaps.get(pos) != null));
+      level.drop(LaboratoryPainter.prize(level), pos);
     }
 
     entrance.set(Room.Door.Type.LOCKED);
     level.addItemToSpawn(new IronKey());
   }
 
-  private static Item prize(Level level) {
+  private static Item prize(final Level level) {
 
     Item prize = level.itemToSpanAsPrize();
     if (prize instanceof Potion) {

@@ -26,7 +26,7 @@ import com.watabou.pixeldungeon.scenes.GameScene;
 
 public class Door {
 
-  public static void enter(int pos) {
+  public static void enter(final int pos) {
     Level.set(pos, Terrain.OPEN_DOOR);
     GameScene.updateMap(pos);
     Dungeon.observe();
@@ -36,7 +36,7 @@ public class Door {
     }
   }
 
-  public static void leave(int pos) {
+  public static void leave(final int pos) {
     if (Dungeon.level.heaps.get(pos) == null) {
       Level.set(pos, Terrain.DOOR);
       GameScene.updateMap(pos);

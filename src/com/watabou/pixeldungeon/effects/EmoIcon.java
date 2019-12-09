@@ -26,45 +26,25 @@ import com.watabou.utils.Random;
 
 public class EmoIcon extends Image {
 
-  protected float maxSize = 2;
-  protected float timeScale = 1;
+  public static class Alert extends EmoIcon {
 
-  protected boolean growing = true;
+    public Alert(final CharSprite owner) {
 
-  protected CharSprite owner;
+      super(owner);
 
-  public EmoIcon(CharSprite owner) {
-    super();
+      copy(Icons.get(Icons.ALERT));
 
-    this.owner = owner;
-    GameScene.add(this);
-  }
+      maxSize = 1.3f;
+      timeScale = 2;
 
-  @Override
-  public void update() {
-    super.update();
-
-    if (visible) {
-      if (growing) {
-        scale.set(scale.x + Game.elapsed * timeScale);
-        if (scale.x > maxSize) {
-          growing = false;
-        }
-      } else {
-        scale.set(scale.x - Game.elapsed * timeScale);
-        if (scale.x < 1) {
-          growing = true;
-        }
-      }
-
-      x = owner.x + owner.width - width / 2;
-      y = owner.y - height;
+      origin.set(2.5f, height - 2.5f);
+      scale.set(Random.Float(1, maxSize));
     }
   }
 
   public static class Sleep extends EmoIcon {
 
-    public Sleep(CharSprite owner) {
+    public Sleep(final CharSprite owner) {
 
       super(owner);
 
@@ -78,19 +58,40 @@ public class EmoIcon extends Image {
     }
   }
 
-  public static class Alert extends EmoIcon {
+  protected float maxSize = 2;
 
-    public Alert(CharSprite owner) {
+  protected float timeScale = 1;
 
-      super(owner);
+  protected boolean growing = true;
 
-      copy(Icons.get(Icons.ALERT));
+  protected CharSprite owner;
 
-      maxSize = 1.3f;
-      timeScale = 2;
+  public EmoIcon(final CharSprite owner) {
+    super();
 
-      origin.set(2.5f, height - 2.5f);
-      scale.set(Random.Float(1, maxSize));
+    this.owner = owner;
+    GameScene.add(this);
+  }
+
+  @Override
+  public void update() {
+    super.update();
+
+    if (visible) {
+      if (growing) {
+        scale.set(scale.x + (Game.elapsed * timeScale));
+        if (scale.x > maxSize) {
+          growing = false;
+        }
+      } else {
+        scale.set(scale.x - (Game.elapsed * timeScale));
+        if (scale.x < 1) {
+          growing = true;
+        }
+      }
+
+      x = (owner.x + owner.width) - (width / 2);
+      y = owner.y - height;
     }
   }
 

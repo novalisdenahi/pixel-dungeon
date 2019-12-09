@@ -17,9 +17,6 @@
  */
 package com.watabou.pixeldungeon.scenes;
 
-import android.content.Intent;
-import android.net.Uri;
-
 import com.watabou.input.Touchscreen.Touch;
 import com.watabou.noosa.BitmapTextMultiline;
 import com.watabou.noosa.Camera;
@@ -32,6 +29,9 @@ import com.watabou.pixeldungeon.ui.Archs;
 import com.watabou.pixeldungeon.ui.ExitButton;
 import com.watabou.pixeldungeon.ui.Icons;
 import com.watabou.pixeldungeon.ui.Window;
+
+import android.content.Intent;
+import android.net.Uri;
 
 public class AboutScene extends PixelScene {
 
@@ -48,15 +48,15 @@ public class AboutScene extends PixelScene {
   public void create() {
     super.create();
 
-    BitmapTextMultiline text = createMultiline(TXT, 8);
+    BitmapTextMultiline text = PixelScene.createMultiline(TXT, 8);
     text.maxWidth = Math.min(Camera.main.width, 120);
     text.measure();
     add(text);
 
-    text.x = align((Camera.main.width - text.width()) / 2);
-    text.y = align((Camera.main.height - text.height()) / 2);
+    text.x = PixelScene.align((Camera.main.width - text.width()) / 2);
+    text.y = PixelScene.align((Camera.main.height - text.height()) / 2);
 
-    BitmapTextMultiline link = createMultiline(LNK, 8);
+    BitmapTextMultiline link = PixelScene.createMultiline(LNK, 8);
     link.maxWidth = Math.min(Camera.main.width, 120);
     link.measure();
     link.hardlight(Window.TITLE_COLOR);
@@ -67,7 +67,7 @@ public class AboutScene extends PixelScene {
 
     TouchArea hotArea = new TouchArea(link) {
       @Override
-      protected void onClick(Touch touch) {
+      protected void onClick(final Touch touch) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + LNK));
         Game.instance.startActivity(intent);
       }
@@ -75,7 +75,7 @@ public class AboutScene extends PixelScene {
     add(hotArea);
 
     Image wata = Icons.WATA.get();
-    wata.x = align((Camera.main.width - wata.width) / 2);
+    wata.x = PixelScene.align((Camera.main.width - wata.width) / 2);
     wata.y = text.y - wata.height - 8;
     add(wata);
 

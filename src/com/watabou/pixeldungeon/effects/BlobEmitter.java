@@ -30,7 +30,7 @@ public class BlobEmitter extends Emitter {
 
   private Blob blob;
 
-  public BlobEmitter(Blob blob) {
+  public BlobEmitter(final Blob blob) {
 
     super();
 
@@ -39,7 +39,7 @@ public class BlobEmitter extends Emitter {
   }
 
   @Override
-  protected void emit(int index) {
+  protected void emit(final int index) {
 
     if (blob.volume <= 0) {
       return;
@@ -49,7 +49,7 @@ public class BlobEmitter extends Emitter {
     float size = DungeonTilemap.SIZE;
 
     for (int i = 0; i < LENGTH; i++) {
-      if (map[i] > 0 && Dungeon.visible[i]) {
+      if ((map[i] > 0) && Dungeon.visible[i]) {
         float x = ((i % WIDTH) + Random.Float()) * size;
         float y = ((i / WIDTH) + Random.Float()) * size;
         factory.emit(this, index, x, y);

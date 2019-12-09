@@ -60,7 +60,7 @@ public class Foliage extends Blob {
     }
 
     Hero hero = Dungeon.hero;
-    if (hero.isAlive() && hero.visibleEnemies() == 0 && cur[hero.pos] > 0) {
+    if (hero.isAlive() && (hero.visibleEnemies() == 0) && (cur[hero.pos] > 0)) {
       Buff.affect(hero, Shadows.class).prolong();
     }
 
@@ -74,13 +74,13 @@ public class Foliage extends Blob {
   }
 
   @Override
-  public void use(BlobEmitter emitter) {
-    super.use(emitter);
-    emitter.start(ShaftParticle.FACTORY, 0.9f, 0);
+  public String tileDesc() {
+    return "Shafts of light pierce the gloom of the underground garden.";
   }
 
   @Override
-  public String tileDesc() {
-    return "Shafts of light pierce the gloom of the underground garden.";
+  public void use(final BlobEmitter emitter) {
+    super.use(emitter);
+    emitter.start(ShaftParticle.FACTORY, 0.9f, 0);
   }
 }

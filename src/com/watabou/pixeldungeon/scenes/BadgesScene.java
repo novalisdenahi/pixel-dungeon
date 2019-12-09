@@ -39,6 +39,48 @@ import com.watabou.utils.Random;
 
 public class BadgesScene extends PixelScene {
 
+  private static class BadgeButton extends Button {
+
+    private Badges.Badge badge;
+
+    private Image icon;
+
+    public BadgeButton(final Badges.Badge badge) {
+      super();
+
+      this.badge = badge;
+      active = (badge != null);
+
+      icon = active ? BadgeBanner.image(badge.image) : new Image(Assets.LOCKED);
+      add(icon);
+
+      setSize(icon.width(), icon.height());
+    }
+
+    @Override
+    protected void layout() {
+      super.layout();
+
+      icon.x = PixelScene.align(x + ((width - icon.width()) / 2));
+      icon.y = PixelScene.align(y + ((height - icon.height()) / 2));
+    }
+
+    @Override
+    protected void onClick() {
+      Sample.INSTANCE.play(Assets.SND_CLICK, 0.7f, 0.7f, 1.2f);
+      Game.scene().add(new WndBadge(badge));
+    }
+
+    @Override
+    public void update() {
+      super.update();
+
+      if (Random.Float() < (Game.elapsed * 0.1)) {
+        BadgeBanner.highlight(icon, badge.image);
+      }
+    }
+  }
+
   private static final String TXT_TITLE = "Your Badges";
 
   @Override
@@ -61,19 +103,19 @@ public class BadgesScene extends PixelScene {
     int pw = (int) Math.min(w, (PixelDungeon.landscape() ? MIN_WIDTH_L : MIN_WIDTH_P) * 3) - 16;
     int ph = (int) Math.min(h, (PixelDungeon.landscape() ? MIN_HEIGHT_L : MIN_HEIGHT_P) * 3) - 32;
 
-    float size = (float) Math.sqrt(pw * ph / 27f);
+    float size = (float) Math.sqrt((pw * ph) / 27f);
     int nCols = (int) Math.ceil(pw / size);
     int nRows = (int) Math.ceil(ph / size);
     size = Math.min(pw / nCols, ph / nRows);
 
-    float left = (w - size * nCols) / 2;
-    float top = (h - size * nRows) / 2;
+    float left = (w - (size * nCols)) / 2;
+    float top = (h - (size * nRows)) / 2;
 
     BitmapText title = PixelScene.createText(TXT_TITLE, 9);
     title.hardlight(Window.TITLE_COLOR);
     title.measure();
-    title.x = align((w - title.width()) / 2);
-    title.y = align((top - title.baseLine()) / 2);
+    title.x = PixelScene.align((w - title.width()) / 2);
+    title.y = PixelScene.align((top - title.baseLine()) / 2);
     add(title);
 
     Badges.loadGlobal();
@@ -81,12 +123,12 @@ public class BadgesScene extends PixelScene {
     List<Badges.Badge> badges = Badges.filtered(true);
     for (int i = 0; i < nRows; i++) {
       for (int j = 0; j < nCols; j++) {
-        int index = i * nCols + j;
+        int index = (i * nCols) + j;
         Badges.Badge b = index < badges.size() ? badges.get(index) : null;
         BadgeButton button = new BadgeButton(b);
         button.setPos(
-            left + j * size + (size - button.width()) / 2,
-            top + i * size + (size - button.height()) / 2);
+            left + (j * size) + ((size - button.width()) / 2),
+            top + (i * size) + ((size - button.height()) / 2));
         add(button);
       }
     }
@@ -119,47 +161,5 @@ public class BadgesScene extends PixelScene {
   @Override
   protected void onBackPressed() {
     PixelDungeon.switchNoFade(TitleScene.class);
-  }
-
-  private static class BadgeButton extends Button {
-
-    private Badges.Badge badge;
-
-    private Image icon;
-
-    public BadgeButton(Badges.Badge badge) {
-      super();
-
-      this.badge = badge;
-      active = (badge != null);
-
-      icon = active ? BadgeBanner.image(badge.image) : new Image(Assets.LOCKED);
-      add(icon);
-
-      setSize(icon.width(), icon.height());
-    }
-
-    @Override
-    protected void layout() {
-      super.layout();
-
-      icon.x = align(x + (width - icon.width()) / 2);
-      icon.y = align(y + (height - icon.height()) / 2);
-    }
-
-    @Override
-    public void update() {
-      super.update();
-
-      if (Random.Float() < Game.elapsed * 0.1) {
-        BadgeBanner.highlight(icon, badge.image);
-      }
-    }
-
-    @Override
-    protected void onClick() {
-      Sample.INSTANCE.play(Assets.SND_CLICK, 0.7f, 0.7f, 1.2f);
-      Game.scene().add(new WndBadge(badge));
-    }
   }
 }

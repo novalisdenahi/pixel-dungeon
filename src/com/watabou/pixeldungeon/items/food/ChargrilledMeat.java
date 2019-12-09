@@ -22,6 +22,12 @@ import com.watabou.pixeldungeon.sprites.ItemSpriteSheet;
 
 public class ChargrilledMeat extends Food {
 
+  public static Food cook(final MysteryMeat ingredient) {
+    ChargrilledMeat result = new ChargrilledMeat();
+    result.quantity = ingredient.quantity();
+    return result;
+  }
+
   {
     name = "chargrilled meat";
     image = ItemSpriteSheet.STEAK;
@@ -36,11 +42,5 @@ public class ChargrilledMeat extends Food {
   @Override
   public int price() {
     return 5 * quantity;
-  }
-
-  public static Food cook(MysteryMeat ingredient) {
-    ChargrilledMeat result = new ChargrilledMeat();
-    result.quantity = ingredient.quantity();
-    return result;
   }
 }

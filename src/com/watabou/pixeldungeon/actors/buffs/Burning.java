@@ -47,21 +47,14 @@ public class Burning extends Buff implements Hero.Doom {
 
   private static final float DURATION = 8f;
 
-  private float left;
-
   private static final String LEFT = "left";
 
-  @Override
-  public void storeInBundle(Bundle bundle) {
-    super.storeInBundle(bundle);
-    bundle.put(LEFT, left);
+  public static float duration(final Char ch) {
+    Resistance r = ch.buff(Resistance.class);
+    return r != null ? r.durationFactor() * DURATION : DURATION;
   }
 
-  @Override
-  public void restoreFromBundle(Bundle bundle) {
-    super.restoreFromBundle(bundle);
-    left = bundle.getFloat(LEFT);
-  }
+  private float left;
 
   @Override
   public boolean act() {
@@ -97,7 +90,7 @@ public class Burning extends Buff implements Hero.Doom {
 
         }
 
-      } else if (target instanceof Thief && ((Thief) target).item instanceof Scroll) {
+      } else if ((target instanceof Thief) && (((Thief) target).item instanceof Scroll)) {
 
         ((Thief) target).item = null;
         target.sprite.emitter().burst(ElmoParticle.FACTORY, 6);
@@ -114,8 +107,8 @@ public class Burning extends Buff implements Hero.Doom {
     spend(TICK);
     left -= TICK;
 
-    if (left <= 0 ||
-        Random.Float() > (2 + (float) target.HP / target.HT) / 3 ||
+    if ((left <= 0) ||
+        (Random.Float() > ((2 + ((float) target.HP / target.HT)) / 3)) ||
         (Level.water[target.pos] && !target.flying)) {
 
       detach();
@@ -124,23 +117,9 @@ public class Burning extends Buff implements Hero.Doom {
     return true;
   }
 
-  public void reignite(Char ch) {
-    left = duration(ch);
-  }
-
   @Override
   public int icon() {
     return BuffIndicator.FIRE;
-  }
-
-  @Override
-  public String toString() {
-    return "Burning";
-  }
-
-  public static float duration(Char ch) {
-    Resistance r = ch.buff(Resistance.class);
-    return r != null ? r.durationFactor() * DURATION : DURATION;
   }
 
   @Override
@@ -150,5 +129,26 @@ public class Burning extends Buff implements Hero.Doom {
 
     Dungeon.fail(Utils.format(ResultDescriptions.BURNING, Dungeon.depth));
     GLog.n(TXT_BURNED_TO_DEATH);
+  }
+
+  public void reignite(final Char ch) {
+    left = Burning.duration(ch);
+  }
+
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    left = bundle.getFloat(LEFT);
+  }
+
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(LEFT, left);
+  }
+
+  @Override
+  public String toString() {
+    return "Burning";
   }
 }

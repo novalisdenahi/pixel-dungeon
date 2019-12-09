@@ -37,7 +37,13 @@ public class ScrollOfEnchantment extends InventoryScroll {
   }
 
   @Override
-  protected void onItemSelected(Item item) {
+  public String desc() {
+    return "This scroll is able to imbue a weapon or an armor " +
+        "with a random enchantment, granting it a special power.";
+  }
+
+  @Override
+  protected void onItemSelected(final Item item) {
 
     ScrollOfRemoveCurse.uncurse(Dungeon.hero, item);
 
@@ -56,11 +62,5 @@ public class ScrollOfEnchantment extends InventoryScroll {
     curUser.sprite.emitter().start(Speck.factory(Speck.LIGHT), 0.1f, 5);
     Enchanting.show(curUser, item);
     GLog.w(TXT_GLOWS, item.name());
-  }
-
-  @Override
-  public String desc() {
-    return "This scroll is able to imbue a weapon or an armor " +
-        "with a random enchantment, granting it a special power.";
   }
 }

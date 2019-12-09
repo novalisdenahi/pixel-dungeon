@@ -41,19 +41,19 @@ public class Barkskin extends Buff {
     return true;
   }
 
+  @Override
+  public int icon() {
+    return BuffIndicator.BARKSKIN;
+  }
+
   public int level() {
     return level;
   }
 
-  public void level(int value) {
+  public void level(final int value) {
     if (level < value) {
       level = value;
     }
-  }
-
-  @Override
-  public int icon() {
-    return BuffIndicator.BARKSKIN;
   }
 
   @Override

@@ -23,10 +23,21 @@ public class CheckBox extends RedButton {
 
   private boolean checked = false;
 
-  public CheckBox(String label) {
+  public CheckBox(final String label) {
     super(label);
 
     icon(Icons.get(Icons.UNCHECKED));
+  }
+
+  public boolean checked() {
+    return checked;
+  }
+
+  public void checked(final boolean value) {
+    if (checked != value) {
+      checked = value;
+      icon.copy(Icons.get(checked ? Icons.CHECKED : Icons.UNCHECKED));
+    }
   }
 
   @Override
@@ -40,19 +51,8 @@ public class CheckBox extends RedButton {
 
     margin = (height - icon.height) / 2;
 
-    icon.x = PixelScene.align(PixelScene.uiCamera, x + width - margin - icon.width);
+    icon.x = PixelScene.align(PixelScene.uiCamera, (x + width) - margin - icon.width);
     icon.y = PixelScene.align(PixelScene.uiCamera, y + margin);
-  }
-
-  public boolean checked() {
-    return checked;
-  }
-
-  public void checked(boolean value) {
-    if (checked != value) {
-      checked = value;
-      icon.copy(Icons.get(checked ? Icons.CHECKED : Icons.UNCHECKED));
-    }
   }
 
   @Override

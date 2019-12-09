@@ -48,20 +48,7 @@ public class Chasm {
 
   public static boolean jumpConfirmed = false;
 
-  public static void heroJump(final Hero hero) {
-    GameScene.show(
-        new WndOptions(TXT_CHASM, TXT_JUMP, TXT_YES, TXT_NO) {
-          @Override
-          protected void onSelect(int index) {
-            if (index == 0) {
-              jumpConfirmed = true;
-              hero.resume();
-            }
-          };
-        });
-  }
-
-  public static void heroFall(int pos) {
+  public static void heroFall(final int pos) {
 
     jumpConfirmed = false;
 
@@ -72,7 +59,7 @@ public class Chasm {
       InterlevelScene.mode = InterlevelScene.Mode.FALL;
       if (Dungeon.level instanceof RegularLevel) {
         Room room = ((RegularLevel) Dungeon.level).room(pos);
-        InterlevelScene.fallIntoPit = room != null && room.type == Room.Type.WEAK_FLOOR;
+        InterlevelScene.fallIntoPit = (room != null) && (room.type == Room.Type.WEAK_FLOOR);
       } else {
         InterlevelScene.fallIntoPit = false;
       }
@@ -80,6 +67,19 @@ public class Chasm {
     } else {
       Dungeon.hero.sprite.visible = false;
     }
+  }
+
+  public static void heroJump(final Hero hero) {
+    GameScene.show(
+        new WndOptions(TXT_CHASM, TXT_JUMP, TXT_YES, TXT_NO) {
+          @Override
+          protected void onSelect(final int index) {
+            if (index == 0) {
+              jumpConfirmed = true;
+              hero.resume();
+            }
+          };
+        });
   }
 
   public static void heroLand() {
@@ -101,7 +101,7 @@ public class Chasm {
     });
   }
 
-  public static void mobFall(Mob mob) {
+  public static void mobFall(final Mob mob) {
     mob.destroy();
     ((MobSprite) mob.sprite).fall();
   }

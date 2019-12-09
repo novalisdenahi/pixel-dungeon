@@ -29,16 +29,12 @@ public class Combo extends Buff {
   public int count = 0;
 
   @Override
-  public int icon() {
-    return BuffIndicator.COMBO;
+  public boolean act() {
+    detach();
+    return true;
   }
 
-  @Override
-  public String toString() {
-    return "Combo";
-  }
-
-  public int hit(Char enemy, int damage) {
+  public int hit(final Char enemy, final int damage) {
 
     count++;
 
@@ -47,8 +43,8 @@ public class Combo extends Buff {
       Badges.validateMasteryCombo(count);
 
       GLog.p(TXT_COMBO, count);
-      postpone(1.41f - count / 10f);
-      return (int) (damage * (count - 2) / 5f);
+      postpone(1.41f - (count / 10f));
+      return (int) ((damage * (count - 2)) / 5f);
 
     } else {
 
@@ -59,9 +55,13 @@ public class Combo extends Buff {
   }
 
   @Override
-  public boolean act() {
-    detach();
-    return true;
+  public int icon() {
+    return BuffIndicator.COMBO;
+  }
+
+  @Override
+  public String toString() {
+    return "Combo";
   }
 
 }

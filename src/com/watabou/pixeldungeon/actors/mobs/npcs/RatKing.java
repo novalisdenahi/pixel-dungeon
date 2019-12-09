@@ -20,7 +20,6 @@ package com.watabou.pixeldungeon.actors.mobs.npcs;
 import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.actors.Char;
 import com.watabou.pixeldungeon.actors.buffs.Buff;
-
 import com.watabou.pixeldungeon.sprites.RatKingSprite;
 
 public class RatKing extends NPC {
@@ -33,13 +32,7 @@ public class RatKing extends NPC {
   }
 
   @Override
-  public int defenseSkill(Char enemy) {
-    return 1000;
-  }
-
-  @Override
-  public float speed() {
-    return 2f;
+  public void add(final Buff buff) {
   }
 
   @Override
@@ -48,16 +41,18 @@ public class RatKing extends NPC {
   }
 
   @Override
-  public void damage(int dmg, Object src) {
+  public void damage(final int dmg, final Object src) {
   }
 
   @Override
-  public void add(Buff buff) {
+  public int defenseSkill(final Char enemy) {
+    return 1000;
   }
 
   @Override
-  public boolean reset() {
-    return true;
+  public String description() {
+    return "This rat is a little bigger than a regular marsupial rat " +
+        "and it's wearing a tiny crown on its head.";
   }
 
   @Override
@@ -73,8 +68,12 @@ public class RatKing extends NPC {
   }
 
   @Override
-  public String description() {
-    return "This rat is a little bigger than a regular marsupial rat " +
-        "and it's wearing a tiny crown on its head.";
+  public boolean reset() {
+    return true;
+  }
+
+  @Override
+  public float speed() {
+    return 2f;
   }
 }

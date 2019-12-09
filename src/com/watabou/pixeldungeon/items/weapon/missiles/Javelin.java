@@ -37,25 +37,9 @@ public class Javelin extends MissileWeapon {
     this(1);
   }
 
-  public Javelin(int number) {
+  public Javelin(final int number) {
     super();
     quantity = number;
-  }
-
-  @Override
-  public int min() {
-    return 2;
-  }
-
-  @Override
-  public int max() {
-    return 15;
-  }
-
-  @Override
-  public void proc(Char attacker, Char defender, int damage) {
-    super.proc(attacker, defender, damage);
-    Buff.prolong(defender, Cripple.class, Cripple.DURATION);
   }
 
   @Override
@@ -65,13 +49,29 @@ public class Javelin extends MissileWeapon {
   }
 
   @Override
-  public Item random() {
-    quantity = Random.Int(5, 15);
-    return this;
+  public int max() {
+    return 15;
+  }
+
+  @Override
+  public int min() {
+    return 2;
   }
 
   @Override
   public int price() {
     return 15 * quantity;
+  }
+
+  @Override
+  public void proc(final Char attacker, final Char defender, final int damage) {
+    super.proc(attacker, defender, damage);
+    Buff.prolong(defender, Cripple.class, Cripple.DURATION);
+  }
+
+  @Override
+  public Item random() {
+    quantity = Random.Int(5, 15);
+    return this;
   }
 }

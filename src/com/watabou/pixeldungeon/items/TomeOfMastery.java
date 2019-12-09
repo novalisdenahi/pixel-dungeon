@@ -46,22 +46,50 @@ public class TomeOfMastery extends Item {
 
   {
     stackable = false;
-    name = Dungeon.hero != null && Dungeon.hero.subClass != HeroSubClass.NONE ? "Tome of Remastery"
-        : "Tome of Mastery";
+    name =
+        (Dungeon.hero != null) && (Dungeon.hero.subClass != HeroSubClass.NONE) ? "Tome of Remastery"
+            : "Tome of Mastery";
     image = ItemSpriteSheet.MASTERY;
 
     unique = true;
   }
 
   @Override
-  public ArrayList<String> actions(Hero hero) {
+  public ArrayList<String> actions(final Hero hero) {
     ArrayList<String> actions = super.actions(hero);
     actions.add(AC_READ);
     return actions;
   }
 
+  public void choose(final HeroSubClass way) {
+
+    detach(curUser.belongings.backpack);
+
+    curUser.spend(TomeOfMastery.TIME_TO_READ);
+    curUser.busy();
+
+    curUser.subClass = way;
+
+    curUser.sprite.operate(curUser.pos);
+    Sample.INSTANCE.play(Assets.SND_MASTERY);
+
+    SpellSprite.show(curUser, SpellSprite.MASTERY);
+    curUser.sprite.emitter().burst(Speck.factory(Speck.MASTERY), 12);
+    GLog.w("You have chosen the way of the %s!", Utils.capitalize(way.title()));
+
+    if ((way == HeroSubClass.BERSERKER) && (curUser.HP <= (curUser.HT * Fury.LEVEL))) {
+      Buff.affect(curUser, Fury.class);
+    }
+  }
+
   @Override
-  public void execute(Hero hero, String action) {
+  public boolean doPickUp(final Hero hero) {
+    Badges.validateMastery();
+    return super.doPickUp(hero);
+  }
+
+  @Override
+  public void execute(final Hero hero, final String action) {
     if (action.equals(AC_READ)) {
 
       if (hero.buff(Blindness.class) != null) {
@@ -92,14 +120,10 @@ public class TomeOfMastery extends Item {
   }
 
   @Override
-  public boolean doPickUp(Hero hero) {
-    Badges.validateMastery();
-    return super.doPickUp(hero);
-  }
-
-  @Override
-  public boolean isUpgradable() {
-    return false;
+  public String info() {
+    return "This worn leather book is not that thick, but you feel somehow, " +
+        "that you can gather a lot from it. Remember though that reading " +
+        "this tome may require some time.";
   }
 
   @Override
@@ -108,40 +132,17 @@ public class TomeOfMastery extends Item {
   }
 
   @Override
-  public String info() {
-    return "This worn leather book is not that thick, but you feel somehow, " +
-        "that you can gather a lot from it. Remember though that reading " +
-        "this tome may require some time.";
+  public boolean isUpgradable() {
+    return false;
   }
 
-  private void read(Hero hero, HeroSubClass sc1, HeroSubClass sc2) {
+  private void read(final Hero hero, final HeroSubClass sc1, final HeroSubClass sc2) {
     if (hero.subClass == sc1) {
       GameScene.show(new WndChooseWay(this, sc2));
     } else if (hero.subClass == sc2) {
       GameScene.show(new WndChooseWay(this, sc1));
     } else {
       GameScene.show(new WndChooseWay(this, sc1, sc2));
-    }
-  }
-
-  public void choose(HeroSubClass way) {
-
-    detach(curUser.belongings.backpack);
-
-    curUser.spend(TomeOfMastery.TIME_TO_READ);
-    curUser.busy();
-
-    curUser.subClass = way;
-
-    curUser.sprite.operate(curUser.pos);
-    Sample.INSTANCE.play(Assets.SND_MASTERY);
-
-    SpellSprite.show(curUser, SpellSprite.MASTERY);
-    curUser.sprite.emitter().burst(Speck.factory(Speck.MASTERY), 12);
-    GLog.w("You have chosen the way of the %s!", Utils.capitalize(way.title()));
-
-    if (way == HeroSubClass.BERSERKER && curUser.HP <= curUser.HT * Fury.LEVEL) {
-      Buff.affect(curUser, Fury.class);
     }
   }
 }

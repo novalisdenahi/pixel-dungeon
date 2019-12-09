@@ -23,6 +23,9 @@ import com.watabou.pixeldungeon.items.Item;
 
 public class RingOfHaggler extends Ring {
 
+  public class Haggling extends RingBuff {
+  }
+
   {
     name = "Ring of Haggler";
   }
@@ -33,13 +36,16 @@ public class RingOfHaggler extends Ring {
   }
 
   @Override
-  public Item random() {
-    level(+1);
-    return this;
+  public String desc() {
+    return isKnown() ? "In fact this ring doesn't provide any magic effect, but it demonstrates " +
+        "to shopkeepers and vendors, that the owner of the ring is a member of " +
+        "The Thieves' Guild. Usually they are glad to give a discount in exchange " +
+        "for temporary immunity guarantee. Upgrading this ring won't give any additional " +
+        "bonuses." : super.desc();
   }
 
   @Override
-  public boolean doPickUp(Hero hero) {
+  public boolean doPickUp(final Hero hero) {
     identify();
     Badges.validateRingOfHaggler();
     Badges.validateItemLevelAquired(this);
@@ -52,19 +58,13 @@ public class RingOfHaggler extends Ring {
   }
 
   @Override
-  public void use() {
-    // Do nothing (it can't degrade)
+  public Item random() {
+    level(+1);
+    return this;
   }
 
   @Override
-  public String desc() {
-    return isKnown() ? "In fact this ring doesn't provide any magic effect, but it demonstrates " +
-        "to shopkeepers and vendors, that the owner of the ring is a member of " +
-        "The Thieves' Guild. Usually they are glad to give a discount in exchange " +
-        "for temporary immunity guarantee. Upgrading this ring won't give any additional " +
-        "bonuses." : super.desc();
-  }
-
-  public class Haggling extends RingBuff {
+  public void use() {
+    // Do nothing (it can't degrade)
   }
 }

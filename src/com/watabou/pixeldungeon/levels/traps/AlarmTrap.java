@@ -30,7 +30,7 @@ public class AlarmTrap {
 
   // 0xDD3333
 
-  public static void trigger(int pos, Char ch) {
+  public static void trigger(final int pos, final Char ch) {
 
     for (Mob mob : Dungeon.level.mobs) {
       if (mob != ch) {

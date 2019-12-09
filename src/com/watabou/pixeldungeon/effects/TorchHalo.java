@@ -19,10 +19,10 @@ package com.watabou.pixeldungeon.effects;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import android.opengl.GLES20;
-
 import com.watabou.noosa.Game;
 import com.watabou.pixeldungeon.sprites.CharSprite;
+
+import android.opengl.GLES20;
 
 public class TorchHalo extends Halo {
 
@@ -30,32 +30,10 @@ public class TorchHalo extends Halo {
 
   private float phase = 0;
 
-  public TorchHalo(CharSprite sprite) {
+  public TorchHalo(final CharSprite sprite) {
     super(24, 0xFFDDCC, 0.15f);
     target = sprite;
     am = 0;
-  }
-
-  @Override
-  public void update() {
-    super.update();
-
-    if (phase < 0) {
-      if ((phase += Game.elapsed) >= 0) {
-        killAndErase();
-      } else {
-        scale.set((2 + phase) * radius / RADIUS);
-        am = -phase * brightness;
-      }
-    } else if (phase < 1) {
-      if ((phase += Game.elapsed) >= 1) {
-        phase = 1;
-      }
-      scale.set(phase * radius / RADIUS);
-      am = phase * brightness;
-    }
-
-    point(target.x + target.width / 2, target.y + target.height / 2);
   }
 
   @Override
@@ -67,5 +45,27 @@ public class TorchHalo extends Halo {
 
   public void putOut() {
     phase = -1;
+  }
+
+  @Override
+  public void update() {
+    super.update();
+
+    if (phase < 0) {
+      if ((phase += Game.elapsed) >= 0) {
+        killAndErase();
+      } else {
+        scale.set(((2 + phase) * radius) / RADIUS);
+        am = -phase * brightness;
+      }
+    } else if (phase < 1) {
+      if ((phase += Game.elapsed) >= 1) {
+        phase = 1;
+      }
+      scale.set((phase * radius) / RADIUS);
+      am = phase * brightness;
+    }
+
+    point(target.x + (target.width / 2), target.y + (target.height / 2));
   }
 }

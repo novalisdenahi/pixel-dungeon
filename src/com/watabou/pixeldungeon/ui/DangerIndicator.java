@@ -59,14 +59,25 @@ public class DangerIndicator extends Tag {
     super.layout();
 
     icon.x = right() - 10;
-    icon.y = y + (height - icon.height) / 2;
+    icon.y = y + ((height - icon.height) / 2);
 
     placeNumber();
   }
 
+  @Override
+  protected void onClick() {
+
+    Mob target = Dungeon.hero.visibleEnemy(enemyIndex++);
+
+    HealthIndicator.instance.target(target == HealthIndicator.instance.target() ? null : target);
+
+    Camera.main.target = null;
+    Camera.main.focusOn(target.sprite);
+  }
+
   private void placeNumber() {
     number.x = right() - 11 - number.width();
-    number.y = PixelScene.align(y + (height - number.baseLine()) / 2);
+    number.y = PixelScene.align(y + ((height - number.baseLine()) / 2));
   }
 
   @Override
@@ -89,16 +100,5 @@ public class DangerIndicator extends Tag {
     }
 
     super.update();
-  }
-
-  @Override
-  protected void onClick() {
-
-    Mob target = Dungeon.hero.visibleEnemy(enemyIndex++);
-
-    HealthIndicator.instance.target(target == HealthIndicator.instance.target() ? null : target);
-
-    Camera.main.target = null;
-    Camera.main.focusOn(target.sprite);
   }
 }

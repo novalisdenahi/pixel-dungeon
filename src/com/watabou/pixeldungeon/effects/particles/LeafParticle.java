@@ -18,8 +18,8 @@
 package com.watabou.pixeldungeon.effects.particles;
 
 import com.watabou.noosa.particles.Emitter;
-import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.noosa.particles.Emitter.Factory;
+import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.utils.ColorMath;
 import com.watabou.utils.Random;
@@ -31,7 +31,7 @@ public class LeafParticle extends PixelParticle.Shrinking {
 
   public static final Emitter.Factory GENERAL = new Factory() {
     @Override
-    public void emit(Emitter emitter, int index, float x, float y) {
+    public void emit(final Emitter emitter, final int index, final float x, final float y) {
       LeafParticle p = ((LeafParticle) emitter.recycle(LeafParticle.class));
       p.color(ColorMath.random(0x004400, 0x88CC44));
       p.reset(x, y);
@@ -40,7 +40,7 @@ public class LeafParticle extends PixelParticle.Shrinking {
 
   public static final Emitter.Factory LEVEL_SPECIFIC = new Factory() {
     @Override
-    public void emit(Emitter emitter, int index, float x, float y) {
+    public void emit(final Emitter emitter, final int index, final float x, final float y) {
       LeafParticle p = ((LeafParticle) emitter.recycle(LeafParticle.class));
       p.color(ColorMath.random(Dungeon.level.color1, Dungeon.level.color2));
       p.reset(x, y);
@@ -54,7 +54,7 @@ public class LeafParticle extends PixelParticle.Shrinking {
     acc.set(0, 25);
   }
 
-  public void reset(float x, float y) {
+  public void reset(final float x, final float y) {
     revive();
 
     this.x = x;

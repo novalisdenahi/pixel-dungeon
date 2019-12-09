@@ -70,14 +70,21 @@ public class BuffIndicator extends Component {
 
   private static BuffIndicator heroInstance;
 
+  public static void refreshHero() {
+    if (heroInstance != null) {
+      heroInstance.layout();
+    }
+  }
+
   private SmartTexture texture;
+
   private TextureFilm film;
 
   private SparseArray<Image> icons = new SparseArray<Image>();
 
   private Char ch;
 
-  public BuffIndicator(Char ch) {
+  public BuffIndicator(final Char ch) {
     super();
 
     this.ch = ch;
@@ -87,18 +94,18 @@ public class BuffIndicator extends Component {
   }
 
   @Override
+  protected void createChildren() {
+    texture = TextureCache.get(Assets.BUFFS_SMALL);
+    film = new TextureFilm(texture, SIZE, SIZE);
+  }
+
+  @Override
   public void destroy() {
     super.destroy();
 
     if (this == heroInstance) {
       heroInstance = null;
     }
-  }
-
-  @Override
-  protected void createChildren() {
-    texture = TextureCache.get(Assets.BUFFS_SMALL);
-    film = new TextureFilm(texture, SIZE, SIZE);
   }
 
   @Override
@@ -112,7 +119,7 @@ public class BuffIndicator extends Component {
       if (icon != NONE) {
         Image img = new Image(texture);
         img.frame(film.get(icon));
-        img.x = x + members.size() * (SIZE + 2);
+        img.x = x + (members.size() * (SIZE + 2));
         img.y = y;
         add(img);
 
@@ -127,20 +134,14 @@ public class BuffIndicator extends Component {
         add(icon);
         add(new AlphaTweener(icon, 0, 0.6f) {
           @Override
-          protected void updateValues(float progress) {
+          protected void updateValues(final float progress) {
             super.updateValues(progress);
-            image.scale.set(1 + 5 * progress);
+            image.scale.set(1 + (5 * progress));
           };
         });
       }
     }
 
     icons = newIcons;
-  }
-
-  public static void refreshHero() {
-    if (heroInstance != null) {
-      heroInstance.layout();
-    }
   }
 }

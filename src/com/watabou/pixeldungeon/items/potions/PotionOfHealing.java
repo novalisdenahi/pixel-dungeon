@@ -29,18 +29,7 @@ import com.watabou.pixeldungeon.utils.GLog;
 
 public class PotionOfHealing extends Potion {
 
-  {
-    name = "Potion of Healing";
-  }
-
-  @Override
-  protected void apply(Hero hero) {
-    setKnown();
-    heal(Dungeon.hero);
-    GLog.p("Your wounds heal completely.");
-  }
-
-  public static void heal(Hero hero) {
+  public static void heal(final Hero hero) {
 
     hero.HP = hero.HT;
     Buff.detach(hero, Poison.class);
@@ -49,6 +38,17 @@ public class PotionOfHealing extends Potion {
     Buff.detach(hero, Bleeding.class);
 
     hero.sprite.emitter().start(Speck.factory(Speck.HEALING), 0.4f, 4);
+  }
+
+  {
+    name = "Potion of Healing";
+  }
+
+  @Override
+  protected void apply(final Hero hero) {
+    setKnown();
+    PotionOfHealing.heal(Dungeon.hero);
+    GLog.p("Your wounds heal completely.");
   }
 
   @Override

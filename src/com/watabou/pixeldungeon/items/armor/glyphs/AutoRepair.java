@@ -31,22 +31,22 @@ public class AutoRepair extends Glyph {
   private static Glowing GRAY = new Glowing(0xCC8888);
 
   @Override
-  public int proc(Armor armor, Char attacker, Char defender, int damage) {
-    if (defender instanceof Hero && Dungeon.gold >= armor.tier) {
-      Dungeon.gold -= armor.tier;
-      armor.polish();
-    }
-    return damage;
+  public Glowing glowing() {
+    return GRAY;
   }
 
   @Override
-  public String name(String weaponName) {
+  public String name(final String weaponName) {
     return String.format(TXT_AUTO_REPAIR, weaponName);
   }
 
   @Override
-  public Glowing glowing() {
-    return GRAY;
+  public int proc(final Armor armor, final Char attacker, final Char defender, final int damage) {
+    if ((defender instanceof Hero) && (Dungeon.gold >= armor.tier)) {
+      Dungeon.gold -= armor.tier;
+      armor.polish();
+    }
+    return damage;
   }
 
 }

@@ -31,6 +31,12 @@ import com.watabou.utils.Random;
 
 public class FetidRat extends Mob {
 
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(Paralysis.class);
+  }
+
   {
     name = "fetid rat";
     spriteClass = FetidRatSprite.class;
@@ -45,18 +51,21 @@ public class FetidRat extends Mob {
   }
 
   @Override
+  public int attackSkill(final Char target) {
+    return 12;
+  }
+
+  @Override
   public int damageRoll() {
     return Random.NormalIntRange(2, 6);
   }
 
   @Override
-  public int attackSkill(Char target) {
-    return 12;
-  }
+  public int defenseProc(final Char enemy, final int damage) {
 
-  @Override
-  public int dr() {
-    return 2;
+    GameScene.add(Blob.seed(pos, 20, ParalyticGas.class));
+
+    return super.defenseProc(enemy, damage);
   }
 
   @Override
@@ -65,28 +74,20 @@ public class FetidRat extends Mob {
   }
 
   @Override
-  public int defenseProc(Char enemy, int damage) {
-
-    GameScene.add(Blob.seed(pos, 20, ParalyticGas.class));
-
-    return super.defenseProc(enemy, damage);
+  public String description() {
+    return "This marsupial rat is much larger than a regular one. It is surrounded by a foul cloud.";
   }
 
   @Override
-  public void die(Object cause) {
+  public void die(final Object cause) {
     super.die(cause);
 
     Dungeon.level.drop(new RatSkull(), pos).sprite.drop();
   }
 
   @Override
-  public String description() {
-    return "This marsupial rat is much larger than a regular one. It is surrounded by a foul cloud.";
-  }
-
-  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-  static {
-    IMMUNITIES.add(Paralysis.class);
+  public int dr() {
+    return 2;
   }
 
   @Override

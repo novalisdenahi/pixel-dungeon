@@ -46,8 +46,20 @@ public class HuntressArmor extends ClassArmor {
   private HashMap<Callback, Mob> targets = new HashMap<Callback, Mob>();
 
   @Override
-  public String special() {
-    return AC_SPECIAL;
+  public String desc() {
+    return "A huntress in such cloak can create a fan of spectral blades. Each of these blades " +
+        "will target a single enemy in the huntress's field of view, inflicting damage depending " +
+        "on her currently equipped melee weapon.";
+  }
+
+  @Override
+  public boolean doEquip(final Hero hero) {
+    if (hero.heroClass == HeroClass.HUNTRESS) {
+      return super.doEquip(hero);
+    } else {
+      GLog.w(TXT_NOT_HUNTRESS);
+      return false;
+    }
   }
 
   @Override
@@ -88,19 +100,7 @@ public class HuntressArmor extends ClassArmor {
   }
 
   @Override
-  public boolean doEquip(Hero hero) {
-    if (hero.heroClass == HeroClass.HUNTRESS) {
-      return super.doEquip(hero);
-    } else {
-      GLog.w(TXT_NOT_HUNTRESS);
-      return false;
-    }
-  }
-
-  @Override
-  public String desc() {
-    return "A huntress in such cloak can create a fan of spectral blades. Each of these blades " +
-        "will target a single enemy in the huntress's field of view, inflicting damage depending " +
-        "on her currently equipped melee weapon.";
+  public String special() {
+    return AC_SPECIAL;
   }
 }

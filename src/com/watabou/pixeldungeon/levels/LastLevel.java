@@ -37,13 +37,8 @@ public class LastLevel extends Level {
   private int pedestal;
 
   @Override
-  public String tilesTex() {
-    return Assets.TILES_HALLS;
-  }
-
-  @Override
-  public String waterTex() {
-    return Assets.WATER_HALLS;
+  public void addVisuals(final Scene scene) {
+    HallsLevel.addVisuals(this, scene);
   }
 
   @Override
@@ -54,13 +49,13 @@ public class LastLevel extends Level {
     Painter.fill(this, 2, 2, SIZE - 2, SIZE - 2, Terrain.EMPTY);
     Painter.fill(this, SIZE / 2, SIZE / 2, 3, 3, Terrain.EMPTY_SP);
 
-    entrance = SIZE * WIDTH + SIZE / 2 + 1;
+    entrance = (SIZE * WIDTH) + (SIZE / 2) + 1;
     map[entrance] = Terrain.ENTRANCE;
 
-    exit = entrance - WIDTH * SIZE;
+    exit = entrance - (WIDTH * SIZE);
     map[exit] = Terrain.LOCKED_EXIT;
 
-    pedestal = (SIZE / 2 + 1) * (WIDTH + 1);
+    pedestal = ((SIZE / 2) + 1) * (WIDTH + 1);
     map[pedestal] = Terrain.PEDESTAL;
     map[pedestal - 1] = map[pedestal + 1] = Terrain.STATUE_SP;
 
@@ -70,12 +65,8 @@ public class LastLevel extends Level {
   }
 
   @Override
-  protected void decorate() {
-    for (int i = 0; i < LENGTH; i++) {
-      if (map[i] == Terrain.EMPTY && Random.Int(10) == 0) {
-        map[i] = Terrain.EMPTY_DECO;
-      }
-    }
+  protected void createItems() {
+    drop(new Amulet(), pedestal);
   }
 
   @Override
@@ -83,8 +74,12 @@ public class LastLevel extends Level {
   }
 
   @Override
-  protected void createItems() {
-    drop(new Amulet(), pedestal);
+  protected void decorate() {
+    for (int i = 0; i < LENGTH; i++) {
+      if ((map[i] == Terrain.EMPTY) && (Random.Int(10) == 0)) {
+        map[i] = Terrain.EMPTY_DECO;
+      }
+    }
   }
 
   @Override
@@ -93,7 +88,20 @@ public class LastLevel extends Level {
   }
 
   @Override
-  public String tileName(int tile) {
+  public String tileDesc(final int tile) {
+    switch (tile) {
+      case Terrain.WATER:
+        return "It looks like lava, but it's cold and probably safe to touch.";
+      case Terrain.STATUE:
+      case Terrain.STATUE_SP:
+        return "The pillar is made of real humanoid skulls. Awesome.";
+      default:
+        return super.tileDesc(tile);
+    }
+  }
+
+  @Override
+  public String tileName(final int tile) {
     switch (tile) {
       case Terrain.WATER:
         return "Cold lava";
@@ -110,20 +118,12 @@ public class LastLevel extends Level {
   }
 
   @Override
-  public String tileDesc(int tile) {
-    switch (tile) {
-      case Terrain.WATER:
-        return "It looks like lava, but it's cold and probably safe to touch.";
-      case Terrain.STATUE:
-      case Terrain.STATUE_SP:
-        return "The pillar is made of real humanoid skulls. Awesome.";
-      default:
-        return super.tileDesc(tile);
-    }
+  public String tilesTex() {
+    return Assets.TILES_HALLS;
   }
 
   @Override
-  public void addVisuals(Scene scene) {
-    HallsLevel.addVisuals(this, scene);
+  public String waterTex() {
+    return Assets.WATER_HALLS;
   }
 }

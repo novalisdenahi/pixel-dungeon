@@ -35,14 +35,14 @@ public class ToxicGas extends Blob implements Hero.Doom {
   protected void evolve() {
     super.evolve();
 
-    int levelDamage = 5 + Dungeon.depth * 5;
+    int levelDamage = 5 + (Dungeon.depth * 5);
 
     Char ch;
     for (int i = 0; i < LENGTH; i++) {
-      if (cur[i] > 0 && (ch = Actor.findChar(i)) != null) {
+      if ((cur[i] > 0) && ((ch = Actor.findChar(i)) != null)) {
 
         int damage = (ch.HT + levelDamage) / 40;
-        if (Random.Int(40) < (ch.HT + levelDamage) % 40) {
+        if (Random.Int(40) < ((ch.HT + levelDamage) % 40)) {
           damage++;
         }
 
@@ -72,10 +72,12 @@ public class ToxicGas extends Blob implements Hero.Doom {
   }
 
   @Override
-  public void use(BlobEmitter emitter) {
-    super.use(emitter);
+  public void onDeath() {
 
-    emitter.pour(Speck.factory(Speck.TOXIC), 0.6f);
+    Badges.validateDeathFromGas();
+
+    Dungeon.fail(Utils.format(ResultDescriptions.GAS, Dungeon.depth));
+    GLog.n("You died from a toxic gas..");
   }
 
   @Override
@@ -84,11 +86,9 @@ public class ToxicGas extends Blob implements Hero.Doom {
   }
 
   @Override
-  public void onDeath() {
+  public void use(final BlobEmitter emitter) {
+    super.use(emitter);
 
-    Badges.validateDeathFromGas();
-
-    Dungeon.fail(Utils.format(ResultDescriptions.GAS, Dungeon.depth));
-    GLog.n("You died from a toxic gas..");
+    emitter.pour(Speck.factory(Speck.TOXIC), 0.6f);
   }
 }

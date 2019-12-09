@@ -33,7 +33,7 @@ public class Journal {
 
     public String desc;
 
-    private Feature(String desc) {
+    private Feature(final String desc) {
       this.desc = desc;
     }
   };
@@ -49,24 +49,24 @@ public class Journal {
     public Record() {
     }
 
-    public Record(Feature feature, int depth) {
+    public Record(final Feature feature, final int depth) {
       this.feature = feature;
       this.depth = depth;
     }
 
     @Override
-    public int compareTo(Record another) {
+    public int compareTo(final Record another) {
       return another.depth - depth;
     }
 
     @Override
-    public void restoreFromBundle(Bundle bundle) {
+    public void restoreFromBundle(final Bundle bundle) {
       feature = Feature.valueOf(bundle.getString(FEATURE));
       depth = bundle.getInt(DEPTH);
     }
 
     @Override
-    public void storeInBundle(Bundle bundle) {
+    public void storeInBundle(final Bundle bundle) {
       bundle.put(FEATURE, feature.toString());
       bundle.put(DEPTH, depth);
     }
@@ -74,28 +74,13 @@ public class Journal {
 
   public static ArrayList<Record> records;
 
-  public static void reset() {
-    records = new ArrayList<Journal.Record>();
-  }
-
   private static final String JOURNAL = "journal";
 
-  public static void storeInBundle(Bundle bundle) {
-    bundle.put(JOURNAL, records);
-  }
-
-  public static void restoreFromBundle(Bundle bundle) {
-    records = new ArrayList<Record>();
-    for (Bundlable rec : bundle.getCollection(JOURNAL)) {
-      records.add((Record) rec);
-    }
-  }
-
-  public static void add(Feature feature) {
+  public static void add(final Feature feature) {
     int size = records.size();
     for (int i = 0; i < size; i++) {
       Record rec = records.get(i);
-      if (rec.feature == feature && rec.depth == Dungeon.depth) {
+      if ((rec.feature == feature) && (rec.depth == Dungeon.depth)) {
         return;
       }
     }
@@ -103,14 +88,29 @@ public class Journal {
     records.add(new Record(feature, Dungeon.depth));
   }
 
-  public static void remove(Feature feature) {
+  public static void remove(final Feature feature) {
     int size = records.size();
     for (int i = 0; i < size; i++) {
       Record rec = records.get(i);
-      if (rec.feature == feature && rec.depth == Dungeon.depth) {
+      if ((rec.feature == feature) && (rec.depth == Dungeon.depth)) {
         records.remove(i);
         return;
       }
     }
+  }
+
+  public static void reset() {
+    records = new ArrayList<Journal.Record>();
+  }
+
+  public static void restoreFromBundle(final Bundle bundle) {
+    records = new ArrayList<Record>();
+    for (Bundlable rec : bundle.getCollection(JOURNAL)) {
+      records.add((Record) rec);
+    }
+  }
+
+  public static void storeInBundle(final Bundle bundle) {
+    bundle.put(JOURNAL, records);
   }
 }

@@ -47,15 +47,34 @@ public class WandOfLightning extends Wand {
   private int nPoints;
 
   @Override
-  protected void onZap(int cell) {
-    // Everything is processed in fx() method
-    if (!curUser.isAlive()) {
-      Dungeon.fail(Utils.format(ResultDescriptions.WAND, name, Dungeon.depth));
-      GLog.n("You killed yourself with your own Wand of Lightning...");
-    }
+  public String desc() {
+    return "This wand conjures forth deadly arcs of electricity, which deal damage " +
+        "to several creatures standing close to each other.";
   }
 
-  private void hit(Char ch, int damage) {
+  @Override
+  protected void fx(final int cell, final Callback callback) {
+
+    nPoints = 0;
+    points[nPoints++] = Dungeon.hero.pos;
+
+    Char ch = Actor.findChar(cell);
+    if (ch != null) {
+
+      affected.clear();
+      int lvl = power();
+      hit(ch, Random.Int(5 + (lvl / 2), 10 + lvl));
+
+    } else {
+
+      points[nPoints++] = cell;
+      CellEmitter.center(cell).burst(SparkParticle.FACTORY, 3);
+
+    }
+    curUser.sprite.parent.add(new Lightning(points, nPoints, callback));
+  }
+
+  private void hit(final Char ch, final int damage) {
 
     if (damage < 1) {
       return;
@@ -77,7 +96,7 @@ public class WandOfLightning extends Wand {
     HashSet<Char> ns = new HashSet<Char>();
     for (int i = 0; i < Level.NEIGHBOURS8.length; i++) {
       Char n = Actor.findChar(ch.pos + Level.NEIGHBOURS8[i]);
-      if (n != null && !affected.contains(n)) {
+      if ((n != null) && !affected.contains(n)) {
         ns.add(n);
       }
     }
@@ -88,30 +107,11 @@ public class WandOfLightning extends Wand {
   }
 
   @Override
-  protected void fx(int cell, Callback callback) {
-
-    nPoints = 0;
-    points[nPoints++] = Dungeon.hero.pos;
-
-    Char ch = Actor.findChar(cell);
-    if (ch != null) {
-
-      affected.clear();
-      int lvl = power();
-      hit(ch, Random.Int(5 + lvl / 2, 10 + lvl));
-
-    } else {
-
-      points[nPoints++] = cell;
-      CellEmitter.center(cell).burst(SparkParticle.FACTORY, 3);
-
+  protected void onZap(final int cell) {
+    // Everything is processed in fx() method
+    if (!curUser.isAlive()) {
+      Dungeon.fail(Utils.format(ResultDescriptions.WAND, name, Dungeon.depth));
+      GLog.n("You killed yourself with your own Wand of Lightning...");
     }
-    curUser.sprite.parent.add(new Lightning(points, nPoints, callback));
-  }
-
-  @Override
-  public String desc() {
-    return "This wand conjures forth deadly arcs of electricity, which deal damage " +
-        "to several creatures standing close to each other.";
   }
 }

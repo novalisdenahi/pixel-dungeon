@@ -24,9 +24,17 @@ import com.watabou.utils.Random;
 
 public class Bestiary {
 
-  public static Mob mob(int depth) {
+  public static boolean isBoss(final Char mob) {
+    return (mob instanceof Goo) ||
+        (mob instanceof Tengu) ||
+        (mob instanceof DM300) ||
+        (mob instanceof King) ||
+        (mob instanceof Yog) || (mob instanceof BurningFist) || (mob instanceof RottingFist);
+  }
+
+  public static Mob mob(final int depth) {
     @SuppressWarnings("unchecked")
-    Class<? extends Mob> cl = (Class<? extends Mob>) mobClass(depth);
+    Class<? extends Mob> cl = (Class<? extends Mob>) Bestiary.mobClass(depth);
     try {
       return cl.newInstance();
     } catch (Exception e) {
@@ -34,32 +42,7 @@ public class Bestiary {
     }
   }
 
-  public static Mob mutable(int depth) {
-    @SuppressWarnings("unchecked")
-    Class<? extends Mob> cl = (Class<? extends Mob>) mobClass(depth);
-
-    if (Random.Int(30) == 0) {
-      if (cl == Rat.class) {
-        cl = Albino.class;
-      } else if (cl == Thief.class) {
-        cl = Bandit.class;
-      } else if (cl == Brute.class) {
-        cl = Shielded.class;
-      } else if (cl == Monk.class) {
-        cl = Senior.class;
-      } else if (cl == Scorpio.class) {
-        cl = Acidic.class;
-      }
-    }
-
-    try {
-      return cl.newInstance();
-    } catch (Exception e) {
-      return null;
-    }
-  }
-
-  private static Class<?> mobClass(int depth) {
+  private static Class<?> mobClass(final int depth) {
 
     float[] chances;
     Class<?>[] classes;
@@ -185,11 +168,28 @@ public class Bestiary {
     return classes[Random.chances(chances)];
   }
 
-  public static boolean isBoss(Char mob) {
-    return mob instanceof Goo ||
-        mob instanceof Tengu ||
-        mob instanceof DM300 ||
-        mob instanceof King ||
-        mob instanceof Yog || mob instanceof BurningFist || mob instanceof RottingFist;
+  public static Mob mutable(final int depth) {
+    @SuppressWarnings("unchecked")
+    Class<? extends Mob> cl = (Class<? extends Mob>) Bestiary.mobClass(depth);
+
+    if (Random.Int(30) == 0) {
+      if (cl == Rat.class) {
+        cl = Albino.class;
+      } else if (cl == Thief.class) {
+        cl = Bandit.class;
+      } else if (cl == Brute.class) {
+        cl = Shielded.class;
+      } else if (cl == Monk.class) {
+        cl = Senior.class;
+      } else if (cl == Scorpio.class) {
+        cl = Acidic.class;
+      }
+    }
+
+    try {
+      return cl.newInstance();
+    } catch (Exception e) {
+      return null;
+    }
   }
 }

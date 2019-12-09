@@ -31,7 +31,18 @@ public class Paralysis extends Weapon.Enchantment {
   private static ItemSprite.Glowing YELLOW = new ItemSprite.Glowing(0xCCAA44);
 
   @Override
-  public boolean proc(Weapon weapon, Char attacker, Char defender, int damage) {
+  public Glowing glowing() {
+    return YELLOW;
+  }
+
+  @Override
+  public String name(final String weaponName) {
+    return String.format(TXT_STUNNING, weaponName);
+  }
+
+  @Override
+  public boolean proc(final Weapon weapon, final Char attacker, final Char defender,
+      final int damage) {
     // lvl 0 - 13%
     // lvl 1 - 22%
     // lvl 2 - 30%
@@ -46,16 +57,6 @@ public class Paralysis extends Weapon.Enchantment {
     } else {
       return false;
     }
-  }
-
-  @Override
-  public Glowing glowing() {
-    return YELLOW;
-  }
-
-  @Override
-  public String name(String weaponName) {
-    return String.format(TXT_STUNNING, weaponName);
   }
 
 }

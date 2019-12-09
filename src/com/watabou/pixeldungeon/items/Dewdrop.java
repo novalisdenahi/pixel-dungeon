@@ -38,13 +38,13 @@ public class Dewdrop extends Item {
   }
 
   @Override
-  public boolean doPickUp(Hero hero) {
+  public boolean doPickUp(final Hero hero) {
 
     DewVial vial = hero.belongings.getItem(DewVial.class);
 
-    if (hero.HP < hero.HT || vial == null || vial.isFull()) {
+    if ((hero.HP < hero.HT) || (vial == null) || vial.isFull()) {
 
-      int value = 1 + (Dungeon.depth - 1) / 5;
+      int value = 1 + ((Dungeon.depth - 1) / 5);
       if (hero.heroClass == HeroClass.HUNTRESS) {
         value++;
       }

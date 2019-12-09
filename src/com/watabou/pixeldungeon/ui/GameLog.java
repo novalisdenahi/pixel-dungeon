@@ -30,14 +30,28 @@ import com.watabou.utils.Signal;
 
 public class GameLog extends Component implements Signal.Listener<String> {
 
+  private static class Entry {
+    public String text;
+    public int color;
+
+    public Entry(final String text, final int color) {
+      this.text = text;
+      this.color = color;
+    }
+  }
+
   private static final int MAX_LINES = 3;
 
   private static final Pattern PUNCTUATION = Pattern.compile(".*[.,;?! ]$");
+  private static ArrayList<Entry> entries = new ArrayList<Entry>();
+
+  public static void wipe() {
+    entries.clear();
+  }
 
   private BitmapTextMultiline lastEntry;
-  private int lastColor;
 
-  private static ArrayList<Entry> entries = new ArrayList<Entry>();
+  private int lastColor;
 
   public GameLog() {
     super();
@@ -46,11 +60,22 @@ public class GameLog extends Component implements Signal.Listener<String> {
     recreateLines();
   }
 
-  private void recreateLines() {
-    for (Entry entry : entries) {
-      lastEntry = PixelScene.createMultiline(entry.text, 6);
-      lastEntry.hardlight(lastColor = entry.color);
-      add(lastEntry);
+  @Override
+  public void destroy() {
+    GLog.update.remove(this);
+    super.destroy();
+  }
+
+  @Override
+  protected void layout() {
+    float pos = y;
+    for (int i = length - 1; i >= 0; i--) {
+      BitmapTextMultiline entry = (BitmapTextMultiline) members.get(i);
+      entry.maxWidth = (int) width;
+      entry.measure();
+      entry.x = x;
+      entry.y = pos - entry.height();
+      pos -= entry.height();
     }
   }
 
@@ -79,7 +104,7 @@ public class GameLog extends Component implements Signal.Listener<String> {
     text = Utils.capitalize(text) +
         (PUNCTUATION.matcher(text).matches() ? "" : ".");
 
-    if (lastEntry != null && color == lastColor && lastEntry.nLines < MAX_LINES) {
+    if ((lastEntry != null) && (color == lastColor) && (lastEntry.nLines < MAX_LINES)) {
 
       String lastMessage = lastEntry.text();
       lastEntry.text(lastMessage.length() == 0 ? text : lastMessage + " " + text);
@@ -120,36 +145,11 @@ public class GameLog extends Component implements Signal.Listener<String> {
     layout();
   }
 
-  @Override
-  protected void layout() {
-    float pos = y;
-    for (int i = length - 1; i >= 0; i--) {
-      BitmapTextMultiline entry = (BitmapTextMultiline) members.get(i);
-      entry.maxWidth = (int) width;
-      entry.measure();
-      entry.x = x;
-      entry.y = pos - entry.height();
-      pos -= entry.height();
+  private void recreateLines() {
+    for (Entry entry : entries) {
+      lastEntry = PixelScene.createMultiline(entry.text, 6);
+      lastEntry.hardlight(lastColor = entry.color);
+      add(lastEntry);
     }
-  }
-
-  @Override
-  public void destroy() {
-    GLog.update.remove(this);
-    super.destroy();
-  }
-
-  private static class Entry {
-    public String text;
-    public int color;
-
-    public Entry(String text, int color) {
-      this.text = text;
-      this.color = color;
-    }
-  }
-
-  public static void wipe() {
-    entries.clear();
   }
 }

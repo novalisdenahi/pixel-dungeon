@@ -35,6 +35,12 @@ public class ScrollOfLullaby extends Scroll {
   }
 
   @Override
+  public String desc() {
+    return "A soothing melody will put all creatures in your field of view into a deep sleep, " +
+        "giving you a chance to flee or make a surprise attack on them.";
+  }
+
+  @Override
   protected void doRead() {
 
     curUser.sprite.centerEmitter().start(Speck.factory(Speck.NOTE), 0.3f, 5);
@@ -66,12 +72,6 @@ public class ScrollOfLullaby extends Scroll {
     setKnown();
 
     readAnimation();
-  }
-
-  @Override
-  public String desc() {
-    return "A soothing melody will put all creatures in your field of view into a deep sleep, " +
-        "giving you a chance to flee or make a surprise attack on them.";
   }
 
   @Override

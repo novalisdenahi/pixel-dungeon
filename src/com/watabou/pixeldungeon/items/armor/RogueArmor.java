@@ -43,46 +43,15 @@ public class RogueArmor extends ClassArmor {
 
   private static final String AC_SPECIAL = "SMOKE BOMB";
 
-  {
-    name = "rogue garb";
-    image = ItemSpriteSheet.ARMOR_ROGUE;
-  }
-
-  @Override
-  public String special() {
-    return AC_SPECIAL;
-  }
-
-  @Override
-  public void doSpecial() {
-    GameScene.selectCell(teleporter);
-  }
-
-  @Override
-  public boolean doEquip(Hero hero) {
-    if (hero.heroClass == HeroClass.ROGUE) {
-      return super.doEquip(hero);
-    } else {
-      GLog.w(TXT_NOT_ROGUE);
-      return false;
-    }
-  }
-
-  @Override
-  public String desc() {
-    return "Wearing this dark garb, a rogue can perform a trick, that is called \"smoke bomb\" " +
-        "(though no real explosives are used): he blinds enemies who could see him and jumps aside.";
-  }
-
   protected static CellSelector.Listener teleporter = new CellSelector.Listener() {
 
     @Override
-    public void onSelect(Integer target) {
+    public void onSelect(final Integer target) {
       if (target != null) {
 
         if (!Level.fieldOfView[target] ||
             !(Level.passable[target] || Level.avoid[target]) ||
-            Actor.findChar(target) != null) {
+            (Actor.findChar(target) != null)) {
 
           GLog.w(TXT_FOV);
           return;
@@ -113,4 +82,35 @@ public class RogueArmor extends ClassArmor {
       return "Choose a location to jump to";
     }
   };
+
+  {
+    name = "rogue garb";
+    image = ItemSpriteSheet.ARMOR_ROGUE;
+  }
+
+  @Override
+  public String desc() {
+    return "Wearing this dark garb, a rogue can perform a trick, that is called \"smoke bomb\" " +
+        "(though no real explosives are used): he blinds enemies who could see him and jumps aside.";
+  }
+
+  @Override
+  public boolean doEquip(final Hero hero) {
+    if (hero.heroClass == HeroClass.ROGUE) {
+      return super.doEquip(hero);
+    } else {
+      GLog.w(TXT_NOT_ROGUE);
+      return false;
+    }
+  }
+
+  @Override
+  public void doSpecial() {
+    GameScene.selectCell(teleporter);
+  }
+
+  @Override
+  public String special() {
+    return AC_SPECIAL;
+  }
 }

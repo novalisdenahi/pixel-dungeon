@@ -19,6 +19,9 @@ package com.watabou.pixeldungeon.items.rings;
 
 public class RingOfHerbalism extends Ring {
 
+  public class Herbalism extends RingBuff {
+  }
+
   {
     name = "Ring of Herbalism";
   }
@@ -33,8 +36,5 @@ public class RingOfHerbalism extends Ring {
     return isKnown()
         ? "This ring increases your chance to gather dew and seeds from trampled grass."
         : super.desc();
-  }
-
-  public class Herbalism extends RingBuff {
   }
 }

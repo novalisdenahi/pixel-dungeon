@@ -29,7 +29,7 @@ public class PotionOfStrength extends Potion {
   }
 
   @Override
-  protected void apply(Hero hero) {
+  protected void apply(final Hero hero) {
     setKnown();
 
     hero.STR++;

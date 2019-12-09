@@ -33,8 +33,23 @@ import com.watabou.utils.Random;
 
 public class Thief extends Mob {
 
+  private class Fleeing extends Mob.Fleeing {
+    @Override
+    protected void nowhereToRun() {
+      if (buff(Terror.class) == null) {
+        sprite.showStatus(CharSprite.NEGATIVE, TXT_RAGE);
+        state = HUNTING;
+      } else {
+        super.nowhereToRun();
+      }
+    }
+  }
+
   protected static final String TXT_STOLE = "%s stole %s from you!";
+
   protected static final String TXT_CARRIES = "\n\n%s is carrying a _%s_. Stolen obviously.";
+
+  private static final String ITEM = "item";
 
   public Item item;
 
@@ -54,18 +69,23 @@ public class Thief extends Mob {
     FLEEING = new Fleeing();
   }
 
-  private static final String ITEM = "item";
-
   @Override
-  public void storeInBundle(Bundle bundle) {
-    super.storeInBundle(bundle);
-    bundle.put(ITEM, item);
+  protected float attackDelay() {
+    return 0.5f;
   }
 
   @Override
-  public void restoreFromBundle(Bundle bundle) {
-    super.restoreFromBundle(bundle);
-    item = (Item) bundle.get(ITEM);
+  public int attackProc(final Char enemy, final int damage) {
+    if ((item == null) && (enemy instanceof Hero) && steal((Hero) enemy)) {
+      state = FLEEING;
+    }
+
+    return damage;
+  }
+
+  @Override
+  public int attackSkill(final Char target) {
+    return 12;
   }
 
   @Override
@@ -74,62 +94,12 @@ public class Thief extends Mob {
   }
 
   @Override
-  protected float attackDelay() {
-    return 0.5f;
-  }
-
-  @Override
-  public void die(Object cause) {
-
-    super.die(cause);
-
-    if (item != null) {
-      Dungeon.level.drop(item, pos).sprite.drop();
-    }
-  }
-
-  @Override
-  public int attackSkill(Char target) {
-    return 12;
-  }
-
-  @Override
-  public int dr() {
-    return 3;
-  }
-
-  @Override
-  public int attackProc(Char enemy, int damage) {
-    if (item == null && enemy instanceof Hero && steal((Hero) enemy)) {
-      state = FLEEING;
-    }
-
-    return damage;
-  }
-
-  @Override
-  public int defenseProc(Char enemy, int damage) {
+  public int defenseProc(final Char enemy, final int damage) {
     if (state == FLEEING) {
       Dungeon.level.drop(new Gold(), pos).sprite.drop();
     }
 
     return damage;
-  }
-
-  protected boolean steal(Hero hero) {
-
-    Item item = hero.belongings.randomUnequipped();
-    if (item != null) {
-
-      GLog.w(TXT_STOLE, this.name, item.name());
-
-      item.detachAll(hero.belongings.backpack);
-      this.item = item;
-
-      return true;
-    } else {
-      return false;
-    }
   }
 
   @Override
@@ -142,21 +112,52 @@ public class Thief extends Mob {
             "these crazy thieves and bandits have forgotten who they are and why they steal.";
 
     if (item != null) {
-      desc += String.format(TXT_CARRIES, Utils.capitalize(this.name), item.name());
+      desc += String.format(TXT_CARRIES, Utils.capitalize(name), item.name());
     }
 
     return desc;
   }
 
-  private class Fleeing extends Mob.Fleeing {
-    @Override
-    protected void nowhereToRun() {
-      if (buff(Terror.class) == null) {
-        sprite.showStatus(CharSprite.NEGATIVE, TXT_RAGE);
-        state = HUNTING;
-      } else {
-        super.nowhereToRun();
-      }
+  @Override
+  public void die(final Object cause) {
+
+    super.die(cause);
+
+    if (item != null) {
+      Dungeon.level.drop(item, pos).sprite.drop();
     }
+  }
+
+  @Override
+  public int dr() {
+    return 3;
+  }
+
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    item = (Item) bundle.get(ITEM);
+  }
+
+  protected boolean steal(final Hero hero) {
+
+    Item item = hero.belongings.randomUnequipped();
+    if (item != null) {
+
+      GLog.w(TXT_STOLE, name, item.name());
+
+      item.detachAll(hero.belongings.backpack);
+      this.item = item;
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(ITEM, item);
   }
 }

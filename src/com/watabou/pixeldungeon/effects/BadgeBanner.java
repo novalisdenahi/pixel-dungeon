@@ -30,94 +30,17 @@ public class BadgeBanner extends Image {
     FADE_IN, STATIC, FADE_OUT
   };
 
-  private State state;
-
   private static final float DEFAULT_SCALE = 3;
 
   private static final float FADE_IN_TIME = 0.2f;
+
   private static final float STATIC_TIME = 1f;
   private static final float FADE_OUT_TIME = 1.0f;
-
-  private int index;
-  private float time;
-
   private static TextureFilm atlas;
 
   private static BadgeBanner current;
 
-  private BadgeBanner(int index) {
-
-    super(Assets.BADGES);
-
-    if (atlas == null) {
-      atlas = new TextureFilm(texture, 16, 16);
-    }
-
-    this.index = index;
-
-    frame(atlas.get(index));
-    origin.set(width / 2, height / 2);
-
-    alpha(0);
-    scale.set(2 * DEFAULT_SCALE);
-
-    state = State.FADE_IN;
-    time = FADE_IN_TIME;
-
-    Sample.INSTANCE.play(Assets.SND_BADGE);
-  }
-
-  @Override
-  public void update() {
-    super.update();
-
-    time -= Game.elapsed;
-    if (time >= 0) {
-
-      switch (state) {
-        case FADE_IN:
-          float p = time / FADE_IN_TIME;
-          scale.set((1 + p) * DEFAULT_SCALE);
-          alpha(1 - p);
-          break;
-        case STATIC:
-          break;
-        case FADE_OUT:
-          alpha(time / FADE_OUT_TIME);
-          break;
-      }
-
-    } else {
-
-      switch (state) {
-        case FADE_IN:
-          time = STATIC_TIME;
-          state = State.STATIC;
-          scale.set(DEFAULT_SCALE);
-          alpha(1);
-          highlight(this, index);
-          break;
-        case STATIC:
-          time = FADE_OUT_TIME;
-          state = State.FADE_OUT;
-          break;
-        case FADE_OUT:
-          killAndErase();
-          break;
-      }
-
-    }
-  }
-
-  @Override
-  public void kill() {
-    if (current == this) {
-      current = null;
-    }
-    super.kill();
-  }
-
-  public static void highlight(Image image, int index) {
+  public static void highlight(final Image image, final int index) {
 
     PointF p = new PointF();
 
@@ -270,19 +193,97 @@ public class BadgeBanner extends Image {
     image.parent.add(star);
   }
 
-  public static BadgeBanner show(int image) {
-    if (current != null) {
-      current.killAndErase();
-    }
-    return (current = new BadgeBanner(image));
-  }
-
-  public static Image image(int index) {
+  public static Image image(final int index) {
     Image image = new Image(Assets.BADGES);
     if (atlas == null) {
       atlas = new TextureFilm(image.texture, 16, 16);
     }
     image.frame(atlas.get(index));
     return image;
+  }
+
+  public static BadgeBanner show(final int image) {
+    if (current != null) {
+      current.killAndErase();
+    }
+    return (current = new BadgeBanner(image));
+  }
+
+  private State state;
+
+  private int index;
+
+  private float time;
+
+  private BadgeBanner(final int index) {
+
+    super(Assets.BADGES);
+
+    if (atlas == null) {
+      atlas = new TextureFilm(texture, 16, 16);
+    }
+
+    this.index = index;
+
+    frame(atlas.get(index));
+    origin.set(width / 2, height / 2);
+
+    alpha(0);
+    scale.set(2 * DEFAULT_SCALE);
+
+    state = State.FADE_IN;
+    time = FADE_IN_TIME;
+
+    Sample.INSTANCE.play(Assets.SND_BADGE);
+  }
+
+  @Override
+  public void kill() {
+    if (current == this) {
+      current = null;
+    }
+    super.kill();
+  }
+
+  @Override
+  public void update() {
+    super.update();
+
+    time -= Game.elapsed;
+    if (time >= 0) {
+
+      switch (state) {
+        case FADE_IN:
+          float p = time / FADE_IN_TIME;
+          scale.set((1 + p) * DEFAULT_SCALE);
+          alpha(1 - p);
+          break;
+        case STATIC:
+          break;
+        case FADE_OUT:
+          alpha(time / FADE_OUT_TIME);
+          break;
+      }
+
+    } else {
+
+      switch (state) {
+        case FADE_IN:
+          time = STATIC_TIME;
+          state = State.STATIC;
+          scale.set(DEFAULT_SCALE);
+          alpha(1);
+          BadgeBanner.highlight(this, index);
+          break;
+        case STATIC:
+          time = FADE_OUT_TIME;
+          state = State.FADE_OUT;
+          break;
+        case FADE_OUT:
+          killAndErase();
+          break;
+      }
+
+    }
   }
 }

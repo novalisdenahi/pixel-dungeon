@@ -37,6 +37,10 @@ import com.watabou.utils.Random;
 
 public class Swarm extends Mob {
 
+  private static final float SPLIT_DELAY = 1f;
+
+  private static final String GENERATION = "generation";
+
   {
     name = "swarm of flies";
     spriteClass = SwarmSprite.class;
@@ -49,22 +53,11 @@ public class Swarm extends Mob {
     flying = true;
   }
 
-  private static final float SPLIT_DELAY = 1f;
-
   int generation = 0;
 
-  private static final String GENERATION = "generation";
-
   @Override
-  public void storeInBundle(Bundle bundle) {
-    super.storeInBundle(bundle);
-    bundle.put(GENERATION, generation);
-  }
-
-  @Override
-  public void restoreFromBundle(Bundle bundle) {
-    super.restoreFromBundle(bundle);
-    generation = bundle.getInt(GENERATION);
+  public int attackSkill(final Char target) {
+    return 12;
   }
 
   @Override
@@ -73,15 +66,15 @@ public class Swarm extends Mob {
   }
 
   @Override
-  public int defenseProc(Char enemy, int damage) {
+  public int defenseProc(final Char enemy, final int damage) {
 
-    if (HP >= damage + 2) {
+    if (HP >= (damage + 2)) {
       ArrayList<Integer> candidates = new ArrayList<Integer>();
       boolean[] passable = Level.passable;
 
       int[] neighbours = { pos + 1, pos - 1, pos + Level.WIDTH, pos - Level.WIDTH };
       for (int n : neighbours) {
-        if (passable[n] && Actor.findChar(n) == null) {
+        if (passable[n] && (Actor.findChar(n) == null)) {
           candidates.add(n);
         }
       }
@@ -108,13 +101,27 @@ public class Swarm extends Mob {
   }
 
   @Override
-  public int attackSkill(Char target) {
-    return 12;
+  public String defenseVerb() {
+    return "evaded";
   }
 
   @Override
-  public String defenseVerb() {
-    return "evaded";
+  public String description() {
+    return "The deadly swarm of flies buzzes angrily. Every non-magical attack " +
+        "will split it into two smaller but equally dangerous swarms.";
+  }
+
+  @Override
+  protected void dropLoot() {
+    if (Random.Int(5 * (generation + 1)) == 0) {
+      Dungeon.level.drop(new PotionOfHealing(), pos).sprite.drop();
+    }
+  }
+
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    generation = bundle.getInt(GENERATION);
   }
 
   private Swarm split() {
@@ -130,15 +137,8 @@ public class Swarm extends Mob {
   }
 
   @Override
-  protected void dropLoot() {
-    if (Random.Int(5 * (generation + 1)) == 0) {
-      Dungeon.level.drop(new PotionOfHealing(), pos).sprite.drop();
-    }
-  }
-
-  @Override
-  public String description() {
-    return "The deadly swarm of flies buzzes angrily. Every non-magical attack " +
-        "will split it into two smaller but equally dangerous swarms.";
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(GENERATION, generation);
   }
 }

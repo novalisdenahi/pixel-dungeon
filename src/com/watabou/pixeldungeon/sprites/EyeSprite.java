@@ -50,13 +50,13 @@ public class EyeSprite extends MobSprite {
   }
 
   @Override
-  public void attack(int pos) {
+  public void attack(final int pos) {
     attackPos = pos;
     super.attack(pos);
   }
 
   @Override
-  public void onComplete(Animation anim) {
+  public void onComplete(final Animation anim) {
     super.onComplete(anim);
 
     if (anim == attack) {

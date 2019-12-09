@@ -3,6 +3,7 @@ package com.watabou.pixeldungeon.plants;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.Dungeon;
+import com.watabou.pixeldungeon.actors.Actor;
 import com.watabou.pixeldungeon.actors.Char;
 import com.watabou.pixeldungeon.actors.blobs.Blob;
 import com.watabou.pixeldungeon.actors.blobs.ToxicGas;
@@ -19,32 +20,6 @@ import com.watabou.pixeldungeon.utils.GLog;
 
 public class Rotberry extends Plant {
 
-  private static final String TXT_DESC =
-      "Berries of this shrub taste like sweet, sweet death.";
-
-  {
-    image = 7;
-    plantName = "Rotberry";
-  }
-
-  @Override
-  public void activate(Char ch) {
-    super.activate(ch);
-
-    GameScene.add(Blob.seed(pos, 100, ToxicGas.class));
-
-    Dungeon.level.drop(new Seed(), pos).sprite.drop();
-
-    if (ch != null) {
-      Buff.prolong(ch, Roots.class, Roots.TICK * 3);
-    }
-  }
-
-  @Override
-  public String desc() {
-    return TXT_DESC;
-  }
-
   public static class Seed extends Plant.Seed {
     {
       plantName = "Rotberry";
@@ -57,7 +32,7 @@ public class Rotberry extends Plant {
     }
 
     @Override
-    public boolean collect(Bag container) {
+    public boolean collect(final Bag container) {
       if (super.collect(container)) {
 
         if (Dungeon.level != null) {
@@ -80,5 +55,31 @@ public class Rotberry extends Plant {
     public String desc() {
       return TXT_DESC;
     }
+  }
+
+  private static final String TXT_DESC =
+      "Berries of this shrub taste like sweet, sweet death.";
+
+  {
+    image = 7;
+    plantName = "Rotberry";
+  }
+
+  @Override
+  public void activate(final Char ch) {
+    super.activate(ch);
+
+    GameScene.add(Blob.seed(pos, 100, ToxicGas.class));
+
+    Dungeon.level.drop(new Seed(), pos).sprite.drop();
+
+    if (ch != null) {
+      Buff.prolong(ch, Roots.class, Actor.TICK * 3);
+    }
+  }
+
+  @Override
+  public String desc() {
+    return TXT_DESC;
   }
 }

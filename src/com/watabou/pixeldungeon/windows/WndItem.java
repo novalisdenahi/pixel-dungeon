@@ -67,7 +67,7 @@ public class WndItem extends Window {
     float y = info.y + info.height() + GAP;
     float x = 0;
 
-    if (Dungeon.hero.isAlive() && owner != null) {
+    if (Dungeon.hero.isAlive() && (owner != null)) {
       for (final String action : item.actions(Dungeon.hero)) {
 
         RedButton btn = new RedButton(action) {
@@ -79,7 +79,7 @@ public class WndItem extends Window {
           };
         };
         btn.setSize(Math.max(BUTTON_WIDTH, btn.reqWidth()), BUTTON_HEIGHT);
-        if (x + btn.width() > WIDTH) {
+        if ((x + btn.width()) > WIDTH) {
           x = 0;
           y += BUTTON_HEIGHT + GAP;
         }

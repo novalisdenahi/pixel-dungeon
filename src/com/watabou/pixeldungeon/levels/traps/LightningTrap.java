@@ -32,14 +32,19 @@ import com.watabou.utils.Random;
 
 public class LightningTrap {
 
-  private static final String name = "lightning trap";
+  public static class Electricity {
+  }
 
   // 00x66CCEE
 
-  public static void trigger(int pos, Char ch) {
+  private static final String name = "lightning trap";
+
+  public static final Electricity LIGHTNING = new Electricity();
+
+  public static void trigger(final int pos, final Char ch) {
 
     if (ch != null) {
-      ch.damage(Math.max(1, Random.Int(ch.HP / 3, 2 * ch.HP / 3)), LIGHTNING);
+      ch.damage(Math.max(1, Random.Int(ch.HP / 3, (2 * ch.HP) / 3)), LIGHTNING);
       if (ch == Dungeon.hero) {
 
         Camera.main.shake(2, 0.3f);
@@ -65,10 +70,5 @@ public class LightningTrap {
 
     CellEmitter.center(pos).burst(SparkParticle.FACTORY, Random.IntRange(3, 4));
 
-  }
-
-  public static final Electricity LIGHTNING = new Electricity();
-
-  public static class Electricity {
   }
 }

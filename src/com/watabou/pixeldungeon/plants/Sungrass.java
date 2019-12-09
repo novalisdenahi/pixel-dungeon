@@ -30,29 +30,53 @@ import com.watabou.utils.Bundle;
 
 public class Sungrass extends Plant {
 
-  private static final String TXT_DESC = "Sungrass is renowned for its sap's healing properties.";
+  public static class Health extends Buff {
 
-  {
-    image = 4;
-    plantName = "Sungrass";
-  }
+    private static final float STEP = 5f;
 
-  @Override
-  public void activate(Char ch) {
-    super.activate(ch);
+    private static final String POS = "pos";
 
-    if (ch != null) {
-      Buff.affect(ch, Health.class);
+    private int pos;
+
+    @Override
+    public boolean act() {
+      if ((target.pos != pos) || (target.HP >= target.HT)) {
+        detach();
+      } else {
+        target.HP = Math.min(target.HT, target.HP + (target.HT / 10));
+        target.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
+      }
+      spend(STEP);
+      return true;
     }
 
-    if (Dungeon.visible[pos]) {
-      CellEmitter.get(pos).start(ShaftParticle.FACTORY, 0.2f, 3);
+    @Override
+    public boolean attachTo(final Char target) {
+      pos = target.pos;
+      return super.attachTo(target);
     }
-  }
 
-  @Override
-  public String desc() {
-    return TXT_DESC;
+    @Override
+    public int icon() {
+      return BuffIndicator.HEALING;
+    }
+
+    @Override
+    public void restoreFromBundle(final Bundle bundle) {
+      super.restoreFromBundle(bundle);
+      pos = bundle.getInt(POS);
+    }
+
+    @Override
+    public void storeInBundle(final Bundle bundle) {
+      super.storeInBundle(bundle);
+      bundle.put(POS, pos);
+    }
+
+    @Override
+    public String toString() {
+      return "Herbal healing";
+    }
   }
 
   public static class Seed extends Plant.Seed {
@@ -72,52 +96,28 @@ public class Sungrass extends Plant {
     }
   }
 
-  public static class Health extends Buff {
+  private static final String TXT_DESC = "Sungrass is renowned for its sap's healing properties.";
 
-    private static final float STEP = 5f;
+  {
+    image = 4;
+    plantName = "Sungrass";
+  }
 
-    private int pos;
+  @Override
+  public void activate(final Char ch) {
+    super.activate(ch);
 
-    @Override
-    public boolean attachTo(Char target) {
-      pos = target.pos;
-      return super.attachTo(target);
+    if (ch != null) {
+      Buff.affect(ch, Health.class);
     }
 
-    @Override
-    public boolean act() {
-      if (target.pos != pos || target.HP >= target.HT) {
-        detach();
-      } else {
-        target.HP = Math.min(target.HT, target.HP + target.HT / 10);
-        target.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
-      }
-      spend(STEP);
-      return true;
+    if (Dungeon.visible[pos]) {
+      CellEmitter.get(pos).start(ShaftParticle.FACTORY, 0.2f, 3);
     }
+  }
 
-    @Override
-    public int icon() {
-      return BuffIndicator.HEALING;
-    }
-
-    @Override
-    public String toString() {
-      return "Herbal healing";
-    }
-
-    private static final String POS = "pos";
-
-    @Override
-    public void storeInBundle(Bundle bundle) {
-      super.storeInBundle(bundle);
-      bundle.put(POS, pos);
-    }
-
-    @Override
-    public void restoreFromBundle(Bundle bundle) {
-      super.restoreFromBundle(bundle);
-      pos = bundle.getInt(POS);
-    }
+  @Override
+  public String desc() {
+    return TXT_DESC;
   }
 }

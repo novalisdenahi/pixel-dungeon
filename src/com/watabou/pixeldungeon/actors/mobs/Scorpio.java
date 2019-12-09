@@ -35,6 +35,13 @@ import com.watabou.utils.Random;
 
 public class Scorpio extends Mob {
 
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(Leech.class);
+    RESISTANCES.add(Poison.class);
+  }
+
   {
     name = "scorpio";
     spriteClass = ScorpioSprite.class;
@@ -51,28 +58,7 @@ public class Scorpio extends Mob {
   }
 
   @Override
-  public int damageRoll() {
-    return Random.NormalIntRange(20, 32);
-  }
-
-  @Override
-  public int attackSkill(Char target) {
-    return 36;
-  }
-
-  @Override
-  public int dr() {
-    return 16;
-  }
-
-  @Override
-  protected boolean canAttack(Char enemy) {
-    return !Level.adjacent(pos, enemy.pos)
-        && Ballistica.cast(pos, enemy.pos, false, true) == enemy.pos;
-  }
-
-  @Override
-  public int attackProc(Char enemy, int damage) {
+  public int attackProc(final Char enemy, final int damage) {
     if (Random.Int(2) == 0) {
       Buff.prolong(enemy, Cripple.class, Cripple.DURATION);
     }
@@ -81,12 +67,30 @@ public class Scorpio extends Mob {
   }
 
   @Override
-  protected boolean getCloser(int target) {
-    if (state == HUNTING) {
-      return enemySeen && getFurther(target);
-    } else {
-      return super.getCloser(target);
-    }
+  public int attackSkill(final Char target) {
+    return 36;
+  }
+
+  @Override
+  protected boolean canAttack(final Char enemy) {
+    return !Level.adjacent(pos, enemy.pos)
+        && (Ballistica.cast(pos, enemy.pos, false, true) == enemy.pos);
+  }
+
+  @Override
+  public int damageRoll() {
+    return Random.NormalIntRange(20, 32);
+  }
+
+  @Override
+  public String description() {
+    return "These huge arachnid-like demonic creatures avoid close combat by all means, " +
+        "firing crippling serrated spikes from long distances.";
+  }
+
+  @Override
+  public int dr() {
+    return 16;
   }
 
   @Override
@@ -99,15 +103,12 @@ public class Scorpio extends Mob {
   }
 
   @Override
-  public String description() {
-    return "These huge arachnid-like demonic creatures avoid close combat by all means, " +
-        "firing crippling serrated spikes from long distances.";
-  }
-
-  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
-  static {
-    RESISTANCES.add(Leech.class);
-    RESISTANCES.add(Poison.class);
+  protected boolean getCloser(final int target) {
+    if (state == HUNTING) {
+      return enemySeen && getFurther(target);
+    } else {
+      return super.getCloser(target);
+    }
   }
 
   @Override

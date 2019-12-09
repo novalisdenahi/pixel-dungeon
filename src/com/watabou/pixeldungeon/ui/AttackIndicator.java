@@ -34,10 +34,24 @@ public class AttackIndicator extends Tag {
 
   private static AttackIndicator instance;
 
+  private static Mob lastTarget = null;
+
+  public static void target(final Char target) {
+    lastTarget = (Mob) target;
+    instance.updateImage();
+
+    HealthIndicator.instance.target(target);
+  }
+
+  public static void updateState() {
+    instance.checkEnemies();
+  }
+
   private CharSprite sprite = null;
 
-  private static Mob lastTarget = null;
   private ArrayList<Mob> candidates = new ArrayList<Mob>();
+
+  private boolean enabled = true;
 
   public AttackIndicator() {
     super(DangerIndicator.COLOR);
@@ -47,38 +61,6 @@ public class AttackIndicator extends Tag {
     setSize(24, 24);
     visible(false);
     enable(false);
-  }
-
-  @Override
-  protected void createChildren() {
-    super.createChildren();
-  }
-
-  @Override
-  protected void layout() {
-    super.layout();
-
-    if (sprite != null) {
-      sprite.x = x + (width - sprite.width()) / 2;
-      sprite.y = y + (height - sprite.height()) / 2;
-      PixelScene.align(sprite);
-    }
-  }
-
-  @Override
-  public void update() {
-    super.update();
-
-    if (Dungeon.hero.isAlive()) {
-
-      if (!Dungeon.hero.ready) {
-        enable(false);
-      }
-
-    } else {
-      visible(false);
-      enable(false);
-    }
   }
 
   private void checkEnemies() {
@@ -111,6 +93,52 @@ public class AttackIndicator extends Tag {
     enable(bg.visible);
   }
 
+  @Override
+  protected void createChildren() {
+    super.createChildren();
+  }
+
+  private void enable(final boolean value) {
+    enabled = value;
+    if (sprite != null) {
+      sprite.alpha(value ? ENABLED : DISABLED);
+    }
+  }
+
+  @Override
+  protected void layout() {
+    super.layout();
+
+    if (sprite != null) {
+      sprite.x = x + ((width - sprite.width()) / 2);
+      sprite.y = y + ((height - sprite.height()) / 2);
+      PixelScene.align(sprite);
+    }
+  }
+
+  @Override
+  protected void onClick() {
+    if (enabled) {
+      Dungeon.hero.handle(lastTarget.pos);
+    }
+  }
+
+  @Override
+  public void update() {
+    super.update();
+
+    if (Dungeon.hero.isAlive()) {
+
+      if (!Dungeon.hero.ready) {
+        enable(false);
+      }
+
+    } else {
+      visible(false);
+      enable(false);
+    }
+  }
+
   private void updateImage() {
 
     if (sprite != null) {
@@ -124,45 +152,18 @@ public class AttackIndicator extends Tag {
       sprite.paused = true;
       add(sprite);
 
-      sprite.x = x + (width - sprite.width()) / 2 + 1;
-      sprite.y = y + (height - sprite.height()) / 2;
+      sprite.x = x + ((width - sprite.width()) / 2) + 1;
+      sprite.y = y + ((height - sprite.height()) / 2);
       PixelScene.align(sprite);
 
     } catch (Exception e) {
     }
   }
 
-  private boolean enabled = true;
-
-  private void enable(boolean value) {
-    enabled = value;
-    if (sprite != null) {
-      sprite.alpha(value ? ENABLED : DISABLED);
-    }
-  }
-
-  private void visible(boolean value) {
+  private void visible(final boolean value) {
     bg.visible = value;
     if (sprite != null) {
       sprite.visible = value;
     }
-  }
-
-  @Override
-  protected void onClick() {
-    if (enabled) {
-      Dungeon.hero.handle(lastTarget.pos);
-    }
-  }
-
-  public static void target(Char target) {
-    lastTarget = (Mob) target;
-    instance.updateImage();
-
-    HealthIndicator.instance.target(target);
-  }
-
-  public static void updateState() {
-    instance.checkEnemies();
   }
 }

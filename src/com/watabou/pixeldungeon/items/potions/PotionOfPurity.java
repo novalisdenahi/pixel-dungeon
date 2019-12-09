@@ -45,7 +45,25 @@ public class PotionOfPurity extends Potion {
   }
 
   @Override
-  public void shatter(int cell) {
+  protected void apply(final Hero hero) {
+    GLog.w(TXT_NO_SMELL);
+    Buff.prolong(hero, GasesImmunity.class, GasesImmunity.DURATION);
+    setKnown();
+  }
+
+  @Override
+  public String desc() {
+    return "This reagent will quickly neutralize all harmful gases in the area of effect. " +
+        "Drinking it will give you a temporary immunity to such gases.";
+  }
+
+  @Override
+  public int price() {
+    return isKnown() ? 50 * quantity : super.price();
+  }
+
+  @Override
+  public void shatter(final int cell) {
 
     PathFinder.buildDistanceMap(cell, BArray.not(Level.losBlocking, null), DISTANCE);
 
@@ -107,23 +125,5 @@ public class PotionOfPurity extends Potion {
       }
 
     }
-  }
-
-  @Override
-  protected void apply(Hero hero) {
-    GLog.w(TXT_NO_SMELL);
-    Buff.prolong(hero, GasesImmunity.class, GasesImmunity.DURATION);
-    setKnown();
-  }
-
-  @Override
-  public String desc() {
-    return "This reagent will quickly neutralize all harmful gases in the area of effect. " +
-        "Drinking it will give you a temporary immunity to such gases.";
-  }
-
-  @Override
-  public int price() {
-    return isKnown() ? 50 * quantity : super.price();
   }
 }

@@ -19,6 +19,9 @@ package com.watabou.pixeldungeon.items.rings;
 
 public class RingOfHaste extends Ring {
 
+  public class Haste extends RingBuff {
+  }
+
   {
     name = "Ring of Haste";
   }
@@ -33,8 +36,5 @@ public class RingOfHaste extends Ring {
     return isKnown()
         ? "This ring accelerates the wearer's flow of time, allowing one to perform all actions a little faster."
         : super.desc();
-  }
-
-  public class Haste extends RingBuff {
   }
 }

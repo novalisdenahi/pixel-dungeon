@@ -18,15 +18,15 @@
 package com.watabou.pixeldungeon.effects.particles;
 
 import com.watabou.noosa.particles.Emitter;
-import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.noosa.particles.Emitter.Factory;
+import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.Random;
 
 public class SnowParticle extends PixelParticle {
 
   public static final Emitter.Factory FACTORY = new Factory() {
     @Override
-    public void emit(Emitter emitter, int index, float x, float y) {
+    public void emit(final Emitter emitter, final int index, final float x, final float y) {
       ((SnowParticle) emitter.recycle(SnowParticle.class)).reset(x, y);
     }
   };
@@ -37,11 +37,11 @@ public class SnowParticle extends PixelParticle {
     lifespan = 1.2f;
   }
 
-  public void reset(float x, float y) {
+  public void reset(final float x, final float y) {
     revive();
 
     this.x = x;
-    this.y = y - speed.y * lifespan;
+    this.y = y - (speed.y * lifespan);
 
     left = lifespan;
   }

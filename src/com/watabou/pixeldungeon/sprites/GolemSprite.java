@@ -51,7 +51,7 @@ public class GolemSprite extends MobSprite {
   }
 
   @Override
-  public void onComplete(Animation anim) {
+  public void onComplete(final Animation anim) {
     if (anim == die) {
       emitter().burst(ElmoParticle.FACTORY, 4);
     }

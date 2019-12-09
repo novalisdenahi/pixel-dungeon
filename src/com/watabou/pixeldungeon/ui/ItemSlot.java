@@ -38,44 +38,48 @@ public class ItemSlot extends Button {
   private static final float ENABLED = 1.0f;
   private static final float DISABLED = 0.3f;
 
-  protected ItemSprite icon;
-  protected BitmapText topLeft;
-  protected BitmapText topRight;
-  protected BitmapText bottomRight;
-
   private static final String TXT_STRENGTH = ":%d";
   private static final String TXT_TYPICAL_STR = "%d?";
-
   private static final String TXT_LEVEL = "%+d";
   private static final String TXT_CURSED = "";// "-";
 
   // Special "virtual items"
   public static final Item CHEST = new Item() {
+    @Override
     public int image() {
       return ItemSpriteSheet.CHEST;
     };
   };
   public static final Item LOCKED_CHEST = new Item() {
+    @Override
     public int image() {
       return ItemSpriteSheet.LOCKED_CHEST;
     };
   };
+
   public static final Item TOMB = new Item() {
+    @Override
     public int image() {
       return ItemSpriteSheet.TOMB;
     };
   };
   public static final Item SKELETON = new Item() {
+    @Override
     public int image() {
       return ItemSpriteSheet.BONES;
     };
   };
 
+  protected ItemSprite icon;
+  protected BitmapText topLeft;
+  protected BitmapText topRight;
+  protected BitmapText bottomRight;
+
   public ItemSlot() {
     super();
   }
 
-  public ItemSlot(Item item) {
+  public ItemSlot(final Item item) {
     this();
     item(item);
   }
@@ -98,30 +102,18 @@ public class ItemSlot extends Button {
     add(bottomRight);
   }
 
-  @Override
-  protected void layout() {
-    super.layout();
+  public void enable(final boolean value) {
 
-    icon.x = x + (width - icon.width) / 2;
-    icon.y = y + (height - icon.height) / 2;
+    active = value;
 
-    if (topLeft != null) {
-      topLeft.x = x;
-      topLeft.y = y;
-    }
-
-    if (topRight != null) {
-      topRight.x = x + (width - topRight.width());
-      topRight.y = y;
-    }
-
-    if (bottomRight != null) {
-      bottomRight.x = x + (width - bottomRight.width());
-      bottomRight.y = y + (height - bottomRight.height());
-    }
+    float alpha = value ? ENABLED : DISABLED;
+    icon.alpha(alpha);
+    topLeft.alpha(alpha);
+    topRight.alpha(alpha);
+    bottomRight.alpha(alpha);
   }
 
-  public void item(Item item) {
+  public void item(final Item item) {
     if (item == null) {
 
       active = false;
@@ -166,7 +158,7 @@ public class ItemSlot extends Button {
       }
 
       int level = item.visiblyUpgraded();
-      if (level != 0 || (item.cursed && item.cursedKnown)) {
+      if ((level != 0) || (item.cursed && item.cursedKnown)) {
         bottomRight.text(item.levelKnown ? Utils.format(TXT_LEVEL, level) : TXT_CURSED);
         bottomRight.measure();
         bottomRight.hardlight(level > 0 ? (item.isBroken() ? WARNING : UPGRADED) : DEGRADED);
@@ -178,18 +170,30 @@ public class ItemSlot extends Button {
     }
   }
 
-  public void enable(boolean value) {
+  @Override
+  protected void layout() {
+    super.layout();
 
-    active = value;
+    icon.x = x + ((width - icon.width) / 2);
+    icon.y = y + ((height - icon.height) / 2);
 
-    float alpha = value ? ENABLED : DISABLED;
-    icon.alpha(alpha);
-    topLeft.alpha(alpha);
-    topRight.alpha(alpha);
-    bottomRight.alpha(alpha);
+    if (topLeft != null) {
+      topLeft.x = x;
+      topLeft.y = y;
+    }
+
+    if (topRight != null) {
+      topRight.x = x + (width - topRight.width());
+      topRight.y = y;
+    }
+
+    if (bottomRight != null) {
+      bottomRight.x = x + (width - bottomRight.width());
+      bottomRight.y = y + (height - bottomRight.height());
+    }
   }
 
-  public void showParams(boolean value) {
+  public void showParams(final boolean value) {
     if (value) {
       add(topRight);
       add(bottomRight);

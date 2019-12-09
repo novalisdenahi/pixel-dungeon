@@ -32,10 +32,10 @@ public class PoolPainter extends Painter {
 
   private static final int NPIRANHAS = 3;
 
-  public static void paint(Level level, Room room) {
+  public static void paint(final Level level, final Room room) {
 
-    fill(level, room, Terrain.WALL);
-    fill(level, room, 1, Terrain.WATER);
+    Painter.fill(level, room, Terrain.WALL);
+    Painter.fill(level, room, 1, Terrain.WATER);
 
     Room.Door door = room.entrance();
     door.set(Room.Door.Type.REGULAR);
@@ -45,29 +45,29 @@ public class PoolPainter extends Painter {
     if (door.x == room.left) {
 
       x = room.right - 1;
-      y = room.top + room.height() / 2;
+      y = room.top + (room.height() / 2);
 
     } else if (door.x == room.right) {
 
       x = room.left + 1;
-      y = room.top + room.height() / 2;
+      y = room.top + (room.height() / 2);
 
     } else if (door.y == room.top) {
 
-      x = room.left + room.width() / 2;
+      x = room.left + (room.width() / 2);
       y = room.bottom - 1;
 
     } else if (door.y == room.bottom) {
 
-      x = room.left + room.width() / 2;
+      x = room.left + (room.width() / 2);
       y = room.top + 1;
 
     }
 
-    int pos = x + y * Level.WIDTH;
-    level.drop(prize(level), pos).type =
+    int pos = x + (y * Level.WIDTH);
+    level.drop(PoolPainter.prize(level), pos).type =
         Random.Int(3) == 0 ? Heap.Type.CHEST : Heap.Type.HEAP;
-    set(level, pos, Terrain.PEDESTAL);
+    Painter.set(level, pos, Terrain.PEDESTAL);
 
     level.addItemToSpawn(new PotionOfInvisibility());
 
@@ -75,13 +75,13 @@ public class PoolPainter extends Painter {
       Piranha piranha = new Piranha();
       do {
         piranha.pos = room.random();
-      } while (level.map[piranha.pos] != Terrain.WATER || Actor.findChar(piranha.pos) != null);
+      } while ((level.map[piranha.pos] != Terrain.WATER) || (Actor.findChar(piranha.pos) != null));
       level.mobs.add(piranha);
       Actor.occupyCell(piranha);
     }
   }
 
-  private static Item prize(Level level) {
+  private static Item prize(final Level level) {
 
     Item prize = level.itemToSpanAsPrize();
     if (prize != null) {

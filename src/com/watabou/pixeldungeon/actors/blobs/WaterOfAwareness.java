@@ -44,7 +44,7 @@ public class WaterOfAwareness extends WellWater {
           "all items on the level and know all its secrets.";
 
   @Override
-  protected boolean affectHero(Hero hero) {
+  protected boolean affectHero(final Hero hero) {
 
     Sample.INSTANCE.play(Assets.SND_DRINK);
     emitter.parent.add(new Identification(DungeonTilemap.tileCenterToWorld(pos)));
@@ -78,7 +78,7 @@ public class WaterOfAwareness extends WellWater {
   }
 
   @Override
-  protected Item affectItem(Item item) {
+  protected Item affectItem(final Item item) {
     if (item.isIdentified()) {
       return null;
     } else {
@@ -94,14 +94,14 @@ public class WaterOfAwareness extends WellWater {
   }
 
   @Override
-  public void use(BlobEmitter emitter) {
-    super.use(emitter);
-    emitter.pour(Speck.factory(Speck.QUESTION), 0.3f);
-  }
-
-  @Override
   public String tileDesc() {
     return "Power of knowledge radiates from the water of this well. " +
         "Take a sip from it to reveal all secrets of equipped items.";
+  }
+
+  @Override
+  public void use(final BlobEmitter emitter) {
+    super.use(emitter);
+    emitter.pour(Speck.factory(Speck.QUESTION), 0.3f);
   }
 }

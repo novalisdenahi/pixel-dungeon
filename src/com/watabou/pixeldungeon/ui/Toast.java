@@ -32,12 +32,12 @@ public class Toast extends Component {
   protected SimpleButton close;
   protected BitmapText text;
 
-  public Toast(String text) {
+  public Toast(final String text) {
     super();
     text(text);
 
-    width = this.text.width() + close.width() + bg.marginHor() + MARGIN_HOR * 3;
-    height = Math.max(this.text.height(), close.height()) + bg.marginVer() + MARGIN_VER * 2;
+    width = this.text.width() + close.width() + bg.marginHor() + (MARGIN_HOR * 3);
+    height = Math.max(this.text.height(), close.height()) + bg.marginVer() + (MARGIN_VER * 2);
   }
 
   @Override
@@ -48,6 +48,7 @@ public class Toast extends Component {
     add(bg);
 
     close = new SimpleButton(Icons.get(Icons.CLOSE)) {
+      @Override
       protected void onClick() {
         onClose();
       };
@@ -67,19 +68,19 @@ public class Toast extends Component {
     bg.size(width, height);
 
     close.setPos(
-        bg.x + bg.width() - bg.marginHor() / 2 - MARGIN_HOR - close.width(),
-        y + (height - close.height()) / 2);
+        (bg.x + bg.width()) - (bg.marginHor() / 2) - MARGIN_HOR - close.width(),
+        y + ((height - close.height()) / 2));
 
     text.x = close.left() - MARGIN_HOR - text.width();
-    text.y = y + (height - text.height()) / 2;
+    text.y = y + ((height - text.height()) / 2);
     PixelScene.align(text);
   }
 
-  public void text(String txt) {
-    text.text(txt);
-    text.measure();
+  protected void onClose() {
   }
 
-  protected void onClose() {
+  public void text(final String txt) {
+    text.text(txt);
+    text.measure();
   };
 }

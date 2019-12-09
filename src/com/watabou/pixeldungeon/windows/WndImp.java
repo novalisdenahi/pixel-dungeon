@@ -71,7 +71,7 @@ public class WndImp extends Window {
     resize(WIDTH, (int) btnReward.bottom());
   }
 
-  private void takeReward(Imp imp, DwarfToken tokens, Item reward) {
+  private void takeReward(final Imp imp, final DwarfToken tokens, final Item reward) {
 
     hide();
 

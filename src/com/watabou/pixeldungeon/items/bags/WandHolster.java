@@ -31,12 +31,7 @@ public class WandHolster extends Bag {
   }
 
   @Override
-  public boolean grab(Item item) {
-    return item instanceof Wand;
-  }
-
-  @Override
-  public boolean collect(Bag container) {
+  public boolean collect(final Bag container) {
     if (super.collect(container)) {
       if (owner != null) {
         for (Item item : items) {
@@ -50,6 +45,17 @@ public class WandHolster extends Bag {
   }
 
   @Override
+  public boolean grab(final Item item) {
+    return item instanceof Wand;
+  }
+
+  @Override
+  public String info() {
+    return "This slim holder is made of leather of some exotic animal. " +
+        "It allows to compactly carry up to " + size + " wands.";
+  }
+
+  @Override
   public void onDetach() {
     for (Item item : items) {
       ((Wand) item).stopCharging();
@@ -59,11 +65,5 @@ public class WandHolster extends Bag {
   @Override
   public int price() {
     return 50;
-  }
-
-  @Override
-  public String info() {
-    return "This slim holder is made of leather of some exotic animal. " +
-        "It allows to compactly carry up to " + size + " wands.";
   }
 }

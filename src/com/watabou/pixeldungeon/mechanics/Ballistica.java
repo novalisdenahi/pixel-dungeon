@@ -25,7 +25,8 @@ public class Ballistica {
   public static int[] trace = new int[Math.max(Level.WIDTH, Level.HEIGHT)];
   public static int distance;
 
-  public static int cast(int from, int to, boolean magic, boolean hitChars) {
+  public static int cast(final int from, final int to, final boolean magic,
+      final boolean hitChars) {
 
     int w = Level.WIDTH;
 
@@ -70,7 +71,7 @@ public class Ballistica {
     int cell = from;
 
     int err = dA / 2;
-    while (cell != to || magic) {
+    while ((cell != to) || magic) {
 
       cell += stepA;
 
@@ -86,7 +87,7 @@ public class Ballistica {
         return trace[--distance - 1];
       }
 
-      if (Level.losBlocking[cell] || (hitChars && Actor.findChar(cell) != null)) {
+      if (Level.losBlocking[cell] || (hitChars && (Actor.findChar(cell) != null))) {
         return cell;
       }
     }

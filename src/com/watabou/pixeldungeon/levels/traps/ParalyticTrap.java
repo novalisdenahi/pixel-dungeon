@@ -27,9 +27,9 @@ public class ParalyticTrap {
 
   // 0xCCCC55
 
-  public static void trigger(int pos, Char ch) {
+  public static void trigger(final int pos, final Char ch) {
 
-    GameScene.add(Blob.seed(pos, 80 + 5 * Dungeon.depth, ParalyticGas.class));
+    GameScene.add(Blob.seed(pos, 80 + (5 * Dungeon.depth), ParalyticGas.class));
 
   }
 }

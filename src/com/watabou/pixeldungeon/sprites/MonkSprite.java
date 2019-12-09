@@ -51,7 +51,7 @@ public class MonkSprite extends MobSprite {
   }
 
   @Override
-  public void attack(int cell) {
+  public void attack(final int cell) {
     super.attack(cell);
     if (Random.Float() < 0.5f) {
       play(kick);
@@ -59,7 +59,7 @@ public class MonkSprite extends MobSprite {
   }
 
   @Override
-  public void onComplete(Animation anim) {
+  public void onComplete(final Animation anim) {
     super.onComplete(anim == kick ? attack : anim);
   }
 }

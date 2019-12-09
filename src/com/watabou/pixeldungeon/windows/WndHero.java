@@ -38,56 +38,41 @@ import com.watabou.pixeldungeon.utils.Utils;
 
 public class WndHero extends WndTabbed {
 
-  private static final String TXT_STATS = "Stats";
-  private static final String TXT_BUFFS = "Buffs";
+  private class BuffsTab extends Group {
 
-  private static final String TXT_EXP = "Experience";
-  private static final String TXT_STR = "Strength";
-  private static final String TXT_HEALTH = "Health";
-  private static final String TXT_GOLD = "Gold Collected";
-  private static final String TXT_DEPTH = "Maximum Depth";
+    private static final int GAP = 2;
 
-  private static final int WIDTH = 100;
-  private static final int TAB_WIDTH = 40;
+    private float pos;
 
-  private StatsTab stats;
-  private BuffsTab buffs;
-
-  private SmartTexture icons;
-  private TextureFilm film;
-
-  public WndHero() {
-
-    super();
-
-    icons = TextureCache.get(Assets.BUFFS_LARGE);
-    film = new TextureFilm(icons, 16, 16);
-
-    stats = new StatsTab();
-    add(stats);
-
-    buffs = new BuffsTab();
-    add(buffs);
-
-    add(new LabeledTab(TXT_STATS) {
-      protected void select(boolean value) {
-        super.select(value);
-        stats.visible = stats.active = selected;
-      };
-    });
-    add(new LabeledTab(TXT_BUFFS) {
-      protected void select(boolean value) {
-        super.select(value);
-        buffs.visible = buffs.active = selected;
-      };
-    });
-    for (Tab tab : tabs) {
-      tab.setSize(TAB_WIDTH, tabHeight());
+    public BuffsTab() {
+      for (Buff buff : Dungeon.hero.buffs()) {
+        buffSlot(buff);
+      }
     }
 
-    resize(WIDTH, (int) Math.max(stats.height(), buffs.height()));
+    private void buffSlot(final Buff buff) {
 
-    select(0);
+      int index = buff.icon();
+
+      if (index != BuffIndicator.NONE) {
+
+        Image icon = new Image(icons);
+        icon.frame(film.get(index));
+        icon.y = pos;
+        add(icon);
+
+        BitmapText txt = PixelScene.createText(buff.toString(), 8);
+        txt.x = icon.width + GAP;
+        txt.y = pos + ((int) (icon.height - txt.baseLine()) / 2);
+        add(txt);
+
+        pos += GAP + icon.height;
+      }
+    }
+
+    public float height() {
+      return pos;
+    }
   }
 
   private class StatsTab extends Group {
@@ -147,7 +132,15 @@ public class WndHero extends WndTabbed {
       pos += GAP;
     }
 
-    private void statSlot(String label, String value) {
+    public float height() {
+      return pos;
+    }
+
+    private void statSlot(final String label, final int value) {
+      statSlot(label, Integer.toString(value));
+    }
+
+    private void statSlot(final String label, final String value) {
 
       BitmapText txt = PixelScene.createText(label, 8);
       txt.y = pos;
@@ -161,50 +154,60 @@ public class WndHero extends WndTabbed {
 
       pos += GAP + txt.baseLine();
     }
-
-    private void statSlot(String label, int value) {
-      statSlot(label, Integer.toString(value));
-    }
-
-    public float height() {
-      return pos;
-    }
   }
 
-  private class BuffsTab extends Group {
+  private static final String TXT_STATS = "Stats";
+  private static final String TXT_BUFFS = "Buffs";
+  private static final String TXT_EXP = "Experience";
+  private static final String TXT_STR = "Strength";
+  private static final String TXT_HEALTH = "Health";
 
-    private static final int GAP = 2;
+  private static final String TXT_GOLD = "Gold Collected";
+  private static final String TXT_DEPTH = "Maximum Depth";
 
-    private float pos;
+  private static final int WIDTH = 100;
+  private static final int TAB_WIDTH = 40;
 
-    public BuffsTab() {
-      for (Buff buff : Dungeon.hero.buffs()) {
-        buffSlot(buff);
-      }
+  private StatsTab stats;
+  private BuffsTab buffs;
+
+  private SmartTexture icons;
+
+  private TextureFilm film;
+
+  public WndHero() {
+
+    super();
+
+    icons = TextureCache.get(Assets.BUFFS_LARGE);
+    film = new TextureFilm(icons, 16, 16);
+
+    stats = new StatsTab();
+    add(stats);
+
+    buffs = new BuffsTab();
+    add(buffs);
+
+    add(new LabeledTab(TXT_STATS) {
+      @Override
+      protected void select(final boolean value) {
+        super.select(value);
+        stats.visible = stats.active = selected;
+      };
+    });
+    add(new LabeledTab(TXT_BUFFS) {
+      @Override
+      protected void select(final boolean value) {
+        super.select(value);
+        buffs.visible = buffs.active = selected;
+      };
+    });
+    for (Tab tab : tabs) {
+      tab.setSize(TAB_WIDTH, tabHeight());
     }
 
-    private void buffSlot(Buff buff) {
+    resize(WIDTH, (int) Math.max(stats.height(), buffs.height()));
 
-      int index = buff.icon();
-
-      if (index != BuffIndicator.NONE) {
-
-        Image icon = new Image(icons);
-        icon.frame(film.get(index));
-        icon.y = pos;
-        add(icon);
-
-        BitmapText txt = PixelScene.createText(buff.toString(), 8);
-        txt.x = icon.width + GAP;
-        txt.y = pos + (int) (icon.height - txt.baseLine()) / 2;
-        add(txt);
-
-        pos += GAP + icon.height;
-      }
-    }
-
-    public float height() {
-      return pos;
-    }
+    select(0);
   }
 }

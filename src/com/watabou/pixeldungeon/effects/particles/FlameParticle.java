@@ -18,14 +18,14 @@
 package com.watabou.pixeldungeon.effects.particles;
 
 import com.watabou.noosa.particles.Emitter;
-import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.noosa.particles.Emitter.Factory;
+import com.watabou.noosa.particles.PixelParticle;
 
 public class FlameParticle extends PixelParticle.Shrinking {
 
   public static final Emitter.Factory FACTORY = new Factory() {
     @Override
-    public void emit(Emitter emitter, int index, float x, float y) {
+    public void emit(final Emitter emitter, final int index, final float x, final float y) {
       ((FlameParticle) emitter.recycle(FlameParticle.class)).reset(x, y);
     }
 
@@ -44,7 +44,7 @@ public class FlameParticle extends PixelParticle.Shrinking {
     acc.set(0, -80);
   }
 
-  public void reset(float x, float y) {
+  public void reset(final float x, final float y) {
     revive();
 
     this.x = x;

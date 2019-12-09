@@ -31,7 +31,18 @@ public class Slow extends Weapon.Enchantment {
   private static ItemSprite.Glowing BLUE = new ItemSprite.Glowing(0x0044FF);
 
   @Override
-  public boolean proc(Weapon weapon, Char attacker, Char defender, int damage) {
+  public Glowing glowing() {
+    return BLUE;
+  }
+
+  @Override
+  public String name(final String weaponName) {
+    return String.format(TXT_CHILLING, weaponName);
+  }
+
+  @Override
+  public boolean proc(final Weapon weapon, final Char attacker, final Char defender,
+      final int damage) {
     // lvl 0 - 25%
     // lvl 1 - 40%
     // lvl 2 - 50%
@@ -46,16 +57,6 @@ public class Slow extends Weapon.Enchantment {
     } else {
       return false;
     }
-  }
-
-  @Override
-  public Glowing glowing() {
-    return BLUE;
-  }
-
-  @Override
-  public String name(String weaponName) {
-    return String.format(TXT_CHILLING, weaponName);
   }
 
 }

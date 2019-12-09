@@ -42,14 +42,14 @@ public class PhantomFish extends Item {
   }
 
   @Override
-  public ArrayList<String> actions(Hero hero) {
+  public ArrayList<String> actions(final Hero hero) {
     ArrayList<String> actions = super.actions(hero);
     actions.add(AC_EAT);
     return actions;
   }
 
   @Override
-  public void execute(final Hero hero, String action) {
+  public void execute(final Hero hero, final String action) {
     if (action.equals(AC_EAT)) {
 
       detach(hero.belongings.backpack);
@@ -72,8 +72,9 @@ public class PhantomFish extends Item {
   }
 
   @Override
-  public boolean isUpgradable() {
-    return false;
+  public String info() {
+    return "You can barely see this tiny translucent fish in the air. " +
+        "In the water it becomes effectively invisible.";
   }
 
   @Override
@@ -82,8 +83,7 @@ public class PhantomFish extends Item {
   }
 
   @Override
-  public String info() {
-    return "You can barely see this tiny translucent fish in the air. " +
-        "In the water it becomes effectively invisible.";
+  public boolean isUpgradable() {
+    return false;
   }
 }

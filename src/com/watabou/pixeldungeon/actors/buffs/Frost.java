@@ -30,12 +30,17 @@ public class Frost extends FlavourBuff {
 
   private static final float DURATION = 5f;
 
+  public static float duration(final Char ch) {
+    Resistance r = ch.buff(Resistance.class);
+    return r != null ? r.durationFactor() * DURATION : DURATION;
+  }
+
   @Override
-  public boolean attachTo(Char target) {
+  public boolean attachTo(final Char target) {
     if (super.attachTo(target)) {
 
       target.paralysed = true;
-      Burning.detach(target, Burning.class);
+      Buff.detach(target, Burning.class);
 
       if (target instanceof Hero) {
         Hero hero = (Hero) target;
@@ -70,10 +75,5 @@ public class Frost extends FlavourBuff {
   @Override
   public String toString() {
     return "Frozen";
-  }
-
-  public static float duration(Char ch) {
-    Resistance r = ch.buff(Resistance.class);
-    return r != null ? r.durationFactor() * DURATION : DURATION;
   }
 }

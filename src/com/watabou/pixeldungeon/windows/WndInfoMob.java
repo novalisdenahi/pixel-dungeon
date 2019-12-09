@@ -28,21 +28,6 @@ import com.watabou.pixeldungeon.utils.Utils;
 
 public class WndInfoMob extends WndTitledMessage {
 
-  public WndInfoMob(Mob mob) {
-
-    super(new MobTitle(mob), desc(mob));
-
-  }
-
-  private static String desc(Mob mob) {
-
-    StringBuilder builder = new StringBuilder(mob.description());
-
-    builder.append("\n\n" + mob.state.status() + ".");
-
-    return builder.toString();
-  }
-
   private static class MobTitle extends Component {
 
     private static final int GAP = 2;
@@ -52,7 +37,7 @@ public class WndInfoMob extends WndTitledMessage {
     private HealthBar health;
     private BuffIndicator buffs;
 
-    public MobTitle(Mob mob) {
+    public MobTitle(final Mob mob) {
 
       name = PixelScene.createText(Utils.capitalize(mob.name), 9);
       name.hardlight(TITLE_COLOR);
@@ -74,7 +59,7 @@ public class WndInfoMob extends WndTitledMessage {
     protected void layout() {
 
       image.x = 0;
-      image.y = Math.max(0, name.height() + GAP + health.height() - image.height);
+      image.y = Math.max(0, (name.height() + GAP + health.height()) - image.height);
 
       name.x = image.width + GAP;
       name.y = image.height - health.height() - GAP - name.baseLine();
@@ -85,9 +70,24 @@ public class WndInfoMob extends WndTitledMessage {
 
       buffs.setPos(
           name.x + name.width() + GAP,
-          name.y + name.baseLine() - BuffIndicator.SIZE);
+          (name.y + name.baseLine()) - BuffIndicator.SIZE);
 
       height = health.bottom();
     }
+  }
+
+  private static String desc(final Mob mob) {
+
+    StringBuilder builder = new StringBuilder(mob.description());
+
+    builder.append("\n\n" + mob.state.status() + ".");
+
+    return builder.toString();
+  }
+
+  public WndInfoMob(final Mob mob) {
+
+    super(new MobTitle(mob), WndInfoMob.desc(mob));
+
   }
 }

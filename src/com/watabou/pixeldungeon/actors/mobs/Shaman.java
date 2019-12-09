@@ -41,6 +41,12 @@ public class Shaman extends Mob implements Callback {
 
   private static final String TXT_LIGHTNING_KILLED = "%s's lightning bolt killed you...";
 
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(LightningTrap.Electricity.class);
+  }
+
   {
     name = "gnoll shaman";
     spriteClass = ShamanSprite.class;
@@ -56,27 +62,34 @@ public class Shaman extends Mob implements Callback {
   }
 
   @Override
+  public int attackSkill(final Char target) {
+    return 11;
+  }
+
+  @Override
+  public void call() {
+    next();
+  }
+
+  @Override
+  protected boolean canAttack(final Char enemy) {
+    return Ballistica.cast(pos, enemy.pos, false, true) == enemy.pos;
+  }
+
+  @Override
   public int damageRoll() {
     return Random.NormalIntRange(2, 6);
   }
 
   @Override
-  public int attackSkill(Char target) {
-    return 11;
+  public String description() {
+    return "The most intelligent gnolls can master shamanistic magic. Gnoll shamans prefer " +
+        "battle spells to compensate for lack of might, not hesitating to use them " +
+        "on those who question their status in a tribe.";
   }
 
   @Override
-  public int dr() {
-    return 4;
-  }
-
-  @Override
-  protected boolean canAttack(Char enemy) {
-    return Ballistica.cast(pos, enemy.pos, false, true) == enemy.pos;
-  }
-
-  @Override
-  protected boolean doAttack(Char enemy) {
+  protected boolean doAttack(final Char enemy) {
 
     if (Level.distance(pos, enemy.pos) <= 1) {
 
@@ -91,7 +104,7 @@ public class Shaman extends Mob implements Callback {
 
       spend(TIME_TO_ZAP);
 
-      if (hit(this, enemy, true)) {
+      if (Char.hit(this, enemy, true)) {
         int dmg = Random.Int(2, 12);
         if (Level.water[enemy.pos] && !enemy.flying) {
           dmg *= 1.5f;
@@ -120,20 +133,8 @@ public class Shaman extends Mob implements Callback {
   }
 
   @Override
-  public void call() {
-    next();
-  }
-
-  @Override
-  public String description() {
-    return "The most intelligent gnolls can master shamanistic magic. Gnoll shamans prefer " +
-        "battle spells to compensate for lack of might, not hesitating to use them " +
-        "on those who question their status in a tribe.";
-  }
-
-  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
-  static {
-    RESISTANCES.add(LightningTrap.Electricity.class);
+  public int dr() {
+    return 4;
   }
 
   @Override

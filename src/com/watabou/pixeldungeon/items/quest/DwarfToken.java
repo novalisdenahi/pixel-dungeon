@@ -31,8 +31,10 @@ public class DwarfToken extends Item {
   }
 
   @Override
-  public boolean isUpgradable() {
-    return false;
+  public String info() {
+    return "Many dwarves and some of their larger creations carry these small pieces of metal of unknown purpose. "
+        +
+        "Maybe they are jewelry or maybe some kind of ID. Dwarves are strange folk.";
   }
 
   @Override
@@ -41,10 +43,8 @@ public class DwarfToken extends Item {
   }
 
   @Override
-  public String info() {
-    return "Many dwarves and some of their larger creations carry these small pieces of metal of unknown purpose. "
-        +
-        "Maybe they are jewelry or maybe some kind of ID. Dwarves are strange folk.";
+  public boolean isUpgradable() {
+    return false;
   }
 
   @Override

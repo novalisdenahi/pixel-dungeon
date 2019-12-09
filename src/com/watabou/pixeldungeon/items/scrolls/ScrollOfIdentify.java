@@ -32,7 +32,12 @@ public class ScrollOfIdentify extends InventoryScroll {
   }
 
   @Override
-  protected void onItemSelected(Item item) {
+  public String desc() {
+    return "Permanently reveals all of the secrets of a single item.";
+  }
+
+  @Override
+  protected void onItemSelected(final Item item) {
 
     curUser.sprite.parent.add(new Identification(curUser.sprite.center().offset(0, -16)));
 
@@ -40,11 +45,6 @@ public class ScrollOfIdentify extends InventoryScroll {
     GLog.i("It is " + item);
 
     Badges.validateItemLevelAquired(item);
-  }
-
-  @Override
-  public String desc() {
-    return "Permanently reveals all of the secrets of a single item.";
   }
 
   @Override

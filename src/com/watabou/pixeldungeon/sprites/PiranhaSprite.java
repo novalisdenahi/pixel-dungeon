@@ -46,7 +46,7 @@ public class PiranhaSprite extends MobSprite {
   }
 
   @Override
-  public void onComplete(Animation anim) {
+  public void onComplete(final Animation anim) {
     super.onComplete(anim);
 
     if (anim == attack) {

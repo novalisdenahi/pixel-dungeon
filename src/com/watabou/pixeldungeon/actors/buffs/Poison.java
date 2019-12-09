@@ -30,36 +30,14 @@ import com.watabou.utils.Bundle;
 
 public class Poison extends Buff implements Hero.Doom {
 
-  protected float left;
-
   private static final String LEFT = "left";
 
-  @Override
-  public void storeInBundle(Bundle bundle) {
-    super.storeInBundle(bundle);
-    bundle.put(LEFT, left);
-
+  public static float durationFactor(final Char ch) {
+    Resistance r = ch.buff(Resistance.class);
+    return r != null ? r.durationFactor() : 1;
   }
 
-  @Override
-  public void restoreFromBundle(Bundle bundle) {
-    super.restoreFromBundle(bundle);
-    left = bundle.getFloat(LEFT);
-  }
-
-  public void set(float duration) {
-    this.left = duration;
-  };
-
-  @Override
-  public int icon() {
-    return BuffIndicator.POISON;
-  }
-
-  @Override
-  public String toString() {
-    return "Poisoned";
-  }
+  protected float left;
 
   @Override
   public boolean act() {
@@ -81,10 +59,10 @@ public class Poison extends Buff implements Hero.Doom {
     return true;
   }
 
-  public static float durationFactor(Char ch) {
-    Resistance r = ch.buff(Resistance.class);
-    return r != null ? r.durationFactor() : 1;
-  }
+  @Override
+  public int icon() {
+    return BuffIndicator.POISON;
+  };
 
   @Override
   public void onDeath() {
@@ -92,5 +70,27 @@ public class Poison extends Buff implements Hero.Doom {
 
     Dungeon.fail(Utils.format(ResultDescriptions.POISON, Dungeon.depth));
     GLog.n("You died from poison...");
+  }
+
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    left = bundle.getFloat(LEFT);
+  }
+
+  public void set(final float duration) {
+    left = duration;
+  }
+
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(LEFT, left);
+
+  }
+
+  @Override
+  public String toString() {
+    return "Poisoned";
   }
 }

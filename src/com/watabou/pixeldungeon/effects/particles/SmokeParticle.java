@@ -18,15 +18,15 @@
 package com.watabou.pixeldungeon.effects.particles;
 
 import com.watabou.noosa.particles.Emitter;
-import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.noosa.particles.Emitter.Factory;
+import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.Random;
 
 public class SmokeParticle extends PixelParticle {
 
   public static final Emitter.Factory FACTORY = new Factory() {
     @Override
-    public void emit(Emitter emitter, int index, float x, float y) {
+    public void emit(final Emitter emitter, final int index, final float x, final float y) {
       ((SmokeParticle) emitter.recycle(SmokeParticle.class)).reset(x, y);
     }
   };
@@ -39,7 +39,7 @@ public class SmokeParticle extends PixelParticle {
     acc.set(0, -40);
   }
 
-  public void reset(float x, float y) {
+  public void reset(final float x, final float y) {
     revive();
 
     this.x = x;
@@ -54,7 +54,7 @@ public class SmokeParticle extends PixelParticle {
     super.update();
 
     float p = left / lifespan;
-    am = p > 0.8f ? 2 - 2 * p : p * 0.5f;
-    size(16 - p * 8);
+    am = p > 0.8f ? 2 - (2 * p) : p * 0.5f;
+    size(16 - (p * 8));
   }
 }

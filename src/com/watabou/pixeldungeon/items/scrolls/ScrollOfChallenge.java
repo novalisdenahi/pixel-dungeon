@@ -37,6 +37,12 @@ public class ScrollOfChallenge extends Scroll {
   }
 
   @Override
+  public String desc() {
+    return "When read aloud, this scroll will unleash a challenging roar " +
+        "that will awaken all monsters and alert them to the reader's location.";
+  }
+
+  @Override
   protected void doRead() {
 
     for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
@@ -64,11 +70,5 @@ public class ScrollOfChallenge extends Scroll {
     Invisibility.dispel();
 
     readAnimation();
-  }
-
-  @Override
-  public String desc() {
-    return "When read aloud, this scroll will unleash a challenging roar " +
-        "that will awaken all monsters and alert them to the reader's location.";
   }
 }

@@ -27,11 +27,11 @@ import com.watabou.utils.Random;
 
 public class BlacksmithPainter extends Painter {
 
-  public static void paint(Level level, Room room) {
+  public static void paint(final Level level, final Room room) {
 
-    fill(level, room, Terrain.WALL);
-    fill(level, room, 1, Terrain.FIRE_TRAP);
-    fill(level, room, 2, Terrain.EMPTY_SP);
+    Painter.fill(level, room, Terrain.WALL);
+    Painter.fill(level, room, 1, Terrain.FIRE_TRAP);
+    Painter.fill(level, room, 2, Terrain.EMPTY_SP);
 
     for (int i = 0; i < 2; i++) {
       int pos;
@@ -47,7 +47,7 @@ public class BlacksmithPainter extends Painter {
 
     for (Room.Door door : room.connected.values()) {
       door.set(Room.Door.Type.UNLOCKED);
-      drawInside(level, room, door, 1, Terrain.EMPTY);
+      Painter.drawInside(level, room, door, 1, Terrain.EMPTY);
     }
 
     Blacksmith npc = new Blacksmith();

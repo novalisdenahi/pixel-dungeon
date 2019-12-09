@@ -24,9 +24,15 @@ import com.watabou.utils.Bundle;
 
 public class GamesInProgress {
 
+  public static class Info {
+    public int depth;
+    public int level;
+    public boolean challenges;
+  }
+
   private static HashMap<HeroClass, Info> state = new HashMap<HeroClass, Info>();
 
-  public static Info check(HeroClass cl) {
+  public static Info check(final HeroClass cl) {
 
     if (state.containsKey(cl)) {
 
@@ -51,7 +57,12 @@ public class GamesInProgress {
     }
   }
 
-  public static void set(HeroClass cl, int depth, int level, boolean challenges) {
+  public static void delete(final HeroClass cl) {
+    state.put(cl, null);
+  }
+
+  public static void set(final HeroClass cl, final int depth, final int level,
+      final boolean challenges) {
     Info info = new Info();
     info.depth = depth;
     info.level = level;
@@ -59,17 +70,7 @@ public class GamesInProgress {
     state.put(cl, info);
   }
 
-  public static void setUnknown(HeroClass cl) {
+  public static void setUnknown(final HeroClass cl) {
     state.remove(cl);
-  }
-
-  public static void delete(HeroClass cl) {
-    state.put(cl, null);
-  }
-
-  public static class Info {
-    public int depth;
-    public int level;
-    public boolean challenges;
   }
 }

@@ -18,8 +18,8 @@
 package com.watabou.pixeldungeon.effects.particles;
 
 import com.watabou.noosa.particles.Emitter;
-import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.noosa.particles.Emitter.Factory;
+import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.ColorMath;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
@@ -28,14 +28,14 @@ public class PurpleParticle extends PixelParticle {
 
   public static final Emitter.Factory MISSILE = new Factory() {
     @Override
-    public void emit(Emitter emitter, int index, float x, float y) {
+    public void emit(final Emitter emitter, final int index, final float x, final float y) {
       ((PurpleParticle) emitter.recycle(PurpleParticle.class)).reset(x, y);
     }
   };
 
   public static final Emitter.Factory BURST = new Factory() {
     @Override
-    public void emit(Emitter emitter, int index, float x, float y) {
+    public void emit(final Emitter emitter, final int index, final float x, final float y) {
       ((PurpleParticle) emitter.recycle(PurpleParticle.class)).resetBurst(x, y);
     }
 
@@ -51,7 +51,7 @@ public class PurpleParticle extends PixelParticle {
     lifespan = 0.5f;
   }
 
-  public void reset(float x, float y) {
+  public void reset(final float x, final float y) {
     revive();
 
     this.x = x;
@@ -62,7 +62,7 @@ public class PurpleParticle extends PixelParticle {
     left = lifespan;
   }
 
-  public void resetBurst(float x, float y) {
+  public void resetBurst(final float x, final float y) {
     revive();
 
     this.x = x;
@@ -77,7 +77,7 @@ public class PurpleParticle extends PixelParticle {
   public void update() {
     super.update();
     // alpha: 1 -> 0; size: 1 -> 5
-    size(5 - (am = left / lifespan) * 4);
+    size(5 - ((am = left / lifespan) * 4));
     // color: 0xFF0044 -> 0x220066
     color(ColorMath.interpolate(0x220066, 0xFF0044, am));
   }

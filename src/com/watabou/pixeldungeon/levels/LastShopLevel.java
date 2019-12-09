@@ -38,13 +38,8 @@ public class LastShopLevel extends RegularLevel {
   }
 
   @Override
-  public String tilesTex() {
-    return Assets.TILES_CITY;
-  }
-
-  @Override
-  public String waterTex() {
-    return Assets.WATER_CITY;
+  public void addVisuals(final Scene scene) {
+    CityLevel.addVisuals(this, scene);
   }
 
   @Override
@@ -62,7 +57,7 @@ public class LastShopLevel extends RegularLevel {
           return false;
         }
         roomEntrance = Random.element(rooms);
-      } while (roomEntrance.width() < 4 || roomEntrance.height() < 4);
+      } while ((roomEntrance.width() < 4) || (roomEntrance.height() < 4));
 
       innerRetry = 0;
       do {
@@ -70,8 +65,8 @@ public class LastShopLevel extends RegularLevel {
           return false;
         }
         roomExit = Random.element(rooms);
-      } while (roomExit == roomEntrance || roomExit.width() < 6 || roomExit.height() < 6
-          || roomExit.top == 0);
+      } while ((roomExit == roomEntrance) || (roomExit.width() < 6) || (roomExit.height() < 6)
+          || (roomExit.top == 0));
 
       Graph.buildDistanceMap(rooms, roomExit);
       distance = Graph.buildPath(rooms, roomEntrance, roomExit).size();
@@ -102,7 +97,7 @@ public class LastShopLevel extends RegularLevel {
     Room roomShop = null;
     int shopSquare = 0;
     for (Room r : rooms) {
-      if (r.type == Type.NULL && r.connected.size() > 0) {
+      if ((r.type == Type.NULL) && (r.connected.size() > 0)) {
         r.type = Type.PASSAGE;
         if (r.square() > shopSquare) {
           roomShop = r;
@@ -111,7 +106,7 @@ public class LastShopLevel extends RegularLevel {
       }
     }
 
-    if (roomShop == null || shopSquare < 30) {
+    if ((roomShop == null) || (shopSquare < 30)) {
       return false;
     } else {
       roomShop.type = Imp.Quest.isCompleted() ? Room.Type.SHOP : Room.Type.STANDARD;
@@ -126,14 +121,30 @@ public class LastShopLevel extends RegularLevel {
   }
 
   @Override
+  protected void createItems() {
+    Item item = Bones.get();
+    if (item != null) {
+      int pos;
+      do {
+        pos = roomEntrance.random();
+      } while ((pos == entrance) || (map[pos] == Terrain.SIGN));
+      drop(item, pos).type = Heap.Type.SKELETON;
+    }
+  }
+
+  @Override
+  protected void createMobs() {
+  }
+
+  @Override
   protected void decorate() {
 
     for (int i = 0; i < LENGTH; i++) {
-      if (map[i] == Terrain.EMPTY && Random.Int(10) == 0) {
+      if ((map[i] == Terrain.EMPTY) && (Random.Int(10) == 0)) {
 
         map[i] = Terrain.EMPTY_DECO;
 
-      } else if (map[i] == Terrain.WALL && Random.Int(8) == 0) {
+      } else if ((map[i] == Terrain.WALL) && (Random.Int(8) == 0)) {
 
         map[i] = Terrain.WALL_DECO;
 
@@ -156,23 +167,8 @@ public class LastShopLevel extends RegularLevel {
   }
 
   @Override
-  protected void createMobs() {
-  }
-
-  public Actor respawner() {
-    return null;
-  }
-
-  @Override
-  protected void createItems() {
-    Item item = Bones.get();
-    if (item != null) {
-      int pos;
-      do {
-        pos = roomEntrance.random();
-      } while (pos == entrance || map[pos] == Terrain.SIGN);
-      drop(item, pos).type = Heap.Type.SKELETON;
-    }
+  protected boolean[] grass() {
+    return Patch.generate(0.30f, 3);
   }
 
   @Override
@@ -181,19 +177,12 @@ public class LastShopLevel extends RegularLevel {
   }
 
   @Override
-  public String tileName(int tile) {
-    switch (tile) {
-      case Terrain.WATER:
-        return "Suspiciously colored water";
-      case Terrain.HIGH_GRASS:
-        return "High blooming flowers";
-      default:
-        return super.tileName(tile);
-    }
+  public Actor respawner() {
+    return null;
   }
 
   @Override
-  public String tileDesc(int tile) {
+  public String tileDesc(final int tile) {
     switch (tile) {
       case Terrain.ENTRANCE:
         return "A ramp leads up to the upper depth.";
@@ -210,17 +199,29 @@ public class LastShopLevel extends RegularLevel {
   }
 
   @Override
+  public String tileName(final int tile) {
+    switch (tile) {
+      case Terrain.WATER:
+        return "Suspiciously colored water";
+      case Terrain.HIGH_GRASS:
+        return "High blooming flowers";
+      default:
+        return super.tileName(tile);
+    }
+  }
+
+  @Override
+  public String tilesTex() {
+    return Assets.TILES_CITY;
+  }
+
+  @Override
   protected boolean[] water() {
     return Patch.generate(0.35f, 4);
   }
 
   @Override
-  protected boolean[] grass() {
-    return Patch.generate(0.30f, 3);
-  }
-
-  @Override
-  public void addVisuals(Scene scene) {
-    CityLevel.addVisuals(this, scene);
+  public String waterTex() {
+    return Assets.WATER_CITY;
   }
 }

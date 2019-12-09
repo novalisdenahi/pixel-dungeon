@@ -30,8 +30,8 @@ public class RatSkull extends Item {
   }
 
   @Override
-  public boolean isUpgradable() {
-    return false;
+  public String info() {
+    return "It could be a nice hunting trophy, but it smells too bad to place it on a wall.";
   }
 
   @Override
@@ -40,8 +40,8 @@ public class RatSkull extends Item {
   }
 
   @Override
-  public String info() {
-    return "It could be a nice hunting trophy, but it smells too bad to place it on a wall.";
+  public boolean isUpgradable() {
+    return false;
   }
 
   @Override

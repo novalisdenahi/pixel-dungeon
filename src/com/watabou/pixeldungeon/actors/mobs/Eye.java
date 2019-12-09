@@ -42,6 +42,20 @@ public class Eye extends Mob {
 
   private static final String TXT_DEATHGAZE_KILLED = "%s's deathgaze killed you...";
 
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(WandOfDisintegration.class);
+    RESISTANCES.add(Death.class);
+    RESISTANCES.add(Leech.class);
+  }
+
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(Terror.class);
+  }
+
   {
     name = "evil eye";
     spriteClass = EyeSprite.class;
@@ -59,15 +73,52 @@ public class Eye extends Mob {
     lootChance = 0.5f;
   }
 
-  @Override
-  public int dr() {
-    return 10;
-  }
-
   private int hitCell;
 
   @Override
-  protected boolean canAttack(Char enemy) {
+  public boolean attack(final Char enemy) {
+
+    for (int i = 1; i < Ballistica.distance; i++) {
+
+      int pos = Ballistica.trace[i];
+
+      Char ch = Actor.findChar(pos);
+      if (ch == null) {
+        continue;
+      }
+
+      if (Char.hit(this, ch, true)) {
+        ch.damage(Random.NormalIntRange(14, 20), this);
+
+        if (Dungeon.visible[pos]) {
+          ch.sprite.flash();
+          CellEmitter.center(pos).burst(PurpleParticle.BURST, Random.IntRange(1, 2));
+        }
+
+        if (!ch.isAlive() && (ch == Dungeon.hero)) {
+          Dungeon.fail(Utils.format(ResultDescriptions.MOB, Utils.indefinite(name), Dungeon.depth));
+          GLog.n(TXT_DEATHGAZE_KILLED, name);
+        }
+      } else {
+        ch.sprite.showStatus(CharSprite.NEUTRAL, ch.defenseVerb());
+      }
+    }
+
+    return true;
+  }
+
+  @Override
+  protected float attackDelay() {
+    return 1.6f;
+  }
+
+  @Override
+  public int attackSkill(final Char target) {
+    return 30;
+  }
+
+  @Override
+  protected boolean canAttack(final Char enemy) {
 
     hitCell = Ballistica.cast(pos, enemy.pos, true, false);
 
@@ -80,17 +131,13 @@ public class Eye extends Mob {
   }
 
   @Override
-  public int attackSkill(Char target) {
-    return 30;
+  public String description() {
+    return "One of this demon's other names is \"orb of hatred\", because when it sees an enemy, " +
+        "it uses its deathgaze recklessly, often ignoring its allies and wounding them.";
   }
 
   @Override
-  protected float attackDelay() {
-    return 1.6f;
-  }
-
-  @Override
-  protected boolean doAttack(Char enemy) {
+  protected boolean doAttack(final Char enemy) {
 
     spend(attackDelay());
 
@@ -112,62 +159,17 @@ public class Eye extends Mob {
   }
 
   @Override
-  public boolean attack(Char enemy) {
-
-    for (int i = 1; i < Ballistica.distance; i++) {
-
-      int pos = Ballistica.trace[i];
-
-      Char ch = Actor.findChar(pos);
-      if (ch == null) {
-        continue;
-      }
-
-      if (hit(this, ch, true)) {
-        ch.damage(Random.NormalIntRange(14, 20), this);
-
-        if (Dungeon.visible[pos]) {
-          ch.sprite.flash();
-          CellEmitter.center(pos).burst(PurpleParticle.BURST, Random.IntRange(1, 2));
-        }
-
-        if (!ch.isAlive() && ch == Dungeon.hero) {
-          Dungeon.fail(Utils.format(ResultDescriptions.MOB, Utils.indefinite(name), Dungeon.depth));
-          GLog.n(TXT_DEATHGAZE_KILLED, name);
-        }
-      } else {
-        ch.sprite.showStatus(CharSprite.NEUTRAL, ch.defenseVerb());
-      }
-    }
-
-    return true;
-  }
-
-  @Override
-  public String description() {
-    return "One of this demon's other names is \"orb of hatred\", because when it sees an enemy, " +
-        "it uses its deathgaze recklessly, often ignoring its allies and wounding them.";
-  }
-
-  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
-  static {
-    RESISTANCES.add(WandOfDisintegration.class);
-    RESISTANCES.add(Death.class);
-    RESISTANCES.add(Leech.class);
-  }
-
-  @Override
-  public HashSet<Class<?>> resistances() {
-    return RESISTANCES;
-  }
-
-  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-  static {
-    IMMUNITIES.add(Terror.class);
+  public int dr() {
+    return 10;
   }
 
   @Override
   public HashSet<Class<?>> immunities() {
     return IMMUNITIES;
+  }
+
+  @Override
+  public HashSet<Class<?>> resistances() {
+    return RESISTANCES;
   }
 }

@@ -29,20 +29,20 @@ public class AlchemyPot {
   private static Hero hero;
   private static int pos;
 
-  public static void operate(Hero hero, int pos) {
+  private static final WndBag.Listener itemSelector = new WndBag.Listener() {
+    @Override
+    public void onSelect(final Item item) {
+      if (item != null) {
+        item.cast(hero, pos);
+      }
+    }
+  };
+
+  public static void operate(final Hero hero, final int pos) {
 
     AlchemyPot.hero = hero;
     AlchemyPot.pos = pos;
 
     GameScene.selectItem(itemSelector, WndBag.Mode.SEED, TXT_SELECT_SEED);
   }
-
-  private static final WndBag.Listener itemSelector = new WndBag.Listener() {
-    @Override
-    public void onSelect(Item item) {
-      if (item != null) {
-        item.cast(hero, pos);
-      }
-    }
-  };
 }

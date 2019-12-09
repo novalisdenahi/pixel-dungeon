@@ -31,8 +31,10 @@ public class DarkGold extends Item {
   }
 
   @Override
-  public boolean isUpgradable() {
-    return false;
+  public String info() {
+    return "This metal is called dark not because of its color (it doesn't differ from the normal gold), "
+        +
+        "but because it melts under the daylight, making it useless on the surface.";
   }
 
   @Override
@@ -41,10 +43,8 @@ public class DarkGold extends Item {
   }
 
   @Override
-  public String info() {
-    return "This metal is called dark not because of its color (it doesn't differ from the normal gold), "
-        +
-        "but because it melts under the daylight, making it useless on the surface.";
+  public boolean isUpgradable() {
+    return false;
   }
 
   @Override

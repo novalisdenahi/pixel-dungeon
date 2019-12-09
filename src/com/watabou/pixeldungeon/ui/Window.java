@@ -32,29 +32,29 @@ import com.watabou.utils.Signal;
 
 public class Window extends Group implements Signal.Listener<Key> {
 
+  public static final int TITLE_COLOR = 0xFFFF44;
   protected int width;
-  protected int height;
 
+  protected int height;
   protected TouchArea blocker;
   protected ShadowBox shadow;
-  protected NinePatch chrome;
 
-  public static final int TITLE_COLOR = 0xFFFF44;
+  protected NinePatch chrome;
 
   public Window() {
     this(0, 0, Chrome.get(Chrome.Type.WINDOW));
   }
 
-  public Window(int width, int height) {
+  public Window(final int width, final int height) {
     this(width, height, Chrome.get(Chrome.Type.WINDOW));
   }
 
-  public Window(int width, int height, NinePatch chrome) {
+  public Window(final int width, final int height, final NinePatch chrome) {
     super();
 
     blocker = new TouchArea(0, 0, PixelScene.uiCamera.width, PixelScene.uiCamera.height) {
       @Override
-      protected void onClick(Touch touch) {
+      protected void onClick(final Touch touch) {
         if (!Window.this.chrome.overlapsScreenPoint(
             (int) touch.current.x,
             (int) touch.current.y)) {
@@ -79,16 +79,16 @@ public class Window extends Group implements Signal.Listener<Key> {
     chrome.x = -chrome.marginLeft();
     chrome.y = -chrome.marginTop();
     chrome.size(
-        width - chrome.x + chrome.marginRight(),
-        height - chrome.y + chrome.marginBottom());
+        (width - chrome.x) + chrome.marginRight(),
+        (height - chrome.y) + chrome.marginBottom());
     add(chrome);
 
     camera = new Camera(0, 0,
         (int) chrome.width,
         (int) chrome.height,
         PixelScene.defaultZoom);
-    camera.x = (int) (Game.width - camera.width * camera.zoom) / 2;
-    camera.y = (int) (Game.height - camera.height * camera.zoom) / 2;
+    camera.x = (int) (Game.width - (camera.width * camera.zoom)) / 2;
+    camera.y = (int) (Game.height - (camera.height * camera.zoom)) / 2;
     camera.scroll.set(chrome.x, chrome.y);
     Camera.add(camera);
 
@@ -100,26 +100,6 @@ public class Window extends Group implements Signal.Listener<Key> {
     Keys.event.add(this);
   }
 
-  public void resize(int w, int h) {
-    this.width = w;
-    this.height = h;
-
-    chrome.size(
-        width + chrome.marginHor(),
-        height + chrome.marginVer());
-
-    camera.resize((int) chrome.width, (int) chrome.height);
-    camera.x = (int) (Game.width - camera.screenWidth()) / 2;
-    camera.y = (int) (Game.height - camera.screenHeight()) / 2;
-
-    shadow.boxRect(camera.x / camera.zoom, camera.y / camera.zoom, chrome.width(), chrome.height);
-  }
-
-  public void hide() {
-    parent.erase(this);
-    destroy();
-  }
-
   @Override
   public void destroy() {
     super.destroy();
@@ -128,8 +108,20 @@ public class Window extends Group implements Signal.Listener<Key> {
     Keys.event.remove(this);
   }
 
+  public void hide() {
+    parent.erase(this);
+    destroy();
+  }
+
+  public void onBackPressed() {
+    hide();
+  }
+
+  public void onMenuPressed() {
+  }
+
   @Override
-  public void onSignal(Key key) {
+  public void onSignal(final Key key) {
     if (key.pressed) {
       switch (key.code) {
         case Keys.BACK:
@@ -144,10 +136,18 @@ public class Window extends Group implements Signal.Listener<Key> {
     Keys.event.cancel();
   }
 
-  public void onBackPressed() {
-    hide();
-  }
+  public void resize(final int w, final int h) {
+    width = w;
+    height = h;
 
-  public void onMenuPressed() {
+    chrome.size(
+        width + chrome.marginHor(),
+        height + chrome.marginVer());
+
+    camera.resize((int) chrome.width, (int) chrome.height);
+    camera.x = (int) (Game.width - camera.screenWidth()) / 2;
+    camera.y = (int) (Game.height - camera.screenHeight()) / 2;
+
+    shadow.boxRect(camera.x / camera.zoom, camera.y / camera.zoom, chrome.width(), chrome.height);
   }
 }

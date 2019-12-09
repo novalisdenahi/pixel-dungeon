@@ -33,6 +33,29 @@ import com.watabou.utils.Random;
 
 public class Spinner extends Mob {
 
+  private class Fleeing extends Mob.Fleeing {
+    @Override
+    protected void nowhereToRun() {
+      if (buff(Terror.class) == null) {
+        state = HUNTING;
+      } else {
+        super.nowhereToRun();
+      }
+    }
+  }
+
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(Poison.class);
+  }
+
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(Roots.class);
+  }
+
   {
     name = "cave spinner";
     spriteClass = SpinnerSprite.class;
@@ -50,26 +73,11 @@ public class Spinner extends Mob {
   }
 
   @Override
-  public int damageRoll() {
-    return Random.NormalIntRange(12, 16);
-  }
-
-  @Override
-  public int attackSkill(Char target) {
-    return 20;
-  }
-
-  @Override
-  public int dr() {
-    return 6;
-  }
-
-  @Override
   protected boolean act() {
     boolean result = super.act();
 
-    if (state == FLEEING && buff(Terror.class) == null) {
-      if (enemy != null && enemySeen && enemy.buff(Poison.class) == null) {
+    if ((state == FLEEING) && (buff(Terror.class) == null)) {
+      if ((enemy != null) && enemySeen && (enemy.buff(Poison.class) == null)) {
         state = HUNTING;
       }
     }
@@ -77,7 +85,7 @@ public class Spinner extends Mob {
   }
 
   @Override
-  public int attackProc(Char enemy, int damage) {
+  public int attackProc(final Char enemy, final int damage) {
     if (Random.Int(2) == 0) {
       Buff.affect(enemy, Poison.class).set(Random.Int(7, 9) * Poison.durationFactor(enemy));
       state = FLEEING;
@@ -87,11 +95,13 @@ public class Spinner extends Mob {
   }
 
   @Override
-  public void move(int step) {
-    if (state == FLEEING) {
-      GameScene.add(Blob.seed(pos, Random.Int(5, 7), Web.class));
-    }
-    super.move(step);
+  public int attackSkill(final Char target) {
+    return 20;
+  }
+
+  @Override
+  public int damageRoll() {
+    return Random.NormalIntRange(12, 16);
   }
 
   @Override
@@ -101,19 +111,9 @@ public class Spinner extends Mob {
         "while their victim, entangled in the spinner's excreted cobweb, slowly dies from their poisonous bite.";
   }
 
-  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
-  static {
-    RESISTANCES.add(Poison.class);
-  }
-
   @Override
-  public HashSet<Class<?>> resistances() {
-    return RESISTANCES;
-  }
-
-  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-  static {
-    IMMUNITIES.add(Roots.class);
+  public int dr() {
+    return 6;
   }
 
   @Override
@@ -121,14 +121,16 @@ public class Spinner extends Mob {
     return IMMUNITIES;
   }
 
-  private class Fleeing extends Mob.Fleeing {
-    @Override
-    protected void nowhereToRun() {
-      if (buff(Terror.class) == null) {
-        state = HUNTING;
-      } else {
-        super.nowhereToRun();
-      }
+  @Override
+  public void move(final int step) {
+    if (state == FLEEING) {
+      GameScene.add(Blob.seed(pos, Random.Int(5, 7), Web.class));
     }
+    super.move(step);
+  }
+
+  @Override
+  public HashSet<Class<?>> resistances() {
+    return RESISTANCES;
   }
 }

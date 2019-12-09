@@ -13,7 +13,7 @@ public class HighlightedText extends Component {
   protected int nColor = 0xFFFFFF;
   protected int hColor = 0xFFFF44;
 
-  public HighlightedText(float size) {
+  public HighlightedText(final float size) {
     normal = PixelScene.createMultiline(size);
     add(normal);
 
@@ -29,7 +29,12 @@ public class HighlightedText extends Component {
     normal.y = highlighted.y = y;
   }
 
-  public void text(String value, int maxWidth) {
+  public void setColor(final int n, final int h) {
+    normal.hardlight(n);
+    highlighted.hardlight(h);
+  }
+
+  public void text(final String value, final int maxWidth) {
     Highlighter hl = new Highlighter(value);
 
     normal.text(hl.text);
@@ -51,10 +56,5 @@ public class HighlightedText extends Component {
 
     width = normal.width();
     height = normal.height();
-  }
-
-  public void setColor(int n, int h) {
-    normal.hardlight(n);
-    highlighted.hardlight(h);
   }
 }

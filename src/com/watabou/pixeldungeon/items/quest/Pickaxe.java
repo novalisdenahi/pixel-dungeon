@@ -32,8 +32,8 @@ import com.watabou.pixeldungeon.items.weapon.Weapon;
 import com.watabou.pixeldungeon.levels.Level;
 import com.watabou.pixeldungeon.levels.Terrain;
 import com.watabou.pixeldungeon.scenes.GameScene;
-import com.watabou.pixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.pixeldungeon.sprites.ItemSprite.Glowing;
+import com.watabou.pixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.pixeldungeon.ui.BuffIndicator;
 import com.watabou.pixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
@@ -49,6 +49,8 @@ public class Pickaxe extends Weapon {
 
   private static final Glowing BLOODY = new Glowing(0x550000);
 
+  private static final String BLOODSTAINED = "bloodStained";
+
   {
     name = "pickaxe";
     image = ItemSpriteSheet.PICKAXE;
@@ -63,28 +65,18 @@ public class Pickaxe extends Weapon {
   public boolean bloodStained = false;
 
   @Override
-  public int min() {
-    return 3;
-  }
-
-  @Override
-  public int max() {
-    return 12;
-  }
-
-  @Override
-  public ArrayList<String> actions(Hero hero) {
+  public ArrayList<String> actions(final Hero hero) {
     ArrayList<String> actions = super.actions(hero);
     actions.add(AC_MINE);
     return actions;
   }
 
   @Override
-  public void execute(final Hero hero, String action) {
+  public void execute(final Hero hero, final String action) {
 
     if (action == AC_MINE) {
 
-      if (Dungeon.depth < 11 || Dungeon.depth > 15) {
+      if ((Dungeon.depth < 11) || (Dungeon.depth > 15)) {
         GLog.w(TXT_NO_VEIN);
         return;
       }
@@ -116,7 +108,7 @@ public class Pickaxe extends Weapon {
               }
 
               Hunger hunger = hero.buff(Hunger.class);
-              if (hunger != null && !hunger.isStarving()) {
+              if ((hunger != null) && !hunger.isStarving()) {
                 hunger.satisfy(-Hunger.STARVING / 10);
                 BuffIndicator.refreshHero();
               }
@@ -139,8 +131,13 @@ public class Pickaxe extends Weapon {
   }
 
   @Override
-  public boolean isUpgradable() {
-    return false;
+  public Glowing glowing() {
+    return bloodStained ? BLOODY : null;
+  }
+
+  @Override
+  public String info() {
+    return "This is a large and sturdy tool for breaking rocks. Probably it can be used as a weapon.";
   }
 
   @Override
@@ -149,36 +146,39 @@ public class Pickaxe extends Weapon {
   }
 
   @Override
-  public void proc(Char attacker, Char defender, int damage) {
-    if (!bloodStained && defender instanceof Bat && (defender.HP <= damage)) {
+  public boolean isUpgradable() {
+    return false;
+  }
+
+  @Override
+  public int max() {
+    return 12;
+  }
+
+  @Override
+  public int min() {
+    return 3;
+  }
+
+  @Override
+  public void proc(final Char attacker, final Char defender, final int damage) {
+    if (!bloodStained && (defender instanceof Bat) && (defender.HP <= damage)) {
       bloodStained = true;
       updateQuickslot();
     }
   }
 
-  private static final String BLOODSTAINED = "bloodStained";
-
   @Override
-  public void storeInBundle(Bundle bundle) {
-    super.storeInBundle(bundle);
-
-    bundle.put(BLOODSTAINED, bloodStained);
-  }
-
-  @Override
-  public void restoreFromBundle(Bundle bundle) {
+  public void restoreFromBundle(final Bundle bundle) {
     super.restoreFromBundle(bundle);
 
     bloodStained = bundle.getBoolean(BLOODSTAINED);
   }
 
   @Override
-  public Glowing glowing() {
-    return bloodStained ? BLOODY : null;
-  }
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
 
-  @Override
-  public String info() {
-    return "This is a large and sturdy tool for breaking rocks. Probably it can be used as a weapon.";
+    bundle.put(BLOODSTAINED, bloodStained);
   }
 }

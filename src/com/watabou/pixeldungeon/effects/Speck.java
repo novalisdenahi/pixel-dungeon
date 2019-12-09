@@ -17,10 +17,6 @@
  */
 package com.watabou.pixeldungeon.effects;
 
-import android.annotation.SuppressLint;
-import android.util.FloatMath;
-import android.util.SparseArray;
-
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.TextureFilm;
@@ -28,6 +24,10 @@ import com.watabou.noosa.particles.Emitter;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
+
+import android.annotation.SuppressLint;
+import android.util.FloatMath;
+import android.util.SparseArray;
 
 public class Speck extends Image {
 
@@ -61,13 +61,41 @@ public class Speck extends Image {
 
   private static final int SIZE = 7;
 
-  private int type;
-  private float lifespan;
-  private float left;
-
   private static TextureFilm film;
-
   private static SparseArray<Emitter.Factory> factories = new SparseArray<Emitter.Factory>();
+
+  public static Emitter.Factory factory(final int type) {
+    return Speck.factory(type, false);
+  }
+
+  public static Emitter.Factory factory(final int type, final boolean lightMode) {
+
+    Emitter.Factory factory = factories.get(type);
+
+    if (factory == null) {
+      factory = new Emitter.Factory() {
+        @Override
+        public void emit(final Emitter emitter, final int index, final float x, final float y) {
+          Speck p = (Speck) emitter.recycle(Speck.class);
+          p.reset(index, x, y, type);
+        }
+
+        @Override
+        public boolean lightMode() {
+          return lightMode;
+        }
+      };
+      factories.put(type, factory);
+    }
+
+    return factory;
+  }
+
+  private int type;
+
+  private float lifespan;
+
+  private float left;
 
   public Speck() {
     super();
@@ -80,7 +108,7 @@ public class Speck extends Image {
     origin.set(SIZE / 2f);
   }
 
-  public void reset(int index, float x, float y, int type) {
+  public void reset(final int index, final float x, float y, final int type) {
     revive();
 
     this.type = type;
@@ -150,7 +178,7 @@ public class Speck extends Image {
         break;
 
       case KIT:
-        speed.polar(index * 3.1415926f / 5, 50);
+        speed.polar((index * 3.1415926f) / 5, 50);
         acc.set(-speed.x, -speed.y);
         angle = index * 36;
         angularSpeed = 360;
@@ -201,7 +229,7 @@ public class Speck extends Image {
       case RATTLE:
         lifespan = 0.5f;
         speed.set(0, -200);
-        acc.set(0, -2 * speed.y / lifespan);
+        acc.set(0, (-2 * speed.y) / lifespan);
         angle = Random.Float(360);
         angularSpeed = 360;
         break;
@@ -292,7 +320,7 @@ public class Speck extends Image {
       case COIN:
         speed.polar(-PointF.PI * Random.Float(0.3f, 0.7f), Random.Float(48, 96));
         acc.y = 256;
-        lifespan = -speed.y / acc.y * 2;
+        lifespan = (-speed.y / acc.y) * 2;
         break;
     }
 
@@ -311,7 +339,7 @@ public class Speck extends Image {
 
     } else {
 
-      float p = 1 - left / lifespan; // 0 -> 1
+      float p = 1 - (left / lifespan); // 0 -> 1
 
       switch (type) {
 
@@ -323,13 +351,13 @@ public class Speck extends Image {
 
         case KIT:
         case MASTERY:
-          am = 1 - p * p;
+          am = 1 - (p * p);
           break;
 
         case EVOKE:
 
         case HEALING:
-          am = p < 0.5f ? 1 : 2 - p * 2;
+          am = p < 0.5f ? 1 : 2 - (p * 2);
           break;
 
         case LIGHT:
@@ -364,7 +392,7 @@ public class Speck extends Image {
           break;
 
         case NOTE:
-          am = 1 - p * p;
+          am = 1 - (p * p);
           break;
 
         case WOOL:
@@ -372,14 +400,14 @@ public class Speck extends Image {
           break;
 
         case CHANGE:
-          am = (float) FloatMath.sqrt((p < 0.5f ? p : 1 - p) * 2);
+          am = FloatMath.sqrt((p < 0.5f ? p : 1 - p) * 2);
           scale.y = (1 + p) * 0.5f;
           scale.x = scale.y * FloatMath.cos(left * 15);
           break;
 
         case HEART:
           scale.set(1 - p);
-          am = 1 - p * p;
+          am = 1 - (p * p);
           break;
 
         case BUBBLE:
@@ -392,7 +420,7 @@ public class Speck extends Image {
         case CONFUSION:
         case DUST:
           am = p < 0.5f ? p : 1 - p;
-          scale.set(1 + p * 2);
+          scale.set(1 + (p * 2));
           break;
 
         case JET:
@@ -407,32 +435,5 @@ public class Speck extends Image {
           break;
       }
     }
-  }
-
-  public static Emitter.Factory factory(final int type) {
-    return factory(type, false);
-  }
-
-  public static Emitter.Factory factory(final int type, final boolean lightMode) {
-
-    Emitter.Factory factory = factories.get(type);
-
-    if (factory == null) {
-      factory = new Emitter.Factory() {
-        @Override
-        public void emit(Emitter emitter, int index, float x, float y) {
-          Speck p = (Speck) emitter.recycle(Speck.class);
-          p.reset(index, x, y, type);
-        }
-
-        @Override
-        public boolean lightMode() {
-          return lightMode;
-        }
-      };
-      factories.put(type, factory);
-    }
-
-    return factory;
   }
 }

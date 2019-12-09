@@ -40,21 +40,9 @@ public class Hunger extends Buff implements Hero.Doom {
   private static final String TXT_STARVING = "You are starving!";
   private static final String TXT_DEATH = "You starved to death...";
 
-  private float level;
-
   private static final String LEVEL = "level";
 
-  @Override
-  public void storeInBundle(Bundle bundle) {
-    super.storeInBundle(bundle);
-    bundle.put(LEVEL, level);
-  }
-
-  @Override
-  public void restoreFromBundle(Bundle bundle) {
-    super.restoreFromBundle(bundle);
-    level = bundle.getFloat(LEVEL);
-  }
+  private float level;
 
   @Override
   public boolean act() {
@@ -63,7 +51,7 @@ public class Hunger extends Buff implements Hero.Doom {
       Hero hero = (Hero) target;
 
       if (isStarving()) {
-        if (Random.Float() < 0.3f && (target.HP > 1 || !target.paralysed)) {
+        if ((Random.Float() < 0.3f) && ((target.HP > 1) || !target.paralysed)) {
 
           GLog.n(TXT_STARVING);
           hero.damage(1, this);
@@ -77,7 +65,7 @@ public class Hunger extends Buff implements Hero.Doom {
           bonus += ((RingOfSatiety.Satiety) buff).level;
         }
 
-        float newLevel = level + STEP - bonus;
+        float newLevel = (level + STEP) - bonus;
         boolean statusUpdated = false;
         if (newLevel >= STARVING) {
 
@@ -86,7 +74,7 @@ public class Hunger extends Buff implements Hero.Doom {
 
           hero.interrupt();
 
-        } else if (newLevel >= HUNGRY && level < HUNGRY) {
+        } else if ((newLevel >= HUNGRY) && (level < HUNGRY)) {
 
           GLog.w(TXT_HUNGRY);
           statusUpdated = true;
@@ -112,21 +100,6 @@ public class Hunger extends Buff implements Hero.Doom {
     return true;
   }
 
-  public void satisfy(float energy) {
-    level -= energy;
-    if (level < 0) {
-      level = 0;
-    } else if (level > STARVING) {
-      level = STARVING;
-    }
-
-    BuffIndicator.refreshHero();
-  }
-
-  public boolean isStarving() {
-    return level >= STARVING;
-  }
-
   @Override
   public int icon() {
     if (level < HUNGRY) {
@@ -138,13 +111,8 @@ public class Hunger extends Buff implements Hero.Doom {
     }
   }
 
-  @Override
-  public String toString() {
-    if (level < STARVING) {
-      return "Hungry";
-    } else {
-      return "Starving";
-    }
+  public boolean isStarving() {
+    return level >= STARVING;
   }
 
   @Override
@@ -154,5 +122,37 @@ public class Hunger extends Buff implements Hero.Doom {
 
     Dungeon.fail(Utils.format(ResultDescriptions.HUNGER, Dungeon.depth));
     GLog.n(TXT_DEATH);
+  }
+
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    level = bundle.getFloat(LEVEL);
+  }
+
+  public void satisfy(final float energy) {
+    level -= energy;
+    if (level < 0) {
+      level = 0;
+    } else if (level > STARVING) {
+      level = STARVING;
+    }
+
+    BuffIndicator.refreshHero();
+  }
+
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(LEVEL, level);
+  }
+
+  @Override
+  public String toString() {
+    if (level < STARVING) {
+      return "Hungry";
+    } else {
+      return "Starving";
+    }
   }
 }

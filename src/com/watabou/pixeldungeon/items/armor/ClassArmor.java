@@ -29,19 +29,11 @@ abstract public class ClassArmor extends Armor {
   private static final String TXT_NOT_EQUIPPED =
       "You need to be wearing this armor to use its special power!";
 
-  private int DR;
+  private static final String ARMOR_STR = "STR";
 
-  {
-    levelKnown = true;
-    cursedKnown = true;
-    defaultAction = special();
-  }
+  private static final String ARMOR_DR = "DR";
 
-  public ClassArmor() {
-    super(6);
-  }
-
-  public static ClassArmor upgrade(Hero owner, Armor armor) {
+  public static ClassArmor upgrade(final Hero owner, final Armor armor) {
 
     ClassArmor classArmor = null;
 
@@ -68,34 +60,41 @@ abstract public class ClassArmor extends Armor {
     return classArmor;
   }
 
-  private static final String ARMOR_STR = "STR";
-  private static final String ARMOR_DR = "DR";
+  private int DR;
 
-  @Override
-  public void storeInBundle(Bundle bundle) {
-    super.storeInBundle(bundle);
-    bundle.put(ARMOR_STR, STR);
-    bundle.put(ARMOR_DR, DR);
+  {
+    levelKnown = true;
+    cursedKnown = true;
+    defaultAction = special();
+  }
+
+  public ClassArmor() {
+    super(6);
   }
 
   @Override
-  public void restoreFromBundle(Bundle bundle) {
-    super.restoreFromBundle(bundle);
-    STR = bundle.getInt(ARMOR_STR);
-    DR = bundle.getInt(ARMOR_DR);
-  }
-
-  @Override
-  public ArrayList<String> actions(Hero hero) {
+  public ArrayList<String> actions(final Hero hero) {
     ArrayList<String> actions = super.actions(hero);
-    if (hero.HP >= 3 && isEquipped(hero)) {
+    if ((hero.HP >= 3) && isEquipped(hero)) {
       actions.add(special());
     }
     return actions;
   }
 
   @Override
-  public void execute(Hero hero, String action) {
+  public String desc() {
+    return "The thing looks awesome!";
+  }
+
+  abstract public void doSpecial();
+
+  @Override
+  public int DR() {
+    return DR;
+  }
+
+  @Override
+  public void execute(final Hero hero, final String action) {
     if (action == special()) {
 
       if (hero.HP < 3) {
@@ -112,13 +111,9 @@ abstract public class ClassArmor extends Armor {
     }
   }
 
-  abstract public String special();
-
-  abstract public void doSpecial();
-
   @Override
-  public int DR() {
-    return DR;
+  public boolean isIdentified() {
+    return true;
   }
 
   @Override
@@ -127,17 +122,23 @@ abstract public class ClassArmor extends Armor {
   }
 
   @Override
-  public boolean isIdentified() {
-    return true;
-  }
-
-  @Override
   public int price() {
     return 0;
   }
 
   @Override
-  public String desc() {
-    return "The thing looks awesome!";
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    STR = bundle.getInt(ARMOR_STR);
+    DR = bundle.getInt(ARMOR_DR);
+  }
+
+  abstract public String special();
+
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(ARMOR_STR, STR);
+    bundle.put(ARMOR_DR, DR);
   }
 }

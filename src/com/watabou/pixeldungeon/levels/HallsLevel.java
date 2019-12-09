@@ -19,8 +19,6 @@ package com.watabou.pixeldungeon.levels;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import android.opengl.GLES20;
-
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Scene;
@@ -32,119 +30,38 @@ import com.watabou.pixeldungeon.items.Torch;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
+import android.opengl.GLES20;
+
 public class HallsLevel extends RegularLevel {
 
-  {
-    minRoomSize = 6;
+  public static class FireParticle extends PixelParticle.Shrinking {
 
-    viewDistance = Math.max(25 - Dungeon.depth, 1);
+    public FireParticle() {
+      super();
 
-    color1 = 0x801500;
-    color2 = 0xa68521;
-  }
+      color(0xEE7722);
+      lifespan = 1f;
 
-  @Override
-  public void create() {
-    addItemToSpawn(new Torch());
-    super.create();
-  }
-
-  @Override
-  public String tilesTex() {
-    return Assets.TILES_HALLS;
-  }
-
-  @Override
-  public String waterTex() {
-    return Assets.WATER_HALLS;
-  }
-
-  protected boolean[] water() {
-    return Patch.generate(feeling == Feeling.WATER ? 0.55f : 0.40f, 6);
-  }
-
-  protected boolean[] grass() {
-    return Patch.generate(feeling == Feeling.GRASS ? 0.55f : 0.30f, 3);
-  }
-
-  @Override
-  protected void decorate() {
-
-    for (int i = WIDTH + 1; i < LENGTH - WIDTH - 1; i++) {
-      if (map[i] == Terrain.EMPTY) {
-
-        int count = 0;
-        for (int j = 0; j < NEIGHBOURS8.length; j++) {
-          if ((Terrain.flags[map[i + NEIGHBOURS8[j]]] & Terrain.PASSABLE) > 0) {
-            count++;
-          }
-        }
-
-        if (Random.Int(80) < count) {
-          map[i] = Terrain.EMPTY_DECO;
-        }
-
-      } else if (map[i] == Terrain.WALL &&
-          map[i - 1] != Terrain.WALL_DECO && map[i - WIDTH] != Terrain.WALL_DECO &&
-          Random.Int(20) == 0) {
-
-        map[i] = Terrain.WALL_DECO;
-
-      }
+      acc.set(0, +80);
     }
 
-    while (true) {
-      int pos = roomEntrance.random();
-      if (pos != entrance) {
-        map[pos] = Terrain.SIGN;
-        break;
-      }
+    public void reset(final float x, final float y) {
+      revive();
+
+      this.x = x;
+      this.y = y;
+
+      left = lifespan;
+
+      speed.set(0, -40);
+      size = 4;
     }
-  }
 
-  @Override
-  public String tileName(int tile) {
-    switch (tile) {
-      case Terrain.WATER:
-        return "Cold lava";
-      case Terrain.GRASS:
-        return "Embermoss";
-      case Terrain.HIGH_GRASS:
-        return "Emberfungi";
-      case Terrain.STATUE:
-      case Terrain.STATUE_SP:
-        return "Pillar";
-      default:
-        return super.tileName(tile);
-    }
-  }
-
-  @Override
-  public String tileDesc(int tile) {
-    switch (tile) {
-      case Terrain.WATER:
-        return "It looks like lava, but it's cold and probably safe to touch.";
-      case Terrain.STATUE:
-      case Terrain.STATUE_SP:
-        return "The pillar is made of real humanoid skulls. Awesome.";
-      case Terrain.BOOKSHELF:
-        return "Books in ancient languages smoulder in the bookshelf.";
-      default:
-        return super.tileDesc(tile);
-    }
-  }
-
-  @Override
-  public void addVisuals(Scene scene) {
-    super.addVisuals(scene);
-    addVisuals(this, scene);
-  }
-
-  public static void addVisuals(Level level, Scene scene) {
-    for (int i = 0; i < LENGTH; i++) {
-      if (level.map[i] == 63) {
-        scene.add(new Stream(i));
-      }
+    @Override
+    public void update() {
+      super.update();
+      float p = left / lifespan;
+      am = p > 0.8f ? (1 - p) * 5 : 1;
     }
   }
 
@@ -154,12 +71,19 @@ public class HallsLevel extends RegularLevel {
 
     private float delay;
 
-    public Stream(int pos) {
+    public Stream(final int pos) {
       super();
 
       this.pos = pos;
 
       delay = Random.Float(2);
+    }
+
+    @Override
+    public void draw() {
+      GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
+      super.draw();
+      GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
     }
 
     @Override
@@ -180,43 +104,121 @@ public class HallsLevel extends RegularLevel {
         }
       }
     }
+  }
 
-    @Override
-    public void draw() {
-      GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
-      super.draw();
-      GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+  public static void addVisuals(final Level level, final Scene scene) {
+    for (int i = 0; i < LENGTH; i++) {
+      if (level.map[i] == 63) {
+        scene.add(new Stream(i));
+      }
     }
   }
 
-  public static class FireParticle extends PixelParticle.Shrinking {
+  {
+    minRoomSize = 6;
 
-    public FireParticle() {
-      super();
+    viewDistance = Math.max(25 - Dungeon.depth, 1);
 
-      color(0xEE7722);
-      lifespan = 1f;
+    color1 = 0x801500;
+    color2 = 0xa68521;
+  }
 
-      acc.set(0, +80);
+  @Override
+  public void addVisuals(final Scene scene) {
+    super.addVisuals(scene);
+    HallsLevel.addVisuals(this, scene);
+  }
+
+  @Override
+  public void create() {
+    addItemToSpawn(new Torch());
+    super.create();
+  }
+
+  @Override
+  protected void decorate() {
+
+    for (int i = WIDTH + 1; i < (LENGTH - WIDTH - 1); i++) {
+      if (map[i] == Terrain.EMPTY) {
+
+        int count = 0;
+        for (int j = 0; j < NEIGHBOURS8.length; j++) {
+          if ((Terrain.flags[map[i + NEIGHBOURS8[j]]] & Terrain.PASSABLE) > 0) {
+            count++;
+          }
+        }
+
+        if (Random.Int(80) < count) {
+          map[i] = Terrain.EMPTY_DECO;
+        }
+
+      } else if ((map[i] == Terrain.WALL) &&
+          (map[i - 1] != Terrain.WALL_DECO) && (map[i - WIDTH] != Terrain.WALL_DECO) &&
+          (Random.Int(20) == 0)) {
+
+        map[i] = Terrain.WALL_DECO;
+
+      }
     }
 
-    public void reset(float x, float y) {
-      revive();
-
-      this.x = x;
-      this.y = y;
-
-      left = lifespan;
-
-      speed.set(0, -40);
-      size = 4;
+    while (true) {
+      int pos = roomEntrance.random();
+      if (pos != entrance) {
+        map[pos] = Terrain.SIGN;
+        break;
+      }
     }
+  }
 
-    @Override
-    public void update() {
-      super.update();
-      float p = left / lifespan;
-      am = p > 0.8f ? (1 - p) * 5 : 1;
+  @Override
+  protected boolean[] grass() {
+    return Patch.generate(feeling == Feeling.GRASS ? 0.55f : 0.30f, 3);
+  }
+
+  @Override
+  public String tileDesc(final int tile) {
+    switch (tile) {
+      case Terrain.WATER:
+        return "It looks like lava, but it's cold and probably safe to touch.";
+      case Terrain.STATUE:
+      case Terrain.STATUE_SP:
+        return "The pillar is made of real humanoid skulls. Awesome.";
+      case Terrain.BOOKSHELF:
+        return "Books in ancient languages smoulder in the bookshelf.";
+      default:
+        return super.tileDesc(tile);
     }
+  }
+
+  @Override
+  public String tileName(final int tile) {
+    switch (tile) {
+      case Terrain.WATER:
+        return "Cold lava";
+      case Terrain.GRASS:
+        return "Embermoss";
+      case Terrain.HIGH_GRASS:
+        return "Emberfungi";
+      case Terrain.STATUE:
+      case Terrain.STATUE_SP:
+        return "Pillar";
+      default:
+        return super.tileName(tile);
+    }
+  }
+
+  @Override
+  public String tilesTex() {
+    return Assets.TILES_HALLS;
+  }
+
+  @Override
+  protected boolean[] water() {
+    return Patch.generate(feeling == Feeling.WATER ? 0.55f : 0.40f, 6);
+  }
+
+  @Override
+  public String waterTex() {
+    return Assets.WATER_HALLS;
   }
 }

@@ -49,7 +49,119 @@ import com.watabou.utils.Random;
 
 public class King extends Mob {
 
+  public static class Undead extends Mob {
+
+    public static int count = 0;
+
+    private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+    static {
+      IMMUNITIES.add(Death.class);
+      IMMUNITIES.add(Paralysis.class);
+    }
+
+    {
+      name = "undead dwarf";
+      spriteClass = UndeadSprite.class;
+
+      HP = HT = 28;
+      defenseSkill = 15;
+
+      EXP = 0;
+
+      state = WANDERING;
+    }
+
+    @Override
+    public int attackProc(final Char enemy, final int damage) {
+      if (Random.Int(MAX_ARMY_SIZE) == 0) {
+        Buff.prolong(enemy, Paralysis.class, 1);
+      }
+
+      return damage;
+    }
+
+    @Override
+    public int attackSkill(final Char target) {
+      return 16;
+    }
+
+    @Override
+    public void damage(final int dmg, final Object src) {
+      super.damage(dmg, src);
+      if (src instanceof ToxicGas) {
+        ((ToxicGas) src).clear(pos);
+      }
+    }
+
+    @Override
+    public int damageRoll() {
+      return Random.NormalIntRange(12, 16);
+    }
+
+    @Override
+    public String defenseVerb() {
+      return "blocked";
+    }
+
+    @Override
+    public String description() {
+      return "These undead dwarves, risen by the will of the King of Dwarves, were members of his court. "
+          +
+          "They appear as skeletons with a stunning amount of facial hair.";
+    }
+
+    @Override
+    public void die(final Object cause) {
+      super.die(cause);
+
+      if (Dungeon.visible[pos]) {
+        Sample.INSTANCE.play(Assets.SND_BONES);
+      }
+    }
+
+    @Override
+    public int dr() {
+      return 5;
+    }
+
+    @Override
+    public HashSet<Class<?>> immunities() {
+      return IMMUNITIES;
+    }
+
+    @Override
+    protected void onAdd() {
+      count++;
+      super.onAdd();
+    }
+
+    @Override
+    protected void onRemove() {
+      count--;
+      super.onRemove();
+    }
+  }
+
   private static final int MAX_ARMY_SIZE = 5;
+
+  private static final String PEDESTAL = "pedestal";
+
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(ToxicGas.class);
+    RESISTANCES.add(Death.class);
+    RESISTANCES.add(ScrollOfPsionicBlast.class);
+    RESISTANCES.add(WandOfDisintegration.class);
+  }
+
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(Paralysis.class);
+    IMMUNITIES.add(Vertigo.class);
+  }
 
   {
     name = Dungeon.depth == Statistics.deepestFloor ? "King of Dwarves" : "undead King of Dwarves";
@@ -64,64 +176,9 @@ public class King extends Mob {
 
   private boolean nextPedestal = true;
 
-  private static final String PEDESTAL = "pedestal";
-
   @Override
-  public void storeInBundle(Bundle bundle) {
-    super.storeInBundle(bundle);
-    bundle.put(PEDESTAL, nextPedestal);
-  }
-
-  @Override
-  public void restoreFromBundle(Bundle bundle) {
-    super.restoreFromBundle(bundle);
-    nextPedestal = bundle.getBoolean(PEDESTAL);
-  }
-
-  @Override
-  public int damageRoll() {
-    return Random.NormalIntRange(20, 38);
-  }
-
-  @Override
-  public int attackSkill(Char target) {
-    return 32;
-  }
-
-  @Override
-  public int dr() {
-    return 14;
-  }
-
-  @Override
-  public String defenseVerb() {
-    return "parried";
-  }
-
-  @Override
-  protected boolean getCloser(int target) {
-    return canTryToSummon() ? super.getCloser(CityBossLevel.pedestal(nextPedestal))
-        : super.getCloser(target);
-  }
-
-  @Override
-  protected boolean canAttack(Char enemy) {
-    return canTryToSummon() ? pos == CityBossLevel.pedestal(nextPedestal)
-        : Level.adjacent(pos, enemy.pos);
-  }
-
-  private boolean canTryToSummon() {
-    if (Undead.count < maxArmySize()) {
-      Char ch = Actor.findChar(CityBossLevel.pedestal(nextPedestal));
-      return ch == this || ch == null;
-    } else {
-      return false;
-    }
-  }
-
-  @Override
-  public boolean attack(Char enemy) {
-    if (canTryToSummon() && pos == CityBossLevel.pedestal(nextPedestal)) {
+  public boolean attack(final Char enemy) {
+    if (canTryToSummon() && (pos == CityBossLevel.pedestal(nextPedestal))) {
       summon();
       return true;
     } else {
@@ -133,7 +190,48 @@ public class King extends Mob {
   }
 
   @Override
-  public void die(Object cause) {
+  public int attackSkill(final Char target) {
+    return 32;
+  }
+
+  @Override
+  protected boolean canAttack(final Char enemy) {
+    return canTryToSummon() ? pos == CityBossLevel.pedestal(nextPedestal)
+        : Level.adjacent(pos, enemy.pos);
+  }
+
+  private boolean canTryToSummon() {
+    if (Undead.count < maxArmySize()) {
+      Char ch = Actor.findChar(CityBossLevel.pedestal(nextPedestal));
+      return (ch == this) || (ch == null);
+    } else {
+      return false;
+    }
+  }
+
+  @Override
+  public int damageRoll() {
+    return Random.NormalIntRange(20, 38);
+  }
+
+  @Override
+  public String defenseVerb() {
+    return "parried";
+  }
+
+  @Override
+  public String description() {
+    return "The last king of dwarves was known for his deep understanding of processes of life and death. "
+        +
+        "He has persuaded members of his court to participate in a ritual, that should have granted them "
+        +
+        "eternal youthfulness. In the end he was the only one, who got it - and an army of undead "
+        +
+        "as a bonus.";
+  }
+
+  @Override
+  public void die(final Object cause) {
     GameScene.bossSlain();
     Dungeon.level.drop(new ArmorKit(), pos).sprite.drop();
     Dungeon.level.drop(new SkeletonKey(), pos).sprite.drop();
@@ -145,8 +243,47 @@ public class King extends Mob {
     yell("You cannot kill me, " + Dungeon.hero.heroClass.title() + "... I am... immortal...");
   }
 
+  @Override
+  public int dr() {
+    return 14;
+  }
+
+  @Override
+  protected boolean getCloser(final int target) {
+    return canTryToSummon() ? super.getCloser(CityBossLevel.pedestal(nextPedestal))
+        : super.getCloser(target);
+  }
+
+  @Override
+  public HashSet<Class<?>> immunities() {
+    return IMMUNITIES;
+  }
+
   private int maxArmySize() {
-    return 1 + MAX_ARMY_SIZE * (HT - HP) / HT;
+    return 1 + ((MAX_ARMY_SIZE * (HT - HP)) / HT);
+  }
+
+  @Override
+  public void notice() {
+    super.notice();
+    yell("How dare you!");
+  }
+
+  @Override
+  public HashSet<Class<?>> resistances() {
+    return RESISTANCES;
+  }
+
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    nextPedestal = bundle.getBoolean(PEDESTAL);
+  }
+
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(PEDESTAL, nextPedestal);
   }
 
   private void summon() {
@@ -190,139 +327,5 @@ public class King extends Mob {
     }
 
     yell("Arise, slaves!");
-  }
-
-  @Override
-  public void notice() {
-    super.notice();
-    yell("How dare you!");
-  }
-
-  @Override
-  public String description() {
-    return "The last king of dwarves was known for his deep understanding of processes of life and death. "
-        +
-        "He has persuaded members of his court to participate in a ritual, that should have granted them "
-        +
-        "eternal youthfulness. In the end he was the only one, who got it - and an army of undead "
-        +
-        "as a bonus.";
-  }
-
-  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
-  static {
-    RESISTANCES.add(ToxicGas.class);
-    RESISTANCES.add(Death.class);
-    RESISTANCES.add(ScrollOfPsionicBlast.class);
-    RESISTANCES.add(WandOfDisintegration.class);
-  }
-
-  @Override
-  public HashSet<Class<?>> resistances() {
-    return RESISTANCES;
-  }
-
-  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-  static {
-    IMMUNITIES.add(Paralysis.class);
-    IMMUNITIES.add(Vertigo.class);
-  }
-
-  @Override
-  public HashSet<Class<?>> immunities() {
-    return IMMUNITIES;
-  }
-
-  public static class Undead extends Mob {
-
-    public static int count = 0;
-
-    {
-      name = "undead dwarf";
-      spriteClass = UndeadSprite.class;
-
-      HP = HT = 28;
-      defenseSkill = 15;
-
-      EXP = 0;
-
-      state = WANDERING;
-    }
-
-    @Override
-    protected void onAdd() {
-      count++;
-      super.onAdd();
-    }
-
-    @Override
-    protected void onRemove() {
-      count--;
-      super.onRemove();
-    }
-
-    @Override
-    public int damageRoll() {
-      return Random.NormalIntRange(12, 16);
-    }
-
-    @Override
-    public int attackSkill(Char target) {
-      return 16;
-    }
-
-    @Override
-    public int attackProc(Char enemy, int damage) {
-      if (Random.Int(MAX_ARMY_SIZE) == 0) {
-        Buff.prolong(enemy, Paralysis.class, 1);
-      }
-
-      return damage;
-    }
-
-    @Override
-    public void damage(int dmg, Object src) {
-      super.damage(dmg, src);
-      if (src instanceof ToxicGas) {
-        ((ToxicGas) src).clear(pos);
-      }
-    }
-
-    @Override
-    public void die(Object cause) {
-      super.die(cause);
-
-      if (Dungeon.visible[pos]) {
-        Sample.INSTANCE.play(Assets.SND_BONES);
-      }
-    }
-
-    @Override
-    public int dr() {
-      return 5;
-    }
-
-    @Override
-    public String defenseVerb() {
-      return "blocked";
-    }
-
-    @Override
-    public String description() {
-      return "These undead dwarves, risen by the will of the King of Dwarves, were members of his court. "
-          +
-          "They appear as skeletons with a stunning amount of facial hair.";
-    }
-
-    private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-    static {
-      IMMUNITIES.add(Death.class);
-      IMMUNITIES.add(Paralysis.class);
-    }
-
-    @Override
-    public HashSet<Class<?>> immunities() {
-      return IMMUNITIES;
-    }
   }
 }

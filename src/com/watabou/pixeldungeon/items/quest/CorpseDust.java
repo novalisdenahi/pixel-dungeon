@@ -33,8 +33,9 @@ public class CorpseDust extends Item {
   }
 
   @Override
-  public boolean isUpgradable() {
-    return false;
+  public String info() {
+    return "The ball of corpse dust doesn't differ outwardly from a regular dust ball. However, " +
+        "you know somehow that it's better to get rid of it as soon as possible.";
   }
 
   @Override
@@ -43,8 +44,7 @@ public class CorpseDust extends Item {
   }
 
   @Override
-  public String info() {
-    return "The ball of corpse dust doesn't differ outwardly from a regular dust ball. However, " +
-        "you know somehow that it's better to get rid of it as soon as possible.";
+  public boolean isUpgradable() {
+    return false;
   }
 }

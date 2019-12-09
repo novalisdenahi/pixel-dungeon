@@ -32,13 +32,13 @@ public class MagicWellPainter extends Painter {
   private static final Class<?>[] WATERS =
       { WaterOfAwareness.class, WaterOfHealth.class, WaterOfTransmutation.class };
 
-  public static void paint(Level level, Room room) {
+  public static void paint(final Level level, final Room room) {
 
-    fill(level, room, Terrain.WALL);
-    fill(level, room, 1, Terrain.EMPTY);
+    Painter.fill(level, room, Terrain.WALL);
+    Painter.fill(level, room, 1, Terrain.EMPTY);
 
     Point c = room.center();
-    set(level, c.x, c.y, Terrain.WELL);
+    Painter.set(level, c.x, c.y, Terrain.WELL);
 
     @SuppressWarnings("unchecked")
     Class<? extends WellWater> waterClass =
@@ -52,7 +52,7 @@ public class MagicWellPainter extends Painter {
         water = null;
       }
     }
-    water.seed(c.x + Level.WIDTH * c.y, 1);
+    water.seed(c.x + (Level.WIDTH * c.y), 1);
     level.blobs.put(waterClass, water);
 
     room.entrance().set(Room.Door.Type.REGULAR);

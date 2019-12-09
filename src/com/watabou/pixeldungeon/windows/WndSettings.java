@@ -54,7 +54,7 @@ public class WndSettings extends Window {
   private RedButton btnZoomOut;
   private RedButton btnZoomIn;
 
-  public WndSettings(boolean inGame) {
+  public WndSettings(final boolean inGame) {
     super();
 
     CheckBox btnImmersive = null;
@@ -180,12 +180,8 @@ public class WndSettings extends Window {
     }
   }
 
-  private void zoom(float value) {
-
-    Camera.main.zoom(value);
-    PixelDungeon.zoom((int) (value - PixelScene.defaultZoom));
-
-    updateEnabled();
+  private String orientationText() {
+    return PixelDungeon.landscape() ? TXT_SWITCH_PORT : TXT_SWITCH_LAND;
   }
 
   private void updateEnabled() {
@@ -194,7 +190,11 @@ public class WndSettings extends Window {
     btnZoomOut.enable(zoom > PixelScene.minZoom);
   }
 
-  private String orientationText() {
-    return PixelDungeon.landscape() ? TXT_SWITCH_PORT : TXT_SWITCH_LAND;
+  private void zoom(final float value) {
+
+    Camera.main.zoom(value);
+    PixelDungeon.zoom((int) (value - PixelScene.defaultZoom));
+
+    updateEnabled();
   }
 }

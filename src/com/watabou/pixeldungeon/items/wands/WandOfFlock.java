@@ -37,8 +37,63 @@ import com.watabou.utils.Random;
 
 public class WandOfFlock extends Wand {
 
+  public static class Sheep extends NPC {
+
+    private static final String[] QUOTES = { "Baa!", "Baa?", "Baa.", "Baa..." };
+
+    {
+      name = "sheep";
+      spriteClass = SheepSprite.class;
+    }
+
+    public float lifespan;
+
+    private boolean initialized = false;
+
+    @Override
+    protected boolean act() {
+      if (initialized) {
+        HP = 0;
+
+        destroy();
+        sprite.die();
+
+      } else {
+        initialized = true;
+        spend(lifespan + Random.Float(2));
+      }
+      return true;
+    }
+
+    @Override
+    public void damage(final int dmg, final Object src) {
+    }
+
+    @Override
+    public String description() {
+      return "This is a magic sheep. What's so magical about it? You can't kill it. " +
+          "It will stand there until it magcially fades away, all the while chewing cud with a blank stare.";
+    }
+
+    @Override
+    public void interact() {
+      yell(Random.element(QUOTES));
+    }
+  }
+
   {
     name = "Wand of Flock";
+  }
+
+  @Override
+  public String desc() {
+    return "A flick of this wand summons a flock of magic sheep, creating temporary impenetrable obstacle.";
+  }
+
+  @Override
+  protected void fx(final int cell, final Callback callback) {
+    MagicMissile.wool(curUser.sprite.parent, curUser.pos, cell, callback);
+    Sample.INSTANCE.play(Assets.SND_ZAP);
   }
 
   @Override
@@ -48,7 +103,7 @@ public class WandOfFlock extends Wand {
 
     int n = level + 2;
 
-    if (Actor.findChar(cell) != null && Ballistica.distance > 2) {
+    if ((Actor.findChar(cell) != null) && (Ballistica.distance > 2)) {
       cell = Ballistica.trace[Ballistica.distance - 2];
     }
 
@@ -89,60 +144,6 @@ public class WandOfFlock extends Wand {
         }
         dist++;
       } while (dist < n);
-    }
-  }
-
-  protected void fx(int cell, Callback callback) {
-    MagicMissile.wool(curUser.sprite.parent, curUser.pos, cell, callback);
-    Sample.INSTANCE.play(Assets.SND_ZAP);
-  }
-
-  @Override
-  public String desc() {
-    return "A flick of this wand summons a flock of magic sheep, creating temporary impenetrable obstacle.";
-  }
-
-  public static class Sheep extends NPC {
-
-    private static final String[] QUOTES = { "Baa!", "Baa?", "Baa.", "Baa..." };
-
-    {
-      name = "sheep";
-      spriteClass = SheepSprite.class;
-    }
-
-    public float lifespan;
-
-    private boolean initialized = false;
-
-    @Override
-    protected boolean act() {
-      if (initialized) {
-        HP = 0;
-
-        destroy();
-        sprite.die();
-
-      } else {
-        initialized = true;
-        spend(lifespan + Random.Float(2));
-      }
-      return true;
-    }
-
-    @Override
-    public void damage(int dmg, Object src) {
-    }
-
-    @Override
-    public String description() {
-      return "This is a magic sheep. What's so magical about it? You can't kill it. " +
-          "It will stand there until it magcially fades away, all the while chewing cud with a blank stare.";
-    }
-
-    @Override
-    public void interact() {
-      yell(Random.element(QUOTES));
     }
   }
 }

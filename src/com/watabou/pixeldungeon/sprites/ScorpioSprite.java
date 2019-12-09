@@ -52,12 +52,7 @@ public class ScorpioSprite extends MobSprite {
   }
 
   @Override
-  public int blood() {
-    return 0xFF44FF22;
-  }
-
-  @Override
-  public void attack(int cell) {
+  public void attack(final int cell) {
     if (!Level.adjacent(cell, ch.pos)) {
 
       cellToAttack = cell;
@@ -72,7 +67,12 @@ public class ScorpioSprite extends MobSprite {
   }
 
   @Override
-  public void onComplete(Animation anim) {
+  public int blood() {
+    return 0xFF44FF22;
+  }
+
+  @Override
+  public void onComplete(final Animation anim) {
     if (anim == zap) {
       idle();
 

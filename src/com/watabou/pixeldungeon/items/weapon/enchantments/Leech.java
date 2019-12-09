@@ -32,14 +32,25 @@ public class Leech extends Weapon.Enchantment {
   private static ItemSprite.Glowing RED = new ItemSprite.Glowing(0x660022);
 
   @Override
-  public boolean proc(Weapon weapon, Char attacker, Char defender, int damage) {
+  public Glowing glowing() {
+    return RED;
+  }
+
+  @Override
+  public String name(final String weaponName) {
+    return String.format(TXT_VAMPIRIC, weaponName);
+  }
+
+  @Override
+  public boolean proc(final Weapon weapon, final Char attacker, final Char defender,
+      final int damage) {
 
     int level = Math.max(0, weapon.effectiveLevel());
 
     // lvl 0 - 33%
     // lvl 1 - 43%
     // lvl 2 - 50%
-    int maxValue = damage * (level + 2) / (level + 6);
+    int maxValue = (damage * (level + 2)) / (level + 6);
     int effValue = Math.min(Random.IntRange(0, maxValue), attacker.HT - attacker.HP);
 
     if (effValue > 0) {
@@ -53,16 +64,6 @@ public class Leech extends Weapon.Enchantment {
     } else {
       return false;
     }
-  }
-
-  @Override
-  public Glowing glowing() {
-    return RED;
-  }
-
-  @Override
-  public String name(String weaponName) {
-    return String.format(TXT_VAMPIRIC, weaponName);
   }
 
 }

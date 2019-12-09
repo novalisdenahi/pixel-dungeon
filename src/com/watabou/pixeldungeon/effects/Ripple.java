@@ -32,7 +32,7 @@ public class Ripple extends Image {
     super(Effects.get(Effects.Type.RIPPLE));
   }
 
-  public void reset(int p) {
+  public void reset(final int p) {
     revive();
 
     x = (p % Level.WIDTH) * DungeonTilemap.SIZE;

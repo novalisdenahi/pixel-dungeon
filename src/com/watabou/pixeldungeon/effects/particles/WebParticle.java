@@ -18,15 +18,15 @@
 package com.watabou.pixeldungeon.effects.particles;
 
 import com.watabou.noosa.particles.Emitter;
-import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.noosa.particles.Emitter.Factory;
+import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.Random;
 
 public class WebParticle extends PixelParticle {
 
   public static final Emitter.Factory FACTORY = new Factory() {
     @Override
-    public void emit(Emitter emitter, int index, float x, float y) {
+    public void emit(final Emitter emitter, final int index, final float x, final float y) {
       for (int i = 0; i < 3; i++) {
         ((WebParticle) emitter.recycle(WebParticle.class)).reset(x, y);
       }
@@ -40,7 +40,7 @@ public class WebParticle extends PixelParticle {
     lifespan = 2f;
   }
 
-  public void reset(float x, float y) {
+  public void reset(final float x, final float y) {
     revive();
 
     this.x = x;
@@ -56,6 +56,6 @@ public class WebParticle extends PixelParticle {
 
     float p = left / lifespan;
     am = p < 0.5f ? p : 1 - p;
-    scale.y = 16 + p * 8;
+    scale.y = 16 + (p * 8);
   }
 }

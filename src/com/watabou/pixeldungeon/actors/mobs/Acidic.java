@@ -30,7 +30,7 @@ public class Acidic extends Scorpio {
   }
 
   @Override
-  public int defenseProc(Char enemy, int damage) {
+  public int defenseProc(final Char enemy, final int damage) {
 
     int dmg = Random.IntRange(0, damage);
     if (dmg > 0) {
@@ -41,7 +41,7 @@ public class Acidic extends Scorpio {
   }
 
   @Override
-  public void die(Object cause) {
+  public void die(final Object cause) {
     super.die(cause);
     Badges.validateRare(this);
   }

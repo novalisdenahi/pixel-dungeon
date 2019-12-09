@@ -30,13 +30,7 @@ public class WndTitledMessage extends Window {
 
   private static final int GAP = 2;
 
-  public WndTitledMessage(Image icon, String title, String message) {
-
-    this(new IconTitle(icon, title), message);
-
-  }
-
-  public WndTitledMessage(Component titlebar, String message) {
+  public WndTitledMessage(final Component titlebar, final String message) {
 
     super();
 
@@ -51,5 +45,11 @@ public class WndTitledMessage extends Window {
     add(text);
 
     resize(width, (int) text.bottom());
+  }
+
+  public WndTitledMessage(final Image icon, final String title, final String message) {
+
+    this(new IconTitle(icon, title), message);
+
   }
 }

@@ -72,7 +72,7 @@ public class Sign {
   private static final String TXT_BURN =
       "As you try to read the sign it bursts into greenish flames.";
 
-  public static void read(int pos) {
+  public static void read(final int pos) {
 
     if (Dungeon.level instanceof DeadEndLevel) {
 

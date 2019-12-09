@@ -30,12 +30,20 @@ public class PotionOfInvisibility extends Potion {
 
   private static final float ALPHA = 0.4f;
 
+  public static void melt(final Char ch) {
+    if (ch.sprite.parent != null) {
+      ch.sprite.parent.add(new AlphaTweener(ch.sprite, ALPHA, 0.4f));
+    } else {
+      ch.sprite.alpha(ALPHA);
+    }
+  }
+
   {
     name = "Potion of Invisibility";
   }
 
   @Override
-  protected void apply(Hero hero) {
+  protected void apply(final Hero hero) {
     setKnown();
     Buff.affect(hero, Invisibility.class, Invisibility.DURATION);
     GLog.i("You see your hands turn invisible!");
@@ -53,13 +61,5 @@ public class PotionOfInvisibility extends Potion {
   @Override
   public int price() {
     return isKnown() ? 40 * quantity : super.price();
-  }
-
-  public static void melt(Char ch) {
-    if (ch.sprite.parent != null) {
-      ch.sprite.parent.add(new AlphaTweener(ch.sprite, ALPHA, 0.4f));
-    } else {
-      ch.sprite.alpha(ALPHA);
-    }
   }
 }

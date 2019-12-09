@@ -18,8 +18,8 @@
 package com.watabou.pixeldungeon.effects.particles;
 
 import com.watabou.noosa.particles.Emitter;
-import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.noosa.particles.Emitter.Factory;
+import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.ColorMath;
 import com.watabou.utils.Random;
 
@@ -27,7 +27,7 @@ public class PoisonParticle extends PixelParticle {
 
   public static final Emitter.Factory MISSILE = new Factory() {
     @Override
-    public void emit(Emitter emitter, int index, float x, float y) {
+    public void emit(final Emitter emitter, final int index, final float x, final float y) {
       ((PoisonParticle) emitter.recycle(PoisonParticle.class)).resetMissile(x, y);
     }
 
@@ -39,7 +39,7 @@ public class PoisonParticle extends PixelParticle {
 
   public static final Emitter.Factory SPLASH = new Factory() {
     @Override
-    public void emit(Emitter emitter, int index, float x, float y) {
+    public void emit(final Emitter emitter, final int index, final float x, final float y) {
       ((PoisonParticle) emitter.recycle(PoisonParticle.class)).resetSplash(x, y);
     }
 
@@ -57,7 +57,7 @@ public class PoisonParticle extends PixelParticle {
     acc.set(0, +30);
   }
 
-  public void resetMissile(float x, float y) {
+  public void resetMissile(final float x, final float y) {
     revive();
 
     this.x = x;
@@ -68,7 +68,7 @@ public class PoisonParticle extends PixelParticle {
     speed.polar(-Random.Float(3.1415926f), Random.Float(6));
   }
 
-  public void resetSplash(float x, float y) {
+  public void resetSplash(final float x, final float y) {
     revive();
 
     this.x = x;
@@ -83,7 +83,7 @@ public class PoisonParticle extends PixelParticle {
   public void update() {
     super.update();
     // alpha: 1 -> 0; size: 1 -> 4
-    size(4 - (am = left / lifespan) * 3);
+    size(4 - ((am = left / lifespan) * 3));
     // color: 0x8844FF -> 0x00FF00
     color(ColorMath.interpolate(0x00FF00, 0x8844FF, am));
   }

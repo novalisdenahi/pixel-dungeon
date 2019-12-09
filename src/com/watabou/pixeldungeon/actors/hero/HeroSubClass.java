@@ -49,35 +49,36 @@ public enum HeroSubClass {
                   +
                   "seeds from plants. Also trampling a high grass grants them a temporary armor buff.");
 
-  private String title;
-  private String desc;
+  private static final String SUBCLASS = "subClass";
 
-  private HeroSubClass(String title, String desc) {
-    this.title = title;
-    this.desc = desc;
+  public static HeroSubClass restoreInBundle(final Bundle bundle) {
+    String value = bundle.getString(SUBCLASS);
+    try {
+      return HeroSubClass.valueOf(value);
+    } catch (Exception e) {
+      return NONE;
+    }
   }
 
-  public String title() {
-    return title;
+  private String title;
+
+  private String desc;
+
+  private HeroSubClass(final String title, final String desc) {
+    this.title = title;
+    this.desc = desc;
   }
 
   public String desc() {
     return desc;
   }
 
-  private static final String SUBCLASS = "subClass";
-
-  public void storeInBundle(Bundle bundle) {
+  public void storeInBundle(final Bundle bundle) {
     bundle.put(SUBCLASS, toString());
   }
 
-  public static HeroSubClass restoreInBundle(Bundle bundle) {
-    String value = bundle.getString(SUBCLASS);
-    try {
-      return valueOf(value);
-    } catch (Exception e) {
-      return NONE;
-    }
+  public String title() {
+    return title;
   }
 
 }

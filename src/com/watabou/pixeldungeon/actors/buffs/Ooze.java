@@ -31,20 +31,10 @@ public class Ooze extends Buff {
   public int damage = 1;
 
   @Override
-  public int icon() {
-    return BuffIndicator.OOZE;
-  }
-
-  @Override
-  public String toString() {
-    return "Caustic ooze";
-  }
-
-  @Override
   public boolean act() {
     if (target.isAlive()) {
       target.damage(damage, this);
-      if (!target.isAlive() && target == Dungeon.hero) {
+      if (!target.isAlive() && (target == Dungeon.hero)) {
         Dungeon.fail(Utils.format(ResultDescriptions.OOZE, Dungeon.depth));
         GLog.n(TXT_HERO_KILLED, toString());
       }
@@ -54,5 +44,15 @@ public class Ooze extends Buff {
       detach();
     }
     return true;
+  }
+
+  @Override
+  public int icon() {
+    return BuffIndicator.OOZE;
+  }
+
+  @Override
+  public String toString() {
+    return "Caustic ooze";
   }
 }

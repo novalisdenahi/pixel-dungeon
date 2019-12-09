@@ -38,7 +38,7 @@ public class SummoningTrap {
 
   // 0x770088
 
-  public static void trigger(int pos, Char c) {
+  public static void trigger(final int pos, final Char c) {
 
     if (Dungeon.bossLevel()) {
       return;
@@ -60,14 +60,14 @@ public class SummoningTrap {
 
     for (int i = 0; i < Level.NEIGHBOURS8.length; i++) {
       int p = pos + Level.NEIGHBOURS8[i];
-      if (Actor.findChar(p) == null && (Level.passable[p] || Level.avoid[p])) {
+      if ((Actor.findChar(p) == null) && (Level.passable[p] || Level.avoid[p])) {
         candidates.add(p);
       }
     }
 
     ArrayList<Integer> respawnPoints = new ArrayList<Integer>();
 
-    while (nMobs > 0 && candidates.size() > 0) {
+    while ((nMobs > 0) && (candidates.size() > 0)) {
       int index = Random.index(candidates);
 
       DUMMY.pos = candidates.get(index);

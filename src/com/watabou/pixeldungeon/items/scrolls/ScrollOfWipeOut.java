@@ -55,29 +55,17 @@ public class ScrollOfWipeOut extends Item {
   }
 
   @Override
-  public ArrayList<String> actions(Hero hero) {
+  public ArrayList<String> actions(final Hero hero) {
     ArrayList<String> actions = super.actions(hero);
     actions.add(AC_READ);
     return actions;
   }
 
   @Override
-  public void execute(Hero hero, String action) {
-    if (action.equals(AC_READ)) {
-
-      if (hero.buff(Blindness.class) != null) {
-        GLog.w(TXT_BLINDED);
-      } else {
-        curUser = hero;
-        curItem = detach(hero.belongings.backpack);
-        doRead();
-      }
-
-    } else {
-
-      super.execute(hero, action);
-
-    }
+  public String desc() {
+    return "Read this scroll to unleash the wrath of the dungeon spirits, killing everything on the current level. "
+        +
+        "Well, almost everything. Some of the more powerful creatures may be not affected.";
   }
 
   private void doRead() {
@@ -115,8 +103,22 @@ public class ScrollOfWipeOut extends Item {
   }
 
   @Override
-  public boolean isUpgradable() {
-    return false;
+  public void execute(final Hero hero, final String action) {
+    if (action.equals(AC_READ)) {
+
+      if (hero.buff(Blindness.class) != null) {
+        GLog.w(TXT_BLINDED);
+      } else {
+        curUser = hero;
+        curItem = detach(hero.belongings.backpack);
+        doRead();
+      }
+
+    } else {
+
+      super.execute(hero, action);
+
+    }
   }
 
   @Override
@@ -125,10 +127,8 @@ public class ScrollOfWipeOut extends Item {
   }
 
   @Override
-  public String desc() {
-    return "Read this scroll to unleash the wrath of the dungeon spirits, killing everything on the current level. "
-        +
-        "Well, almost everything. Some of the more powerful creatures may be not affected.";
+  public boolean isUpgradable() {
+    return false;
   }
 
   @Override

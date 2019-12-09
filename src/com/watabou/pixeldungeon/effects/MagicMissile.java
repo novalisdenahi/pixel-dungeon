@@ -36,137 +36,100 @@ import com.watabou.utils.Random;
 
 public class MagicMissile extends Emitter {
 
-  private static final float SPEED = 200f;
+  public static class ColdParticle extends PixelParticle.Shrinking {
 
-  private Callback callback;
-
-  private float sx;
-  private float sy;
-  private float time;
-
-  public void reset(int from, int to, Callback callback) {
-    reset(from, to, SPEED, callback);
-  }
-
-  public void reset(int from, int to, float velocity, Callback callback) {
-    this.callback = callback;
-
-    revive();
-
-    PointF pf = DungeonTilemap.tileCenterToWorld(from);
-    PointF pt = DungeonTilemap.tileCenterToWorld(to);
-
-    x = pf.x;
-    y = pf.y;
-    width = 0;
-    height = 0;
-
-    PointF d = PointF.diff(pt, pf);
-    PointF speed = new PointF(d).normalize().scale(velocity);
-    sx = speed.x;
-    sy = speed.y;
-    time = d.length() / velocity;
-  }
-
-  public void size(float size) {
-    x -= size / 2;
-    y -= size / 2;
-    width = height = size;
-  }
-
-  public static void blueLight(Group group, int from, int to, Callback callback) {
-    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
-    missile.reset(from, to, callback);
-    missile.pour(MagicParticle.FACTORY, 0.01f);
-  }
-
-  public static void fire(Group group, int from, int to, Callback callback) {
-    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
-    missile.reset(from, to, callback);
-    missile.size(4);
-    missile.pour(FlameParticle.FACTORY, 0.01f);
-  }
-
-  public static void earth(Group group, int from, int to, Callback callback) {
-    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
-    missile.reset(from, to, callback);
-    missile.size(2);
-    missile.pour(EarthParticle.FACTORY, 0.01f);
-  }
-
-  public static void purpleLight(Group group, int from, int to, Callback callback) {
-    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
-    missile.reset(from, to, callback);
-    missile.size(2);
-    missile.pour(PurpleParticle.MISSILE, 0.01f);
-  }
-
-  public static void whiteLight(Group group, int from, int to, Callback callback) {
-    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
-    missile.reset(from, to, callback);
-    missile.size(4);
-    missile.pour(WhiteParticle.FACTORY, 0.01f);
-  }
-
-  public static void wool(Group group, int from, int to, Callback callback) {
-    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
-    missile.reset(from, to, callback);
-    missile.size(3);
-    missile.pour(WoolParticle.FACTORY, 0.01f);
-  }
-
-  public static void poison(Group group, int from, int to, Callback callback) {
-    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
-    missile.reset(from, to, callback);
-    missile.size(3);
-    missile.pour(PoisonParticle.MISSILE, 0.01f);
-  }
-
-  public static void foliage(Group group, int from, int to, Callback callback) {
-    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
-    missile.reset(from, to, callback);
-    missile.size(4);
-    missile.pour(LeafParticle.GENERAL, 0.01f);
-  }
-
-  public static void slowness(Group group, int from, int to, Callback callback) {
-    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
-    missile.reset(from, to, callback);
-    missile.pour(SlowParticle.FACTORY, 0.01f);
-  }
-
-  public static void force(Group group, int from, int to, Callback callback) {
-    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
-    missile.reset(from, to, callback);
-    missile.size(0);
-    missile.pour(ForceParticle.FACTORY, 0.01f);
-  }
-
-  public static void coldLight(Group group, int from, int to, Callback callback) {
-    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
-    missile.reset(from, to, callback);
-    missile.size(4);
-    missile.pour(ColdParticle.FACTORY, 0.01f);
-  }
-
-  public static void shadow(Group group, int from, int to, Callback callback) {
-    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
-    missile.reset(from, to, callback);
-    missile.size(4);
-    missile.pour(ShadowParticle.MISSILE, 0.01f);
-  }
-
-  @Override
-  public void update() {
-    super.update();
-    if (on) {
-      float d = Game.elapsed;
-      x += sx * d;
-      y += sy * d;
-      if ((time -= d) <= 0) {
-        on = false;
-        callback.call();
+    public static final Emitter.Factory FACTORY = new Factory() {
+      @Override
+      public void emit(final Emitter emitter, final int index, final float x, final float y) {
+        ((ColdParticle) emitter.recycle(ColdParticle.class)).reset(x, y);
       }
+
+      @Override
+      public boolean lightMode() {
+        return true;
+      };
+    };
+
+    public ColdParticle() {
+      super();
+
+      lifespan = 0.6f;
+
+      color(0x2244FF);
+    }
+
+    public void reset(final float x, final float y) {
+      revive();
+
+      this.x = x;
+      this.y = y;
+
+      left = lifespan;
+      size = 8;
+    }
+
+    @Override
+    public void update() {
+      super.update();
+
+      am = 1 - (left / lifespan);
+    }
+  }
+
+  public static class EarthParticle extends PixelParticle.Shrinking {
+
+    public static final Emitter.Factory FACTORY = new Factory() {
+      @Override
+      public void emit(final Emitter emitter, final int index, final float x, final float y) {
+        ((EarthParticle) emitter.recycle(EarthParticle.class)).reset(x, y);
+      }
+    };
+
+    public EarthParticle() {
+      super();
+
+      lifespan = 0.5f;
+
+      color(ColorMath.random(0x555555, 0x777766));
+
+      acc.set(0, +40);
+    }
+
+    public void reset(final float x, final float y) {
+      revive();
+
+      this.x = x;
+      this.y = y;
+
+      left = lifespan;
+      size = 4;
+
+      speed.set(Random.Float(-10, +10), Random.Float(-10, +10));
+    }
+  }
+
+  public static class ForceParticle extends Shrinking {
+
+    public static final Emitter.Factory FACTORY = new Factory() {
+      @Override
+      public void emit(final Emitter emitter, final int index, final float x, final float y) {
+        ((ForceParticle) emitter.recycle(ForceParticle.class)).reset(index, x, y);
+      }
+    };
+
+    public void reset(final int index, final float x, final float y) {
+      super.reset(x, y, 0xFFFFFF, 8, 0.5f);
+
+      speed.polar((PointF.PI2 / 8) * index, 12);
+      this.x -= speed.x * lifespan;
+      this.y -= speed.y * lifespan;
+    }
+
+    @Override
+    public void update() {
+      super.update();
+
+      am = (1 - (left / lifespan)) / 2;
     }
   }
 
@@ -174,7 +137,7 @@ public class MagicMissile extends Emitter {
 
     public static final Emitter.Factory FACTORY = new Factory() {
       @Override
-      public void emit(Emitter emitter, int index, float x, float y) {
+      public void emit(final Emitter emitter, final int index, final float x, final float y) {
         ((MagicParticle) emitter.recycle(MagicParticle.class)).reset(x, y);
       }
 
@@ -193,7 +156,7 @@ public class MagicMissile extends Emitter {
       speed.set(Random.Float(-10, +10), Random.Float(-10, +10));
     }
 
-    public void reset(float x, float y) {
+    public void reset(final float x, final float y) {
       revive();
 
       this.x = x;
@@ -206,88 +169,15 @@ public class MagicMissile extends Emitter {
     public void update() {
       super.update();
       // alpha: 1 -> 0; size: 1 -> 4
-      size(4 - (am = left / lifespan) * 3);
-    }
-  }
-
-  public static class EarthParticle extends PixelParticle.Shrinking {
-
-    public static final Emitter.Factory FACTORY = new Factory() {
-      @Override
-      public void emit(Emitter emitter, int index, float x, float y) {
-        ((EarthParticle) emitter.recycle(EarthParticle.class)).reset(x, y);
-      }
-    };
-
-    public EarthParticle() {
-      super();
-
-      lifespan = 0.5f;
-
-      color(ColorMath.random(0x555555, 0x777766));
-
-      acc.set(0, +40);
-    }
-
-    public void reset(float x, float y) {
-      revive();
-
-      this.x = x;
-      this.y = y;
-
-      left = lifespan;
-      size = 4;
-
-      speed.set(Random.Float(-10, +10), Random.Float(-10, +10));
-    }
-  }
-
-  public static class WhiteParticle extends PixelParticle {
-
-    public static final Emitter.Factory FACTORY = new Factory() {
-      @Override
-      public void emit(Emitter emitter, int index, float x, float y) {
-        ((WhiteParticle) emitter.recycle(WhiteParticle.class)).reset(x, y);
-      }
-
-      @Override
-      public boolean lightMode() {
-        return true;
-      };
-    };
-
-    public WhiteParticle() {
-      super();
-
-      lifespan = 0.4f;
-
-      am = 0.5f;
-    }
-
-    public void reset(float x, float y) {
-      revive();
-
-      this.x = x;
-      this.y = y;
-
-      left = lifespan;
-    }
-
-    @Override
-    public void update() {
-      super.update();
-      // size: 3 -> 0
-      size((left / lifespan) * 3);
+      size(4 - ((am = left / lifespan) * 3));
     }
   }
 
   public static class SlowParticle extends PixelParticle {
 
-    private Emitter emitter;
-
     public static final Emitter.Factory FACTORY = new Factory() {
       @Override
-      public void emit(Emitter emitter, int index, float x, float y) {
+      public void emit(final Emitter emitter, final int index, final float x, final float y) {
         ((SlowParticle) emitter.recycle(SlowParticle.class)).reset(x, y, emitter);
       }
 
@@ -296,6 +186,8 @@ public class MagicMissile extends Emitter {
         return true;
       };
     };
+
+    private Emitter emitter;
 
     public SlowParticle() {
       super();
@@ -306,7 +198,7 @@ public class MagicMissile extends Emitter {
       size(2);
     }
 
-    public void reset(float x, float y, Emitter emitter) {
+    public void reset(final float x, final float y, final Emitter emitter) {
       revive();
 
       this.x = x;
@@ -328,37 +220,12 @@ public class MagicMissile extends Emitter {
     }
   }
 
-  public static class ForceParticle extends Shrinking {
+  public static class WhiteParticle extends PixelParticle {
 
     public static final Emitter.Factory FACTORY = new Factory() {
       @Override
-      public void emit(Emitter emitter, int index, float x, float y) {
-        ((ForceParticle) emitter.recycle(ForceParticle.class)).reset(index, x, y);
-      }
-    };
-
-    public void reset(int index, float x, float y) {
-      super.reset(x, y, 0xFFFFFF, 8, 0.5f);
-
-      speed.polar(PointF.PI2 / 8 * index, 12);
-      this.x -= speed.x * lifespan;
-      this.y -= speed.y * lifespan;
-    }
-
-    @Override
-    public void update() {
-      super.update();
-
-      am = (1 - left / lifespan) / 2;
-    }
-  }
-
-  public static class ColdParticle extends PixelParticle.Shrinking {
-
-    public static final Emitter.Factory FACTORY = new Factory() {
-      @Override
-      public void emit(Emitter emitter, int index, float x, float y) {
-        ((ColdParticle) emitter.recycle(ColdParticle.class)).reset(x, y);
+      public void emit(final Emitter emitter, final int index, final float x, final float y) {
+        ((WhiteParticle) emitter.recycle(WhiteParticle.class)).reset(x, y);
       }
 
       @Override
@@ -367,29 +234,176 @@ public class MagicMissile extends Emitter {
       };
     };
 
-    public ColdParticle() {
+    public WhiteParticle() {
       super();
 
-      lifespan = 0.6f;
+      lifespan = 0.4f;
 
-      color(0x2244FF);
+      am = 0.5f;
     }
 
-    public void reset(float x, float y) {
+    public void reset(final float x, final float y) {
       revive();
 
       this.x = x;
       this.y = y;
 
       left = lifespan;
-      size = 8;
     }
 
     @Override
     public void update() {
       super.update();
+      // size: 3 -> 0
+      size((left / lifespan) * 3);
+    }
+  }
 
-      am = 1 - left / lifespan;
+  private static final float SPEED = 200f;
+
+  public static void blueLight(final Group group, final int from, final int to,
+      final Callback callback) {
+    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
+    missile.reset(from, to, callback);
+    missile.pour(MagicParticle.FACTORY, 0.01f);
+  }
+
+  public static void coldLight(final Group group, final int from, final int to,
+      final Callback callback) {
+    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
+    missile.reset(from, to, callback);
+    missile.size(4);
+    missile.pour(ColdParticle.FACTORY, 0.01f);
+  }
+
+  public static void earth(final Group group, final int from, final int to,
+      final Callback callback) {
+    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
+    missile.reset(from, to, callback);
+    missile.size(2);
+    missile.pour(EarthParticle.FACTORY, 0.01f);
+  }
+
+  public static void fire(final Group group, final int from, final int to,
+      final Callback callback) {
+    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
+    missile.reset(from, to, callback);
+    missile.size(4);
+    missile.pour(FlameParticle.FACTORY, 0.01f);
+  }
+
+  public static void foliage(final Group group, final int from, final int to,
+      final Callback callback) {
+    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
+    missile.reset(from, to, callback);
+    missile.size(4);
+    missile.pour(LeafParticle.GENERAL, 0.01f);
+  }
+
+  public static void force(final Group group, final int from, final int to,
+      final Callback callback) {
+    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
+    missile.reset(from, to, callback);
+    missile.size(0);
+    missile.pour(ForceParticle.FACTORY, 0.01f);
+  }
+
+  public static void poison(final Group group, final int from, final int to,
+      final Callback callback) {
+    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
+    missile.reset(from, to, callback);
+    missile.size(3);
+    missile.pour(PoisonParticle.MISSILE, 0.01f);
+  }
+
+  public static void purpleLight(final Group group, final int from, final int to,
+      final Callback callback) {
+    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
+    missile.reset(from, to, callback);
+    missile.size(2);
+    missile.pour(PurpleParticle.MISSILE, 0.01f);
+  }
+
+  public static void shadow(final Group group, final int from, final int to,
+      final Callback callback) {
+    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
+    missile.reset(from, to, callback);
+    missile.size(4);
+    missile.pour(ShadowParticle.MISSILE, 0.01f);
+  }
+
+  public static void slowness(final Group group, final int from, final int to,
+      final Callback callback) {
+    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
+    missile.reset(from, to, callback);
+    missile.pour(SlowParticle.FACTORY, 0.01f);
+  }
+
+  public static void whiteLight(final Group group, final int from, final int to,
+      final Callback callback) {
+    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
+    missile.reset(from, to, callback);
+    missile.size(4);
+    missile.pour(WhiteParticle.FACTORY, 0.01f);
+  }
+
+  public static void wool(final Group group, final int from, final int to,
+      final Callback callback) {
+    MagicMissile missile = ((MagicMissile) group.recycle(MagicMissile.class));
+    missile.reset(from, to, callback);
+    missile.size(3);
+    missile.pour(WoolParticle.FACTORY, 0.01f);
+  }
+
+  private Callback callback;
+
+  private float sx;
+
+  private float sy;
+
+  private float time;
+
+  public void reset(final int from, final int to, final Callback callback) {
+    reset(from, to, SPEED, callback);
+  }
+
+  public void reset(final int from, final int to, final float velocity, final Callback callback) {
+    this.callback = callback;
+
+    revive();
+
+    PointF pf = DungeonTilemap.tileCenterToWorld(from);
+    PointF pt = DungeonTilemap.tileCenterToWorld(to);
+
+    x = pf.x;
+    y = pf.y;
+    width = 0;
+    height = 0;
+
+    PointF d = PointF.diff(pt, pf);
+    PointF speed = new PointF(d).normalize().scale(velocity);
+    sx = speed.x;
+    sy = speed.y;
+    time = d.length() / velocity;
+  }
+
+  public void size(final float size) {
+    x -= size / 2;
+    y -= size / 2;
+    width = height = size;
+  }
+
+  @Override
+  public void update() {
+    super.update();
+    if (on) {
+      float d = Game.elapsed;
+      x += sx * d;
+      y += sy * d;
+      if ((time -= d) <= 0) {
+        on = false;
+        callback.call();
+      }
     }
   }
 }

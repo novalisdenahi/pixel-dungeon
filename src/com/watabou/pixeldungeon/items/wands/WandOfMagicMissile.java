@@ -54,8 +54,35 @@ public class WandOfMagicMissile extends Wand {
     image = ItemSpriteSheet.WAND_MAGIC_MISSILE;
   }
 
+  private final WndBag.Listener itemSelector = new WndBag.Listener() {
+    @Override
+    public void onSelect(final Item item) {
+      if (item != null) {
+
+        Sample.INSTANCE.play(Assets.SND_EVOKE);
+        ScrollOfUpgrade.upgrade(curUser);
+        Item.evoke(curUser);
+
+        GLog.w(TXT_DISENCHANTED, item.name());
+
+        item.upgrade();
+        curUser.spendAndNext(TIME_TO_DISENCHANT);
+
+        Badges.validateItemLevelAquired(item);
+
+      } else {
+        if (disenchantEquipped) {
+          curUser.belongings.weapon = WandOfMagicMissile.this;
+          WandOfMagicMissile.this.updateQuickslot();
+        } else {
+          collect(curUser.belongings.backpack);
+        }
+      }
+    }
+  };
+
   @Override
-  public ArrayList<String> actions(Hero hero) {
+  public ArrayList<String> actions(final Hero hero) {
     ArrayList<String> actions = super.actions(hero);
     if (level() > 0) {
       actions.add(AC_DISENCHANT);
@@ -64,25 +91,12 @@ public class WandOfMagicMissile extends Wand {
   }
 
   @Override
-  protected void onZap(int cell) {
-
-    Char ch = Actor.findChar(cell);
-    if (ch != null) {
-
-      int level = power();
-
-      ch.damage(Random.Int(1, 6 + level * 2), this);
-      ch.sprite.burst(0xFF99CCFF, level / 2 + 2);
-
-      if (ch == curUser && !ch.isAlive()) {
-        Dungeon.fail(Utils.format(ResultDescriptions.WAND, name, Dungeon.depth));
-        GLog.n("You killed yourself with your own Wand of Magic Missile...");
-      }
-    }
+  public String desc() {
+    return "This wand launches missiles of pure magical energy, dealing moderate damage to a target creature.";
   }
 
   @Override
-  public void execute(Hero hero, String action) {
+  public void execute(final Hero hero, final String action) {
     if (action.equals(AC_DISENCHANT)) {
 
       if (hero.belongings.weapon == this) {
@@ -105,47 +119,34 @@ public class WandOfMagicMissile extends Wand {
   }
 
   @Override
-  protected boolean isKnown() {
-    return true;
-  }
-
-  @Override
-  public void setKnown() {
-  }
-
   protected int initialCharges() {
     return 3;
   }
 
   @Override
-  public String desc() {
-    return "This wand launches missiles of pure magical energy, dealing moderate damage to a target creature.";
+  protected boolean isKnown() {
+    return true;
   }
 
-  private final WndBag.Listener itemSelector = new WndBag.Listener() {
-    @Override
-    public void onSelect(Item item) {
-      if (item != null) {
+  @Override
+  protected void onZap(final int cell) {
 
-        Sample.INSTANCE.play(Assets.SND_EVOKE);
-        ScrollOfUpgrade.upgrade(curUser);
-        evoke(curUser);
+    Char ch = Actor.findChar(cell);
+    if (ch != null) {
 
-        GLog.w(TXT_DISENCHANTED, item.name());
+      int level = power();
 
-        item.upgrade();
-        curUser.spendAndNext(TIME_TO_DISENCHANT);
+      ch.damage(Random.Int(1, 6 + (level * 2)), this);
+      ch.sprite.burst(0xFF99CCFF, (level / 2) + 2);
 
-        Badges.validateItemLevelAquired(item);
-
-      } else {
-        if (disenchantEquipped) {
-          curUser.belongings.weapon = WandOfMagicMissile.this;
-          WandOfMagicMissile.this.updateQuickslot();
-        } else {
-          collect(curUser.belongings.backpack);
-        }
+      if ((ch == curUser) && !ch.isAlive()) {
+        Dungeon.fail(Utils.format(ResultDescriptions.WAND, name, Dungeon.depth));
+        GLog.n("You killed yourself with your own Wand of Magic Missile...");
       }
     }
-  };
+  }
+
+  @Override
+  public void setKnown() {
+  }
 }

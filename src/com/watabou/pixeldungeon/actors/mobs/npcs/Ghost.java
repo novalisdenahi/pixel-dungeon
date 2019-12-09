@@ -55,98 +55,6 @@ import com.watabou.utils.Random;
 
 public class Ghost extends NPC {
 
-  {
-    name = "sad ghost";
-    spriteClass = GhostSprite.class;
-
-    flying = true;
-
-    state = WANDERING;
-  }
-
-  public Ghost() {
-    super();
-
-    Sample.INSTANCE.load(Assets.SND_GHOST);
-  }
-
-  @Override
-  public int defenseSkill(Char enemy) {
-    return 1000;
-  }
-
-  @Override
-  public String defenseVerb() {
-    return "evaded";
-  }
-
-  @Override
-  public float speed() {
-    return 0.5f;
-  }
-
-  @Override
-  protected Char chooseEnemy() {
-    return null;
-  }
-
-  @Override
-  public void damage(int dmg, Object src) {
-  }
-
-  @Override
-  public void add(Buff buff) {
-  }
-
-  @Override
-  public boolean reset() {
-    return true;
-  }
-
-  @Override
-  public void interact() {
-    sprite.turnTo(pos, Dungeon.hero.pos);
-    Sample.INSTANCE.play(Assets.SND_GHOST);
-
-    Quest.type.handler.interact(this);
-  }
-
-  @Override
-  public String description() {
-    return "The ghost is barely visible. It looks like a shapeless " +
-        "spot of faint light with a sorrowful face.";
-  }
-
-  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-  static {
-    IMMUNITIES.add(Paralysis.class);
-    IMMUNITIES.add(Roots.class);
-  }
-
-  @Override
-  public HashSet<Class<?>> immunities() {
-    return IMMUNITIES;
-  }
-
-  public static void replace(final Mob a, final Mob b) {
-    final float FADE_TIME = 0.5f;
-
-    a.destroy();
-    a.sprite.parent.add(new AlphaTweener(a.sprite, 0, FADE_TIME) {
-      protected void onComplete() {
-        a.sprite.killAndErase();
-        parent.erase(this);
-      };
-    });
-
-    b.pos = a.pos;
-    GameScene.add(b);
-
-    b.sprite.flipHorizontal = a.sprite.flipHorizontal;
-    b.sprite.alpha(0);
-    b.sprite.parent.add(new AlphaTweener(b.sprite, 1, FADE_TIME));
-  }
-
   public static class Quest {
 
     enum Type {
@@ -154,7 +62,7 @@ public class Ghost extends NPC {
 
       public QuestHandler handler;
 
-      private Type(QuestHandler handler) {
+      private Type(final QuestHandler handler) {
         this.handler = handler;
       }
     }
@@ -172,16 +80,10 @@ public class Ghost extends NPC {
     public static Weapon weapon;
     public static Armor armor;
 
-    public static void reset() {
-      spawned = false;
-
-      weapon = null;
-      armor = null;
-    }
-
     private static final String NODE = "sadGhost";
 
     private static final String SPAWNED = "spawned";
+
     private static final String TYPE = "type";
     private static final String ALTERNATIVE = "alternative";
     private static final String LEFT2KILL = "left2kill";
@@ -191,31 +93,45 @@ public class Ghost extends NPC {
     private static final String WEAPON = "weapon";
     private static final String ARMOR = "armor";
 
-    public static void storeInBundle(Bundle bundle) {
+    public static void complete() {
+      weapon = null;
+      armor = null;
 
-      Bundle node = new Bundle();
-
-      node.put(SPAWNED, spawned);
-
-      if (spawned) {
-
-        node.put(TYPE, type.toString());
-        if (type == Type.ROSE) {
-          node.put(LEFT2KILL, left2kill);
-        }
-
-        node.put(GIVEN, given);
-        node.put(DEPTH, depth);
-        node.put(PROCESSED, processed);
-
-        node.put(WEAPON, weapon);
-        node.put(ARMOR, armor);
-      }
-
-      bundle.put(NODE, node);
+      Journal.remove(Journal.Feature.GHOST);
     }
 
-    public static void restoreFromBundle(Bundle bundle) {
+    public static void processSewersKill(final int pos) {
+      if (spawned && given && !processed && (depth == Dungeon.depth)) {
+        switch (type) {
+          case ROSE:
+            if (Random.Int(left2kill) == 0) {
+              Dungeon.level.drop(new DriedRose(), pos).sprite.drop();
+              processed = true;
+            } else {
+              left2kill--;
+            }
+            break;
+          case RAT:
+            FetidRat rat = new FetidRat();
+            rat.pos = Dungeon.level.randomRespawnCell();
+            if (rat.pos != -1) {
+              GameScene.add(rat);
+              processed = true;
+            }
+            break;
+          default:
+        }
+      }
+    }
+
+    public static void reset() {
+      spawned = false;
+
+      weapon = null;
+      armor = null;
+    }
+
+    public static void restoreFromBundle(final Bundle bundle) {
 
       Bundle node = bundle.getBundle(NODE);
 
@@ -236,12 +152,12 @@ public class Ghost extends NPC {
         weapon = (Weapon) node.get(WEAPON);
         armor = (Armor) node.get(ARMOR);
       } else {
-        reset();
+        Quest.reset();
       }
     }
 
-    public static void spawn(SewerLevel level) {
-      if (!spawned && Dungeon.depth > 1 && Random.Int(5 - Dungeon.depth) == 0) {
+    public static void spawn(final SewerLevel level) {
+      if (!spawned && (Dungeon.depth > 1) && (Random.Int(5 - Dungeon.depth) == 0)) {
 
         Ghost ghost = new Ghost();
         do {
@@ -271,10 +187,10 @@ public class Ghost extends NPC {
         for (int i = 0; i < 4; i++) {
           Item another;
           do {
-            another = (Weapon) Generator.random(Generator.Category.WEAPON);
+            another = Generator.random(Generator.Category.WEAPON);
           } while (another instanceof MissileWeapon);
 
-          if (weapon == null || another.level() > weapon.level()) {
+          if ((weapon == null) || (another.level() > weapon.level())) {
             weapon = (Weapon) another;
           }
         }
@@ -296,35 +212,28 @@ public class Ghost extends NPC {
       }
     }
 
-    public static void processSewersKill(int pos) {
-      if (spawned && given && !processed && (depth == Dungeon.depth)) {
-        switch (type) {
-          case ROSE:
-            if (Random.Int(left2kill) == 0) {
-              Dungeon.level.drop(new DriedRose(), pos).sprite.drop();
-              processed = true;
-            } else {
-              left2kill--;
-            }
-            break;
-          case RAT:
-            FetidRat rat = new FetidRat();
-            rat.pos = Dungeon.level.randomRespawnCell();
-            if (rat.pos != -1) {
-              GameScene.add(rat);
-              processed = true;
-            }
-            break;
-          default:
+    public static void storeInBundle(final Bundle bundle) {
+
+      Bundle node = new Bundle();
+
+      node.put(SPAWNED, spawned);
+
+      if (spawned) {
+
+        node.put(TYPE, type.toString());
+        if (type == Type.ROSE) {
+          node.put(LEFT2KILL, left2kill);
         }
+
+        node.put(GIVEN, given);
+        node.put(DEPTH, depth);
+        node.put(PROCESSED, processed);
+
+        node.put(WEAPON, weapon);
+        node.put(ARMOR, armor);
       }
-    }
 
-    public static void complete() {
-      weapon = null;
-      armor = null;
-
-      Journal.remove(Journal.Feature.GHOST);
+      bundle.put(NODE, node);
     }
   }
 
@@ -332,7 +241,7 @@ public class Ghost extends NPC {
 
     abstract public void interact(Ghost ghost);
 
-    protected void relocate(Ghost ghost) {
+    protected void relocate(final Ghost ghost) {
       int newPos = -1;
       for (int i = 0; i < 10; i++) {
         newPos = Dungeon.level.randomRespawnCell();
@@ -352,6 +261,13 @@ public class Ghost extends NPC {
     }
   }
 
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(Paralysis.class);
+    IMMUNITIES.add(Roots.class);
+  }
+
   private static final QuestHandler roseQuest = new QuestHandler() {
     private static final String TXT_ROSE1 =
         "Hello adventurer... Once I was like you - strong and confident... " +
@@ -367,7 +283,8 @@ public class Ghost extends NPC {
             "And you can take one of these items, maybe they " +
             "will be useful to you in your journey...";
 
-    public void interact(Ghost ghost) {
+    @Override
+    public void interact(final Ghost ghost) {
       if (Quest.given) {
 
         Item item = Dungeon.hero.belongings.getItem(DriedRose.class);
@@ -401,7 +318,8 @@ public class Ghost extends NPC {
             "Please take one of these items, maybe they " +
             "will be useful to you in your journey...";
 
-    public void interact(Ghost ghost) {
+    @Override
+    public void interact(final Ghost ghost) {
       if (Quest.given) {
 
         Item item = Dungeon.hero.belongings.getItem(RatSkull.class);
@@ -435,6 +353,7 @@ public class Ghost extends NPC {
     private static final String TXT_YES = "Yes, I will do it for you";
     private static final String TXT_NO = "No, I can't help you";
 
+    @Override
     public void interact(final Ghost ghost) {
       if (Quest.given) {
 
@@ -443,7 +362,8 @@ public class Ghost extends NPC {
 
       } else {
         GameScene.show(new WndQuest(ghost, TXT_CURSE1, TXT_YES, TXT_NO) {
-          protected void onSelect(int index) {
+          @Override
+          protected void onSelect(final int index) {
             if (index == 0) {
               Quest.given = true;
 
@@ -464,4 +384,91 @@ public class Ghost extends NPC {
       }
     }
   };
+
+  public static void replace(final Mob a, final Mob b) {
+    final float FADE_TIME = 0.5f;
+
+    a.destroy();
+    a.sprite.parent.add(new AlphaTweener(a.sprite, 0, FADE_TIME) {
+      @Override
+      protected void onComplete() {
+        a.sprite.killAndErase();
+        parent.erase(this);
+      };
+    });
+
+    b.pos = a.pos;
+    GameScene.add(b);
+
+    b.sprite.flipHorizontal = a.sprite.flipHorizontal;
+    b.sprite.alpha(0);
+    b.sprite.parent.add(new AlphaTweener(b.sprite, 1, FADE_TIME));
+  }
+
+  {
+    name = "sad ghost";
+    spriteClass = GhostSprite.class;
+
+    flying = true;
+
+    state = WANDERING;
+  }
+
+  public Ghost() {
+    super();
+
+    Sample.INSTANCE.load(Assets.SND_GHOST);
+  }
+
+  @Override
+  public void add(final Buff buff) {
+  }
+
+  @Override
+  protected Char chooseEnemy() {
+    return null;
+  }
+
+  @Override
+  public void damage(final int dmg, final Object src) {
+  }
+
+  @Override
+  public int defenseSkill(final Char enemy) {
+    return 1000;
+  }
+
+  @Override
+  public String defenseVerb() {
+    return "evaded";
+  }
+
+  @Override
+  public String description() {
+    return "The ghost is barely visible. It looks like a shapeless " +
+        "spot of faint light with a sorrowful face.";
+  }
+
+  @Override
+  public HashSet<Class<?>> immunities() {
+    return IMMUNITIES;
+  }
+
+  @Override
+  public void interact() {
+    sprite.turnTo(pos, Dungeon.hero.pos);
+    Sample.INSTANCE.play(Assets.SND_GHOST);
+
+    Quest.type.handler.interact(this);
+  }
+
+  @Override
+  public boolean reset() {
+    return true;
+  }
+
+  @Override
+  public float speed() {
+    return 0.5f;
+  }
 }

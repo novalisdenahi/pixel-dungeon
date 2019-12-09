@@ -18,8 +18,8 @@
 package com.watabou.pixeldungeon.levels.painters;
 
 import com.watabou.pixeldungeon.items.Generator;
-import com.watabou.pixeldungeon.items.Item;
 import com.watabou.pixeldungeon.items.Heap.Type;
+import com.watabou.pixeldungeon.items.Item;
 import com.watabou.pixeldungeon.items.keys.IronKey;
 import com.watabou.pixeldungeon.levels.Level;
 import com.watabou.pixeldungeon.levels.Room;
@@ -29,10 +29,10 @@ import com.watabou.utils.Random;
 
 public class PitPainter extends Painter {
 
-  public static void paint(Level level, Room room) {
+  public static void paint(final Level level, final Room room) {
 
-    fill(level, room, Terrain.WALL);
-    fill(level, room, 1, Terrain.EMPTY);
+    Painter.fill(level, room, Terrain.WALL);
+    Painter.fill(level, room, 1, Terrain.EMPTY);
 
     Room.Door entrance = room.entrance();
     entrance.set(Room.Door.Type.LOCKED);
@@ -47,7 +47,7 @@ public class PitPainter extends Painter {
     } else if (entrance.y == room.bottom) {
       well = new Point(Random.Int(2) == 0 ? room.left + 1 : room.right - 1, room.top + 1);
     }
-    set(level, well, Terrain.EMPTY_WELL);
+    Painter.set(level, well, Terrain.EMPTY_WELL);
 
     int remains = room.random();
     while (level.map[remains] == Terrain.EMPTY_WELL) {
@@ -66,11 +66,11 @@ public class PitPainter extends Painter {
 
     int n = Random.IntRange(1, 2);
     for (int i = 0; i < n; i++) {
-      level.drop(prize(level), remains);
+      level.drop(PitPainter.prize(level), remains);
     }
   }
 
-  private static Item prize(Level level) {
+  private static Item prize(final Level level) {
 
     Item prize = level.itemToSpanAsPrize();
     if (prize != null) {

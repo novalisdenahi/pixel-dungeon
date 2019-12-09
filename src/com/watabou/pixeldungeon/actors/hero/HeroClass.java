@@ -31,20 +31,14 @@ import com.watabou.pixeldungeon.items.wands.WandOfMagicMissile;
 import com.watabou.pixeldungeon.items.weapon.melee.Dagger;
 import com.watabou.pixeldungeon.items.weapon.melee.Knuckles;
 import com.watabou.pixeldungeon.items.weapon.melee.ShortSword;
-import com.watabou.pixeldungeon.items.weapon.missiles.Dart;
 import com.watabou.pixeldungeon.items.weapon.missiles.Boomerang;
+import com.watabou.pixeldungeon.items.weapon.missiles.Dart;
 import com.watabou.pixeldungeon.ui.QuickSlot;
 import com.watabou.utils.Bundle;
 
 public enum HeroClass {
 
   WARRIOR("warrior"), MAGE("mage"), ROGUE("rogue"), HUNTRESS("huntress");
-
-  private String title;
-
-  private HeroClass(String title) {
-    this.title = title;
-  }
 
   public static final String[] WAR_PERKS = {
       "Warriors start with 11 points of Strength.",
@@ -79,27 +73,91 @@ public enum HeroClass {
       "Huntresses sense neighbouring monsters even if they are hidden behind obstacles."
   };
 
-  public void initHero(Hero hero) {
+  private static final String CLASS = "class";
+
+  private static void initCommon(final Hero hero) {
+    (hero.belongings.armor = new ClothArmor()).identify();
+    new Food().identify().collect();
+    new Keyring().collect();
+  }
+
+  private static void initHuntress(final Hero hero) {
+
+    hero.HP = (hero.HT -= 5);
+
+    (hero.belongings.weapon = new Dagger()).identify();
+    Boomerang boomerang = new Boomerang();
+    boomerang.identify().collect();
+
+    QuickSlot.primaryValue = boomerang;
+  }
+
+  private static void initMage(final Hero hero) {
+    (hero.belongings.weapon = new Knuckles()).identify();
+
+    WandOfMagicMissile wand = new WandOfMagicMissile();
+    wand.identify().collect();
+
+    QuickSlot.primaryValue = wand;
+
+    new ScrollOfIdentify().setKnown();
+  }
+
+  private static void initRogue(final Hero hero) {
+    (hero.belongings.weapon = new Dagger()).identify();
+    (hero.belongings.ring1 = new RingOfShadows()).upgrade().identify();
+    new Dart(8).identify().collect();
+
+    hero.belongings.ring1.activate(hero);
+
+    QuickSlot.primaryValue = Dart.class;
+
+    new ScrollOfMagicMapping().setKnown();
+  }
+
+  private static void initWarrior(final Hero hero) {
+    hero.STR = hero.STR + 1;
+
+    (hero.belongings.weapon = new ShortSword()).identify();
+    new Dart(8).identify().collect();
+
+    QuickSlot.primaryValue = Dart.class;
+
+    new PotionOfStrength().setKnown();
+  }
+
+  public static HeroClass restoreInBundle(final Bundle bundle) {
+    String value = bundle.getString(CLASS);
+    return value.length() > 0 ? HeroClass.valueOf(value) : ROGUE;
+  }
+
+  private String title;
+
+  private HeroClass(final String title) {
+    this.title = title;
+  }
+
+  public void initHero(final Hero hero) {
 
     hero.heroClass = this;
 
-    initCommon(hero);
+    HeroClass.initCommon(hero);
 
     switch (this) {
       case WARRIOR:
-        initWarrior(hero);
+        HeroClass.initWarrior(hero);
         break;
 
       case MAGE:
-        initMage(hero);
+        HeroClass.initMage(hero);
         break;
 
       case ROGUE:
-        initRogue(hero);
+        HeroClass.initRogue(hero);
         break;
 
       case HUNTRESS:
-        initHuntress(hero);
+        HeroClass.initHuntress(hero);
         break;
     }
 
@@ -108,12 +166,6 @@ public enum HeroClass {
     }
 
     hero.updateAwareness();
-  }
-
-  private static void initCommon(Hero hero) {
-    (hero.belongings.armor = new ClothArmor()).identify();
-    new Food().identify().collect();
-    new Keyring().collect();
   }
 
   public Badges.Badge masteryBadge() {
@@ -127,71 +179,6 @@ public enum HeroClass {
       case HUNTRESS:
         return Badges.Badge.MASTERY_HUNTRESS;
     }
-    return null;
-  }
-
-  private static void initWarrior(Hero hero) {
-    hero.STR = hero.STR + 1;
-
-    (hero.belongings.weapon = new ShortSword()).identify();
-    new Dart(8).identify().collect();
-
-    QuickSlot.primaryValue = Dart.class;
-
-    new PotionOfStrength().setKnown();
-  }
-
-  private static void initMage(Hero hero) {
-    (hero.belongings.weapon = new Knuckles()).identify();
-
-    WandOfMagicMissile wand = new WandOfMagicMissile();
-    wand.identify().collect();
-
-    QuickSlot.primaryValue = wand;
-
-    new ScrollOfIdentify().setKnown();
-  }
-
-  private static void initRogue(Hero hero) {
-    (hero.belongings.weapon = new Dagger()).identify();
-    (hero.belongings.ring1 = new RingOfShadows()).upgrade().identify();
-    new Dart(8).identify().collect();
-
-    hero.belongings.ring1.activate(hero);
-
-    QuickSlot.primaryValue = Dart.class;
-
-    new ScrollOfMagicMapping().setKnown();
-  }
-
-  private static void initHuntress(Hero hero) {
-
-    hero.HP = (hero.HT -= 5);
-
-    (hero.belongings.weapon = new Dagger()).identify();
-    Boomerang boomerang = new Boomerang();
-    boomerang.identify().collect();
-
-    QuickSlot.primaryValue = boomerang;
-  }
-
-  public String title() {
-    return title;
-  }
-
-  public String spritesheet() {
-
-    switch (this) {
-      case WARRIOR:
-        return Assets.WARRIOR;
-      case MAGE:
-        return Assets.MAGE;
-      case ROGUE:
-        return Assets.ROGUE;
-      case HUNTRESS:
-        return Assets.HUNTRESS;
-    }
-
     return null;
   }
 
@@ -211,14 +198,27 @@ public enum HeroClass {
     return null;
   }
 
-  private static final String CLASS = "class";
+  public String spritesheet() {
 
-  public void storeInBundle(Bundle bundle) {
+    switch (this) {
+      case WARRIOR:
+        return Assets.WARRIOR;
+      case MAGE:
+        return Assets.MAGE;
+      case ROGUE:
+        return Assets.ROGUE;
+      case HUNTRESS:
+        return Assets.HUNTRESS;
+    }
+
+    return null;
+  }
+
+  public void storeInBundle(final Bundle bundle) {
     bundle.put(CLASS, toString());
   }
 
-  public static HeroClass restoreInBundle(Bundle bundle) {
-    String value = bundle.getString(CLASS);
-    return value.length() > 0 ? valueOf(value) : ROGUE;
+  public String title() {
+    return title;
   }
 }

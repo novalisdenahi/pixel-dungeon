@@ -34,7 +34,19 @@ public class WandOfTeleportation extends Wand {
   }
 
   @Override
-  protected void onZap(int cell) {
+  public String desc() {
+    return "A blast from this wand will teleport a creature against " +
+        "its will to a random place on the current level.";
+  }
+
+  @Override
+  protected void fx(final int cell, final Callback callback) {
+    MagicMissile.coldLight(curUser.sprite.parent, curUser.pos, cell, callback);
+    Sample.INSTANCE.play(Assets.SND_ZAP);
+  }
+
+  @Override
+  protected void onZap(final int cell) {
 
     Char ch = Actor.findChar(cell);
 
@@ -72,16 +84,5 @@ public class WandOfTeleportation extends Wand {
       GLog.i("nothing happened");
 
     }
-  }
-
-  protected void fx(int cell, Callback callback) {
-    MagicMissile.coldLight(curUser.sprite.parent, curUser.pos, cell, callback);
-    Sample.INSTANCE.play(Assets.SND_ZAP);
-  }
-
-  @Override
-  public String desc() {
-    return "A blast from this wand will teleport a creature against " +
-        "its will to a random place on the current level.";
   }
 }

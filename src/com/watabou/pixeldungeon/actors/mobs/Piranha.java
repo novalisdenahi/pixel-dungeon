@@ -35,6 +35,16 @@ import com.watabou.utils.Random;
 
 public class Piranha extends Mob {
 
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(Burning.class);
+    IMMUNITIES.add(Paralysis.class);
+    IMMUNITIES.add(ToxicGas.class);
+    IMMUNITIES.add(Roots.class);
+    IMMUNITIES.add(Frost.class);
+  }
+
   {
     name = "giant piranha";
     spriteClass = PiranhaSprite.class;
@@ -47,8 +57,8 @@ public class Piranha extends Mob {
   public Piranha() {
     super();
 
-    HP = HT = 10 + Dungeon.depth * 5;
-    defenseSkill = 10 + Dungeon.depth * 2;
+    HP = HT = 10 + (Dungeon.depth * 5);
+    defenseSkill = 10 + (Dungeon.depth * 2);
   }
 
   @Override
@@ -62,22 +72,23 @@ public class Piranha extends Mob {
   }
 
   @Override
+  public int attackSkill(final Char target) {
+    return 20 + (Dungeon.depth * 2);
+  }
+
+  @Override
   public int damageRoll() {
-    return Random.NormalIntRange(Dungeon.depth, 4 + Dungeon.depth * 2);
+    return Random.NormalIntRange(Dungeon.depth, 4 + (Dungeon.depth * 2));
   }
 
   @Override
-  public int attackSkill(Char target) {
-    return 20 + Dungeon.depth * 2;
+  public String description() {
+    return "These carnivorous fish are not natural inhabitants of underground pools. " +
+        "They were bred specifically to protect flooded treasure vaults.";
   }
 
   @Override
-  public int dr() {
-    return Dungeon.depth;
-  }
-
-  @Override
-  public void die(Object cause) {
+  public void die(final Object cause) {
     Dungeon.level.drop(new MysteryMeat(), pos).sprite.drop();
     super.die(cause);
 
@@ -86,12 +97,12 @@ public class Piranha extends Mob {
   }
 
   @Override
-  public boolean reset() {
-    return true;
+  public int dr() {
+    return Dungeon.depth;
   }
 
   @Override
-  protected boolean getCloser(int target) {
+  protected boolean getCloser(final int target) {
 
     if (rooted) {
       return false;
@@ -109,7 +120,7 @@ public class Piranha extends Mob {
   }
 
   @Override
-  protected boolean getFurther(int target) {
+  protected boolean getFurther(final int target) {
     int step = Dungeon.flee(this, pos, target,
         Level.water,
         Level.fieldOfView);
@@ -122,22 +133,12 @@ public class Piranha extends Mob {
   }
 
   @Override
-  public String description() {
-    return "These carnivorous fish are not natural inhabitants of underground pools. " +
-        "They were bred specifically to protect flooded treasure vaults.";
-  }
-
-  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-  static {
-    IMMUNITIES.add(Burning.class);
-    IMMUNITIES.add(Paralysis.class);
-    IMMUNITIES.add(ToxicGas.class);
-    IMMUNITIES.add(Roots.class);
-    IMMUNITIES.add(Frost.class);
+  public HashSet<Class<?>> immunities() {
+    return IMMUNITIES;
   }
 
   @Override
-  public HashSet<Class<?>> immunities() {
-    return IMMUNITIES;
+  public boolean reset() {
+    return true;
   }
 }

@@ -25,22 +25,16 @@ public class Terror extends FlavourBuff {
 
   public static final float DURATION = 10f;
 
-  public int object = 0;
-
   private static final String OBJECT = "object";
 
-  @Override
-  public void storeInBundle(Bundle bundle) {
-    super.storeInBundle(bundle);
-    bundle.put(OBJECT, object);
-
+  public static void recover(final Char target) {
+    Terror terror = target.buff(Terror.class);
+    if ((terror != null) && (terror.cooldown() < DURATION)) {
+      target.remove(terror);
+    }
   }
 
-  @Override
-  public void restoreFromBundle(Bundle bundle) {
-    super.restoreFromBundle(bundle);
-    object = bundle.getInt(OBJECT);
-  }
+  public int object = 0;
 
   @Override
   public int icon() {
@@ -48,14 +42,20 @@ public class Terror extends FlavourBuff {
   }
 
   @Override
-  public String toString() {
-    return "Terror";
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    object = bundle.getInt(OBJECT);
   }
 
-  public static void recover(Char target) {
-    Terror terror = target.buff(Terror.class);
-    if (terror != null && terror.cooldown() < DURATION) {
-      target.remove(terror);
-    }
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(OBJECT, object);
+
+  }
+
+  @Override
+  public String toString() {
+    return "Terror";
   }
 }

@@ -51,6 +51,11 @@ public class PrefsButton extends Button {
   }
 
   @Override
+  protected void onClick() {
+    parent.add(new WndSettings(false));
+  }
+
+  @Override
   protected void onTouchDown() {
     image.brightness(1.5f);
     Sample.INSTANCE.play(Assets.SND_CLICK);
@@ -59,10 +64,5 @@ public class PrefsButton extends Button {
   @Override
   protected void onTouchUp() {
     image.resetColor();
-  }
-
-  @Override
-  protected void onClick() {
-    parent.add(new WndSettings(false));
   }
 }

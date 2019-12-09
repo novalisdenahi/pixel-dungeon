@@ -17,8 +17,6 @@
  */
 package com.watabou.pixeldungeon.sprites;
 
-import android.graphics.RectF;
-
 import com.watabou.gltextures.SmartTexture;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.noosa.Camera;
@@ -30,6 +28,8 @@ import com.watabou.pixeldungeon.actors.hero.Hero;
 import com.watabou.pixeldungeon.actors.hero.HeroClass;
 import com.watabou.utils.Callback;
 
+import android.graphics.RectF;
+
 public class HeroSprite extends CharSprite {
 
   private static final int FRAME_WIDTH = 12;
@@ -39,7 +39,28 @@ public class HeroSprite extends CharSprite {
 
   private static TextureFilm tiers;
 
+  public static Image avatar(final HeroClass cl, final int armorTier) {
+
+    RectF patch = HeroSprite.tiers().get(armorTier);
+    Image avatar = new Image(cl.spritesheet());
+    RectF frame = avatar.texture.uvRect(1, 0, FRAME_WIDTH, FRAME_HEIGHT);
+    frame.offset(patch.left, patch.top);
+    avatar.frame(frame);
+
+    return avatar;
+  }
+
+  public static TextureFilm tiers() {
+    if (tiers == null) {
+      SmartTexture texture = TextureCache.get(Assets.ROGUE);
+      tiers = new TextureFilm(texture, texture.width, FRAME_HEIGHT);
+    }
+
+    return tiers;
+  }
+
   private Animation fly;
+
   private Animation read;
 
   public HeroSprite() {
@@ -53,9 +74,54 @@ public class HeroSprite extends CharSprite {
     idle();
   }
 
+  @Override
+  public void jump(final int from, final int to, final Callback callback) {
+    super.jump(from, to, callback);
+    play(fly);
+  }
+
+  @Override
+  public void move(final int from, final int to) {
+    super.move(from, to);
+    if (ch.flying) {
+      play(fly);
+    }
+    Camera.main.target = this;
+  }
+
+  @Override
+  public void place(final int p) {
+    super.place(p);
+    Camera.main.target = this;
+  }
+
+  public void read() {
+    animCallback = new Callback() {
+      @Override
+      public void call() {
+        idle();
+        ch.onOperateComplete();
+      }
+    };
+    play(read);
+  }
+
+  public boolean sprint(final boolean on) {
+    run.delay = on ? 0.625f / RUN_FRAMERATE : 1f / RUN_FRAMERATE;
+    return on;
+  }
+
+  @Override
+  public void update() {
+    sleeping = ((Hero) ch).restoreHealth;
+
+    super.update();
+  }
+
   public void updateArmor() {
 
-    TextureFilm film = new TextureFilm(tiers(), ((Hero) ch).tier(), FRAME_WIDTH, FRAME_HEIGHT);
+    TextureFilm film =
+        new TextureFilm(HeroSprite.tiers(), ((Hero) ch).tier(), FRAME_WIDTH, FRAME_HEIGHT);
 
     idle = new Animation(1, true);
     idle.frames(film, 0, 0, 0, 1, 0, 0, 1, 1);
@@ -79,69 +145,5 @@ public class HeroSprite extends CharSprite {
 
     read = new Animation(20, false);
     read.frames(film, 19, 20, 20, 20, 20, 20, 20, 20, 20, 19);
-  }
-
-  @Override
-  public void place(int p) {
-    super.place(p);
-    Camera.main.target = this;
-  }
-
-  @Override
-  public void move(int from, int to) {
-    super.move(from, to);
-    if (ch.flying) {
-      play(fly);
-    }
-    Camera.main.target = this;
-  }
-
-  @Override
-  public void jump(int from, int to, Callback callback) {
-    super.jump(from, to, callback);
-    play(fly);
-  }
-
-  public void read() {
-    animCallback = new Callback() {
-      @Override
-      public void call() {
-        idle();
-        ch.onOperateComplete();
-      }
-    };
-    play(read);
-  }
-
-  @Override
-  public void update() {
-    sleeping = ((Hero) ch).restoreHealth;
-
-    super.update();
-  }
-
-  public boolean sprint(boolean on) {
-    run.delay = on ? 0.625f / RUN_FRAMERATE : 1f / RUN_FRAMERATE;
-    return on;
-  }
-
-  public static TextureFilm tiers() {
-    if (tiers == null) {
-      SmartTexture texture = TextureCache.get(Assets.ROGUE);
-      tiers = new TextureFilm(texture, texture.width, FRAME_HEIGHT);
-    }
-
-    return tiers;
-  }
-
-  public static Image avatar(HeroClass cl, int armorTier) {
-
-    RectF patch = tiers().get(armorTier);
-    Image avatar = new Image(cl.spritesheet());
-    RectF frame = avatar.texture.uvRect(1, 0, FRAME_WIDTH, FRAME_HEIGHT);
-    frame.offset(patch.left, patch.top);
-    avatar.frame(frame);
-
-    return avatar;
   }
 }

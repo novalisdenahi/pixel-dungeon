@@ -34,11 +34,20 @@ import com.watabou.utils.Random;
 
 public class CursePersonification extends Mob {
 
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(Death.class);
+    IMMUNITIES.add(Terror.class);
+    IMMUNITIES.add(Paralysis.class);
+    IMMUNITIES.add(Roots.class);
+  }
+
   {
     name = "curse personification";
     spriteClass = CursePersonificationSprite.class;
 
-    HP = HT = 10 + Dungeon.depth * 3;
+    HP = HT = 10 + (Dungeon.depth * 3);
     defenseSkill = 10 + Dungeon.depth;
 
     EXP = 3;
@@ -50,28 +59,21 @@ public class CursePersonification extends Mob {
   }
 
   @Override
-  public int damageRoll() {
-    return Random.NormalIntRange(3, 5);
+  protected boolean act() {
+    if ((HP > 0) && (HP < HT)) {
+      HP++;
+    }
+    return super.act();
   }
 
   @Override
-  public int attackSkill(Char target) {
-    return 10 + Dungeon.depth;
-  }
-
-  @Override
-  public int dr() {
-    return 1;
-  }
-
-  @Override
-  public int attackProc(Char enemy, int damage) {
+  public int attackProc(final Char enemy, final int damage) {
 
     for (int i = 0; i < Level.NEIGHBOURS8.length; i++) {
       int ofs = Level.NEIGHBOURS8[i];
-      if (enemy.pos - pos == ofs) {
+      if ((enemy.pos - pos) == ofs) {
         int newPos = enemy.pos + ofs;
-        if ((Level.passable[newPos] || Level.avoid[newPos]) && Actor.findChar(newPos) == null) {
+        if ((Level.passable[newPos] || Level.avoid[newPos]) && (Actor.findChar(newPos) == null)) {
 
           Actor.addDelayed(new Pushing(enemy, enemy.pos, newPos), -1);
 
@@ -92,18 +94,13 @@ public class CursePersonification extends Mob {
   }
 
   @Override
-  protected boolean act() {
-    if (HP > 0 && HP < HT) {
-      HP++;
-    }
-    return super.act();
+  public int attackSkill(final Char target) {
+    return 10 + Dungeon.depth;
   }
 
   @Override
-  public void die(Object cause) {
-    Ghost ghost = new Ghost();
-    ghost.state = ghost.PASSIVE;
-    Ghost.replace(this, ghost);
+  public int damageRoll() {
+    return Random.NormalIntRange(3, 5);
   }
 
   @Override
@@ -112,12 +109,16 @@ public class CursePersonification extends Mob {
         "Its face bears an expression of despair.";
   }
 
-  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-  static {
-    IMMUNITIES.add(Death.class);
-    IMMUNITIES.add(Terror.class);
-    IMMUNITIES.add(Paralysis.class);
-    IMMUNITIES.add(Roots.class);
+  @Override
+  public void die(final Object cause) {
+    Ghost ghost = new Ghost();
+    ghost.state = ghost.PASSIVE;
+    Ghost.replace(this, ghost);
+  }
+
+  @Override
+  public int dr() {
+    return 1;
   }
 
   @Override

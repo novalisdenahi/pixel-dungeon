@@ -50,7 +50,7 @@ public class BlacksmithSprite extends MobSprite {
   }
 
   @Override
-  public void link(Char ch) {
+  public void link(final Char ch) {
     super.link(ch);
 
     emitter = new Emitter();
@@ -60,22 +60,22 @@ public class BlacksmithSprite extends MobSprite {
   }
 
   @Override
+  public void onComplete(final Animation anim) {
+    super.onComplete(anim);
+
+    if (visible && (emitter != null) && (anim == idle)) {
+      emitter.burst(Speck.factory(Speck.FORGE), 3);
+      float volume = 0.2f / (Level.distance(ch.pos, Dungeon.hero.pos));
+      Sample.INSTANCE.play(Assets.SND_EVOKE, volume, volume, 0.8f);
+    }
+  }
+
+  @Override
   public void update() {
     super.update();
 
     if (emitter != null) {
       emitter.visible = visible;
-    }
-  }
-
-  @Override
-  public void onComplete(Animation anim) {
-    super.onComplete(anim);
-
-    if (visible && emitter != null && anim == idle) {
-      emitter.burst(Speck.factory(Speck.FORGE), 3);
-      float volume = 0.2f / (Level.distance(ch.pos, Dungeon.hero.pos));
-      Sample.INSTANCE.play(Assets.SND_EVOKE, volume, volume, 0.8f);
     }
   }
 

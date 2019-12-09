@@ -24,10 +24,6 @@ import java.nio.ShortBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import android.annotation.SuppressLint;
-import android.opengl.GLES20;
-import android.util.FloatMath;
-
 import com.watabou.gltextures.Gradient;
 import com.watabou.gltextures.SmartTexture;
 import com.watabou.noosa.Game;
@@ -35,6 +31,10 @@ import com.watabou.noosa.Group;
 import com.watabou.noosa.NoosaScript;
 import com.watabou.noosa.Visual;
 import com.watabou.utils.PointF;
+
+import android.annotation.SuppressLint;
+import android.opengl.GLES20;
+import android.util.FloatMath;
 
 public class Flare extends Visual {
 
@@ -51,7 +51,7 @@ public class Flare extends Visual {
   private int nRays;
 
   @SuppressLint("FloatMath")
-  public Flare(int nRays, float radius) {
+  public Flare(final int nRays, final float radius) {
 
     super(0, 0, 0, 0);
 
@@ -63,10 +63,10 @@ public class Flare extends Visual {
     angle = 45;
     angularSpeed = 180;
 
-    vertices = ByteBuffer.allocateDirect((nRays * 2 + 1) * 4 * (Float.SIZE / 8))
+    vertices = ByteBuffer.allocateDirect(((nRays * 2) + 1) * 4 * (Float.SIZE / 8))
         .order(ByteOrder.nativeOrder()).asFloatBuffer();
 
-    indices = ByteBuffer.allocateDirect(nRays * 3 * Short.SIZE / 8).order(ByteOrder.nativeOrder())
+    indices = ByteBuffer.allocateDirect((nRays * 3 * Short.SIZE) / 8).order(ByteOrder.nativeOrder())
         .asShortBuffer();
 
     float v[] = new float[4];
@@ -82,65 +82,29 @@ public class Flare extends Visual {
 
     for (int i = 0; i < nRays; i++) {
 
-      float a = i * 3.1415926f * 2 / nRays;
+      float a = (i * 3.1415926f * 2) / nRays;
       v[0] = FloatMath.cos(a) * radius;
       v[1] = FloatMath.sin(a) * radius;
       vertices.put(v);
 
-      a += 3.1415926f * 2 / nRays / 2;
+      a += (3.1415926f * 2) / nRays / 2;
       v[0] = FloatMath.cos(a) * radius;
       v[1] = FloatMath.sin(a) * radius;
       vertices.put(v);
 
       indices.put((short) 0);
-      indices.put((short) (1 + i * 2));
-      indices.put((short) (2 + i * 2));
+      indices.put((short) (1 + (i * 2)));
+      indices.put((short) (2 + (i * 2)));
     }
 
     indices.position(0);
   }
 
-  public Flare color(int color, boolean lightMode) {
+  public Flare color(final int color, final boolean lightMode) {
     this.lightMode = lightMode;
     hardlight(color);
 
     return this;
-  }
-
-  public Flare show(Visual visual, float duration) {
-    point(visual.center());
-    visual.parent.addToBack(this);
-
-    lifespan = this.duration = duration;
-
-    return this;
-  }
-
-  public Flare show(Group parent, PointF pos, float duration) {
-    point(pos);
-    parent.add(this);
-
-    lifespan = this.duration = duration;
-
-    return this;
-  }
-
-  @Override
-  public void update() {
-    super.update();
-
-    if (duration > 0) {
-      if ((lifespan -= Game.elapsed) > 0) {
-
-        float p = 1 - lifespan / duration; // 0 -> 1
-        p = p < 0.25f ? p * 4 : (1 - p) * 1.333f;
-        scale.set(p);
-        alpha(p);
-
-      } else {
-        killAndErase();
-      }
-    }
   }
 
   @Override
@@ -170,5 +134,41 @@ public class Flare extends Visual {
 
     script.camera(camera);
     script.drawElements(vertices, indices, nRays * 3);
+  }
+
+  public Flare show(final Group parent, final PointF pos, final float duration) {
+    point(pos);
+    parent.add(this);
+
+    lifespan = this.duration = duration;
+
+    return this;
+  }
+
+  public Flare show(final Visual visual, final float duration) {
+    point(visual.center());
+    visual.parent.addToBack(this);
+
+    lifespan = this.duration = duration;
+
+    return this;
+  }
+
+  @Override
+  public void update() {
+    super.update();
+
+    if (duration > 0) {
+      if ((lifespan -= Game.elapsed) > 0) {
+
+        float p = 1 - (lifespan / duration); // 0 -> 1
+        p = p < 0.25f ? p * 4 : (1 - p) * 1.333f;
+        scale.set(p);
+        alpha(p);
+
+      } else {
+        killAndErase();
+      }
+    }
   }
 }

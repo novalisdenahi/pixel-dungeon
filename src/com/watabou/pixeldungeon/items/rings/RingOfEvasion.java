@@ -19,6 +19,9 @@ package com.watabou.pixeldungeon.items.rings;
 
 public class RingOfEvasion extends Ring {
 
+  public class Evasion extends RingBuff {
+  }
+
   {
     name = "Ring of Evasion";
   }
@@ -31,8 +34,5 @@ public class RingOfEvasion extends Ring {
   @Override
   public String desc() {
     return isKnown() ? "This ring increases your chance to dodge enemy attack." : super.desc();
-  }
-
-  public class Evasion extends RingBuff {
   }
 }

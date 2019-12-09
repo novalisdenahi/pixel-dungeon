@@ -19,15 +19,54 @@ package com.watabou.pixeldungeon.sprites;
 
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.particles.Emitter;
-import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.noosa.particles.Emitter.Factory;
+import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
 public class GooSprite extends MobSprite {
 
+  public static class GooParticle extends PixelParticle.Shrinking {
+
+    public static final Emitter.Factory FACTORY = new Factory() {
+      @Override
+      public void emit(final Emitter emitter, final int index, final float x, final float y) {
+        ((GooParticle) emitter.recycle(GooParticle.class)).reset(x, y);
+      }
+    };
+
+    public GooParticle() {
+      super();
+
+      color(0x000000);
+      lifespan = 0.3f;
+
+      acc.set(0, +50);
+    }
+
+    public void reset(final float x, final float y) {
+      revive();
+
+      this.x = x;
+      this.y = y;
+
+      left = lifespan;
+
+      size = 4;
+      speed.polar(-Random.Float(PointF.PI), Random.Float(32, 48));
+    }
+
+    @Override
+    public void update() {
+      super.update();
+      float p = left / lifespan;
+      am = p > 0.5f ? (1 - p) * 2f : 1;
+    }
+  }
+
   private Animation pump;
+
   private Animation jump;
 
   private Emitter spray;
@@ -60,12 +99,13 @@ public class GooSprite extends MobSprite {
     play(idle);
   }
 
-  public void pumpUp() {
-    play(pump);
+  @Override
+  public int blood() {
+    return 0xFF000000;
   }
 
   @Override
-  public void play(Animation anim, boolean force) {
+  public void play(final Animation anim, final boolean force) {
     super.play(anim, force);
 
     if (anim == pump) {
@@ -77,46 +117,7 @@ public class GooSprite extends MobSprite {
     }
   }
 
-  @Override
-  public int blood() {
-    return 0xFF000000;
-  }
-
-  public static class GooParticle extends PixelParticle.Shrinking {
-
-    public static final Emitter.Factory FACTORY = new Factory() {
-      @Override
-      public void emit(Emitter emitter, int index, float x, float y) {
-        ((GooParticle) emitter.recycle(GooParticle.class)).reset(x, y);
-      }
-    };
-
-    public GooParticle() {
-      super();
-
-      color(0x000000);
-      lifespan = 0.3f;
-
-      acc.set(0, +50);
-    }
-
-    public void reset(float x, float y) {
-      revive();
-
-      this.x = x;
-      this.y = y;
-
-      left = lifespan;
-
-      size = 4;
-      speed.polar(-Random.Float(PointF.PI), Random.Float(32, 48));
-    }
-
-    @Override
-    public void update() {
-      super.update();
-      float p = left / lifespan;
-      am = p > 0.5f ? (1 - p) * 2f : 1;
-    }
+  public void pumpUp() {
+    play(pump);
   }
 }

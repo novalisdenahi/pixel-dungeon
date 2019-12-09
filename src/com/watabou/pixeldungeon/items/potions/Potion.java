@@ -85,11 +85,16 @@ public class Potion extends Item {
 
   private static ItemStatusHandler<Potion> handler;
 
-  private String color;
+  public static boolean allKnown() {
+    return handler.known().size() == potions.length;
+  }
 
-  {
-    stackable = true;
-    defaultAction = AC_DRINK;
+  public static HashSet<Class<? extends Potion>> getKnown() {
+    return handler.known();
+  }
+
+  public static HashSet<Class<? extends Potion>> getUnknown() {
+    return handler.unknown();
   }
 
   @SuppressWarnings("unchecked")
@@ -97,14 +102,21 @@ public class Potion extends Item {
     handler = new ItemStatusHandler<Potion>((Class<? extends Potion>[]) potions, colors, images);
   }
 
-  public static void save(Bundle bundle) {
+  @SuppressWarnings("unchecked")
+  public static void restore(final Bundle bundle) {
+    handler =
+        new ItemStatusHandler<Potion>((Class<? extends Potion>[]) potions, colors, images, bundle);
+  }
+
+  public static void save(final Bundle bundle) {
     handler.save(bundle);
   }
 
-  @SuppressWarnings("unchecked")
-  public static void restore(Bundle bundle) {
-    handler =
-        new ItemStatusHandler<Potion>((Class<? extends Potion>[]) potions, colors, images, bundle);
+  private String color;
+
+  {
+    stackable = true;
+    defaultAction = AC_DRINK;
   }
 
   public Potion() {
@@ -114,24 +126,71 @@ public class Potion extends Item {
   }
 
   @Override
-  public ArrayList<String> actions(Hero hero) {
+  public ArrayList<String> actions(final Hero hero) {
     ArrayList<String> actions = super.actions(hero);
     actions.add(AC_DRINK);
     return actions;
   }
 
+  protected void apply(final Hero hero) {
+    shatter(hero.pos);
+  }
+
+  protected String color() {
+    return color;
+  }
+
   @Override
-  public void execute(final Hero hero, String action) {
+  public void doThrow(final Hero hero) {
+
+    if (isKnown() && ((this instanceof PotionOfExperience) ||
+        (this instanceof PotionOfHealing) ||
+        (this instanceof PotionOfLevitation) ||
+        (this instanceof PotionOfMindVision) ||
+        (this instanceof PotionOfStrength) ||
+        (this instanceof PotionOfInvisibility) ||
+        (this instanceof PotionOfMight))) {
+
+      GameScene.show(
+          new WndOptions(TXT_BENEFICIAL, TXT_R_U_SURE_THROW, TXT_YES, TXT_NO) {
+            @Override
+            protected void onSelect(final int index) {
+              if (index == 0) {
+                Potion.super.doThrow(hero);
+              }
+            };
+          });
+
+    } else {
+      super.doThrow(hero);
+    }
+  }
+
+  protected void drink(final Hero hero) {
+
+    detach(hero.belongings.backpack);
+
+    hero.spend(TIME_TO_DRINK);
+    hero.busy();
+    onThrow(hero.pos);
+
+    Sample.INSTANCE.play(Assets.SND_DRINK);
+
+    hero.sprite.operate(hero.pos);
+  }
+
+  @Override
+  public void execute(final Hero hero, final String action) {
     if (action.equals(AC_DRINK)) {
 
-      if (isKnown() && (this instanceof PotionOfLiquidFlame ||
-          this instanceof PotionOfToxicGas ||
-          this instanceof PotionOfParalyticGas)) {
+      if (isKnown() && ((this instanceof PotionOfLiquidFlame) ||
+          (this instanceof PotionOfToxicGas) ||
+          (this instanceof PotionOfParalyticGas))) {
 
         GameScene.show(
             new WndOptions(TXT_HARMFUL, TXT_R_U_SURE_DRINK, TXT_YES, TXT_NO) {
               @Override
-              protected void onSelect(int index) {
+              protected void onSelect(final int index) {
                 if (index == 0) {
                   drink(hero);
                 }
@@ -150,98 +209,9 @@ public class Potion extends Item {
   }
 
   @Override
-  public void doThrow(final Hero hero) {
-
-    if (isKnown() && (this instanceof PotionOfExperience ||
-        this instanceof PotionOfHealing ||
-        this instanceof PotionOfLevitation ||
-        this instanceof PotionOfMindVision ||
-        this instanceof PotionOfStrength ||
-        this instanceof PotionOfInvisibility ||
-        this instanceof PotionOfMight)) {
-
-      GameScene.show(
-          new WndOptions(TXT_BENEFICIAL, TXT_R_U_SURE_THROW, TXT_YES, TXT_NO) {
-            @Override
-            protected void onSelect(int index) {
-              if (index == 0) {
-                Potion.super.doThrow(hero);
-              }
-            };
-          });
-
-    } else {
-      super.doThrow(hero);
-    }
-  }
-
-  protected void drink(Hero hero) {
-
-    detach(hero.belongings.backpack);
-
-    hero.spend(TIME_TO_DRINK);
-    hero.busy();
-    onThrow(hero.pos);
-
-    Sample.INSTANCE.play(Assets.SND_DRINK);
-
-    hero.sprite.operate(hero.pos);
-  }
-
-  @Override
-  protected void onThrow(int cell) {
-    if (Dungeon.hero.pos == cell) {
-
-      apply(Dungeon.hero);
-
-    } else if (Dungeon.level.map[cell] == Terrain.WELL || Level.pit[cell]) {
-
-      super.onThrow(cell);
-
-    } else {
-
-      shatter(cell);
-
-    }
-  }
-
-  protected void apply(Hero hero) {
-    shatter(hero.pos);
-  }
-
-  public void shatter(int cell) {
-    if (Dungeon.visible[cell]) {
-      GLog.i("The flask shatters and " + color() + " liquid splashes harmlessly");
-      Sample.INSTANCE.play(Assets.SND_SHATTER);
-      splash(cell);
-    }
-  }
-
-  public boolean isKnown() {
-    return handler.isKnown(this);
-  }
-
-  public void setKnown() {
-    if (!isKnown()) {
-      handler.know(this);
-    }
-
-    Badges.validateAllPotionsIdentified();
-  }
-
-  @Override
   public Item identify() {
     setKnown();
     return this;
-  }
-
-  protected String color() {
-    return color;
-  }
-
-  @Override
-  public String name() {
-    return isKnown() ? name : color + " potion";
   }
 
   @Override
@@ -256,30 +226,60 @@ public class Potion extends Item {
     return isKnown();
   }
 
+  public boolean isKnown() {
+    return handler.isKnown(this);
+  }
+
   @Override
   public boolean isUpgradable() {
     return false;
   }
 
-  public static HashSet<Class<? extends Potion>> getKnown() {
-    return handler.known();
+  @Override
+  public String name() {
+    return isKnown() ? name : color + " potion";
   }
 
-  public static HashSet<Class<? extends Potion>> getUnknown() {
-    return handler.unknown();
-  }
+  @Override
+  protected void onThrow(final int cell) {
+    if (Dungeon.hero.pos == cell) {
 
-  public static boolean allKnown() {
-    return handler.known().size() == potions.length;
-  }
+      apply(Dungeon.hero);
 
-  protected void splash(int cell) {
-    final int color = ItemSprite.pick(image, 8, 10);
-    Splash.at(cell, color, 5);
+    } else if ((Dungeon.level.map[cell] == Terrain.WELL) || Level.pit[cell]) {
+
+      super.onThrow(cell);
+
+    } else {
+
+      shatter(cell);
+
+    }
   }
 
   @Override
   public int price() {
     return 20 * quantity;
+  }
+
+  public void setKnown() {
+    if (!isKnown()) {
+      handler.know(this);
+    }
+
+    Badges.validateAllPotionsIdentified();
+  }
+
+  public void shatter(final int cell) {
+    if (Dungeon.visible[cell]) {
+      GLog.i("The flask shatters and " + color() + " liquid splashes harmlessly");
+      Sample.INSTANCE.play(Assets.SND_SHATTER);
+      splash(cell);
+    }
+  }
+
+  protected void splash(final int cell) {
+    final int color = ItemSprite.pick(image, 8, 10);
+    Splash.at(cell, color, 5);
   }
 }

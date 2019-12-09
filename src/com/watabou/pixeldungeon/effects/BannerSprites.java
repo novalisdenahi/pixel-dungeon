@@ -26,7 +26,7 @@ public class BannerSprites {
     PIXEL_DUNGEON, BOSS_SLAIN, GAME_OVER, SELECT_YOUR_HERO, PIXEL_DUNGEON_SIGNS
   };
 
-  public static Image get(Type type) {
+  public static Image get(final Type type) {
     Image icon = new Image(Assets.BANNERS);
     switch (type) {
       case PIXEL_DUNGEON:

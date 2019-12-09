@@ -27,7 +27,7 @@ public class MeleeWeapon extends Weapon {
 
   private int tier;
 
-  public MeleeWeapon(int tier, float acu, float dly) {
+  public MeleeWeapon(final int tier, final float acu, final float dly) {
     super();
 
     this.tier = tier;
@@ -38,46 +38,10 @@ public class MeleeWeapon extends Weapon {
     STR = typicalSTR();
   }
 
-  protected int min0() {
-    return tier;
-  }
-
-  protected int max0() {
-    return (int) ((tier * tier - tier + 10) / ACU * DLY);
-  }
-
-  @Override
-  public int min() {
-    return isBroken() ? min0() : min0() + level();
-  }
-
-  @Override
-  public int max() {
-    return isBroken() ? max0() : max0() + level() * tier;
-  }
-
-  @Override
-  final public Item upgrade() {
-    return upgrade(false);
-  }
-
-  public Item upgrade(boolean enchant) {
-    STR--;
-    return super.upgrade(enchant);
-  }
-
-  public Item safeUpgrade() {
-    return upgrade(enchantment != null);
-  }
-
   @Override
   public Item degrade() {
     STR++;
     return super.degrade();
-  }
-
-  public int typicalSTR() {
-    return 8 + tier * 2;
   }
 
   @Override
@@ -96,12 +60,12 @@ public class MeleeWeapon extends Weapon {
     if (levelKnown) {
       int min = min();
       int max = max();
-      info.append("Its average damage is " + (min + (max - min) / 2) + " points per hit. ");
+      info.append("Its average damage is " + (min + ((max - min) / 2)) + " points per hit. ");
     } else {
       int min = min0();
       int max = max0();
       info.append(
-          "Its typical average damage is " + (min + (max - min) / 2) + " points per hit " +
+          "Its typical average damage is " + (min + ((max - min) / 2)) + " points per hit " +
               "and usually it requires " + typicalSTR() + " points of strength. ");
       if (typicalSTR() > Dungeon.hero.STR()) {
         info.append("Probably this weapon is too heavy for you. ");
@@ -166,6 +130,24 @@ public class MeleeWeapon extends Weapon {
   }
 
   @Override
+  public int max() {
+    return isBroken() ? max0() : max0() + (level() * tier);
+  }
+
+  protected int max0() {
+    return (int) (((((tier * tier) - tier) + 10) / ACU) * DLY);
+  }
+
+  @Override
+  public int min() {
+    return isBroken() ? min0() : min0() + level();
+  }
+
+  protected int min0() {
+    return tier;
+  }
+
+  @Override
   public int price() {
     int price = 20 * (1 << (tier - 1));
     if (enchantment != null) {
@@ -183,5 +165,24 @@ public class MeleeWeapon extends Weapon {
     }
 
     return this;
+  }
+
+  public Item safeUpgrade() {
+    return upgrade(enchantment != null);
+  }
+
+  public int typicalSTR() {
+    return 8 + (tier * 2);
+  }
+
+  @Override
+  final public Item upgrade() {
+    return upgrade(false);
+  }
+
+  @Override
+  public Item upgrade(final boolean enchant) {
+    STR--;
+    return super.upgrade(enchant);
   }
 }

@@ -41,7 +41,27 @@ public class WandOfDisintegration extends Wand {
   }
 
   @Override
-  protected void onZap(int cell) {
+  public String desc() {
+    return "This wand emits a beam of destructive energy, which pierces all creatures in its way. "
+        +
+        "The more targets it hits, the more damage it inflicts to each of them.";
+  }
+
+  private int distance() {
+    return level() + 4;
+  }
+
+  @Override
+  protected void fx(int cell, final Callback callback) {
+
+    cell = Ballistica.trace[Math.min(Ballistica.distance, distance()) - 1];
+    curUser.sprite.parent
+        .add(new DeathRay(curUser.sprite.center(), DungeonTilemap.tileCenterToWorld(cell)));
+    callback.call();
+  }
+
+  @Override
+  protected void onZap(final int cell) {
 
     boolean terrainAffected = false;
 
@@ -62,7 +82,7 @@ public class WandOfDisintegration extends Wand {
       }
 
       int terr = Dungeon.level.map[c];
-      if (terr == Terrain.DOOR || terr == Terrain.SIGN) {
+      if ((terr == Terrain.DOOR) || (terr == Terrain.SIGN)) {
 
         Dungeon.level.destroy(c);
         GameScene.updateMap(c);
@@ -85,31 +105,11 @@ public class WandOfDisintegration extends Wand {
 
     int lvl = level + chars.size();
     int dmgMin = lvl;
-    int dmgMax = 8 + lvl * lvl / 3;
+    int dmgMax = 8 + ((lvl * lvl) / 3);
     for (Char ch : chars) {
       ch.damage(Random.NormalIntRange(dmgMin, dmgMax), this);
       ch.sprite.centerEmitter().burst(PurpleParticle.BURST, Random.IntRange(1, 2));
       ch.sprite.flash();
     }
-  }
-
-  private int distance() {
-    return level() + 4;
-  }
-
-  @Override
-  protected void fx(int cell, Callback callback) {
-
-    cell = Ballistica.trace[Math.min(Ballistica.distance, distance()) - 1];
-    curUser.sprite.parent
-        .add(new DeathRay(curUser.sprite.center(), DungeonTilemap.tileCenterToWorld(cell)));
-    callback.call();
-  }
-
-  @Override
-  public String desc() {
-    return "This wand emits a beam of destructive energy, which pierces all creatures in its way. "
-        +
-        "The more targets it hits, the more damage it inflicts to each of them.";
   }
 }

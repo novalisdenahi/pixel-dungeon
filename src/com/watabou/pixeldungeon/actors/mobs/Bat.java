@@ -28,6 +28,12 @@ import com.watabou.utils.Random;
 
 public class Bat extends Mob {
 
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(Leech.class);
+  }
+
   {
     name = "vampire bat";
     spriteClass = BatSprite.class;
@@ -46,27 +52,7 @@ public class Bat extends Mob {
   }
 
   @Override
-  public int damageRoll() {
-    return Random.NormalIntRange(6, 12);
-  }
-
-  @Override
-  public int attackSkill(Char target) {
-    return 16;
-  }
-
-  @Override
-  public int dr() {
-    return 4;
-  }
-
-  @Override
-  public String defenseVerb() {
-    return "evaded";
-  }
-
-  @Override
-  public int attackProc(Char enemy, int damage) {
+  public int attackProc(final Char enemy, final int damage) {
 
     int reg = Math.min(damage, HT - HP);
 
@@ -79,15 +65,30 @@ public class Bat extends Mob {
   }
 
   @Override
+  public int attackSkill(final Char target) {
+    return 16;
+  }
+
+  @Override
+  public int damageRoll() {
+    return Random.NormalIntRange(6, 12);
+  }
+
+  @Override
+  public String defenseVerb() {
+    return "evaded";
+  }
+
+  @Override
   public String description() {
     return "These brisk and tenacious inhabitants of cave domes may defeat much larger opponents by "
         +
         "replenishing their health with each successful attack.";
   }
 
-  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
-  static {
-    RESISTANCES.add(Leech.class);
+  @Override
+  public int dr() {
+    return 4;
   }
 
   @Override

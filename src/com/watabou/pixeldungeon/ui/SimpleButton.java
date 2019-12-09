@@ -26,7 +26,7 @@ public class SimpleButton extends Component {
 
   private Image image;
 
-  public SimpleButton(Image image) {
+  public SimpleButton(final Image image) {
     super();
 
     this.image.copy(image);
@@ -41,18 +41,18 @@ public class SimpleButton extends Component {
 
     add(new TouchArea(image) {
       @Override
-      protected void onTouchDown(Touch touch) {
+      protected void onClick(final Touch touch) {
+        SimpleButton.this.onClick();
+      };
+
+      @Override
+      protected void onTouchDown(final Touch touch) {
         image.brightness(1.2f);
       };
 
       @Override
-      protected void onTouchUp(Touch touch) {
+      protected void onTouchUp(final Touch touch) {
         image.brightness(1.0f);
-      };
-
-      @Override
-      protected void onClick(Touch touch) {
-        SimpleButton.this.onClick();
       };
     });
   }

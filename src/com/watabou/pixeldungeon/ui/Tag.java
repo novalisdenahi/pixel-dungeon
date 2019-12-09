@@ -31,12 +31,12 @@ public class Tag extends Button {
 
   protected float lightness = 0;
 
-  public Tag(int color) {
+  public Tag(final int color) {
     super();
 
-    this.r = (color >> 16) / 255f;
-    this.g = ((color >> 8) & 0xFF) / 255f;
-    this.b = (color & 0xFF) / 255f;
+    r = (color >> 16) / 255f;
+    g = ((color >> 8) & 0xFF) / 255f;
+    b = (color & 0xFF) / 255f;
   }
 
   @Override
@@ -46,6 +46,10 @@ public class Tag extends Button {
 
     bg = Chrome.get(Chrome.Type.TAG);
     add(bg);
+  }
+
+  public void flash() {
+    lightness = 1f;
   }
 
   @Override
@@ -58,17 +62,13 @@ public class Tag extends Button {
     bg.size(width, height);
   }
 
-  public void flash() {
-    lightness = 1f;
-  }
-
   @Override
   public void update() {
     super.update();
 
-    if (visible && lightness > 0.5) {
+    if (visible && (lightness > 0.5)) {
       if ((lightness -= Game.elapsed) > 0.5) {
-        bg.ra = bg.ga = bg.ba = 2 * lightness - 1;
+        bg.ra = bg.ga = bg.ba = (2 * lightness) - 1;
         bg.rm = 2 * r * (1 - lightness);
         bg.gm = 2 * g * (1 - lightness);
         bg.bm = 2 * b * (1 - lightness);

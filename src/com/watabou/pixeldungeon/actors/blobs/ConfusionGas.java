@@ -32,21 +32,21 @@ public class ConfusionGas extends Blob {
 
     Char ch;
     for (int i = 0; i < LENGTH; i++) {
-      if (cur[i] > 0 && (ch = Actor.findChar(i)) != null) {
+      if ((cur[i] > 0) && ((ch = Actor.findChar(i)) != null)) {
         Buff.prolong(ch, Vertigo.class, Vertigo.duration(ch));
       }
     }
   }
 
   @Override
-  public void use(BlobEmitter emitter) {
-    super.use(emitter);
-
-    emitter.pour(Speck.factory(Speck.CONFUSION, true), 0.6f);
+  public String tileDesc() {
+    return "A cloud of confusion gas is swirling here.";
   }
 
   @Override
-  public String tileDesc() {
-    return "A cloud of confusion gas is swirling here.";
+  public void use(final BlobEmitter emitter) {
+    super.use(emitter);
+
+    emitter.pour(Speck.factory(Speck.CONFUSION, true), 0.6f);
   }
 }

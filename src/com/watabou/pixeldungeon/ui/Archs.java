@@ -26,11 +26,11 @@ public class Archs extends Component {
 
   private static final float SCROLL_SPEED = 20f;
 
-  private SkinnedBlock arcsBg;
-  private SkinnedBlock arcsFg;
-
   private static float offsB = 0;
   private static float offsF = 0;
+
+  private SkinnedBlock arcsBg;
+  private SkinnedBlock arcsFg;
 
   public boolean reversed = false;
 
@@ -50,10 +50,10 @@ public class Archs extends Component {
   @Override
   protected void layout() {
     arcsBg.size(width, height);
-    arcsBg.offset(arcsBg.texture.width / 4 - (width % arcsBg.texture.width) / 2, 0);
+    arcsBg.offset((arcsBg.texture.width / 4) - ((width % arcsBg.texture.width) / 2), 0);
 
     arcsFg.size(width, height);
-    arcsFg.offset(arcsFg.texture.width / 4 - (width % arcsFg.texture.width) / 2, 0);
+    arcsFg.offset((arcsFg.texture.width / 4) - ((width % arcsFg.texture.width) / 2), 0);
   }
 
   @Override

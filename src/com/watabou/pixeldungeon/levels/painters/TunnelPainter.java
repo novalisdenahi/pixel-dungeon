@@ -24,13 +24,14 @@ import com.watabou.utils.Random;
 
 public class TunnelPainter extends Painter {
 
-  public static void paint(Level level, Room room) {
+  public static void paint(final Level level, final Room room) {
 
     int floor = level.tunnelTile();
 
     Point c = room.center();
 
-    if (room.width() > room.height() || (room.width() == room.height() && Random.Int(2) == 0)) {
+    if ((room.width() > room.height())
+        || ((room.width() == room.height()) && (Random.Int(2) == 0))) {
 
       int from = room.right - 1;
       int to = room.left + 1;
@@ -43,14 +44,14 @@ public class TunnelPainter extends Painter {
 
           from = room.left + 1;
           for (int i = door.y; i != c.y; i += step) {
-            set(level, from, i, floor);
+            Painter.set(level, from, i, floor);
           }
 
         } else if (door.x == room.right) {
 
           to = room.right - 1;
           for (int i = door.y; i != c.y; i += step) {
-            set(level, to, i, floor);
+            Painter.set(level, to, i, floor);
           }
 
         } else {
@@ -62,13 +63,13 @@ public class TunnelPainter extends Painter {
           }
 
           for (int i = door.y + step; i != c.y; i += step) {
-            set(level, door.x, i, floor);
+            Painter.set(level, door.x, i, floor);
           }
         }
       }
 
       for (int i = from; i <= to; i++) {
-        set(level, i, c.y, floor);
+        Painter.set(level, i, c.y, floor);
       }
 
     } else {
@@ -84,14 +85,14 @@ public class TunnelPainter extends Painter {
 
           from = room.top + 1;
           for (int i = door.x; i != c.x; i += step) {
-            set(level, i, from, floor);
+            Painter.set(level, i, from, floor);
           }
 
         } else if (door.y == room.bottom) {
 
           to = room.bottom - 1;
           for (int i = door.x; i != c.x; i += step) {
-            set(level, i, to, floor);
+            Painter.set(level, i, to, floor);
           }
 
         } else {
@@ -103,13 +104,13 @@ public class TunnelPainter extends Painter {
           }
 
           for (int i = door.x + step; i != c.x; i += step) {
-            set(level, i, door.y, floor);
+            Painter.set(level, i, door.y, floor);
           }
         }
       }
 
       for (int i = from; i <= to; i++) {
-        set(level, c.x, i, floor);
+        Painter.set(level, c.x, i, floor);
       }
     }
 

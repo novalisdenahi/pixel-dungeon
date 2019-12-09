@@ -44,14 +44,19 @@ public class MageArmor extends ClassArmor {
   }
 
   @Override
-  public String special() {
-    return AC_SPECIAL;
-  }
-
-  @Override
   public String desc() {
     return "Wearing this gorgeous robe, a mage can cast a spell of molten earth: all the enemies " +
         "in his field of view will be set on fire and unable to move at the same time.";
+  }
+
+  @Override
+  public boolean doEquip(final Hero hero) {
+    if (hero.heroClass == HeroClass.MAGE) {
+      return super.doEquip(hero);
+    } else {
+      GLog.w(TXT_NOT_MAGE);
+      return false;
+    }
   }
 
   @Override
@@ -75,12 +80,7 @@ public class MageArmor extends ClassArmor {
   }
 
   @Override
-  public boolean doEquip(Hero hero) {
-    if (hero.heroClass == HeroClass.MAGE) {
-      return super.doEquip(hero);
-    } else {
-      GLog.w(TXT_NOT_MAGE);
-      return false;
-    }
+  public String special() {
+    return AC_SPECIAL;
   }
 }

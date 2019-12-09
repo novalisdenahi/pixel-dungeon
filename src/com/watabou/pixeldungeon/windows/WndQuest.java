@@ -32,7 +32,7 @@ public class WndQuest extends Window {
   private static final int BTN_HEIGHT = 20;
   private static final int GAP = 2;
 
-  public WndQuest(NPC questgiver, String text, String... options) {
+  public WndQuest(final NPC questgiver, final String text, final String... options) {
 
     super();
 
@@ -76,6 +76,6 @@ public class WndQuest extends Window {
     }
   }
 
-  protected void onSelect(int index) {
+  protected void onSelect(final int index) {
   };
 }

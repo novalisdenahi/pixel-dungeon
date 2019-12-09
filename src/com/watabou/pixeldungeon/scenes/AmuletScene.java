@@ -49,13 +49,15 @@ public class AmuletScene extends PixelScene {
 
   private Image amulet;
 
+  private float timer = 0;
+
   @Override
   public void create() {
     super.create();
 
     BitmapTextMultiline text = null;
     if (!noText) {
-      text = createMultiline(TXT, 8);
+      text = PixelScene.createMultiline(TXT, 8);
       text.maxWidth = WIDTH;
       text.measure();
       add(text);
@@ -88,8 +90,8 @@ public class AmuletScene extends PixelScene {
     if (noText) {
       height = amulet.height + LARGE_GAP + btnExit.height() + SMALL_GAP + btnStay.height();
 
-      amulet.x = align((Camera.main.width - amulet.width) / 2);
-      amulet.y = align((Camera.main.height - height) / 2);
+      amulet.x = PixelScene.align((Camera.main.width - amulet.width) / 2);
+      amulet.y = PixelScene.align((Camera.main.height - height) / 2);
 
       btnExit.setPos((Camera.main.width - btnExit.width()) / 2,
           amulet.y + amulet.height + LARGE_GAP);
@@ -99,10 +101,10 @@ public class AmuletScene extends PixelScene {
       height = amulet.height + LARGE_GAP + text.height() + LARGE_GAP + btnExit.height() + SMALL_GAP
           + btnStay.height();
 
-      amulet.x = align((Camera.main.width - amulet.width) / 2);
-      amulet.y = align((Camera.main.height - height) / 2);
+      amulet.x = PixelScene.align((Camera.main.width - amulet.width) / 2);
+      amulet.y = PixelScene.align((Camera.main.height - height) / 2);
 
-      text.x = align((Camera.main.width - text.width()) / 2);
+      text.x = PixelScene.align((Camera.main.width - text.width()) / 2);
       text.y = amulet.y + amulet.height + LARGE_GAP;
 
       btnExit.setPos((Camera.main.width - btnExit.width()) / 2, text.y + text.height() + LARGE_GAP);
@@ -119,8 +121,6 @@ public class AmuletScene extends PixelScene {
     InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
     Game.switchScene(InterlevelScene.class);
   }
-
-  private float timer = 0;
 
   @Override
   public void update() {

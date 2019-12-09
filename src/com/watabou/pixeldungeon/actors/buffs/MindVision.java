@@ -27,6 +27,12 @@ public class MindVision extends FlavourBuff {
   public int distance = 2;
 
   @Override
+  public void detach() {
+    super.detach();
+    Dungeon.observe();
+  }
+
+  @Override
   public int icon() {
     return BuffIndicator.MIND_VISION;
   }
@@ -34,11 +40,5 @@ public class MindVision extends FlavourBuff {
   @Override
   public String toString() {
     return "Mind vision";
-  }
-
-  @Override
-  public void detach() {
-    super.detach();
-    Dungeon.observe();
   }
 }

@@ -48,7 +48,7 @@ public class RottingFistSprite extends MobSprite {
   }
 
   @Override
-  public void attack(int cell) {
+  public void attack(final int cell) {
     super.attack(cell);
 
     speed.set(0, -FALL_SPEED);
@@ -56,7 +56,7 @@ public class RottingFistSprite extends MobSprite {
   }
 
   @Override
-  public void onComplete(Animation anim) {
+  public void onComplete(final Animation anim) {
     super.onComplete(anim);
     if (anim == attack) {
       speed.set(0);

@@ -27,13 +27,20 @@ import com.watabou.utils.Random;
 
 public class ItemStatusHandler<T extends Item> {
 
+  private static final String PFX_IMAGE = "_image";
+
+  private static final String PFX_LABEL = "_label";
+  private static final String PFX_KNOWN = "_known";
   private Class<? extends T>[] items;
 
   private HashMap<Class<? extends T>, Integer> images;
+
   private HashMap<Class<? extends T>, String> labels;
+
   private HashSet<Class<? extends T>> known;
 
-  public ItemStatusHandler(Class<? extends T>[] items, String[] allLabels, Integer[] allImages) {
+  public ItemStatusHandler(final Class<? extends T>[] items, final String[] allLabels,
+      final Integer[] allImages) {
 
     this.items = items;
 
@@ -46,7 +53,7 @@ public class ItemStatusHandler<T extends Item> {
 
     for (int i = 0; i < items.length; i++) {
 
-      Class<? extends T> item = (Class<? extends T>) (items[i]);
+      Class<? extends T> item = (items[i]);
 
       int index = Random.Int(labelsLeft.size());
 
@@ -58,8 +65,9 @@ public class ItemStatusHandler<T extends Item> {
     }
   }
 
-  public ItemStatusHandler(Class<? extends T>[] items, String[] labels, Integer[] images,
-      Bundle bundle) {
+  public ItemStatusHandler(final Class<? extends T>[] items, final String[] labels,
+      final Integer[] images,
+      final Bundle bundle) {
 
     this.items = items;
 
@@ -70,27 +78,44 @@ public class ItemStatusHandler<T extends Item> {
     restore(bundle, labels, images);
   }
 
-  private static final String PFX_IMAGE = "_image";
-  private static final String PFX_LABEL = "_label";
-  private static final String PFX_KNOWN = "_known";
+  public int image(final T item) {
+    return images.get(item.getClass());
+  }
 
-  public void save(Bundle bundle) {
-    for (int i = 0; i < items.length; i++) {
-      String itemName = items[i].toString();
-      bundle.put(itemName + PFX_IMAGE, images.get(items[i]));
-      bundle.put(itemName + PFX_LABEL, labels.get(items[i]));
-      bundle.put(itemName + PFX_KNOWN, known.contains(items[i]));
+  public boolean isKnown(final T item) {
+    return known.contains(item.getClass());
+  }
+
+  @SuppressWarnings("unchecked")
+  public void know(final T item) {
+    known.add((Class<? extends T>) item.getClass());
+
+    if (known.size() == (items.length - 1)) {
+      for (int i = 0; i < items.length; i++) {
+        if (!known.contains(items[i])) {
+          known.add(items[i]);
+          break;
+        }
+      }
     }
   }
 
-  private void restore(Bundle bundle, String[] allLabels, Integer[] allImages) {
+  public HashSet<Class<? extends T>> known() {
+    return known;
+  }
+
+  public String label(final T item) {
+    return labels.get(item.getClass());
+  }
+
+  private void restore(final Bundle bundle, final String[] allLabels, final Integer[] allImages) {
 
     ArrayList<String> labelsLeft = new ArrayList<String>(Arrays.asList(allLabels));
     ArrayList<Integer> imagesLeft = new ArrayList<Integer>(Arrays.asList(allImages));
 
     for (int i = 0; i < items.length; i++) {
 
-      Class<? extends T> item = (Class<? extends T>) (items[i]);
+      Class<? extends T> item = (items[i]);
       String itemName = item.toString();
 
       if (bundle.contains(itemName + PFX_LABEL)) {
@@ -121,34 +146,13 @@ public class ItemStatusHandler<T extends Item> {
     }
   }
 
-  public int image(T item) {
-    return images.get(item.getClass());
-  }
-
-  public String label(T item) {
-    return labels.get(item.getClass());
-  }
-
-  public boolean isKnown(T item) {
-    return known.contains(item.getClass());
-  }
-
-  @SuppressWarnings("unchecked")
-  public void know(T item) {
-    known.add((Class<? extends T>) item.getClass());
-
-    if (known.size() == items.length - 1) {
-      for (int i = 0; i < items.length; i++) {
-        if (!known.contains(items[i])) {
-          known.add(items[i]);
-          break;
-        }
-      }
+  public void save(final Bundle bundle) {
+    for (int i = 0; i < items.length; i++) {
+      String itemName = items[i].toString();
+      bundle.put(itemName + PFX_IMAGE, images.get(items[i]));
+      bundle.put(itemName + PFX_LABEL, labels.get(items[i]));
+      bundle.put(itemName + PFX_KNOWN, known.contains(items[i]));
     }
-  }
-
-  public HashSet<Class<? extends T>> known() {
-    return known;
   }
 
   public HashSet<Class<? extends T>> unknown() {

@@ -42,14 +42,14 @@ public class Torch extends Item {
   }
 
   @Override
-  public ArrayList<String> actions(Hero hero) {
+  public ArrayList<String> actions(final Hero hero) {
     ArrayList<String> actions = super.actions(hero);
     actions.add(AC_LIGHT);
     return actions;
   }
 
   @Override
-  public void execute(Hero hero, String action) {
+  public void execute(final Hero hero, final String action) {
 
     if (action == AC_LIGHT) {
 
@@ -72,8 +72,8 @@ public class Torch extends Item {
   }
 
   @Override
-  public boolean isUpgradable() {
-    return false;
+  public String info() {
+    return "It's an indispensable item in The Demon Halls, which are notorious for their poor ambient lighting.";
   }
 
   @Override
@@ -82,12 +82,12 @@ public class Torch extends Item {
   }
 
   @Override
-  public int price() {
-    return 10 * quantity;
+  public boolean isUpgradable() {
+    return false;
   }
 
   @Override
-  public String info() {
-    return "It's an indispensable item in The Demon Halls, which are notorious for their poor ambient lighting.";
+  public int price() {
+    return 10 * quantity;
   }
 }

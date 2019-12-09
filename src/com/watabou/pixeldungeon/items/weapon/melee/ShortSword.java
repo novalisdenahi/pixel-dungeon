@@ -51,62 +51,14 @@ public class ShortSword extends MeleeWeapon {
     image = ItemSpriteSheet.SHORT_SWORD;
   }
 
-  public ShortSword() {
-    super(1, 1f, 1f);
-
-    STR = 11;
-  }
-
-  @Override
-  protected int max0() {
-    return 12;
-  }
-
-  @Override
-  public ArrayList<String> actions(Hero hero) {
-    ArrayList<String> actions = super.actions(hero);
-    if (level() > 0) {
-      actions.add(AC_REFORGE);
-    }
-    return actions;
-  }
-
-  @Override
-  public void execute(Hero hero, String action) {
-    if (action == AC_REFORGE) {
-
-      if (hero.belongings.weapon == this) {
-        equipped = true;
-        hero.belongings.weapon = null;
-      } else {
-        equipped = false;
-        detach(hero.belongings.backpack);
-      }
-
-      curUser = hero;
-
-      GameScene.selectItem(itemSelector, WndBag.Mode.WEAPON, TXT_SELECT_WEAPON);
-
-    } else {
-
-      super.execute(hero, action);
-
-    }
-  }
-
-  @Override
-  public String desc() {
-    return "It is indeed quite short, just a few inches longer, than a dagger.";
-  }
-
   private final WndBag.Listener itemSelector = new WndBag.Listener() {
     @Override
-    public void onSelect(Item item) {
-      if (item != null && !(item instanceof Boomerang)) {
+    public void onSelect(final Item item) {
+      if ((item != null) && !(item instanceof Boomerang)) {
 
         Sample.INSTANCE.play(Assets.SND_EVOKE);
         ScrollOfUpgrade.upgrade(curUser);
-        evoke(curUser);
+        Item.evoke(curUser);
 
         GLog.w(TXT_REFORGED, item.name());
 
@@ -129,4 +81,52 @@ public class ShortSword extends MeleeWeapon {
       }
     }
   };
+
+  public ShortSword() {
+    super(1, 1f, 1f);
+
+    STR = 11;
+  }
+
+  @Override
+  public ArrayList<String> actions(final Hero hero) {
+    ArrayList<String> actions = super.actions(hero);
+    if (level() > 0) {
+      actions.add(AC_REFORGE);
+    }
+    return actions;
+  }
+
+  @Override
+  public String desc() {
+    return "It is indeed quite short, just a few inches longer, than a dagger.";
+  }
+
+  @Override
+  public void execute(final Hero hero, final String action) {
+    if (action == AC_REFORGE) {
+
+      if (hero.belongings.weapon == this) {
+        equipped = true;
+        hero.belongings.weapon = null;
+      } else {
+        equipped = false;
+        detach(hero.belongings.backpack);
+      }
+
+      curUser = hero;
+
+      GameScene.selectItem(itemSelector, WndBag.Mode.WEAPON, TXT_SELECT_WEAPON);
+
+    } else {
+
+      super.execute(hero, action);
+
+    }
+  }
+
+  @Override
+  protected int max0() {
+    return 12;
+  }
 }

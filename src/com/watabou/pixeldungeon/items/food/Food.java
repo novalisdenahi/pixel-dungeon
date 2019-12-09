@@ -48,19 +48,19 @@ public class Food extends Item {
   }
 
   @Override
-  public ArrayList<String> actions(Hero hero) {
+  public ArrayList<String> actions(final Hero hero) {
     ArrayList<String> actions = super.actions(hero);
     actions.add(AC_EAT);
     return actions;
   }
 
   @Override
-  public void execute(Hero hero, String action) {
+  public void execute(final Hero hero, final String action) {
     if (action.equals(AC_EAT)) {
 
       detach(hero.belongings.backpack);
 
-      ((Hunger) hero.buff(Hunger.class)).satisfy(energy);
+      hero.buff(Hunger.class).satisfy(energy);
       GLog.i(message);
 
       switch (hero.heroClass) {
@@ -103,13 +103,13 @@ public class Food extends Item {
   }
 
   @Override
-  public boolean isUpgradable() {
-    return false;
+  public boolean isIdentified() {
+    return true;
   }
 
   @Override
-  public boolean isIdentified() {
-    return true;
+  public boolean isUpgradable() {
+    return false;
   }
 
   @Override

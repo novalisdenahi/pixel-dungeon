@@ -30,44 +30,12 @@ import com.watabou.utils.Random;
 
 public class RatKingPainter extends Painter {
 
-  public static void paint(Level level, Room room) {
+  private static void addChest(final Level level, final int pos, final int door) {
 
-    fill(level, room, Terrain.WALL);
-    fill(level, room, 1, Terrain.EMPTY_SP);
-
-    Room.Door entrance = room.entrance();
-    entrance.set(Room.Door.Type.HIDDEN);
-    int door = entrance.x + entrance.y * Level.WIDTH;
-
-    for (int i = room.left + 1; i < room.right; i++) {
-      addChest(level, (room.top + 1) * Level.WIDTH + i, door);
-      addChest(level, (room.bottom - 1) * Level.WIDTH + i, door);
-    }
-
-    for (int i = room.top + 2; i < room.bottom - 1; i++) {
-      addChest(level, i * Level.WIDTH + room.left + 1, door);
-      addChest(level, i * Level.WIDTH + room.right - 1, door);
-    }
-
-    while (true) {
-      Heap chest = level.heaps.get(room.random());
-      if (chest != null) {
-        chest.type = Heap.Type.MIMIC;
-        break;
-      }
-    }
-
-    RatKing king = new RatKing();
-    king.pos = room.random(1);
-    level.mobs.add(king);
-  }
-
-  private static void addChest(Level level, int pos, int door) {
-
-    if (pos == door - 1 ||
-        pos == door + 1 ||
-        pos == door - Level.WIDTH ||
-        pos == door + Level.WIDTH) {
+    if ((pos == (door - 1)) ||
+        (pos == (door + 1)) ||
+        (pos == (door - Level.WIDTH)) ||
+        (pos == (door + Level.WIDTH))) {
       return;
     }
 
@@ -90,5 +58,37 @@ public class RatKingPainter extends Painter {
     }
 
     level.drop(prize, pos).type = Heap.Type.CHEST;
+  }
+
+  public static void paint(final Level level, final Room room) {
+
+    Painter.fill(level, room, Terrain.WALL);
+    Painter.fill(level, room, 1, Terrain.EMPTY_SP);
+
+    Room.Door entrance = room.entrance();
+    entrance.set(Room.Door.Type.HIDDEN);
+    int door = entrance.x + (entrance.y * Level.WIDTH);
+
+    for (int i = room.left + 1; i < room.right; i++) {
+      RatKingPainter.addChest(level, ((room.top + 1) * Level.WIDTH) + i, door);
+      RatKingPainter.addChest(level, ((room.bottom - 1) * Level.WIDTH) + i, door);
+    }
+
+    for (int i = room.top + 2; i < (room.bottom - 1); i++) {
+      RatKingPainter.addChest(level, (i * Level.WIDTH) + room.left + 1, door);
+      RatKingPainter.addChest(level, ((i * Level.WIDTH) + room.right) - 1, door);
+    }
+
+    while (true) {
+      Heap chest = level.heaps.get(room.random());
+      if (chest != null) {
+        chest.type = Heap.Type.MIMIC;
+        break;
+      }
+    }
+
+    RatKing king = new RatKing();
+    king.pos = room.random(1);
+    level.mobs.add(king);
   }
 }

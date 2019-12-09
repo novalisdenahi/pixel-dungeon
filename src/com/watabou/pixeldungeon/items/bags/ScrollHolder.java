@@ -31,18 +31,18 @@ public class ScrollHolder extends Bag {
   }
 
   @Override
-  public boolean grab(Item item) {
+  public boolean grab(final Item item) {
     return item instanceof Scroll;
-  }
-
-  @Override
-  public int price() {
-    return 50;
   }
 
   @Override
   public String info() {
     return "You can place any number of scrolls into this tubular container. " +
         "It saves room in your backpack and protects scrolls from fire.";
+  }
+
+  @Override
+  public int price() {
+    return 50;
   }
 }

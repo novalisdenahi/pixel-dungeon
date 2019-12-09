@@ -27,7 +27,7 @@ public class Light extends FlavourBuff {
   public static final int DISTANCE = 4;
 
   @Override
-  public boolean attachTo(Char target) {
+  public boolean attachTo(final Char target) {
     if (super.attachTo(target)) {
       if (Dungeon.level != null) {
         target.viewDistance = Math.max(Dungeon.level.viewDistance, DISTANCE);

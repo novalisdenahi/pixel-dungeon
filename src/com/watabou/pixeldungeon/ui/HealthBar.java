@@ -55,7 +55,7 @@ public class HealthBar extends Component {
     height = HEIGHT;
   }
 
-  public void level(float value) {
+  public void level(final float value) {
     level = value;
     layout();
   }

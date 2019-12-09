@@ -31,8 +31,8 @@ import com.watabou.pixeldungeon.items.potions.Potion;
 import com.watabou.pixeldungeon.items.potions.PotionOfMight;
 import com.watabou.pixeldungeon.items.potions.PotionOfStrength;
 import com.watabou.pixeldungeon.items.scrolls.Scroll;
-import com.watabou.pixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.watabou.pixeldungeon.items.scrolls.ScrollOfEnchantment;
+import com.watabou.pixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.watabou.pixeldungeon.levels.Level;
 import com.watabou.pixeldungeon.levels.Terrain;
 import com.watabou.pixeldungeon.mechanics.Ballistica;
@@ -51,7 +51,22 @@ public class WandOfReach extends Wand {
   }
 
   @Override
-  protected void onZap(int cell) {
+  public String desc() {
+    return "This utility wand can be used to grab objects from a distance and to switch places with enemies. "
+        +
+        "Waves of magic force radiated from it will affect all cells on their way triggering traps, "
+        +
+        "trampling high vegetation, opening closed doors and closing open ones.";
+  }
+
+  @Override
+  protected void fx(final int cell, final Callback callback) {
+    MagicMissile.force(curUser.sprite.parent, curUser.pos, cell, callback);
+    Sample.INSTANCE.play(Assets.SND_ZAP);
+  }
+
+  @Override
+  protected void onZap(final int cell) {
 
     int reach = Math.min(Ballistica.distance, power() + 4);
 
@@ -94,7 +109,7 @@ public class WandOfReach extends Wand {
         GameScene.ripple(c);
       }
 
-      mapUpdated = mapUpdated || Dungeon.level.map[c] != before;
+      mapUpdated = mapUpdated || (Dungeon.level.map[c] != before);
     }
 
     if (mapUpdated) {
@@ -102,16 +117,16 @@ public class WandOfReach extends Wand {
     }
   }
 
-  private void transport(Heap heap) {
+  private void transport(final Heap heap) {
     Item item = heap.pickUp();
     if (item.doPickUp(curUser)) {
 
       if (item instanceof Dewdrop) {
         // Do nothing
       } else {
-        if (((item instanceof ScrollOfUpgrade || item instanceof ScrollOfEnchantment)
+        if ((((item instanceof ScrollOfUpgrade) || (item instanceof ScrollOfEnchantment))
             && ((Scroll) item).isKnown()) ||
-            ((item instanceof PotionOfStrength || item instanceof PotionOfMight)
+            (((item instanceof PotionOfStrength) || (item instanceof PotionOfMight))
                 && ((Potion) item).isKnown())) {
           GLog.p(TXT_YOU_NOW_HAVE, item.name());
         } else {
@@ -122,19 +137,5 @@ public class WandOfReach extends Wand {
     } else {
       Dungeon.level.drop(item, curUser.pos).sprite.drop();
     }
-  }
-
-  protected void fx(int cell, Callback callback) {
-    MagicMissile.force(curUser.sprite.parent, curUser.pos, cell, callback);
-    Sample.INSTANCE.play(Assets.SND_ZAP);
-  }
-
-  @Override
-  public String desc() {
-    return "This utility wand can be used to grab objects from a distance and to switch places with enemies. "
-        +
-        "Waves of magic force radiated from it will affect all cells on their way triggering traps, "
-        +
-        "trampling high vegetation, opening closed doors and closing open ones.";
   }
 }

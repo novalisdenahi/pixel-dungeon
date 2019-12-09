@@ -31,7 +31,7 @@ public class WndSadGhost extends WndQuest {
   private Ghost ghost;
   private Item questItem;
 
-  public WndSadGhost(final Ghost ghost, final Item item, String text) {
+  public WndSadGhost(final Ghost ghost, final Item item, final String text) {
 
     super(ghost, text, TXT_WEAPON, TXT_ARMOR);
 
@@ -40,7 +40,7 @@ public class WndSadGhost extends WndQuest {
   }
 
   @Override
-  protected void onSelect(int index) {
+  protected void onSelect(final int index) {
 
     if (questItem != null) {
       questItem.detach(Dungeon.hero.belongings.backpack);

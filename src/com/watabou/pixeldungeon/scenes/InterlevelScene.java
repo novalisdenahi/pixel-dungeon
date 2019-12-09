@@ -36,34 +36,35 @@ import com.watabou.pixeldungeon.windows.WndStory;
 
 public class InterlevelScene extends PixelScene {
 
-  private static final float TIME_TO_FADE = 0.3f;
+  public static enum Mode {
+    DESCEND, ASCEND, CONTINUE, RESURRECT, RETURN, FALL, NONE
+  }
 
+  private enum Phase {
+    FADE_IN, STATIC, FADE_OUT
+  }
+
+  private static final float TIME_TO_FADE = 0.3f;
   private static final String TXT_DESCENDING = "Descending...";
   private static final String TXT_ASCENDING = "Ascending...";
   private static final String TXT_LOADING = "Loading...";
   private static final String TXT_RESURRECTING = "Resurrecting...";
+
   private static final String TXT_RETURNING = "Returning...";
   private static final String TXT_FALLING = "Falling...";
 
-  private static final String ERR_FILE_NOT_FOUND = "File not found. For some reason.";
+  private static final String ERR_FILE_NOT_FOUND = "File not found. For some reason.";;
+
   private static final String ERR_GENERIC = "Something went wrong...";
 
-  public static enum Mode {
-    DESCEND, ASCEND, CONTINUE, RESURRECT, RETURN, FALL, NONE
-  };
-
   public static Mode mode;
-
   public static int returnDepth;
+
   public static int returnPos;
 
   public static boolean noStory = false;
 
-  public static boolean fallIntoPit;
-
-  private enum Phase {
-    FADE_IN, STATIC, FADE_OUT
-  };
+  public static boolean fallIntoPit;;
 
   private Phase phase;
   private float timeLeft;
@@ -72,6 +73,15 @@ public class InterlevelScene extends PixelScene {
 
   private Thread thread;
   private String error = null;
+
+  private void ascend() throws Exception {
+    Actor.fixTime();
+
+    Dungeon.saveLevel();
+    Dungeon.depth--;
+    Level level = Dungeon.loadLevel(Dungeon.hero.heroClass);
+    Dungeon.switchLevel(level, level.exit);
+  }
 
   @Override
   public void create() {
@@ -153,57 +163,13 @@ public class InterlevelScene extends PixelScene {
 
         }
 
-        if (phase == Phase.STATIC && error == null) {
+        if ((phase == Phase.STATIC) && (error == null)) {
           phase = Phase.FADE_OUT;
           timeLeft = TIME_TO_FADE;
         }
       }
     };
     thread.start();
-  }
-
-  @Override
-  public void update() {
-    super.update();
-
-    float p = timeLeft / TIME_TO_FADE;
-
-    switch (phase) {
-
-      case FADE_IN:
-        message.alpha(1 - p);
-        if ((timeLeft -= Game.elapsed) <= 0) {
-          if (!thread.isAlive() && error == null) {
-            phase = Phase.FADE_OUT;
-            timeLeft = TIME_TO_FADE;
-          } else {
-            phase = Phase.STATIC;
-          }
-        }
-        break;
-
-      case FADE_OUT:
-        message.alpha(p);
-        if (mode == Mode.CONTINUE || (mode == Mode.DESCEND && Dungeon.depth == 1)) {
-          Music.INSTANCE.volume(p);
-        }
-        if ((timeLeft -= Game.elapsed) <= 0) {
-          Game.switchScene(GameScene.class);
-        }
-        break;
-
-      case STATIC:
-        if (error != null) {
-          add(new WndError(error) {
-            public void onBackPressed() {
-              super.onBackPressed();
-              Game.switchScene(StartScene.class);
-            };
-          });
-          error = null;
-        }
-        break;
-    }
   }
 
   private void descend() throws Exception {
@@ -245,23 +211,9 @@ public class InterlevelScene extends PixelScene {
     Dungeon.switchLevel(level, fallIntoPit ? level.pitCell() : level.randomRespawnCell());
   }
 
-  private void ascend() throws Exception {
-    Actor.fixTime();
-
-    Dungeon.saveLevel();
-    Dungeon.depth--;
-    Level level = Dungeon.loadLevel(Dungeon.hero.heroClass);
-    Dungeon.switchLevel(level, level.exit);
-  }
-
-  private void returnTo() throws Exception {
-
-    Actor.fixTime();
-
-    Dungeon.saveLevel();
-    Dungeon.depth = returnDepth;
-    Level level = Dungeon.loadLevel(Dungeon.hero.heroClass);
-    Dungeon.switchLevel(level, Level.resizingNeeded ? level.adjustPos(returnPos) : returnPos);
+  @Override
+  protected void onBackPressed() {
+    // Do nothing
   }
 
   private void restore() throws Exception {
@@ -296,8 +248,58 @@ public class InterlevelScene extends PixelScene {
     }
   }
 
+  private void returnTo() throws Exception {
+
+    Actor.fixTime();
+
+    Dungeon.saveLevel();
+    Dungeon.depth = returnDepth;
+    Level level = Dungeon.loadLevel(Dungeon.hero.heroClass);
+    Dungeon.switchLevel(level, Level.resizingNeeded ? level.adjustPos(returnPos) : returnPos);
+  }
+
   @Override
-  protected void onBackPressed() {
-    // Do nothing
+  public void update() {
+    super.update();
+
+    float p = timeLeft / TIME_TO_FADE;
+
+    switch (phase) {
+
+      case FADE_IN:
+        message.alpha(1 - p);
+        if ((timeLeft -= Game.elapsed) <= 0) {
+          if (!thread.isAlive() && (error == null)) {
+            phase = Phase.FADE_OUT;
+            timeLeft = TIME_TO_FADE;
+          } else {
+            phase = Phase.STATIC;
+          }
+        }
+        break;
+
+      case FADE_OUT:
+        message.alpha(p);
+        if ((mode == Mode.CONTINUE) || ((mode == Mode.DESCEND) && (Dungeon.depth == 1))) {
+          Music.INSTANCE.volume(p);
+        }
+        if ((timeLeft -= Game.elapsed) <= 0) {
+          Game.switchScene(GameScene.class);
+        }
+        break;
+
+      case STATIC:
+        if (error != null) {
+          add(new WndError(error) {
+            @Override
+            public void onBackPressed() {
+              super.onBackPressed();
+              Game.switchScene(StartScene.class);
+            };
+          });
+          error = null;
+        }
+        break;
+    }
   }
 }

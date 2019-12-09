@@ -29,10 +29,10 @@ import com.watabou.utils.Random;
 
 public class ArmoryPainter extends Painter {
 
-  public static void paint(Level level, Room room) {
+  public static void paint(final Level level, final Room room) {
 
-    fill(level, room, Terrain.WALL);
-    fill(level, room, 1, Terrain.EMPTY);
+    Painter.fill(level, room, Terrain.WALL);
+    Painter.fill(level, room, 1, Terrain.EMPTY);
 
     Room.Door entrance = room.entrance();
     Point statue = null;
@@ -46,7 +46,7 @@ public class ArmoryPainter extends Painter {
       statue = new Point(Random.Int(2) == 0 ? room.left + 1 : room.right - 1, room.top + 1);
     }
     if (statue != null) {
-      set(level, statue, Terrain.STATUE);
+      Painter.set(level, statue, Terrain.STATUE);
     }
 
     int n = 3 + (Random.Int(4) == 0 ? 1 : 0);
@@ -54,15 +54,15 @@ public class ArmoryPainter extends Painter {
       int pos;
       do {
         pos = room.random();
-      } while (level.map[pos] != Terrain.EMPTY || level.heaps.get(pos) != null);
-      level.drop(prize(level), pos);
+      } while ((level.map[pos] != Terrain.EMPTY) || (level.heaps.get(pos) != null));
+      level.drop(ArmoryPainter.prize(level), pos);
     }
 
     entrance.set(Room.Door.Type.LOCKED);
     level.addItemToSpawn(new IronKey());
   }
 
-  private static Item prize(Level level) {
+  private static Item prize(final Level level) {
     return Random.Int(6) == 0 ? new Bomb().random()
         : Generator.random(Random.oneOf(
             Generator.Category.ARMOR,

@@ -29,36 +29,9 @@ import com.watabou.utils.Random;
 
 public class Bleeding extends Buff {
 
-  protected int level;
-
   private static final String LEVEL = "level";
 
-  @Override
-  public void storeInBundle(Bundle bundle) {
-    super.storeInBundle(bundle);
-    bundle.put(LEVEL, level);
-
-  }
-
-  @Override
-  public void restoreFromBundle(Bundle bundle) {
-    super.restoreFromBundle(bundle);
-    level = bundle.getInt(LEVEL);
-  }
-
-  public void set(int level) {
-    this.level = level;
-  };
-
-  @Override
-  public int icon() {
-    return BuffIndicator.BLEEDING;
-  }
-
-  @Override
-  public String toString() {
-    return "Bleeding";
-  }
+  protected int level;
 
   @Override
   public boolean act() {
@@ -69,10 +42,10 @@ public class Bleeding extends Buff {
         target.damage(level, this);
         if (target.sprite.visible) {
           Splash.at(target.sprite.center(), -PointF.PI / 2, PointF.PI / 6,
-              target.sprite.blood(), Math.min(10 * level / target.HT, 10));
+              target.sprite.blood(), Math.min((10 * level) / target.HT, 10));
         }
 
-        if (target == Dungeon.hero && !target.isAlive()) {
+        if ((target == Dungeon.hero) && !target.isAlive()) {
           Dungeon.fail(Utils.format(ResultDescriptions.BLEEDING, Dungeon.depth));
           GLog.n("You bled to death...");
         }
@@ -89,5 +62,32 @@ public class Bleeding extends Buff {
     }
 
     return true;
+  }
+
+  @Override
+  public int icon() {
+    return BuffIndicator.BLEEDING;
+  }
+
+  @Override
+  public void restoreFromBundle(final Bundle bundle) {
+    super.restoreFromBundle(bundle);
+    level = bundle.getInt(LEVEL);
+  };
+
+  public void set(final int level) {
+    this.level = level;
+  }
+
+  @Override
+  public void storeInBundle(final Bundle bundle) {
+    super.storeInBundle(bundle);
+    bundle.put(LEVEL, level);
+
+  }
+
+  @Override
+  public String toString() {
+    return "Bleeding";
   }
 }

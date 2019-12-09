@@ -31,7 +31,18 @@ public class PotionOfLiquidFlame extends Potion {
   }
 
   @Override
-  public void shatter(int cell) {
+  public String desc() {
+    return "This flask contains an unstable compound which will burst " +
+        "violently into flame upon exposure to open air.";
+  }
+
+  @Override
+  public int price() {
+    return isKnown() ? 40 * quantity : super.price();
+  }
+
+  @Override
+  public void shatter(final int cell) {
 
     if (Dungeon.visible[cell]) {
       setKnown();
@@ -41,16 +52,5 @@ public class PotionOfLiquidFlame extends Potion {
     }
 
     GameScene.add(Blob.seed(cell, 2, Fire.class));
-  }
-
-  @Override
-  public String desc() {
-    return "This flask contains an unstable compound which will burst " +
-        "violently into flame upon exposure to open air.";
-  }
-
-  @Override
-  public int price() {
-    return isKnown() ? 40 * quantity : super.price();
   }
 }

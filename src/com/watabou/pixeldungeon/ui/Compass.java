@@ -33,7 +33,7 @@ public class Compass extends Image {
 
   private PointF lastScroll = new PointF();
 
-  public Compass(int cell) {
+  public Compass(final int cell) {
 
     super();
     copy(Icons.COMPASS.get());

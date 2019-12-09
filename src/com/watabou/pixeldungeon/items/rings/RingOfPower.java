@@ -19,6 +19,9 @@ package com.watabou.pixeldungeon.items.rings;
 
 public class RingOfPower extends Ring {
 
+  public class Power extends RingBuff {
+  }
+
   {
     name = "Ring of Power";
   }
@@ -33,8 +36,5 @@ public class RingOfPower extends Ring {
     return isKnown() ? "Your wands will become more powerful in the energy field " +
         "that radiates from this ring. Degraded rings of power will instead weaken your wands."
         : super.desc();
-  }
-
-  public class Power extends RingBuff {
   }
 }

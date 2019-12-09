@@ -86,45 +86,7 @@ public class WndStory extends Window {
             "Very few adventurers have ever descended this far...");
   };
 
-  private BitmapTextMultiline tf;
-
-  private float delay;
-
-  public WndStory(String text) {
-    super(0, 0, Chrome.get(Chrome.Type.SCROLL));
-
-    tf = PixelScene.createMultiline(text, 7);
-    tf.maxWidth = WIDTH - MARGIN * 2;
-    tf.measure();
-    tf.ra = bgR;
-    tf.ga = bgG;
-    tf.ba = bgB;
-    tf.rm = -bgR;
-    tf.gm = -bgG;
-    tf.bm = -bgB;
-    tf.x = MARGIN;
-    add(tf);
-
-    add(new TouchArea(chrome) {
-      @Override
-      protected void onClick(Touch touch) {
-        hide();
-      }
-    });
-
-    resize((int) (tf.width() + MARGIN * 2), (int) Math.min(tf.height(), 180));
-  }
-
-  @Override
-  public void update() {
-    super.update();
-
-    if (delay > 0 && (delay -= Game.elapsed) <= 0) {
-      shadow.visible = chrome.visible = tf.visible = true;
-    }
-  }
-
-  public static void showChapter(int id) {
+  public static void showChapter(final int id) {
 
     if (Dungeon.chapters.contains(id)) {
       return;
@@ -140,6 +102,44 @@ public class WndStory extends Window {
       Game.scene().add(wnd);
 
       Dungeon.chapters.add(id);
+    }
+  }
+
+  private BitmapTextMultiline tf;
+
+  private float delay;
+
+  public WndStory(final String text) {
+    super(0, 0, Chrome.get(Chrome.Type.SCROLL));
+
+    tf = PixelScene.createMultiline(text, 7);
+    tf.maxWidth = WIDTH - (MARGIN * 2);
+    tf.measure();
+    tf.ra = bgR;
+    tf.ga = bgG;
+    tf.ba = bgB;
+    tf.rm = -bgR;
+    tf.gm = -bgG;
+    tf.bm = -bgB;
+    tf.x = MARGIN;
+    add(tf);
+
+    add(new TouchArea(chrome) {
+      @Override
+      protected void onClick(final Touch touch) {
+        hide();
+      }
+    });
+
+    resize((int) (tf.width() + (MARGIN * 2)), (int) Math.min(tf.height(), 180));
+  }
+
+  @Override
+  public void update() {
+    super.update();
+
+    if ((delay > 0) && ((delay -= Game.elapsed) <= 0)) {
+      shadow.visible = chrome.visible = tf.visible = true;
     }
   }
 }

@@ -26,7 +26,16 @@ public class FetidRatSprite extends RatSprite {
   private Emitter cloud;
 
   @Override
-  public void link(Char ch) {
+  public void die() {
+    super.die();
+
+    if (cloud != null) {
+      cloud.on = false;
+    }
+  }
+
+  @Override
+  public void link(final Char ch) {
     super.link(ch);
 
     if (cloud == null) {
@@ -42,15 +51,6 @@ public class FetidRatSprite extends RatSprite {
 
     if (cloud != null) {
       cloud.visible = visible;
-    }
-  }
-
-  @Override
-  public void die() {
-    super.die();
-
-    if (cloud != null) {
-      cloud.on = false;
     }
   }
 }

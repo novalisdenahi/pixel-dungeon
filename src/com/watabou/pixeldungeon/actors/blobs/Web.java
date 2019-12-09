@@ -47,13 +47,7 @@ public class Web extends Blob {
   }
 
   @Override
-  public void use(BlobEmitter emitter) {
-    super.use(emitter);
-
-    emitter.pour(WebParticle.FACTORY, 0.4f);
-  }
-
-  public void seed(int cell, int amount) {
+  public void seed(final int cell, final int amount) {
     int diff = amount - cur[cell];
     if (diff > 0) {
       cur[cell] = amount;
@@ -64,5 +58,12 @@ public class Web extends Blob {
   @Override
   public String tileDesc() {
     return "Everything is covered with a thick web here.";
+  }
+
+  @Override
+  public void use(final BlobEmitter emitter) {
+    super.use(emitter);
+
+    emitter.pour(WebParticle.FACTORY, 0.4f);
   }
 }

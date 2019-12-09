@@ -17,8 +17,6 @@
  */
 package com.watabou.pixeldungeon.sprites;
 
-import android.graphics.Bitmap;
-
 import com.watabou.gltextures.TextureCache;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.MovieClip;
@@ -38,7 +36,35 @@ import com.watabou.pixeldungeon.scenes.GameScene;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
+import android.graphics.Bitmap;
+
 public class ItemSprite extends MovieClip {
+
+  public static class Glowing {
+
+    public static final Glowing WHITE = new Glowing(0xFFFFFF, 0.6f);
+
+    public int color;
+    public float red;
+    public float green;
+    public float blue;
+    public float period;
+
+    public Glowing(final int color) {
+      this(color, 1f);
+    }
+
+    public Glowing(final int color, final float period) {
+
+      this.color = color;
+
+      red = (color >> 16) / 255f;
+      green = ((color >> 8) & 0xFF) / 255f;
+      blue = (color & 0xFF) / 255f;
+
+      this.period = period;
+    }
+  }
 
   public static final int SIZE = 16;
 
@@ -46,10 +72,19 @@ public class ItemSprite extends MovieClip {
 
   protected static TextureFilm film;
 
-  public Heap heap;
+  public static int pick(final int index, final int x, final int y) {
+    Bitmap bmp = TextureCache.get(Assets.ITEMS).bitmap;
+    int rows = bmp.getWidth() / SIZE;
+    int row = index / rows;
+    int col = index % rows;
+    return bmp.getPixel((col * SIZE) + x, (row * SIZE) + y);
+  }
 
+  public Heap heap;
   private Glowing glowing;
+
   private float phase;
+
   private boolean glowUp;
 
   private float dropInterval;
@@ -58,11 +93,7 @@ public class ItemSprite extends MovieClip {
     this(ItemSpriteSheet.SMTH, null);
   }
 
-  public ItemSprite(Item item) {
-    this(item.image(), item.glowing());
-  }
-
-  public ItemSprite(int image, Glowing glowing) {
+  public ItemSprite(final int image, final Glowing glowing) {
     super(Assets.ITEMS);
 
     if (film == null) {
@@ -72,41 +103,8 @@ public class ItemSprite extends MovieClip {
     view(image, glowing);
   }
 
-  public void originToCenter() {
-    origin.set(SIZE / 2);
-  }
-
-  public void link() {
-    link(heap);
-  }
-
-  public void link(Heap heap) {
-    this.heap = heap;
-    view(heap.image(), heap.glowing());
-    place(heap.pos);
-  }
-
-  @Override
-  public void revive() {
-    super.revive();
-
-    speed.set(0);
-    acc.set(0);
-    dropInterval = 0;
-
-    heap = null;
-  }
-
-  public PointF worldToCamera(int cell) {
-    final int csize = DungeonTilemap.SIZE;
-
-    return new PointF(
-        cell % Level.WIDTH * csize + (csize - SIZE) * 0.5f,
-        cell / Level.WIDTH * csize + (csize - SIZE) * 0.5f);
-  }
-
-  public void place(int p) {
-    point(worldToCamera(p));
+  public ItemSprite(final Item item) {
+    this(item.image(), item.glowing());
   }
 
   public void drop() {
@@ -118,15 +116,15 @@ public class ItemSprite extends MovieClip {
     dropInterval = DROP_INTERVAL;
 
     speed.set(0, -100);
-    acc.set(0, -speed.y / DROP_INTERVAL * 2);
+    acc.set(0, (-speed.y / DROP_INTERVAL) * 2);
 
-    if (visible && heap != null && heap.peek() instanceof Gold) {
+    if (visible && (heap != null) && (heap.peek() instanceof Gold)) {
       CellEmitter.center(heap.pos).burst(Speck.factory(Speck.COIN), 5);
       Sample.INSTANCE.play(Assets.SND_GOLD, 1, 1, Random.Float(0.9f, 1.1f));
     }
   }
 
-  public void drop(int from) {
+  public void drop(final int from) {
 
     if (heap.pos == from) {
       drop();
@@ -142,21 +140,42 @@ public class ItemSprite extends MovieClip {
     }
   }
 
-  public ItemSprite view(int image, Glowing glowing) {
-    frame(film.get(image));
-    if ((this.glowing = glowing) == null) {
-      resetColor();
-    }
-    return this;
+  public void link() {
+    link(heap);
+  }
+
+  public void link(final Heap heap) {
+    this.heap = heap;
+    view(heap.image(), heap.glowing());
+    place(heap.pos);
+  }
+
+  public void originToCenter() {
+    origin.set(SIZE / 2);
+  }
+
+  public void place(final int p) {
+    point(worldToCamera(p));
+  }
+
+  @Override
+  public void revive() {
+    super.revive();
+
+    speed.set(0);
+    acc.set(0);
+    dropInterval = 0;
+
+    heap = null;
   }
 
   @Override
   public void update() {
     super.update();
 
-    visible = (heap == null || Dungeon.visible[heap.pos]);
+    visible = ((heap == null) || Dungeon.visible[heap.pos]);
 
-    if (dropInterval > 0 && (dropInterval -= Game.elapsed) <= 0) {
+    if ((dropInterval > 0) && ((dropInterval -= Game.elapsed) <= 0)) {
 
       speed.set(0);
       acc.set(0);
@@ -169,7 +188,7 @@ public class ItemSprite extends MovieClip {
           GameScene.ripple(heap.pos);
         } else {
           int cell = Dungeon.level.map[heap.pos];
-          water = (cell == Terrain.WELL || cell == Terrain.ALCHEMY);
+          water = ((cell == Terrain.WELL) || (cell == Terrain.ALCHEMY));
         }
 
         if (!(heap.peek() instanceof Gold)) {
@@ -178,20 +197,20 @@ public class ItemSprite extends MovieClip {
       }
     }
 
-    if (visible && glowing != null) {
-      if (glowUp && (phase += Game.elapsed) > glowing.period) {
+    if (visible && (glowing != null)) {
+      if (glowUp && ((phase += Game.elapsed) > glowing.period)) {
 
         glowUp = false;
         phase = glowing.period;
 
-      } else if (!glowUp && (phase -= Game.elapsed) < 0) {
+      } else if (!glowUp && ((phase -= Game.elapsed) < 0)) {
 
         glowUp = true;
         phase = 0;
 
       }
 
-      float value = phase / glowing.period * 0.6f;
+      float value = (phase / glowing.period) * 0.6f;
 
       rm = gm = bm = 1 - value;
       ra = glowing.red * value;
@@ -200,37 +219,19 @@ public class ItemSprite extends MovieClip {
     }
   }
 
-  public static int pick(int index, int x, int y) {
-    Bitmap bmp = TextureCache.get(Assets.ITEMS).bitmap;
-    int rows = bmp.getWidth() / SIZE;
-    int row = index / rows;
-    int col = index % rows;
-    return bmp.getPixel(col * SIZE + x, row * SIZE + y);
+  public ItemSprite view(final int image, final Glowing glowing) {
+    frame(film.get(image));
+    if ((this.glowing = glowing) == null) {
+      resetColor();
+    }
+    return this;
   }
 
-  public static class Glowing {
+  public PointF worldToCamera(final int cell) {
+    final int csize = DungeonTilemap.SIZE;
 
-    public static final Glowing WHITE = new Glowing(0xFFFFFF, 0.6f);
-
-    public int color;
-    public float red;
-    public float green;
-    public float blue;
-    public float period;
-
-    public Glowing(int color) {
-      this(color, 1f);
-    }
-
-    public Glowing(int color, float period) {
-
-      this.color = color;
-
-      red = (color >> 16) / 255f;
-      green = ((color >> 8) & 0xFF) / 255f;
-      blue = (color & 0xFF) / 255f;
-
-      this.period = period;
-    }
+    return new PointF(
+        ((cell % Level.WIDTH) * csize) + ((csize - SIZE) * 0.5f),
+        ((cell / Level.WIDTH) * csize) + ((csize - SIZE) * 0.5f));
   }
 }

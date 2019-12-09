@@ -31,18 +31,6 @@ public class PotionOfToxicGas extends Potion {
   }
 
   @Override
-  public void shatter(int cell) {
-    if (Dungeon.visible[cell]) {
-      setKnown();
-
-      splash(cell);
-      Sample.INSTANCE.play(Assets.SND_SHATTER);
-    }
-
-    GameScene.add(Blob.seed(cell, 1000, ToxicGas.class));
-  }
-
-  @Override
   public String desc() {
     return "Uncorking or shattering this pressurized glass will cause " +
         "its contents to explode into a deadly cloud of toxic green gas. " +
@@ -53,5 +41,17 @@ public class PotionOfToxicGas extends Potion {
   @Override
   public int price() {
     return isKnown() ? 40 * quantity : super.price();
+  }
+
+  @Override
+  public void shatter(final int cell) {
+    if (Dungeon.visible[cell]) {
+      setKnown();
+
+      splash(cell);
+      Sample.INSTANCE.play(Assets.SND_SHATTER);
+    }
+
+    GameScene.add(Blob.seed(cell, 1000, ToxicGas.class));
   }
 }

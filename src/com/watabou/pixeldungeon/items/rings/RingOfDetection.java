@@ -22,18 +22,11 @@ import com.watabou.pixeldungeon.actors.hero.Hero;
 
 public class RingOfDetection extends Ring {
 
-  {
-    name = "Ring of Detection";
+  public class Detection extends RingBuff {
   }
 
-  @Override
-  public boolean doEquip(Hero hero) {
-    if (super.doEquip(hero)) {
-      Dungeon.hero.search(false);
-      return true;
-    } else {
-      return false;
-    }
+  {
+    name = "Ring of Detection";
   }
 
   @Override
@@ -49,6 +42,13 @@ public class RingOfDetection extends Ring {
         : super.desc();
   }
 
-  public class Detection extends RingBuff {
+  @Override
+  public boolean doEquip(final Hero hero) {
+    if (super.doEquip(hero)) {
+      Dungeon.hero.search(false);
+      return true;
+    } else {
+      return false;
+    }
   }
 }

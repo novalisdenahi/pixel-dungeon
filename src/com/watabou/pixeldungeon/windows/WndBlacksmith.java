@@ -35,16 +35,64 @@ import com.watabou.pixeldungeon.utils.Utils;
 
 public class WndBlacksmith extends Window {
 
+  public static class ItemButton extends Component {
+
+    protected NinePatch bg;
+    protected ItemSlot slot;
+
+    public Item item = null;
+
+    @Override
+    protected void createChildren() {
+      super.createChildren();
+
+      bg = Chrome.get(Chrome.Type.BUTTON);
+      add(bg);
+
+      slot = new ItemSlot() {
+        @Override
+        protected void onClick() {
+          ItemButton.this.onClick();
+        };
+
+        @Override
+        protected void onTouchDown() {
+          bg.brightness(1.2f);
+          Sample.INSTANCE.play(Assets.SND_CLICK);
+        }
+
+        @Override
+        protected void onTouchUp() {
+          bg.resetColor();
+        }
+      };
+      add(slot);
+    }
+
+    public void item(final Item item) {
+      slot.item(this.item = item);
+    };
+
+    @Override
+    protected void layout() {
+      super.layout();
+
+      bg.x = x;
+      bg.y = y;
+      bg.size(width, height);
+
+      slot.setRect(x + 2, y + 2, width - 4, height - 4);
+    };
+
+    protected void onClick() {
+    }
+  }
+
   private static final int BTN_SIZE = 36;
   private static final float GAP = 2;
   private static final float BTN_GAP = 10;
+
   private static final int WIDTH = 116;
-
-  private ItemButton btnPressed;
-
-  private ItemButton btnItem1;
-  private ItemButton btnItem2;
-  private RedButton btnReforge;
 
   private static final String TXT_PROMPT =
       "Ok, a deal is a deal, dat's what I can do for you: I can reforge " +
@@ -54,7 +102,32 @@ public class WndBlacksmith extends Window {
   private static final String TXT_REFORGE =
       "Reforge them";
 
-  public WndBlacksmith(Blacksmith troll, Hero hero) {
+  private ItemButton btnPressed;
+  private ItemButton btnItem1;
+  private ItemButton btnItem2;
+
+  private RedButton btnReforge;
+
+  protected WndBag.Listener itemSelector = new WndBag.Listener() {
+    @Override
+    public void onSelect(final Item item) {
+      if (item != null) {
+        btnPressed.item(item);
+
+        if ((btnItem1.item != null) && (btnItem2.item != null)) {
+          String result = Blacksmith.verify(btnItem1.item, btnItem2.item);
+          if (result != null) {
+            GameScene.show(new WndMessage(result));
+            btnReforge.enable(false);
+          } else {
+            btnReforge.enable(true);
+          }
+        }
+      }
+    }
+  };
+
+  public WndBlacksmith(final Blacksmith troll, final Hero hero) {
 
     super();
 
@@ -77,7 +150,7 @@ public class WndBlacksmith extends Window {
         GameScene.selectItem(itemSelector, WndBag.Mode.UPGRADEABLE, TXT_SELECT);
       }
     };
-    btnItem1.setRect((WIDTH - BTN_GAP) / 2 - BTN_SIZE, message.y + message.height() + BTN_GAP,
+    btnItem1.setRect(((WIDTH - BTN_GAP) / 2) - BTN_SIZE, message.y + message.height() + BTN_GAP,
         BTN_SIZE, BTN_SIZE);
     add(btnItem1);
 
@@ -103,77 +176,5 @@ public class WndBlacksmith extends Window {
     add(btnReforge);
 
     resize(WIDTH, (int) btnReforge.bottom());
-  }
-
-  protected WndBag.Listener itemSelector = new WndBag.Listener() {
-    @Override
-    public void onSelect(Item item) {
-      if (item != null) {
-        btnPressed.item(item);
-
-        if (btnItem1.item != null && btnItem2.item != null) {
-          String result = Blacksmith.verify(btnItem1.item, btnItem2.item);
-          if (result != null) {
-            GameScene.show(new WndMessage(result));
-            btnReforge.enable(false);
-          } else {
-            btnReforge.enable(true);
-          }
-        }
-      }
-    }
-  };
-
-  public static class ItemButton extends Component {
-
-    protected NinePatch bg;
-    protected ItemSlot slot;
-
-    public Item item = null;
-
-    @Override
-    protected void createChildren() {
-      super.createChildren();
-
-      bg = Chrome.get(Chrome.Type.BUTTON);
-      add(bg);
-
-      slot = new ItemSlot() {
-        @Override
-        protected void onTouchDown() {
-          bg.brightness(1.2f);
-          Sample.INSTANCE.play(Assets.SND_CLICK);
-        };
-
-        @Override
-        protected void onTouchUp() {
-          bg.resetColor();
-        }
-
-        @Override
-        protected void onClick() {
-          ItemButton.this.onClick();
-        }
-      };
-      add(slot);
-    }
-
-    protected void onClick() {
-    };
-
-    @Override
-    protected void layout() {
-      super.layout();
-
-      bg.x = x;
-      bg.y = y;
-      bg.size(width, height);
-
-      slot.setRect(x + 2, y + 2, width - 4, height - 4);
-    };
-
-    public void item(Item item) {
-      slot.item(this.item = item);
-    }
   }
 }

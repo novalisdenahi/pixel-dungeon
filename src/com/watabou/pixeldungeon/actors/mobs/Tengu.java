@@ -22,9 +22,9 @@ import java.util.HashSet;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.Badges;
-import com.watabou.pixeldungeon.Statistics;
 import com.watabou.pixeldungeon.Badges.Badge;
 import com.watabou.pixeldungeon.Dungeon;
+import com.watabou.pixeldungeon.Statistics;
 import com.watabou.pixeldungeon.actors.Actor;
 import com.watabou.pixeldungeon.actors.Char;
 import com.watabou.pixeldungeon.actors.blobs.ToxicGas;
@@ -48,6 +48,15 @@ public class Tengu extends Mob {
 
   private static final int JUMP_DELAY = 5;
 
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(ToxicGas.class);
+    RESISTANCES.add(Poison.class);
+    RESISTANCES.add(Death.class);
+    RESISTANCES.add(ScrollOfPsionicBlast.class);
+  }
+
   {
     name = Dungeon.depth == Statistics.deepestFloor ? "Tengu" : "memory of Tengu";
     spriteClass = TenguSprite.class;
@@ -60,22 +69,28 @@ public class Tengu extends Mob {
   private int timeToJump = JUMP_DELAY;
 
   @Override
+  public int attackSkill(final Char target) {
+    return 20;
+  }
+
+  @Override
+  protected boolean canAttack(final Char enemy) {
+    return Ballistica.cast(pos, enemy.pos, false, true) == enemy.pos;
+  }
+
+  @Override
   public int damageRoll() {
     return Random.NormalIntRange(8, 15);
   }
 
   @Override
-  public int attackSkill(Char target) {
-    return 20;
+  public String description() {
+    return "Tengu are members of the ancient assassins clan, which is also called Tengu. " +
+        "These assassins are noted for extensive use of shuriken and traps.";
   }
 
   @Override
-  public int dr() {
-    return 5;
-  }
-
-  @Override
-  public void die(Object cause) {
+  public void die(final Object cause) {
 
     Badges.Badge badgeToCheck = null;
     switch (Dungeon.hero.heroClass) {
@@ -92,7 +107,7 @@ public class Tengu extends Mob {
         badgeToCheck = Badge.MASTERY_HUNTRESS;
         break;
     }
-    if (!Badges.isUnlocked(badgeToCheck) || Dungeon.hero.subClass != HeroSubClass.NONE) {
+    if (!Badges.isUnlocked(badgeToCheck) || (Dungeon.hero.subClass != HeroSubClass.NONE)) {
       Dungeon.level.drop(new TomeOfMastery(), pos).sprite.drop();
     }
 
@@ -106,28 +121,28 @@ public class Tengu extends Mob {
   }
 
   @Override
-  protected boolean getCloser(int target) {
+  protected boolean doAttack(final Char enemy) {
+    timeToJump--;
+    if ((timeToJump <= 0) && Level.adjacent(pos, enemy.pos)) {
+      jump();
+      return true;
+    } else {
+      return super.doAttack(enemy);
+    }
+  }
+
+  @Override
+  public int dr() {
+    return 5;
+  }
+
+  @Override
+  protected boolean getCloser(final int target) {
     if (Level.fieldOfView[target]) {
       jump();
       return true;
     } else {
       return super.getCloser(target);
-    }
-  }
-
-  @Override
-  protected boolean canAttack(Char enemy) {
-    return Ballistica.cast(pos, enemy.pos, false, true) == enemy.pos;
-  }
-
-  @Override
-  protected boolean doAttack(Char enemy) {
-    timeToJump--;
-    if (timeToJump <= 0 && Level.adjacent(pos, enemy.pos)) {
-      jump();
-      return true;
-    } else {
-      return super.doAttack(enemy);
     }
   }
 
@@ -152,8 +167,8 @@ public class Tengu extends Mob {
       newPos = Random.Int(Level.LENGTH);
     } while (!Level.fieldOfView[newPos] ||
         !Level.passable[newPos] ||
-        (enemy != null && Level.adjacent(newPos, enemy.pos)) ||
-        Actor.findChar(newPos) != null);
+        ((enemy != null) && Level.adjacent(newPos, enemy.pos)) ||
+        (Actor.findChar(newPos) != null));
 
     sprite.move(pos, newPos);
     move(newPos);
@@ -170,20 +185,6 @@ public class Tengu extends Mob {
   public void notice() {
     super.notice();
     yell("Gotcha, " + Dungeon.hero.heroClass.title() + "!");
-  }
-
-  @Override
-  public String description() {
-    return "Tengu are members of the ancient assassins clan, which is also called Tengu. " +
-        "These assassins are noted for extensive use of shuriken and traps.";
-  }
-
-  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
-  static {
-    RESISTANCES.add(ToxicGas.class);
-    RESISTANCES.add(Poison.class);
-    RESISTANCES.add(Death.class);
-    RESISTANCES.add(ScrollOfPsionicBlast.class);
   }
 
   @Override

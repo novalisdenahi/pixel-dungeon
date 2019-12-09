@@ -34,18 +34,22 @@ public class Banner extends Image {
   private float fadeTime;
   private float showTime;
 
-  public Banner(Image sample) {
+  public Banner(final Image sample) {
     super();
     copy(sample);
     alpha(0);
   }
 
-  public Banner(Object tx) {
+  public Banner(final Object tx) {
     super(tx);
     alpha(0);
   }
 
-  public void show(int color, float fadeTime, float showTime) {
+  public void show(final int color, final float fadeTime) {
+    show(color, fadeTime, Float.MAX_VALUE);
+  }
+
+  public void show(final int color, final float fadeTime, final float showTime) {
 
     this.color = color;
     this.fadeTime = fadeTime;
@@ -54,10 +58,6 @@ public class Banner extends Image {
     state = State.FADE_IN;
 
     time = fadeTime;
-  }
-
-  public void show(int color, float fadeTime) {
-    show(color, fadeTime, Float.MAX_VALUE);
   }
 
   @Override

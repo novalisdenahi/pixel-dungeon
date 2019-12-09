@@ -23,7 +23,7 @@ import com.watabou.pixeldungeon.ui.BuffIndicator;
 public class Roots extends FlavourBuff {
 
   @Override
-  public boolean attachTo(Char target) {
+  public boolean attachTo(final Char target) {
     if (!target.flying && super.attachTo(target)) {
       target.rooted = true;
       return true;

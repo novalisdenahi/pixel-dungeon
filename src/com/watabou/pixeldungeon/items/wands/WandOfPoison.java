@@ -34,7 +34,21 @@ public class WandOfPoison extends Wand {
   }
 
   @Override
-  protected void onZap(int cell) {
+  public String desc() {
+    return "The vile blast of this twisted bit of wood will imbue its target " +
+        "with a deadly venom. A creature that is poisoned will suffer periodic " +
+        "damage until the effect ends. The duration of the effect increases " +
+        "with the level of the staff.";
+  }
+
+  @Override
+  protected void fx(final int cell, final Callback callback) {
+    MagicMissile.poison(curUser.sprite.parent, curUser.pos, cell, callback);
+    Sample.INSTANCE.play(Assets.SND_ZAP);
+  }
+
+  @Override
+  protected void onZap(final int cell) {
     Char ch = Actor.findChar(cell);
     if (ch != null) {
 
@@ -45,18 +59,5 @@ public class WandOfPoison extends Wand {
       GLog.i("nothing happened");
 
     }
-  }
-
-  protected void fx(int cell, Callback callback) {
-    MagicMissile.poison(curUser.sprite.parent, curUser.pos, cell, callback);
-    Sample.INSTANCE.play(Assets.SND_ZAP);
-  }
-
-  @Override
-  public String desc() {
-    return "The vile blast of this twisted bit of wood will imbue its target " +
-        "with a deadly venom. A creature that is poisoned will suffer periodic " +
-        "damage until the effect ends. The duration of the effect increases " +
-        "with the level of the staff.";
   }
 }

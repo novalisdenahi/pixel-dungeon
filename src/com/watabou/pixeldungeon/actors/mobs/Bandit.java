@@ -36,7 +36,13 @@ public class Bandit extends Thief {
   }
 
   @Override
-  protected boolean steal(Hero hero) {
+  public void die(final Object cause) {
+    super.die(cause);
+    Badges.validateRare(this);
+  }
+
+  @Override
+  protected boolean steal(final Hero hero) {
     if (super.steal(hero)) {
 
       Buff.prolong(hero, Blindness.class, Random.Int(5, 12));
@@ -46,11 +52,5 @@ public class Bandit extends Thief {
     } else {
       return false;
     }
-  }
-
-  @Override
-  public void die(Object cause) {
-    super.die(cause);
-    Badges.validateRare(this);
   }
 }

@@ -35,30 +35,30 @@ public class Rat extends Mob {
   }
 
   @Override
-  public int damageRoll() {
-    return Random.NormalIntRange(1, 5);
-  }
-
-  @Override
-  public int attackSkill(Char target) {
+  public int attackSkill(final Char target) {
     return 8;
   }
 
   @Override
-  public int dr() {
-    return 1;
-  }
-
-  @Override
-  public void die(Object cause) {
-    Ghost.Quest.processSewersKill(pos);
-
-    super.die(cause);
+  public int damageRoll() {
+    return Random.NormalIntRange(1, 5);
   }
 
   @Override
   public String description() {
     return "Marsupial rats are aggressive, but rather weak denizens " +
         "of the sewers. They can be dangerous only in big numbers.";
+  }
+
+  @Override
+  public void die(final Object cause) {
+    Ghost.Quest.processSewersKill(pos);
+
+    super.die(cause);
+  }
+
+  @Override
+  public int dr() {
+    return 1;
   }
 }

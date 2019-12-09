@@ -47,15 +47,15 @@ public class UndeadSprite extends MobSprite {
   }
 
   @Override
+  public int blood() {
+    return 0xFFcccccc;
+  }
+
+  @Override
   public void die() {
     super.die();
     if (Dungeon.visible[ch.pos]) {
       emitter().burst(Speck.factory(Speck.BONE), 3);
     }
-  }
-
-  @Override
-  public int blood() {
-    return 0xFFcccccc;
   }
 }

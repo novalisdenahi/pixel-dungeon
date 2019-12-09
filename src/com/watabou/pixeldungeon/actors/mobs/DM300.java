@@ -47,6 +47,19 @@ import com.watabou.utils.Random;
 
 public class DM300 extends Mob {
 
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(Death.class);
+    RESISTANCES.add(ScrollOfPsionicBlast.class);
+  }
+
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(ToxicGas.class);
+  }
+
   {
     name = Dungeon.depth == Statistics.deepestFloor ? "DM-300" : "DM-350";
     spriteClass = DM300Sprite.class;
@@ -60,13 +73,41 @@ public class DM300 extends Mob {
   }
 
   @Override
+  public boolean act() {
+    GameScene.add(Blob.seed(pos, 30, ToxicGas.class));
+    return super.act();
+  }
+
+  @Override
+  public int attackSkill(final Char target) {
+    return 28;
+  }
+
+  @Override
   public int damageRoll() {
     return Random.NormalIntRange(18, 24);
   }
 
   @Override
-  public int attackSkill(Char target) {
-    return 28;
+  public String description() {
+    return "This machine was created by the Dwarves several centuries ago. Later, Dwarves started to replace machines with "
+        +
+        "golems, elementals and even demons. Eventually it led their civilization to the decline. The DM-300 and similar "
+        +
+        "machines were typically used for construction and mining, and in some cases, for city defense.";
+  }
+
+  @Override
+  public void die(final Object cause) {
+
+    super.die(cause);
+
+    GameScene.bossSlain();
+    Dungeon.level.drop(new SkeletonKey(), pos).sprite.drop();
+
+    Badges.validateBossSlain();
+
+    yell("Mission failed. Shutting down.");
   }
 
   @Override
@@ -75,16 +116,15 @@ public class DM300 extends Mob {
   }
 
   @Override
-  public boolean act() {
-    GameScene.add(Blob.seed(pos, 30, ToxicGas.class));
-    return super.act();
+  public HashSet<Class<?>> immunities() {
+    return IMMUNITIES;
   }
 
   @Override
-  public void move(int step) {
+  public void move(final int step) {
     super.move(step);
 
-    if (Dungeon.level.map[step] == Terrain.INACTIVE_TRAP && HP < HT) {
+    if ((Dungeon.level.map[step] == Terrain.INACTIVE_TRAP) && (HP < HT)) {
 
       HP += Random.Int(1, HT - HP);
       sprite.emitter().burst(ElmoParticle.FACTORY, 5);
@@ -97,8 +137,8 @@ public class DM300 extends Mob {
     int[] cells = {
         step - 1, step + 1, step - Level.WIDTH, step + Level.WIDTH,
         step - 1 - Level.WIDTH,
-        step - 1 + Level.WIDTH,
-        step + 1 - Level.WIDTH,
+        (step - 1) + Level.WIDTH,
+        (step + 1) - Level.WIDTH,
         step + 1 + Level.WIDTH
     };
     int cell = cells[Random.Int(cells.length)];
@@ -117,22 +157,9 @@ public class DM300 extends Mob {
     }
 
     Char ch = Actor.findChar(cell);
-    if (ch != null && ch != this) {
+    if ((ch != null) && (ch != this)) {
       Buff.prolong(ch, Paralysis.class, 2);
     }
-  }
-
-  @Override
-  public void die(Object cause) {
-
-    super.die(cause);
-
-    GameScene.bossSlain();
-    Dungeon.level.drop(new SkeletonKey(), pos).sprite.drop();
-
-    Badges.validateBossSlain();
-
-    yell("Mission failed. Shutting down.");
   }
 
   @Override
@@ -142,32 +169,7 @@ public class DM300 extends Mob {
   }
 
   @Override
-  public String description() {
-    return "This machine was created by the Dwarves several centuries ago. Later, Dwarves started to replace machines with "
-        +
-        "golems, elementals and even demons. Eventually it led their civilization to the decline. The DM-300 and similar "
-        +
-        "machines were typically used for construction and mining, and in some cases, for city defense.";
-  }
-
-  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
-  static {
-    RESISTANCES.add(Death.class);
-    RESISTANCES.add(ScrollOfPsionicBlast.class);
-  }
-
-  @Override
   public HashSet<Class<?>> resistances() {
     return RESISTANCES;
-  }
-
-  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-  static {
-    IMMUNITIES.add(ToxicGas.class);
-  }
-
-  @Override
-  public HashSet<Class<?>> immunities() {
-    return IMMUNITIES;
   }
 }

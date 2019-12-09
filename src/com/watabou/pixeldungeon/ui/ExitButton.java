@@ -53,6 +53,15 @@ public class ExitButton extends Button {
   }
 
   @Override
+  protected void onClick() {
+    if (Game.scene() instanceof TitleScene) {
+      Game.instance.finish();
+    } else {
+      PixelDungeon.switchNoFade(TitleScene.class);
+    }
+  }
+
+  @Override
   protected void onTouchDown() {
     image.brightness(1.5f);
     Sample.INSTANCE.play(Assets.SND_CLICK);
@@ -61,14 +70,5 @@ public class ExitButton extends Button {
   @Override
   protected void onTouchUp() {
     image.resetColor();
-  }
-
-  @Override
-  protected void onClick() {
-    if (Game.scene() instanceof TitleScene) {
-      Game.instance.finish();
-    } else {
-      PixelDungeon.switchNoFade(TitleScene.class);
-    }
   }
 }

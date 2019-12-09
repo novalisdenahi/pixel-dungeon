@@ -30,32 +30,71 @@ import com.watabou.utils.Bundle;
 
 public class Earthroot extends Plant {
 
-  private static final String TXT_DESC =
-      "When a creature touches an Earthroot, its roots " +
-          "create a kind of natural armor around it.";
+  public static class Armor extends Buff {
 
-  {
-    image = 5;
-    plantName = "Earthroot";
-  }
+    private static final float STEP = 1f;
 
-  @Override
-  public void activate(Char ch) {
-    super.activate(ch);
+    private static final String POS = "pos";
+    private static final String LEVEL = "level";
 
-    if (ch != null) {
-      Buff.affect(ch, Armor.class).level = ch.HT;
+    private int pos;
+
+    private int level;
+
+    public int absorb(final int damage) {
+      if (damage >= level) {
+        detach();
+        return damage - level;
+      } else {
+        level -= damage;
+        return 0;
+      }
     }
 
-    if (Dungeon.visible[pos]) {
-      CellEmitter.bottom(pos).start(EarthParticle.FACTORY, 0.05f, 8);
-      Camera.main.shake(1, 0.4f);
+    @Override
+    public boolean act() {
+      if (target.pos != pos) {
+        detach();
+      }
+      spend(STEP);
+      return true;
     }
-  }
 
-  @Override
-  public String desc() {
-    return TXT_DESC;
+    @Override
+    public boolean attachTo(final Char target) {
+      pos = target.pos;
+      return super.attachTo(target);
+    }
+
+    @Override
+    public int icon() {
+      return BuffIndicator.ARMOR;
+    }
+
+    public void level(final int value) {
+      if (level < value) {
+        level = value;
+      }
+    }
+
+    @Override
+    public void restoreFromBundle(final Bundle bundle) {
+      super.restoreFromBundle(bundle);
+      pos = bundle.getInt(POS);
+      level = bundle.getInt(LEVEL);
+    }
+
+    @Override
+    public void storeInBundle(final Bundle bundle) {
+      super.storeInBundle(bundle);
+      bundle.put(POS, pos);
+      bundle.put(LEVEL, level);
+    }
+
+    @Override
+    public String toString() {
+      return "Herbal armor";
+    }
   }
 
   public static class Seed extends Plant.Seed {
@@ -75,69 +114,31 @@ public class Earthroot extends Plant {
     }
   }
 
-  public static class Armor extends Buff {
+  private static final String TXT_DESC =
+      "When a creature touches an Earthroot, its roots " +
+          "create a kind of natural armor around it.";
 
-    private static final float STEP = 1f;
+  {
+    image = 5;
+    plantName = "Earthroot";
+  }
 
-    private int pos;
-    private int level;
+  @Override
+  public void activate(final Char ch) {
+    super.activate(ch);
 
-    @Override
-    public boolean attachTo(Char target) {
-      pos = target.pos;
-      return super.attachTo(target);
+    if (ch != null) {
+      Buff.affect(ch, Armor.class).level = ch.HT;
     }
 
-    @Override
-    public boolean act() {
-      if (target.pos != pos) {
-        detach();
-      }
-      spend(STEP);
-      return true;
+    if (Dungeon.visible[pos]) {
+      CellEmitter.bottom(pos).start(EarthParticle.FACTORY, 0.05f, 8);
+      Camera.main.shake(1, 0.4f);
     }
+  }
 
-    public int absorb(int damage) {
-      if (damage >= level) {
-        detach();
-        return damage - level;
-      } else {
-        level -= damage;
-        return 0;
-      }
-    }
-
-    public void level(int value) {
-      if (level < value) {
-        level = value;
-      }
-    }
-
-    @Override
-    public int icon() {
-      return BuffIndicator.ARMOR;
-    }
-
-    @Override
-    public String toString() {
-      return "Herbal armor";
-    }
-
-    private static final String POS = "pos";
-    private static final String LEVEL = "level";
-
-    @Override
-    public void storeInBundle(Bundle bundle) {
-      super.storeInBundle(bundle);
-      bundle.put(POS, pos);
-      bundle.put(LEVEL, level);
-    }
-
-    @Override
-    public void restoreFromBundle(Bundle bundle) {
-      super.restoreFromBundle(bundle);
-      pos = bundle.getInt(POS);
-      level = bundle.getInt(LEVEL);
-    }
+  @Override
+  public String desc() {
+    return TXT_DESC;
   }
 }

@@ -25,11 +25,22 @@ public enum Icons {
 
   SKULL, BUSY, COMPASS, PREFS, WARNING, TARGET, WATA, WARRIOR, MAGE, ROGUE, HUNTRESS, CLOSE, DEPTH, SLEEP, ALERT, SUPPORT, SUPPORTED, BACKPACK, SEED_POUCH, SCROLL_HOLDER, WAND_HOLSTER, KEYRING, CHECKED, UNCHECKED, EXIT, CHALLENGE_OFF, CHALLENGE_ON, RESUME;
 
-  public Image get() {
-    return get(this);
+  public static Image get(final HeroClass cl) {
+    switch (cl) {
+      case WARRIOR:
+        return Icons.get(WARRIOR);
+      case MAGE:
+        return Icons.get(MAGE);
+      case ROGUE:
+        return Icons.get(ROGUE);
+      case HUNTRESS:
+        return Icons.get(HUNTRESS);
+      default:
+        return null;
+    }
   }
 
-  public static Image get(Icons type) {
+  public static Image get(final Icons type) {
     Image icon = new Image(Assets.ICONS);
     switch (type) {
       case SKULL:
@@ -120,18 +131,7 @@ public enum Icons {
     return icon;
   }
 
-  public static Image get(HeroClass cl) {
-    switch (cl) {
-      case WARRIOR:
-        return get(WARRIOR);
-      case MAGE:
-        return get(MAGE);
-      case ROGUE:
-        return get(ROGUE);
-      case HUNTRESS:
-        return get(HUNTRESS);
-      default:
-        return null;
-    }
+  public Image get() {
+    return Icons.get(this);
   }
 }

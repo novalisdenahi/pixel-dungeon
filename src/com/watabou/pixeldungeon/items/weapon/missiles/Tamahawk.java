@@ -37,25 +37,9 @@ public class Tamahawk extends MissileWeapon {
     this(1);
   }
 
-  public Tamahawk(int number) {
+  public Tamahawk(final int number) {
     super();
     quantity = number;
-  }
-
-  @Override
-  public int min() {
-    return 4;
-  }
-
-  @Override
-  public int max() {
-    return 20;
-  }
-
-  @Override
-  public void proc(Char attacker, Char defender, int damage) {
-    super.proc(attacker, defender, damage);
-    Buff.affect(defender, Bleeding.class).set(damage);
   }
 
   @Override
@@ -65,13 +49,29 @@ public class Tamahawk extends MissileWeapon {
   }
 
   @Override
-  public Item random() {
-    quantity = Random.Int(5, 12);
-    return this;
+  public int max() {
+    return 20;
+  }
+
+  @Override
+  public int min() {
+    return 4;
   }
 
   @Override
   public int price() {
     return 20 * quantity;
+  }
+
+  @Override
+  public void proc(final Char attacker, final Char defender, final int damage) {
+    super.proc(attacker, defender, damage);
+    Buff.affect(defender, Bleeding.class).set(damage);
+  }
+
+  @Override
+  public Item random() {
+    quantity = Random.Int(5, 12);
+    return this;
   }
 }

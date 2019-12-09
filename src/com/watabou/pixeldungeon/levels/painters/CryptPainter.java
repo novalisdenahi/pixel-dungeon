@@ -18,8 +18,8 @@
 package com.watabou.pixeldungeon.levels.painters;
 
 import com.watabou.pixeldungeon.items.Generator;
-import com.watabou.pixeldungeon.items.Item;
 import com.watabou.pixeldungeon.items.Heap.Type;
+import com.watabou.pixeldungeon.items.Item;
 import com.watabou.pixeldungeon.items.keys.IronKey;
 import com.watabou.pixeldungeon.levels.Level;
 import com.watabou.pixeldungeon.levels.Room;
@@ -28,10 +28,10 @@ import com.watabou.utils.Point;
 
 public class CryptPainter extends Painter {
 
-  public static void paint(Level level, Room room) {
+  public static void paint(final Level level, final Room room) {
 
-    fill(level, room, Terrain.WALL);
-    fill(level, room, 1, Terrain.EMPTY);
+    Painter.fill(level, room, Terrain.WALL);
+    Painter.fill(level, room, 1, Terrain.EMPTY);
 
     Point c = room.center();
     int cx = c.x;
@@ -43,27 +43,27 @@ public class CryptPainter extends Painter {
     level.addItemToSpawn(new IronKey());
 
     if (entrance.x == room.left) {
-      set(level, new Point(room.right - 1, room.top + 1), Terrain.STATUE);
-      set(level, new Point(room.right - 1, room.bottom - 1), Terrain.STATUE);
+      Painter.set(level, new Point(room.right - 1, room.top + 1), Terrain.STATUE);
+      Painter.set(level, new Point(room.right - 1, room.bottom - 1), Terrain.STATUE);
       cx = room.right - 2;
     } else if (entrance.x == room.right) {
-      set(level, new Point(room.left + 1, room.top + 1), Terrain.STATUE);
-      set(level, new Point(room.left + 1, room.bottom - 1), Terrain.STATUE);
+      Painter.set(level, new Point(room.left + 1, room.top + 1), Terrain.STATUE);
+      Painter.set(level, new Point(room.left + 1, room.bottom - 1), Terrain.STATUE);
       cx = room.left + 2;
     } else if (entrance.y == room.top) {
-      set(level, new Point(room.left + 1, room.bottom - 1), Terrain.STATUE);
-      set(level, new Point(room.right - 1, room.bottom - 1), Terrain.STATUE);
+      Painter.set(level, new Point(room.left + 1, room.bottom - 1), Terrain.STATUE);
+      Painter.set(level, new Point(room.right - 1, room.bottom - 1), Terrain.STATUE);
       cy = room.bottom - 2;
     } else if (entrance.y == room.bottom) {
-      set(level, new Point(room.left + 1, room.top + 1), Terrain.STATUE);
-      set(level, new Point(room.right - 1, room.top + 1), Terrain.STATUE);
+      Painter.set(level, new Point(room.left + 1, room.top + 1), Terrain.STATUE);
+      Painter.set(level, new Point(room.right - 1, room.top + 1), Terrain.STATUE);
       cy = room.top + 2;
     }
 
-    level.drop(prize(level), cx + cy * Level.WIDTH).type = Type.TOMB;
+    level.drop(CryptPainter.prize(level), cx + (cy * Level.WIDTH)).type = Type.TOMB;
   }
 
-  private static Item prize(Level level) {
+  private static Item prize(final Level level) {
 
     Item prize = Generator.random(Generator.Category.ARMOR);
 

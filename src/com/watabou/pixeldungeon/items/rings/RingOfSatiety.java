@@ -19,6 +19,9 @@ package com.watabou.pixeldungeon.items.rings;
 
 public class RingOfSatiety extends Ring {
 
+  public class Satiety extends RingBuff {
+  }
+
   {
     name = "Ring of Satiety";
   }
@@ -33,8 +36,5 @@ public class RingOfSatiety extends Ring {
     return isKnown()
         ? "Wearing this ring you can go without food longer. Degraded rings of satiety will cause the opposite effect."
         : super.desc();
-  }
-
-  public class Satiety extends RingBuff {
   }
 }

@@ -28,16 +28,16 @@ import com.watabou.pixeldungeon.plants.Plant;
 
 public class PlantSprite extends Image {
 
-  private static final float DELAY = 0.2f;
-
   private static enum State {
     GROWING, NORMAL, WITHERING
   }
 
-  private State state = State.NORMAL;
-  private float time;
+  private static final float DELAY = 0.2f;
 
   private static TextureFilm frames;
+  private State state = State.NORMAL;
+
+  private float time;
 
   private int pos = -1;
 
@@ -51,12 +51,22 @@ public class PlantSprite extends Image {
     origin.set(8, 12);
   }
 
-  public PlantSprite(int image) {
+  public PlantSprite(final int image) {
     this();
     reset(image);
   }
 
-  public void reset(Plant plant) {
+  @Override
+  public void kill() {
+    state = State.WITHERING;
+    time = DELAY;
+  }
+
+  public void reset(final int image) {
+    frame(frames.get(image));
+  }
+
+  public void reset(final Plant plant) {
 
     revive();
 
@@ -71,15 +81,11 @@ public class PlantSprite extends Image {
     time = DELAY;
   }
 
-  public void reset(int image) {
-    frame(frames.get(image));
-  }
-
   @Override
   public void update() {
     super.update();
 
-    visible = pos == -1 || Dungeon.visible[pos];
+    visible = (pos == -1) || Dungeon.visible[pos];
 
     switch (state) {
       case GROWING:
@@ -87,7 +93,7 @@ public class PlantSprite extends Image {
           state = State.NORMAL;
           scale.set(1);
         } else {
-          scale.set(1 - time / DELAY);
+          scale.set(1 - (time / DELAY));
         }
         break;
       case WITHERING:
@@ -99,11 +105,5 @@ public class PlantSprite extends Image {
         break;
       default:
     }
-  }
-
-  @Override
-  public void kill() {
-    state = State.WITHERING;
-    time = DELAY;
   }
 }

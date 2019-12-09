@@ -30,18 +30,18 @@ public class Shielded extends Brute {
   }
 
   @Override
-  public int dr() {
-    return 10;
-  }
-
-  @Override
   public String defenseVerb() {
     return "blocked";
   }
 
   @Override
-  public void die(Object cause) {
+  public void die(final Object cause) {
     super.die(cause);
     Badges.validateRare(this);
+  }
+
+  @Override
+  public int dr() {
+    return 10;
   }
 }

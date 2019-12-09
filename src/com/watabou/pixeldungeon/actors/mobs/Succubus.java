@@ -40,6 +40,18 @@ public class Succubus extends Mob {
 
   private static final int BLINK_DELAY = 5;
 
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(Leech.class);
+  }
+
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(Sleep.class);
+  }
+
   private int delay = 0;
 
   {
@@ -58,12 +70,7 @@ public class Succubus extends Mob {
   }
 
   @Override
-  public int damageRoll() {
-    return Random.NormalIntRange(15, 25);
-  }
-
-  @Override
-  public int attackProc(Char enemy, int damage) {
+  public int attackProc(final Char enemy, final int damage) {
 
     if (Random.Int(3) == 0) {
       Buff.affect(enemy, Charm.class, Charm.durationFactor(enemy) * Random.IntRange(3, 7)).object =
@@ -76,8 +83,43 @@ public class Succubus extends Mob {
   }
 
   @Override
-  protected boolean getCloser(int target) {
-    if (Level.fieldOfView[target] && Level.distance(pos, target) > 2 && delay <= 0) {
+  public int attackSkill(final Char target) {
+    return 40;
+  }
+
+  private void blink(final int target) {
+
+    int cell = Ballistica.cast(pos, target, true, true);
+
+    if ((Actor.findChar(cell) != null) && (Ballistica.distance > 1)) {
+      cell = Ballistica.trace[Ballistica.distance - 2];
+    }
+
+    WandOfBlink.appear(this, cell);
+
+    delay = BLINK_DELAY;
+  }
+
+  @Override
+  public int damageRoll() {
+    return Random.NormalIntRange(15, 25);
+  }
+
+  @Override
+  public String description() {
+    return "The succubi are demons that look like seductive (in a slightly gothic way) girls. Using its magic, the succubus "
+        +
+        "can charm a hero, who will become unable to attack anything until the charm wears off.";
+  }
+
+  @Override
+  public int dr() {
+    return 10;
+  }
+
+  @Override
+  protected boolean getCloser(final int target) {
+    if (Level.fieldOfView[target] && (Level.distance(pos, target) > 2) && (delay <= 0)) {
 
       blink(target);
       spend(-1 / speed());
@@ -91,53 +133,13 @@ public class Succubus extends Mob {
     }
   }
 
-  private void blink(int target) {
-
-    int cell = Ballistica.cast(pos, target, true, true);
-
-    if (Actor.findChar(cell) != null && Ballistica.distance > 1) {
-      cell = Ballistica.trace[Ballistica.distance - 2];
-    }
-
-    WandOfBlink.appear(this, cell);
-
-    delay = BLINK_DELAY;
-  }
-
   @Override
-  public int attackSkill(Char target) {
-    return 40;
-  }
-
-  @Override
-  public int dr() {
-    return 10;
-  }
-
-  @Override
-  public String description() {
-    return "The succubi are demons that look like seductive (in a slightly gothic way) girls. Using its magic, the succubus "
-        +
-        "can charm a hero, who will become unable to attack anything until the charm wears off.";
-  }
-
-  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
-  static {
-    RESISTANCES.add(Leech.class);
+  public HashSet<Class<?>> immunities() {
+    return IMMUNITIES;
   }
 
   @Override
   public HashSet<Class<?>> resistances() {
     return RESISTANCES;
-  }
-
-  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-  static {
-    IMMUNITIES.add(Sleep.class);
-  }
-
-  @Override
-  public HashSet<Class<?>> immunities() {
-    return IMMUNITIES;
   }
 }

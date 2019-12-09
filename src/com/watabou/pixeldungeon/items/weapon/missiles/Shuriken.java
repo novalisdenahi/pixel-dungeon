@@ -36,19 +36,9 @@ public class Shuriken extends MissileWeapon {
     this(1);
   }
 
-  public Shuriken(int number) {
+  public Shuriken(final int number) {
     super();
     quantity = number;
-  }
-
-  @Override
-  public int min() {
-    return 2;
-  }
-
-  @Override
-  public int max() {
-    return 6;
   }
 
   @Override
@@ -58,13 +48,23 @@ public class Shuriken extends MissileWeapon {
   }
 
   @Override
-  public Item random() {
-    quantity = Random.Int(5, 15);
-    return this;
+  public int max() {
+    return 6;
+  }
+
+  @Override
+  public int min() {
+    return 2;
   }
 
   @Override
   public int price() {
     return 15 * quantity;
+  }
+
+  @Override
+  public Item random() {
+    quantity = Random.Int(5, 15);
+    return this;
   }
 }

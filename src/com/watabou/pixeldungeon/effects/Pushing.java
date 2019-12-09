@@ -26,34 +26,6 @@ import com.watabou.utils.PointF;
 
 public class Pushing extends Actor {
 
-  private CharSprite sprite;
-  private int from;
-  private int to;
-
-  private Effect effect;
-
-  public Pushing(Char ch, int from, int to) {
-    sprite = ch.sprite;
-    this.from = from;
-    this.to = to;
-  }
-
-  @Override
-  protected boolean act() {
-    if (sprite != null) {
-
-      if (effect == null) {
-        new Effect();
-      }
-      return false;
-
-    } else {
-
-      Actor.remove(Pushing.this);
-      return true;
-    }
-  }
-
   public class Effect extends Visual {
 
     private static final float DELAY = 0.15f;
@@ -68,7 +40,7 @@ public class Pushing extends Actor {
       point(sprite.worldToCamera(from));
       end = sprite.worldToCamera(to);
 
-      speed.set(2 * (end.x - x) / DELAY, 2 * (end.y - y) / DELAY);
+      speed.set((2 * (end.x - x)) / DELAY, (2 * (end.y - y)) / DELAY);
       acc.set(-speed.x / DELAY, -speed.y / DELAY);
 
       delay = 0;
@@ -94,6 +66,35 @@ public class Pushing extends Actor {
 
         next();
       }
+    }
+  }
+
+  private CharSprite sprite;
+  private int from;
+
+  private int to;
+
+  private Effect effect;
+
+  public Pushing(final Char ch, final int from, final int to) {
+    sprite = ch.sprite;
+    this.from = from;
+    this.to = to;
+  }
+
+  @Override
+  protected boolean act() {
+    if (sprite != null) {
+
+      if (effect == null) {
+        new Effect();
+      }
+      return false;
+
+    } else {
+
+      Actor.remove(Pushing.this);
+      return true;
     }
   }
 

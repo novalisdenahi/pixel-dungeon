@@ -31,18 +31,18 @@ public class Keyring extends Bag {
   }
 
   @Override
-  public boolean grab(Item item) {
+  public boolean grab(final Item item) {
     return item instanceof Key;
-  }
-
-  @Override
-  public int price() {
-    return 50;
   }
 
   @Override
   public String info() {
     return "This is a copper key ring, that lets you keep all your keys " +
         "separately from the rest of your belongings.";
+  }
+
+  @Override
+  public int price() {
+    return 50;
   }
 }

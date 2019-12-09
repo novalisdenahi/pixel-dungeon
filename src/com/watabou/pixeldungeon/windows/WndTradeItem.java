@@ -52,7 +52,48 @@ public class WndTradeItem extends Window {
 
   private WndBag owner;
 
-  public WndTradeItem(final Item item, WndBag owner) {
+  public WndTradeItem(final Heap heap, final boolean canBuy) {
+
+    super();
+
+    Item item = heap.peek();
+
+    float pos = createDescription(item, true);
+
+    int price = price(item);
+
+    if (canBuy) {
+
+      RedButton btnBuy = new RedButton(Utils.format(TXT_BUY, price)) {
+        @Override
+        protected void onClick() {
+          hide();
+          buy(heap);
+        }
+      };
+      btnBuy.setRect(0, pos + GAP, WIDTH, BTN_HEIGHT);
+      btnBuy.enable(price <= Dungeon.gold);
+      add(btnBuy);
+
+      RedButton btnCancel = new RedButton(TXT_CANCEL) {
+        @Override
+        protected void onClick() {
+          hide();
+        }
+      };
+      btnCancel.setRect(0, btnBuy.bottom() + GAP, WIDTH, BTN_HEIGHT);
+      add(btnCancel);
+
+      resize(WIDTH, (int) btnCancel.bottom());
+
+    } else {
+
+      resize(WIDTH, (int) pos);
+
+    }
+  }
+
+  public WndTradeItem(final Item item, final WndBag owner) {
 
     super();
 
@@ -112,59 +153,22 @@ public class WndTradeItem extends Window {
     resize(WIDTH, (int) btnCancel.bottom());
   }
 
-  public WndTradeItem(final Heap heap, boolean canBuy) {
+  private void buy(final Heap heap) {
 
-    super();
-
-    Item item = heap.peek();
-
-    float pos = createDescription(item, true);
+    Hero hero = Dungeon.hero;
+    Item item = heap.pickUp();
 
     int price = price(item);
+    Dungeon.gold -= price;
 
-    if (canBuy) {
+    GLog.i(TXT_BOUGHT, item.name(), price);
 
-      RedButton btnBuy = new RedButton(Utils.format(TXT_BUY, price)) {
-        @Override
-        protected void onClick() {
-          hide();
-          buy(heap);
-        }
-      };
-      btnBuy.setRect(0, pos + GAP, WIDTH, BTN_HEIGHT);
-      btnBuy.enable(price <= Dungeon.gold);
-      add(btnBuy);
-
-      RedButton btnCancel = new RedButton(TXT_CANCEL) {
-        @Override
-        protected void onClick() {
-          hide();
-        }
-      };
-      btnCancel.setRect(0, btnBuy.bottom() + GAP, WIDTH, BTN_HEIGHT);
-      add(btnCancel);
-
-      resize(WIDTH, (int) btnCancel.bottom());
-
-    } else {
-
-      resize(WIDTH, (int) pos);
-
+    if (!item.doPickUp(hero)) {
+      Dungeon.level.drop(item, heap.pos).sprite.drop();
     }
   }
 
-  @Override
-  public void hide() {
-
-    super.hide();
-
-    if (owner != null) {
-      owner.hide();
-      Shopkeeper.sell();
-    }
-  }
-
-  private float createDescription(Item item, boolean forSale) {
+  private float createDescription(final Item item, final boolean forSale) {
 
     IconTitle titlebar = new IconTitle();
     titlebar.icon(new ItemSprite(item.image(), item.glowing()));
@@ -191,7 +195,27 @@ public class WndTradeItem extends Window {
     return info.y + info.height();
   }
 
-  private void sell(Item item) {
+  @Override
+  public void hide() {
+
+    super.hide();
+
+    if (owner != null) {
+      owner.hide();
+      Shopkeeper.sell();
+    }
+  }
+
+  private int price(final Item item) {
+
+    int price = item.price() * 5 * ((Dungeon.depth / 5) + 1);
+    if ((Dungeon.hero.buff(RingOfHaggler.Haggling.class) != null) && (price >= 2)) {
+      price /= 2;
+    }
+    return price;
+  }
+
+  private void sell(final Item item) {
 
     Hero hero = Dungeon.hero;
 
@@ -219,30 +243,6 @@ public class WndTradeItem extends Window {
 
       new Gold(price).doPickUp(hero);
       GLog.i(TXT_SOLD, item.name(), price);
-    }
-  }
-
-  private int price(Item item) {
-
-    int price = item.price() * 5 * (Dungeon.depth / 5 + 1);
-    if (Dungeon.hero.buff(RingOfHaggler.Haggling.class) != null && price >= 2) {
-      price /= 2;
-    }
-    return price;
-  }
-
-  private void buy(Heap heap) {
-
-    Hero hero = Dungeon.hero;
-    Item item = heap.pickUp();
-
-    int price = price(item);
-    Dungeon.gold -= price;
-
-    GLog.i(TXT_BOUGHT, item.name(), price);
-
-    if (!item.doPickUp(hero)) {
-      Dungeon.level.drop(item, heap.pos).sprite.drop();
     }
   }
 }

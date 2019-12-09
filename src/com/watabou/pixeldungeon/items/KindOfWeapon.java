@@ -33,23 +33,29 @@ abstract public class KindOfWeapon extends EquipableItem {
   protected static final float TIME_TO_EQUIP = 1f;
 
   @Override
-  public ArrayList<String> actions(Hero hero) {
+  public ArrayList<String> actions(final Hero hero) {
     ArrayList<String> actions = super.actions(hero);
     actions.add(isEquipped(hero) ? AC_UNEQUIP : AC_EQUIP);
     return actions;
   }
 
-  @Override
-  public boolean isEquipped(Hero hero) {
-    return hero.belongings.weapon == this;
+  public void activate(final Hero hero) {
+  }
+
+  public float acuracyFactor(final Hero hero) {
+    return 1f;
+  }
+
+  public int damageRoll(final Hero owner) {
+    return Random.NormalIntRange(min(), max());
   }
 
   @Override
-  public boolean doEquip(Hero hero) {
+  public boolean doEquip(final Hero hero) {
 
     detachAll(hero.belongings.backpack);
 
-    if (hero.belongings.weapon == null || hero.belongings.weapon.doUnequip(hero, true)) {
+    if ((hero.belongings.weapon == null) || hero.belongings.weapon.doUnequip(hero, true)) {
 
       hero.belongings.weapon = this;
       activate(hero);
@@ -58,7 +64,7 @@ abstract public class KindOfWeapon extends EquipableItem {
 
       cursedKnown = true;
       if (cursed) {
-        equipCursed(hero);
+        EquipableItem.equipCursed(hero);
         GLog.n(TXT_EQUIP_CURSED, name());
       }
 
@@ -73,7 +79,7 @@ abstract public class KindOfWeapon extends EquipableItem {
   }
 
   @Override
-  public boolean doUnequip(Hero hero, boolean collect, boolean single) {
+  public boolean doUnequip(final Hero hero, final boolean collect, final boolean single) {
     if (super.doUnequip(hero, collect, single)) {
 
       hero.belongings.weapon = null;
@@ -86,26 +92,20 @@ abstract public class KindOfWeapon extends EquipableItem {
     }
   }
 
-  public void activate(Hero hero) {
+  @Override
+  public boolean isEquipped(final Hero hero) {
+    return hero.belongings.weapon == this;
   }
-
-  abstract public int min();
 
   abstract public int max();
 
-  public int damageRoll(Hero owner) {
-    return Random.NormalIntRange(min(), max());
+  abstract public int min();
+
+  public void proc(final Char attacker, final Char defender, final int damage) {
   }
 
-  public float acuracyFactor(Hero hero) {
+  public float speedFactor(final Hero hero) {
     return 1f;
-  }
-
-  public float speedFactor(Hero hero) {
-    return 1f;
-  }
-
-  public void proc(Char attacker, Char defender, int damage) {
   }
 
 }
