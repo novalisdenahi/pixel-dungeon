@@ -17,8 +17,6 @@
  */
 package com.watabou.pixeldungeon.actors.mobs.npcs;
 
-import android.util.Log;
-
 import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.Journal;
 import com.watabou.pixeldungeon.actors.Actor;
@@ -37,6 +35,8 @@ import com.watabou.pixeldungeon.windows.WndAsh;
 import com.watabou.pixeldungeon.windows.WndQuest;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
+
+import android.util.Log;
 
 public class GoblinAsh extends NPC {
 
@@ -191,11 +191,6 @@ public class GoblinAsh extends NPC {
     }
   }
 
-  {
-    name = "Ash the goblin cook";
-    spriteClass = GoblinAshSprite.class;
-  }
-
   private static final String TXT_COMPLETED =
       "Please do not bother me! I'm working on a new recipient.";
 
@@ -207,12 +202,17 @@ public class GoblinAsh extends NPC {
 
   private static final String TXT_PAN1 = TXT_NICE2MEETYOU
       + "But the other goblins hate me, and they stolen my favorite _pan_. Please bring it back to me. My precious! I will be thankful.";
+
   private static final String TXT_MUSHROOM1 = TXT_NICE2MEETYOU
       + "But in order to be the best, the best wages on groceries I need. Please bring me _purple magic mushroom_ .";
   private static final String TXT_PAN2 =
       "Nothing yet? Please find further! I hope they don't use my _pan_ , in particular, don't use like a hat!";
   private static final String TXT_MUSHROOM2 =
       "No _hushroom_ yet? I need it if I wanna make the most special food. ";
+  {
+    name = "Ash the goblin cook";
+    spriteClass = GoblinAshSprite.class;
+  }
 
   @Override
   protected boolean act() {

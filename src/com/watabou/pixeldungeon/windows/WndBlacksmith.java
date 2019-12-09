@@ -94,19 +94,19 @@ public class WndBlacksmith extends Window {
 
   private static final int WIDTH = 116;
 
-  private ItemButton btnPressed;
-  private ItemButton btnItem1;
-  private ItemButton btnItem2;
-
-  private RedButton btnReforge;
   private static final String TXT_PROMPT =
       "Ok, a deal is a deal, dat's what I can do for you: I can reforge " +
           "2 items and turn them into one of a better quality.";
   private static final String TXT_SELECT =
       "Select an item to reforge";
-
   private static final String TXT_REFORGE =
       "Reforge them";
+
+  private ItemButton btnPressed;
+  private ItemButton btnItem1;
+  private ItemButton btnItem2;
+
+  private RedButton btnReforge;
 
   protected WndBag.Listener itemSelector = new WndBag.Listener() {
     @Override

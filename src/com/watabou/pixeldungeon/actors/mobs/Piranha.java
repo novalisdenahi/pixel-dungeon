@@ -35,15 +35,6 @@ import com.watabou.utils.Random;
 
 public class Piranha extends Mob {
 
-  {
-    name = "giant piranha";
-    spriteClass = PiranhaSprite.class;
-
-    baseSpeed = 2f;
-
-    EXP = 0;
-  }
-
   private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
 
   static {
@@ -52,6 +43,15 @@ public class Piranha extends Mob {
     IMMUNITIES.add(ToxicGas.class);
     IMMUNITIES.add(Roots.class);
     IMMUNITIES.add(Frost.class);
+  }
+
+  {
+    name = "giant piranha";
+    spriteClass = PiranhaSprite.class;
+
+    baseSpeed = 2f;
+
+    EXP = 0;
   }
 
   public Piranha() {

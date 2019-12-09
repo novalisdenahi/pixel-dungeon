@@ -17,9 +17,9 @@
  */
 package com.watabou.pixeldungeon;
 
-import hu.denahi.pixeldungeon.holy.quest.DungeonType;
-
 import com.watabou.utils.Bundle;
+
+import hu.denahi.pixeldungeon.holy.quest.DungeonType;
 
 public class Statistics {
 

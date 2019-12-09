@@ -92,19 +92,19 @@ public class Belongings implements Iterable<Item> {
 
   public static final int BACKPACK_SIZE = 19;
 
-  private Hero owner;
-
-  public Bag backpack;
-  public KindOfWeapon weapon = null;
-  public Armor armor = null;
-  public Ring ring1 = null;
-
-  public Ring ring2 = null;
-
   private static final String WEAPON = "weapon";
+
   private static final String ARMOR = "armor";
   private static final String RING1 = "ring1";
   private static final String RING2 = "ring2";
+  private Hero owner;
+
+  public Bag backpack;
+
+  public KindOfWeapon weapon = null;
+  public Armor armor = null;
+  public Ring ring1 = null;
+  public Ring ring2 = null;
 
   public Belongings(final Hero owner) {
     this.owner = owner;

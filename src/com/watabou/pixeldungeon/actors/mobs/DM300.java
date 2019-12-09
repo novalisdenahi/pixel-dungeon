@@ -47,18 +47,6 @@ import com.watabou.utils.Random;
 
 public class DM300 extends Mob {
 
-  {
-    name = Dungeon.depth == Statistics.getDeepestFloor(Dungeon.dungeonType) ? "DM-300" : "DM-350";
-    spriteClass = DM300Sprite.class;
-
-    HP = HT = 200;
-    EXP = 30;
-    defenseSkill = 18;
-
-    loot = new RingOfThorns().random();
-    lootChance = 0.333f;
-  }
-
   private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
 
   static {
@@ -70,6 +58,18 @@ public class DM300 extends Mob {
 
   static {
     IMMUNITIES.add(ToxicGas.class);
+  }
+
+  {
+    name = Dungeon.depth == Statistics.getDeepestFloor(Dungeon.dungeonType) ? "DM-300" : "DM-350";
+    spriteClass = DM300Sprite.class;
+
+    HP = HT = 200;
+    EXP = 30;
+    defenseSkill = 18;
+
+    loot = new RingOfThorns().random();
+    lootChance = 0.333f;
   }
 
   @Override

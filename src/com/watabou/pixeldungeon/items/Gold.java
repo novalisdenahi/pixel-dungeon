@@ -39,13 +39,13 @@ public class Gold extends Item {
   private static final String TXT_INFO_1 = "One gold coin. " + TXT_COLLECT;
   private static final String TXT_VALUE = "%+d";
 
+  private static final String VALUE = "value";
+
   {
     name = "gold";
     image = ItemSpriteSheet.GOLD;
     stackable = true;
   }
-
-  private static final String VALUE = "value";
 
   public Gold() {
     this(1);

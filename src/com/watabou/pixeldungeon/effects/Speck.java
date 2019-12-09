@@ -17,10 +17,6 @@
  */
 package com.watabou.pixeldungeon.effects;
 
-import android.annotation.SuppressLint;
-import android.util.FloatMath;
-import android.util.SparseArray;
-
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.TextureFilm;
@@ -28,6 +24,10 @@ import com.watabou.noosa.particles.Emitter;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
+
+import android.annotation.SuppressLint;
+import android.util.FloatMath;
+import android.util.SparseArray;
 
 public class Speck extends Image {
 
@@ -62,12 +62,7 @@ public class Speck extends Image {
 
   private static final int SIZE = 7;
 
-  private int type;
-  private float lifespan;
-  private float left;
-
   private static TextureFilm film;
-
   private static SparseArray<Emitter.Factory> factories = new SparseArray<Emitter.Factory>();
 
   public static Emitter.Factory factory(final int type) {
@@ -96,6 +91,12 @@ public class Speck extends Image {
 
     return factory;
   }
+
+  private int type;
+
+  private float lifespan;
+
+  private float left;
 
   public Speck() {
     super();

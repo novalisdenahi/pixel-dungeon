@@ -128,14 +128,14 @@ public class Plant implements Bundlable {
     }
   }
 
+  private static final String POS = "pos";
   public String plantName;
+
   public int image;
 
   public int pos;
 
   public PlantSprite sprite;
-
-  private static final String POS = "pos";
 
   public void activate(final Char ch) {
 

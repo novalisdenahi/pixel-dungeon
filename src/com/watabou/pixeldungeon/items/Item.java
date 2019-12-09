@@ -73,27 +73,6 @@ public class Item implements Bundlable {
   public static final String AC_DROP = "DROP";
   public static final String AC_THROW = "THROW";
 
-  public static void evoke(final Hero hero) {
-    hero.sprite.emitter().burst(Speck.factory(Speck.EVOKE), 5);
-  }
-
-  public String defaultAction;
-  protected String name = "smth";
-
-  protected int image = 0;
-  public boolean stackable = false;
-
-  protected int quantity = 1;
-  public int level = 0;
-  public boolean levelKnown = false;
-
-  private int durability = maxDurability();
-  public boolean cursed;
-
-  public boolean cursedKnown;
-
-  public boolean unique = false;
-
   private static Comparator<Item> itemComparator = new Comparator<Item>() {
     @Override
     public int compare(final Item lhs, final Item rhs) {
@@ -102,21 +81,16 @@ public class Item implements Bundlable {
   };
 
   private static final String QUANTITY = "quantity";
-
   private static final String LEVEL = "level";
 
   private static final String LEVEL_KNOWN = "levelKnown";
-
   private static final String CURSED = "cursed";
 
   private static final String CURSED_KNOWN = "cursedKnown";
-
   private static final String DURABILITY = "durability";
-
   protected static Hero curUser = null;
 
   protected static Item curItem = null;
-
   protected static CellSelector.Listener thrower = new CellSelector.Listener() {
     @Override
     public void onSelect(final Integer target) {
@@ -131,6 +105,10 @@ public class Item implements Bundlable {
     }
   };
 
+  public static void evoke(final Hero hero) {
+    hero.sprite.emitter().burst(Speck.factory(Speck.EVOKE), 5);
+  }
+
   public static Item virtual(final Class<? extends Item> cl) {
     try {
 
@@ -142,6 +120,28 @@ public class Item implements Bundlable {
       return null;
     }
   }
+
+  public String defaultAction;
+
+  protected String name = "smth";
+
+  protected int image = 0;
+
+  public boolean stackable = false;
+
+  protected int quantity = 1;
+
+  public int level = 0;
+
+  public boolean levelKnown = false;
+
+  private int durability = maxDurability();
+
+  public boolean cursed;
+
+  public boolean cursedKnown;
+
+  public boolean unique = false;
 
   public ArrayList<String> actions(final Hero hero) {
     ArrayList<String> actions = new ArrayList<String>();

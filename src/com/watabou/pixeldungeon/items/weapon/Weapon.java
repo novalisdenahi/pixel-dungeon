@@ -92,20 +92,20 @@ public class Weapon extends KindOfWeapon {
   private static final String TXT_INCOMPATIBLE =
       "Interaction of different types of magic has negated the enchantment on this weapon!";
   private static final String TXT_TO_STRING = "%s :%d";
+  private static final String UNFAMILIRIARITY = "unfamiliarity";
+
+  private static final String ENCHANTMENT = "enchantment";
+  private static final String IMBUE = "imbue";
+
   public int STR = 10;
 
   public float ACU = 1;
+
   public float DLY = 1f;
 
   public Imbue imbue = Imbue.NONE;
-
   private int hitsToKnow = HITS_TO_KNOW;
-
   protected Enchantment enchantment;
-
-  private static final String UNFAMILIRIARITY = "unfamiliarity";
-  private static final String ENCHANTMENT = "enchantment";
-  private static final String IMBUE = "imbue";
 
   @Override
   public float acuracyFactor(final Hero hero) {

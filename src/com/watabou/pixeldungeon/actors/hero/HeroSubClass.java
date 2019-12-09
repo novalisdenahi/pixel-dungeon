@@ -58,6 +58,8 @@ public enum HeroSubClass {
                                   +
                                   "the sacred symbols. The High Priest of Estera sense the undead and the demons. ");
 
+  private static final String SUBCLASS = "subClass";
+
   public static HeroSubClass restoreInBundle(final Bundle bundle) {
     String value = bundle.getString(SUBCLASS);
     try {
@@ -70,8 +72,6 @@ public enum HeroSubClass {
   private String title;
 
   private String desc;
-
-  private static final String SUBCLASS = "subClass";
 
   private HeroSubClass(final String title, final String desc) {
     this.title = title;

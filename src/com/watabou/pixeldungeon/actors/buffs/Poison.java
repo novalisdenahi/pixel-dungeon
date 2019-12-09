@@ -30,14 +30,14 @@ import com.watabou.utils.Bundle;
 
 public class Poison extends Buff implements Hero.Doom {
 
-  protected float left;
-
   private static final String LEFT = "left";
 
   public static float durationFactor(final Char ch) {
     Resistance r = ch.buff(Resistance.class);
     return r != null ? r.durationFactor() : 1;
   }
+
+  protected float left;
 
   @Override
   public boolean act() {

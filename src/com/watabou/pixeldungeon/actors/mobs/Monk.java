@@ -36,6 +36,13 @@ public class Monk extends Mob {
 
   public static final String TXT_DISARM = "%s has knocked the %s from your hands!";
 
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(Amok.class);
+    IMMUNITIES.add(Terror.class);
+  }
+
   {
     name = "dwarf monk";
     spriteClass = MonkSprite.class;
@@ -48,13 +55,6 @@ public class Monk extends Mob {
 
     loot = new Food();
     lootChance = 0.083f;
-  }
-
-  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-
-  static {
-    IMMUNITIES.add(Amok.class);
-    IMMUNITIES.add(Terror.class);
   }
 
   @Override

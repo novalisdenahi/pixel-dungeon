@@ -17,8 +17,6 @@
  */
 package com.watabou.pixeldungeon.windows;
 
-import android.graphics.RectF;
-
 import com.watabou.gltextures.TextureCache;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.ColorBlock;
@@ -49,6 +47,8 @@ import com.watabou.pixeldungeon.ui.ItemSlot;
 import com.watabou.pixeldungeon.ui.QuickSlot;
 import com.watabou.pixeldungeon.utils.Utils;
 import com.watabou.utils.GameMath;
+
+import android.graphics.RectF;
 
 public class WndBag extends WndTabbed {
 
@@ -284,6 +284,10 @@ public class WndBag extends WndTabbed {
 
   protected static final int TITLE_HEIGHT = 12;
 
+  private static Mode lastMode;
+
+  private static Bag lastBag;
+
   public static WndBag lastBag(final Listener listener, final Mode mode, final String title) {
 
     if ((mode == lastMode) && (lastBag != null) &&
@@ -308,6 +312,7 @@ public class WndBag extends WndTabbed {
   private WndBag.Mode mode;
 
   private String title;
+
   private int nCols;
 
   private int nRows;
@@ -317,10 +322,6 @@ public class WndBag extends WndTabbed {
   protected int col;
 
   protected int row;
-
-  private static Mode lastMode;
-
-  private static Bag lastBag;
 
   public WndBag(final Bag bag, final Listener listener, final Mode mode, final String title) {
 

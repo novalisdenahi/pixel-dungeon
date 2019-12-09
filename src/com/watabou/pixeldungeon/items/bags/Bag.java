@@ -76,6 +76,8 @@ public class Bag extends Item implements Iterable<Item> {
 
   public static final String AC_OPEN = "OPEN";
 
+  private static final String ITEMS = "inventory";
+
   {
     image = 11;
 
@@ -87,8 +89,6 @@ public class Bag extends Item implements Iterable<Item> {
   public ArrayList<Item> items = new ArrayList<Item>();
 
   public int size = 1;
-
-  private static final String ITEMS = "inventory";
 
   @Override
   public ArrayList<String> actions(final Hero hero) {

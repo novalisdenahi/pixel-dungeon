@@ -290,11 +290,6 @@ public class Wandmaker extends NPC {
     }
   }
 
-  {
-    name = "old wandmaker";
-    spriteClass = WandmakerSprite.class;
-  }
-
   private static final String TXT_BERRY1 =
       "Oh, what a pleasant surprise to meet a decent person in such place! I came here for a rare ingredient - "
           +
@@ -318,6 +313,11 @@ public class Wandmaker extends NPC {
 
   private static final String TXT_DUST2 =
       "Any luck with corpse dust, %s? Bone piles are the most obvious places to look.";
+
+  {
+    name = "old wandmaker";
+    spriteClass = WandmakerSprite.class;
+  }
 
   @Override
   protected boolean act() {

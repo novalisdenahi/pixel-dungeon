@@ -30,15 +30,6 @@ import com.watabou.pixeldungeon.windows.WndTradeItem;
 
 public class Shopkeeper extends NPC {
 
-  public static WndBag sell() {
-    return GameScene.selectItem(itemSelector, WndBag.Mode.FOR_SALE, "Select an item to sell");
-  }
-
-  {
-    name = "shopkeeper";
-    spriteClass = ShopkeeperSprite.class;
-  }
-
   private static WndBag.Listener itemSelector = new WndBag.Listener() {
     @Override
     public void onSelect(final Item item) {
@@ -48,6 +39,15 @@ public class Shopkeeper extends NPC {
       }
     }
   };
+
+  public static WndBag sell() {
+    return GameScene.selectItem(itemSelector, WndBag.Mode.FOR_SALE, "Select an item to sell");
+  }
+
+  {
+    name = "shopkeeper";
+    spriteClass = ShopkeeperSprite.class;
+  }
 
   @Override
   protected boolean act() {

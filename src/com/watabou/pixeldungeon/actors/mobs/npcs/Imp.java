@@ -140,11 +140,6 @@ public class Imp extends NPC {
     }
   }
 
-  {
-    name = "ambitious imp";
-    spriteClass = ImpSprite.class;
-  }
-
   private static final String TXT_GOLEMS1 =
       "Are you an adventurer? I love adventurers! You can always rely on them " +
 
@@ -168,9 +163,14 @@ public class Imp extends NPC {
   private static final String TXT_MONKS2 =
       "Oh, you are still alive! I knew that your kung-fu is stronger ;) " +
           "Just don't forget to grab these monks' tokens.";
-  private static final String TXT_CYA = "See you, %s!";
 
+  private static final String TXT_CYA = "See you, %s!";
   private static final String TXT_HEY = "Psst, %s!";
+
+  {
+    name = "ambitious imp";
+    spriteClass = ImpSprite.class;
+  }
 
   private boolean seenBefore = false;
 

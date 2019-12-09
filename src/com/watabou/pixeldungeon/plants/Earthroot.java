@@ -34,12 +34,12 @@ public class Earthroot extends Plant {
 
     private static final float STEP = 1f;
 
-    private int pos;
-    private int level;
-
     private static final String POS = "pos";
-
     private static final String LEVEL = "level";
+
+    private int pos;
+
+    private int level;
 
     public int absorb(final int damage) {
       if (damage >= level) {

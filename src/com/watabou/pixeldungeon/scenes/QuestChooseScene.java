@@ -17,8 +17,6 @@
  */
 package com.watabou.pixeldungeon.scenes;
 
-import hu.denahi.pixeldungeon.holy.quest.DungeonType;
-
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
@@ -34,6 +32,8 @@ import com.watabou.pixeldungeon.effects.Fireball;
 import com.watabou.pixeldungeon.ui.Archs;
 import com.watabou.pixeldungeon.ui.ExitButton;
 import com.watabou.pixeldungeon.ui.PrefsButton;
+
+import hu.denahi.pixeldungeon.holy.quest.DungeonType;
 
 public class QuestChooseScene extends PixelScene {
 

@@ -22,13 +22,13 @@ import com.watabou.pixeldungeon.ui.BuffIndicator;
 
 public class Fear extends FlavourBuff {
 
-  public static float duration(final Char ch) {
-    return DURATION;
-  }
-
   public static final float DURATION = 3f;
 
   public static final String NO_WAY_TO_RUN = "AAAAAAAA!!!!";
+
+  public static float duration(final Char ch) {
+    return DURATION;
+  }
 
   public Char theFearfulEnemy;
 

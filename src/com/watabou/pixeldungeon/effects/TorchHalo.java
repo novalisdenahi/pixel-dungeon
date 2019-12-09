@@ -19,10 +19,10 @@ package com.watabou.pixeldungeon.effects;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import android.opengl.GLES20;
-
 import com.watabou.noosa.Game;
 import com.watabou.pixeldungeon.sprites.CharSprite;
+
+import android.opengl.GLES20;
 
 public class TorchHalo extends Halo {
 

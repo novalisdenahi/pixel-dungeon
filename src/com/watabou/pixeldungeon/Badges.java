@@ -26,8 +26,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import android.content.Context;
-
 import com.watabou.noosa.Game;
 import com.watabou.pixeldungeon.actors.mobs.Acidic;
 import com.watabou.pixeldungeon.actors.mobs.Albino;
@@ -49,6 +47,8 @@ import com.watabou.pixeldungeon.scenes.PixelScene;
 import com.watabou.pixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
+
+import android.content.Context;
 
 public class Badges {
 

@@ -43,11 +43,6 @@ public class RogueArmor extends ClassArmor {
 
   private static final String AC_SPECIAL = "SMOKE BOMB";
 
-  {
-    name = "rogue garb";
-    image = ItemSpriteSheet.ARMOR_ROGUE;
-  }
-
   protected static CellSelector.Listener teleporter = new CellSelector.Listener() {
 
     @Override
@@ -87,6 +82,11 @@ public class RogueArmor extends ClassArmor {
       return "Choose a location to jump to";
     }
   };
+
+  {
+    name = "rogue garb";
+    image = ItemSpriteSheet.ARMOR_ROGUE;
+  }
 
   @Override
   public String desc() {

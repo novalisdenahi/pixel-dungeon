@@ -42,6 +42,12 @@ public class GoblinFireMage extends GoblinMage implements Callback {
 
   private static final String TXT_FIREBOLT_KILLED = "%s's fire bolt killed you...";
 
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(Burning.class);
+  }
+
   {
     name = "insane goblin fire mage";
     spriteClass = GoblinFireMageSprite.class;
@@ -54,12 +60,6 @@ public class GoblinFireMage extends GoblinMage implements Callback {
 
     loot = Generator.Category.POTION;
     lootChance = 0.33f;
-  }
-
-  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
-
-  static {
-    RESISTANCES.add(Burning.class);
   }
 
   @Override

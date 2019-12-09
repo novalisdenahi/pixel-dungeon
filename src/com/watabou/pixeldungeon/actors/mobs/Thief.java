@@ -49,6 +49,8 @@ public class Thief extends Mob {
 
   protected static final String TXT_CARRIES = "\n\n%s is carrying a _%s_. Stolen obviously.";
 
+  private static final String ITEM = "item";
+
   public Item item;
 
   {
@@ -66,8 +68,6 @@ public class Thief extends Mob {
 
     FLEEING = new Fleeing();
   }
-
-  private static final String ITEM = "item";
 
   @Override
   protected float attackDelay() {

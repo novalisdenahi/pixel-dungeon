@@ -63,24 +63,32 @@ import com.watabou.utils.Random;
 
 public abstract class Char extends Actor {
 
+  protected static final String TXT_HIT = "%s hit %s";
+
+  protected static final String TXT_KILL = "%s killed you...";
+  protected static final String TXT_DEFEAT = "%s defeated %s";
+
+  private static final String TXT_YOU_MISSED = "%s %s your attack";
+  private static final String TXT_SMB_MISSED = "%s %s %s's attack";
+
+  private static final String TXT_OUT_OF_PARALYSIS = "The pain snapped %s out of paralysis";
+
+  private static final String POS = "pos";
+
+  private static final String TAG_HP = "HP";
+
+  private static final String TAG_HT = "HT";
+
+  private static final String BUFFS = "buffs";
+  private static final HashSet<Class<?>> EMPTY = new HashSet<Class<?>>();
+
   public static boolean hit(final Char attacker, final Char defender, final boolean magic) {
     float acuRoll = Random.Float(attacker.attackSkill(defender));
     float defRoll = Random.Float(defender.defenseSkill(attacker));
     return (magic ? acuRoll * 2 : acuRoll) >= defRoll;
   }
 
-  protected static final String TXT_HIT = "%s hit %s";
-  protected static final String TXT_KILL = "%s killed you...";
-
-  protected static final String TXT_DEFEAT = "%s defeated %s";
-  private static final String TXT_YOU_MISSED = "%s %s your attack";
-
-  private static final String TXT_SMB_MISSED = "%s %s %s's attack";
-
-  private static final String TXT_OUT_OF_PARALYSIS = "The pain snapped %s out of paralysis";
-
   public int pos = 0;
-
   public CharSprite sprite;
 
   public String name = "mob";
@@ -89,23 +97,15 @@ public abstract class Char extends Actor {
   public int HP;
 
   protected float baseSpeed = 1;
+
   public boolean paralysed = false;
 
   public boolean rooted = false;
   public boolean flying = false;
-
   public int invisible = 0;
-
   public int viewDistance = 8;
 
   private HashSet<Buff> buffs = new HashSet<Buff>();
-
-  private static final String POS = "pos";
-  private static final String TAG_HP = "HP";
-  private static final String TAG_HT = "HT";
-  private static final String BUFFS = "buffs";
-
-  private static final HashSet<Class<?>> EMPTY = new HashSet<Class<?>>();
 
   @Override
   protected boolean act() {

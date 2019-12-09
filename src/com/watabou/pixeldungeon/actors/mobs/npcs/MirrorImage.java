@@ -33,6 +33,17 @@ import com.watabou.utils.Random;
 
 public class MirrorImage extends NPC {
 
+  private static final String TIER = "tier";
+
+  private static final String ATTACK = "attack";
+
+  private static final String DAMAGE = "damage";
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(ToxicGas.class);
+    IMMUNITIES.add(Burning.class);
+  }
   {
     name = "mirror image";
     spriteClass = MirrorSprite.class;
@@ -40,22 +51,11 @@ public class MirrorImage extends NPC {
     state = HUNTING;
 
   }
-
   public int tier;
 
   private int attack;
+
   private int damage;
-
-  private static final String TIER = "tier";
-  private static final String ATTACK = "attack";
-  private static final String DAMAGE = "damage";
-
-  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-
-  static {
-    IMMUNITIES.add(ToxicGas.class);
-    IMMUNITIES.add(Burning.class);
-  }
 
   @Override
   public int attackProc(final Char enemy, final int damage) {

@@ -49,6 +49,8 @@ public class Pickaxe extends Weapon {
 
   private static final Glowing BLOODY = new Glowing(0x550000);
 
+  private static final String BLOODSTAINED = "bloodStained";
+
   {
     name = "pickaxe";
     image = ItemSpriteSheet.PICKAXE;
@@ -63,8 +65,6 @@ public class Pickaxe extends Weapon {
   }
 
   public boolean bloodStained = false;
-
-  private static final String BLOODSTAINED = "bloodStained";
 
   @Override
   public ArrayList<String> actions(final Hero hero) {

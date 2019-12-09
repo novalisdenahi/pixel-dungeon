@@ -17,8 +17,6 @@
  */
 package com.watabou.pixeldungeon.levels.painters;
 
-import hu.denahi.pixeldungeon.holy.quest.DungeonType;
-
 import java.util.ArrayList;
 
 import com.watabou.pixeldungeon.Dungeon;
@@ -58,6 +56,8 @@ import com.watabou.pixeldungeon.levels.Room;
 import com.watabou.pixeldungeon.levels.Terrain;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
+
+import hu.denahi.pixeldungeon.holy.quest.DungeonType;
 
 public class ShopPainter extends Painter {
 

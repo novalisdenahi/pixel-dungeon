@@ -38,6 +38,12 @@ public class Skeleton extends Mob {
 
   private static final String TXT_HERO_KILLED = "You were killed by the explosion of bones...";
 
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(Death.class);
+  }
+
   {
     name = "skeleton";
     spriteClass = SkeletonSprite.class;
@@ -49,12 +55,6 @@ public class Skeleton extends Mob {
 
     EXP = 5;
     maxLvl = 10;
-  }
-
-  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-
-  static {
-    IMMUNITIES.add(Death.class);
   }
 
   @Override

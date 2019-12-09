@@ -22,11 +22,11 @@ public enum MobType {
       "Just bones, rothing flash and evil aura. Nothing living."), DEMON("demon",
           "Creature from the Nine Hell. Pure evil or worse.");
 
+  private static final String MOBTYPE = "mobType";
+
   private String title;
 
   private String desc;
-
-  private static final String MOBTYPE = "mobType";
 
   private MobType(final String title, final String desc) {
     this.title = title;

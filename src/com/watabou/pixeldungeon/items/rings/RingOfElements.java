@@ -45,13 +45,10 @@ public class RingOfElements extends Ring {
     }
   }
 
-  {
-    name = "Ring of Elements";
-  }
-
   private static final HashSet<Class<?>> EMPTY = new HashSet<Class<?>>();
 
   private static final HashSet<Class<?>> FULL;
+
   static {
     FULL = new HashSet<Class<?>>();
     FULL.add(Burning.class);
@@ -61,6 +58,9 @@ public class RingOfElements extends Ring {
     FULL.add(Warlock.class);
     FULL.add(Eye.class);
     FULL.add(Yog.BurningFist.class);
+  }
+  {
+    name = "Ring of Elements";
   }
 
   @Override

@@ -28,6 +28,12 @@ import com.watabou.utils.Random;
 
 public class Bat extends Mob {
 
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(Leech.class);
+  }
+
   {
     name = "vampire bat";
     spriteClass = BatSprite.class;
@@ -45,12 +51,6 @@ public class Bat extends Mob {
 
     loot = new PotionOfHealing();
     lootChance = 0.125f;
-  }
-
-  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
-
-  static {
-    RESISTANCES.add(Leech.class);
   }
 
   @Override

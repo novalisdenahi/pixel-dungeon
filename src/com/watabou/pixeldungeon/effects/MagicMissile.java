@@ -187,8 +187,6 @@ public class MagicMissile extends Emitter {
 
   public static class SlowParticle extends PixelParticle {
 
-    private Emitter emitter;
-
     public static final Emitter.Factory FACTORY = new Factory() {
       @Override
       public void emit(final Emitter emitter, final int index, final float x, final float y) {
@@ -200,6 +198,8 @@ public class MagicMissile extends Emitter {
         return true;
       };
     };
+
+    private Emitter emitter;
 
     public SlowParticle() {
       super();

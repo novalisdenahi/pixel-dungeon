@@ -56,6 +56,11 @@ public class LloydsBeacon extends Item {
   public static final String AC_SET = "SET";
   public static final String AC_RETURN = "RETURN";
 
+  private static final String DEPTH = "depth";
+  private static final String POS = "pos";
+
+  private static final Glowing WHITE = new Glowing(0xFFFFFF);
+
   private int returnDepth = -1;
   private int returnPos;
 
@@ -65,11 +70,6 @@ public class LloydsBeacon extends Item {
 
     unique = true;
   }
-
-  private static final String DEPTH = "depth";
-  private static final String POS = "pos";
-
-  private static final Glowing WHITE = new Glowing(0xFFFFFF);
 
   @Override
   public ArrayList<String> actions(final Hero hero) {

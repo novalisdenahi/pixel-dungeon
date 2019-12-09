@@ -39,6 +39,15 @@ import com.watabou.utils.Random;
 
 public class CavesBossLevel extends Level {
 
+  private static final int ROOM_LEFT = (WIDTH / 2) - 2;
+
+  private static final int ROOM_RIGHT = (WIDTH / 2) + 2;
+  private static final int ROOM_TOP = (HEIGHT / 2) - 2;
+  private static final int ROOM_BOTTOM = (HEIGHT / 2) + 2;
+  private static final String DOOR = "door";
+
+  private static final String ENTERED = "entered";
+  private static final String DROPPED = "droppped";
   {
     color1 = 0x534f3e;
     color2 = 0xb9d661;
@@ -46,20 +55,11 @@ public class CavesBossLevel extends Level {
     viewDistance = 6;
   }
 
-  private static final int ROOM_LEFT = (WIDTH / 2) - 2;
-  private static final int ROOM_RIGHT = (WIDTH / 2) + 2;
-  private static final int ROOM_TOP = (HEIGHT / 2) - 2;
-  private static final int ROOM_BOTTOM = (HEIGHT / 2) + 2;
-
   private int arenaDoor;
+
   private boolean enteredArena = false;
+
   private boolean keyDropped = false;
-
-  private static final String DOOR = "door";
-
-  private static final String ENTERED = "entered";
-
-  private static final String DROPPED = "droppped";
 
   @Override
   public void addVisuals(final Scene scene) {

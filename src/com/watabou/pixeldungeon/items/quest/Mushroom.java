@@ -49,13 +49,13 @@ public class Mushroom extends Food {
     }
   }
 
+  public static final String AC_EAT = "EAT";
+
   {
     name = "purple magic mushroom";
     image = ItemSpriteSheet.PM_MUSHROOM;
     energy = Hunger.HUNGRY;
   }
-
-  public static final String AC_EAT = "EAT";
 
   @Override
   public ArrayList<String> actions(final Hero hero) {

@@ -91,7 +91,6 @@ public class Ring extends EquipableItem {
       "You can only wear two rings at a time. " +
           "Unequip one of your equipped rings.";
 
-  protected Buff buff;
   private static final Class<?>[] rings = {
       RingOfMending.class,
       RingOfDetection.class,
@@ -110,7 +109,6 @@ public class Ring extends EquipableItem {
       { "diamond", "opal", "garnet", "ruby", "amethyst", "topaz", "onyx", "tourmaline", "emerald",
           "sapphire", "quartz",
           "agate" };
-
   private static final Integer[] images = {
       ItemSpriteSheet.RING_DIAMOND,
       ItemSpriteSheet.RING_OPAL,
@@ -146,6 +144,8 @@ public class Ring extends EquipableItem {
   public static void save(final Bundle bundle) {
     handler.save(bundle);
   }
+
+  protected Buff buff;
 
   private String gem;
 

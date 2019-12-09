@@ -30,17 +30,6 @@ import com.watabou.utils.Random;
 
 public class Golem extends Mob {
 
-  {
-    name = "golem";
-    spriteClass = GolemSprite.class;
-
-    HP = HT = 85;
-    defenseSkill = 18;
-
-    EXP = 12;
-    maxLvl = 22;
-  }
-
   private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
 
   static {
@@ -53,6 +42,17 @@ public class Golem extends Mob {
     IMMUNITIES.add(Amok.class);
     IMMUNITIES.add(Terror.class);
     IMMUNITIES.add(Sleep.class);
+  }
+
+  {
+    name = "golem";
+    spriteClass = GolemSprite.class;
+
+    HP = HT = 85;
+    defenseSkill = 18;
+
+    EXP = 12;
+    maxLvl = 22;
   }
 
   @Override

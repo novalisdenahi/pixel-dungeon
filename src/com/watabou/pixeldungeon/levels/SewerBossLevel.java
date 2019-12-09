@@ -37,14 +37,14 @@ import com.watabou.utils.Random;
 
 public class SewerBossLevel extends RegularLevel {
 
+  private static final String STAIRS = "stairs";
+
   {
     color1 = 0x48763c;
     color2 = 0x59994a;
   }
 
   private int stairs = 0;
-
-  private static final String STAIRS = "stairs";
 
   @Override
   public void addVisuals(final Scene scene) {

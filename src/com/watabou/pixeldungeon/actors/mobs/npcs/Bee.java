@@ -65,6 +65,14 @@ public class Bee extends NPC {
     }
   }
 
+  private static final String LEVEL = "level";
+
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(Poison.class);
+  }
+
   {
     name = "golden bee";
     spriteClass = BeeSprite.class;
@@ -78,14 +86,6 @@ public class Bee extends NPC {
   }
 
   private int level;
-
-  private static final String LEVEL = "level";
-
-  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-
-  static {
-    IMMUNITIES.add(Poison.class);
-  }
 
   @Override
   protected boolean act() {

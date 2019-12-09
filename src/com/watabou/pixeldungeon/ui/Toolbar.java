@@ -193,33 +193,6 @@ public class Toolbar extends Component {
     }
   }
 
-  public static boolean secondQuickslot() {
-    return instance.btnQuick2.visible;
-  }
-
-  public static void secondQuickslot(final boolean value) {
-    instance.btnQuick2.visible =
-        instance.btnQuick2.active =
-            value;
-    instance.layout();
-  }
-
-  private Tool btnWait;
-
-  private Tool btnSearch;
-
-  private Tool btnInfo;
-
-  private Tool btnInventory;
-
-  private Tool btnQuick1;
-
-  private Tool btnQuick2;
-
-  private PickedUpItem pickedUp;
-
-  private boolean lastEnabled = true;
-
   private static Toolbar instance;
 
   private static CellSelector.Listener informer = new CellSelector.Listener() {
@@ -276,6 +249,33 @@ public class Toolbar extends Component {
       return "Select a cell to examine";
     }
   };
+
+  public static boolean secondQuickslot() {
+    return instance.btnQuick2.visible;
+  }
+
+  public static void secondQuickslot(final boolean value) {
+    instance.btnQuick2.visible =
+        instance.btnQuick2.active =
+            value;
+    instance.layout();
+  }
+
+  private Tool btnWait;
+
+  private Tool btnSearch;
+
+  private Tool btnInfo;
+
+  private Tool btnInventory;
+
+  private Tool btnQuick1;
+
+  private Tool btnQuick2;
+
+  private PickedUpItem pickedUp;
+
+  private boolean lastEnabled = true;
 
   public Toolbar() {
     super();

@@ -31,6 +31,8 @@ import com.watabou.utils.Random;
 
 public class AlphaWorg extends Mob {
 
+  private static final float DELAY_OF_HOWLS = 1f;
+
   {
     name = Dungeon.depth == Statistics.getDeepestFloor(Dungeon.dungeonType) ? "Alpha Worg"
         : "cub of the Alpha Worg";
@@ -43,8 +45,6 @@ public class AlphaWorg extends Mob {
     EXP = 10;
 
   }
-
-  private static final float DELAY_OF_HOWLS = 1f;
 
   @Override
   public int attackSkill(final Char target) {

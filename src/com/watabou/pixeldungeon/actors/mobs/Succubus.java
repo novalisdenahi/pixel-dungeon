@@ -40,6 +40,18 @@ public class Succubus extends Mob {
 
   private static final int BLINK_DELAY = 5;
 
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(Leech.class);
+  }
+
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(Sleep.class);
+  }
+
   private int delay = 0;
 
   {
@@ -57,18 +69,6 @@ public class Succubus extends Mob {
 
     loot = new ScrollOfLullaby();
     lootChance = 0.05f;
-  }
-
-  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
-
-  static {
-    RESISTANCES.add(Leech.class);
-  }
-
-  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-
-  static {
-    IMMUNITIES.add(Sleep.class);
   }
 
   @Override

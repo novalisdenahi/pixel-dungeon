@@ -97,30 +97,6 @@ public abstract class Wand extends KindOfWeapon {
 
   private static final float TIME_TO_ZAP = 1f;
 
-  @SuppressWarnings("unchecked")
-  public static void initWoods() {
-    handler = new ItemStatusHandler<Wand>((Class<? extends Wand>[]) wands, woods, images);
-  }
-
-  @SuppressWarnings("unchecked")
-  public static void restore(final Bundle bundle) {
-    handler = new ItemStatusHandler<Wand>((Class<? extends Wand>[]) wands, woods, images, bundle);
-  }
-
-  public static void save(final Bundle bundle) {
-    handler.save(bundle);
-  }
-
-  public int maxCharges = initialCharges();
-
-  public int curCharges = maxCharges;
-
-  protected Charger charger;
-  private boolean curChargeKnown = false;
-  private int usagesToKnow = USAGES_TO_KNOW;
-
-  protected boolean hitChars = true;
-
   private static final Class<?>[] wands = {
       WandOfTeleportation.class,
       WandOfSlowness.class,
@@ -159,9 +135,7 @@ public abstract class Wand extends KindOfWeapon {
   private static final String UNFAMILIRIARITY = "unfamiliarity";
 
   private static final String MAX_CHARGES = "maxCharges";
-
   private static final String CUR_CHARGES = "curCharges";
-
   private static final String CUR_CHARGE_KNOWN = "curChargeKnown";
 
   protected static CellSelector.Listener zapper = new CellSelector.Listener() {
@@ -220,6 +194,32 @@ public abstract class Wand extends KindOfWeapon {
   public static boolean allKnown() {
     return handler.known().size() == wands.length;
   }
+
+  @SuppressWarnings("unchecked")
+  public static void initWoods() {
+    handler = new ItemStatusHandler<Wand>((Class<? extends Wand>[]) wands, woods, images);
+  }
+
+  @SuppressWarnings("unchecked")
+  public static void restore(final Bundle bundle) {
+    handler = new ItemStatusHandler<Wand>((Class<? extends Wand>[]) wands, woods, images, bundle);
+  }
+
+  public static void save(final Bundle bundle) {
+    handler.save(bundle);
+  }
+
+  public int maxCharges = initialCharges();
+
+  public int curCharges = maxCharges;
+
+  protected Charger charger;
+
+  private boolean curChargeKnown = false;
+
+  private int usagesToKnow = USAGES_TO_KNOW;
+
+  protected boolean hitChars = true;
 
   private String wood;
 

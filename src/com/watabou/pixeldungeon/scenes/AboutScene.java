@@ -17,9 +17,6 @@
  */
 package com.watabou.pixeldungeon.scenes;
 
-import android.content.Intent;
-import android.net.Uri;
-
 import com.watabou.input.Touchscreen.Touch;
 import com.watabou.noosa.BitmapTextMultiline;
 import com.watabou.noosa.Camera;
@@ -32,6 +29,9 @@ import com.watabou.pixeldungeon.ui.Archs;
 import com.watabou.pixeldungeon.ui.ExitButton;
 import com.watabou.pixeldungeon.ui.Icons;
 import com.watabou.pixeldungeon.ui.Window;
+
+import android.content.Intent;
+import android.net.Uri;
 
 public class AboutScene extends PixelScene {
 

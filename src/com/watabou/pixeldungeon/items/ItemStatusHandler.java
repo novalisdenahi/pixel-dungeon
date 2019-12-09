@@ -27,17 +27,17 @@ import com.watabou.utils.Random;
 
 public class ItemStatusHandler<T extends Item> {
 
-  private Class<? extends T>[] items;
-
-  private HashMap<Class<? extends T>, Integer> images;
-  private HashMap<Class<? extends T>, String> labels;
-  private HashSet<Class<? extends T>> known;
-
   private static final String PFX_IMAGE = "_image";
 
   private static final String PFX_LABEL = "_label";
-
   private static final String PFX_KNOWN = "_known";
+  private Class<? extends T>[] items;
+
+  private HashMap<Class<? extends T>, Integer> images;
+
+  private HashMap<Class<? extends T>, String> labels;
+
+  private HashSet<Class<? extends T>> known;
 
   public ItemStatusHandler(final Class<? extends T>[] items, final String[] allLabels,
       final Integer[] allImages) {

@@ -38,14 +38,8 @@ public class ItemSlot extends Button {
   private static final float ENABLED = 1.0f;
   private static final float DISABLED = 0.3f;
 
-  protected ItemSprite icon;
-  protected BitmapText topLeft;
-  protected BitmapText topRight;
-  protected BitmapText bottomRight;
-
   private static final String TXT_STRENGTH = ":%d";
   private static final String TXT_TYPICAL_STR = "%d?";
-
   private static final String TXT_LEVEL = "%+d";
   private static final String TXT_CURSED = "";// "-";
 
@@ -62,6 +56,7 @@ public class ItemSlot extends Button {
       return ItemSpriteSheet.LOCKED_CHEST;
     };
   };
+
   public static final Item TOMB = new Item() {
     @Override
     public int image() {
@@ -74,6 +69,11 @@ public class ItemSlot extends Button {
       return ItemSpriteSheet.BONES;
     };
   };
+
+  protected ItemSprite icon;
+  protected BitmapText topLeft;
+  protected BitmapText topRight;
+  protected BitmapText bottomRight;
 
   public ItemSlot() {
     super();

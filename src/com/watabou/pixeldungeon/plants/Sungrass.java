@@ -34,9 +34,9 @@ public class Sungrass extends Plant {
 
     private static final float STEP = 5f;
 
-    private int pos;
-
     private static final String POS = "pos";
+
+    private int pos;
 
     @Override
     public boolean act() {

@@ -27,16 +27,12 @@ import com.watabou.pixeldungeon.windows.WndOptions;
 
 public abstract class InventoryScroll extends Scroll {
 
-  protected String inventoryTitle = "Select an item";
-  protected WndBag.Mode mode = WndBag.Mode.ALL;
-
   private static final String TXT_WARNING =
       "Do you really want to cancel this scroll usage? It will be consumed anyway.";
   private static final String TXT_YES = "Yes, I'm positive";
+
   private static final String TXT_NO = "No, I changed my mind";
-
   protected static boolean identifiedByUse = false;
-
   protected static WndBag.Listener itemSelector = new WndBag.Listener() {
     @Override
     public void onSelect(final Item item) {
@@ -59,6 +55,10 @@ public abstract class InventoryScroll extends Scroll {
       }
     }
   };
+
+  protected String inventoryTitle = "Select an item";
+
+  protected WndBag.Mode mode = WndBag.Mode.ALL;
 
   private void confirmCancelation() {
     GameScene.show(new WndOptions(name(), TXT_WARNING, TXT_YES, TXT_NO) {

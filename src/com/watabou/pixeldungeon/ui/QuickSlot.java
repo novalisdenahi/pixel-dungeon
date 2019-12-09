@@ -37,21 +37,10 @@ public class QuickSlot extends Button implements WndBag.Listener {
   private static QuickSlot primary;
   private static QuickSlot secondary;
 
-  private Item itemInSlot;
-  private ItemSlot slot;
-
-  private Image crossB;
-  private Image crossM;
-
-  private boolean targeting = false;
-  private Item lastItem = null;
-  private Char lastTarget = null;
-
   public static Object primaryValue;
   public static Object secondaryValue;
 
   private static final String QUICKSLOT1 = "quickslot";
-
   private static final String QUICKSLOT2 = "quickslot2";
 
   public static void cancel() {
@@ -156,6 +145,20 @@ public class QuickSlot extends Button implements WndBag.Listener {
       }
     }
   }
+
+  private Item itemInSlot;
+
+  private ItemSlot slot;
+
+  private Image crossB;
+
+  private Image crossM;
+
+  private boolean targeting = false;
+
+  private Item lastItem = null;
+
+  private Char lastTarget = null;
 
   @Override
   protected void createChildren() {

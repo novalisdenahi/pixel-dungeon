@@ -104,6 +104,8 @@ public class GameScene extends PixelScene {
     }
   };
 
+  private static CellSelector cellSelector;
+
   public static void add(final Blob gas) {
     Actor.add(gas);
     if (scene != null) {
@@ -292,11 +294,9 @@ public class GameScene extends PixelScene {
 
   private GameLog log;
 
-  private BusyIndicator busy;
-
   // -------------------------------------------------------
 
-  private static CellSelector cellSelector;
+  private BusyIndicator busy;
 
   private Group terrain;
 

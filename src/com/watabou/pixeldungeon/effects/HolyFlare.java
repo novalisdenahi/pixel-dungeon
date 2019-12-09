@@ -24,10 +24,6 @@ import java.nio.ShortBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import android.annotation.SuppressLint;
-import android.opengl.GLES20;
-import android.util.FloatMath;
-
 import com.watabou.gltextures.Gradient;
 import com.watabou.gltextures.SmartTexture;
 import com.watabou.noosa.Game;
@@ -35,6 +31,10 @@ import com.watabou.noosa.NoosaScript;
 import com.watabou.noosa.Visual;
 import com.watabou.pixeldungeon.actors.Char;
 import com.watabou.utils.PointF;
+
+import android.annotation.SuppressLint;
+import android.opengl.GLES20;
+import android.util.FloatMath;
 
 public class HolyFlare extends Visual {
 

@@ -32,8 +32,6 @@ public class CityLevel extends RegularLevel {
 
   private static class Smoke extends Emitter {
 
-    private int pos;
-
     private static final Emitter.Factory factory = new Factory() {
 
       @Override
@@ -42,6 +40,8 @@ public class CityLevel extends RegularLevel {
         p.reset(x, y);
       }
     };
+
+    private int pos;
 
     public Smoke(final int pos) {
       super();

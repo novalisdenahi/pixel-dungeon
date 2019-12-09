@@ -117,6 +117,39 @@ public class Hero extends Char {
     public void onDeath();
   }
 
+  private static final String TXT_LEAVE = "One does not simply leave Pixel Dungeon.";
+
+  private static final String TXT_LEVEL_UP = "level up!";
+
+  private static final String TXT_NEW_LEVEL =
+      "Welcome to level %d! Now you are healthier and more focused. " +
+          "It's easier for you to hit enemies and dodge their attacks.";
+
+  public static final String TXT_YOU_NOW_HAVE = "You now have %s";
+  private static final String TXT_SOMETHING_ELSE = "There is something else here";
+  private static final String TXT_LOCKED_CHEST =
+      "This chest is locked and you don't have matching key";
+  private static final String TXT_LOCKED_DOOR = "You don't have a matching key";
+
+  private static final String TXT_NOTICED_SMTH = "You noticed something";
+  private static final String TXT_WAIT = "...";
+
+  private static final String TXT_SEARCH = "search";
+
+  public static final int STARTING_STR = 10;
+  private static final float TIME_TO_REST = 1f;
+
+  private static final float TIME_TO_SEARCH = 2f;
+  private static final String ATTACK = "attackSkill";
+
+  private static final String DEFENSE = "defenseSkill";
+  private static final String STRENGTH = "STR";
+
+  private static final String LEVEL = "lvl";
+
+  private static final String EXPERIENCE = "exp";
+  private static final float BLESS_BUFF_BONUS = 1.4f;
+
   public static void preview(final GamesInProgress.Info info, final Bundle bundle) {
     info.level = bundle.getInt(LEVEL);
   }
@@ -179,28 +212,6 @@ public class Hero extends Char {
     Dungeon.deleteGame(Dungeon.hero.heroClass, true);
   }
 
-  private static final String TXT_LEAVE = "One does not simply leave Pixel Dungeon.";
-
-  private static final String TXT_LEVEL_UP = "level up!";
-  private static final String TXT_NEW_LEVEL =
-      "Welcome to level %d! Now you are healthier and more focused. " +
-          "It's easier for you to hit enemies and dodge their attacks.";
-  public static final String TXT_YOU_NOW_HAVE = "You now have %s";
-  private static final String TXT_SOMETHING_ELSE = "There is something else here";
-
-  private static final String TXT_LOCKED_CHEST =
-      "This chest is locked and you don't have matching key";
-  private static final String TXT_LOCKED_DOOR = "You don't have a matching key";
-
-  private static final String TXT_NOTICED_SMTH = "You noticed something";
-
-  private static final String TXT_WAIT = "...";
-  private static final String TXT_SEARCH = "search";
-
-  public static final int STARTING_STR = 10;
-  private static final float TIME_TO_REST = 1f;
-
-  private static final float TIME_TO_SEARCH = 2f;
   public HeroClass heroClass = HeroClass.ROGUE;
 
   public HeroSubClass subClass = HeroSubClass.NONE;
@@ -209,39 +220,28 @@ public class Hero extends Char {
   private int defenseSkill = 5;
 
   public boolean ready = false;
-
   public HeroAction curAction = null;
 
   public HeroAction lastAction = null;
 
   private Char enemy;
-
   public Armor.Glyph killerGlyph = null;
+
   private Item theKey;
 
   public boolean restoreHealth = false;
+
   public MissileWeapon rangedWeapon = null;
 
   public Belongings belongings;
-
   public int STR;
   public boolean weakened = false;
-
   public float awareness;
-
   public int lvl = 1;
 
   public int exp = 0;
 
   private ArrayList<Mob> visibleEnemies;
-  private static final String ATTACK = "attackSkill";
-  private static final String DEFENSE = "defenseSkill";
-  private static final String STRENGTH = "STR";
-  private static final String LEVEL = "lvl";
-
-  private static final String EXPERIENCE = "exp";
-
-  private static final float BLESS_BUFF_BONUS = 1.4f;
 
   public Hero() {
     super();
@@ -950,7 +950,7 @@ public class Hero extends Char {
     Ankh ankh = belongings.getItem(Ankh.class);
     if (ankh == null) {
 
-      reallyDie(cause);
+      Hero.reallyDie(cause);
 
     } else {
 

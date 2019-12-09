@@ -33,10 +33,10 @@ public class PlantSprite extends Image {
   }
 
   private static final float DELAY = 0.2f;
-  private State state = State.NORMAL;
-  private float time;
-
   private static TextureFilm frames;
+  private State state = State.NORMAL;
+
+  private float time;
 
   private int pos = -1;
 

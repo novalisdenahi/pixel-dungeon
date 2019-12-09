@@ -25,13 +25,13 @@ public class Key extends Item {
 
   public static final float TIME_TO_UNLOCK = 1f;
 
+  private static final String DEPTH = "depth";
+
   {
     stackable = false;
   }
 
   public int depth;
-
-  private static final String DEPTH = "depth";
 
   public Key() {
     super();

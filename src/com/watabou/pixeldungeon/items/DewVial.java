@@ -47,17 +47,6 @@ public class DewVial extends Item {
   private static final String TXT_FULL = "Your dew vial is full!";
   private static final String TXT_EMPTY = "Your dew vial is empty!";
 
-  {
-    name = "dew vial";
-    image = ItemSpriteSheet.VIAL;
-
-    defaultAction = AC_DRINK;
-
-    unique = true;
-  }
-
-  private int volume = 0;
-
   private static final String VOLUME = "volume";
 
   private static final double NUM = 20;
@@ -75,6 +64,17 @@ public class DewVial extends Item {
       GLog.w(TXT_AUTO_DRINK);
     }
   }
+
+  {
+    name = "dew vial";
+    image = ItemSpriteSheet.VIAL;
+
+    defaultAction = AC_DRINK;
+
+    unique = true;
+  }
+
+  private int volume = 0;
 
   @Override
   public ArrayList<String> actions(final Hero hero) {

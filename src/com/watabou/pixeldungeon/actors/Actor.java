@@ -20,8 +20,6 @@ package com.watabou.pixeldungeon.actors;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import android.util.SparseArray;
-
 import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.Statistics;
 import com.watabou.pixeldungeon.actors.blobs.Blob;
@@ -31,13 +29,11 @@ import com.watabou.pixeldungeon.levels.Level;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 
+import android.util.SparseArray;
+
 public abstract class Actor implements Bundlable {
 
   public static final float TICK = 1f;
-
-  private float time;
-
-  private int id = 0;
 
   private static final String TIME = "time";
 
@@ -99,9 +95,6 @@ public abstract class Actor implements Bundlable {
     ids.clear();
   }
 
-  // **********************
-  // *** Static members ***
-
   public static Actor findById(final int id) {
     return ids.get(id);
   }
@@ -109,6 +102,9 @@ public abstract class Actor implements Bundlable {
   public static Char findChar(final int pos) {
     return chars[pos];
   }
+
+  // **********************
+  // *** Static members ***
 
   public static void fixTime() {
 
@@ -209,6 +205,10 @@ public abstract class Actor implements Bundlable {
       }
     }
   }
+
+  private float time;
+
+  private int id = 0;
 
   protected abstract boolean act();
 

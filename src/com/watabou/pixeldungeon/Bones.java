@@ -21,14 +21,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import android.content.Context;
-
 import com.watabou.noosa.Game;
 import com.watabou.pixeldungeon.items.Gold;
 import com.watabou.pixeldungeon.items.Item;
 import com.watabou.pixeldungeon.items.rings.Ring;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
+
+import android.content.Context;
 
 public class Bones {
 

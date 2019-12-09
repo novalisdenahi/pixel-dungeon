@@ -17,10 +17,10 @@
  */
 package com.watabou.pixeldungeon.scenes;
 
-import hu.denahi.pixeldungeon.holy.quest.DungeonType;
-
 import com.watabou.noosa.Game;
 import com.watabou.pixeldungeon.windows.WndStory;
+
+import hu.denahi.pixeldungeon.holy.quest.DungeonType;
 
 public class IntroScene extends PixelScene {
   private static final String TEXT =

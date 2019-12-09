@@ -41,16 +41,8 @@ import com.watabou.utils.Random;
 
 public class Mimic extends Mob {
 
-  private int level;
-
-  {
-    name = "mimic";
-    spriteClass = MimicSprite.class;
-  }
-
-  public ArrayList<Item> items;
-
   private static final String LEVEL = "level";
+
   private static final String ITEMS = "items";
 
   private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
@@ -102,6 +94,15 @@ public class Mimic extends Mob {
 
     return m;
   }
+
+  private int level;
+
+  {
+    name = "mimic";
+    spriteClass = MimicSprite.class;
+  }
+
+  public ArrayList<Item> items;
 
   public void adjustStats(final int level) {
     this.level = level;

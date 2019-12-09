@@ -41,6 +41,12 @@ public class Warlock extends Mob implements Callback {
 
   private static final String TXT_SHADOWBOLT_KILLED = "%s's shadow bolt killed you...";
 
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(Death.class);
+  }
+
   {
     name = "dwarf warlock";
     spriteClass = WarlockSprite.class;
@@ -53,12 +59,6 @@ public class Warlock extends Mob implements Callback {
 
     loot = Generator.Category.POTION;
     lootChance = 0.83f;
-  }
-
-  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
-
-  static {
-    RESISTANCES.add(Death.class);
   }
 
   @Override

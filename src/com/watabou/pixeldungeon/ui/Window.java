@@ -92,15 +92,15 @@ public class Window extends Group implements Signal.Listener<Key> {
     }
   }
 
-  protected int width;
+  public static final int TITLE_COLOR = 0xFFFF44;
 
+  protected int width;
   protected int height;
   protected TouchArea blocker;
+
   protected ShadowBox shadow;
 
   protected NinePatch chrome;
-
-  public static final int TITLE_COLOR = 0xFFFF44;
 
   public Window() {
     this(0, 0, Chrome.get(Chrome.Type.WINDOW));

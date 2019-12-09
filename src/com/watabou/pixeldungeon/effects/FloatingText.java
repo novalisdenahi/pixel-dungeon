@@ -32,19 +32,6 @@ public class FloatingText extends BitmapText {
   private static final float LIFESPAN = 1f;
   private static final float DISTANCE = DungeonTilemap.SIZE;
 
-  public static void show(final float x, final float y, final int key, final String text,
-      final int color) {
-    FloatingText txt = GameScene.status();
-    txt.reset(x, y, text, color);
-    FloatingText.push(txt, key);
-  }
-
-  private float timeLeft;
-
-  private int key = -1;
-
-  private float cameraZoom = -1;
-
   private static SparseArray<ArrayList<FloatingText>> stacks =
       new SparseArray<ArrayList<FloatingText>>();
 
@@ -77,9 +64,22 @@ public class FloatingText extends BitmapText {
     stack.add(txt);
   }
 
+  public static void show(final float x, final float y, final int key, final String text,
+      final int color) {
+    FloatingText txt = GameScene.status();
+    txt.reset(x, y, text, color);
+    FloatingText.push(txt, key);
+  }
+
   public static void show(final float x, final float y, final String text, final int color) {
     GameScene.status().reset(x, y, text, color);
   }
+
+  private float timeLeft;
+
+  private int key = -1;
+
+  private float cameraZoom = -1;
 
   public FloatingText() {
     super();

@@ -41,6 +41,12 @@ public class Shaman extends Mob implements Callback {
 
   private static final String TXT_LIGHTNING_KILLED = "%s's lightning bolt killed you...";
 
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(LightningTrap.Electricity.class);
+  }
+
   {
     name = "gnoll shaman";
     spriteClass = ShamanSprite.class;
@@ -53,12 +59,6 @@ public class Shaman extends Mob implements Callback {
 
     loot = Generator.Category.SCROLL;
     lootChance = 0.33f;
-  }
-
-  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
-
-  static {
-    RESISTANCES.add(LightningTrap.Electricity.class);
   }
 
   @Override

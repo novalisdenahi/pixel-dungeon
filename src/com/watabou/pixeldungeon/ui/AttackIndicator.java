@@ -34,8 +34,6 @@ public class AttackIndicator extends Tag {
 
   private static AttackIndicator instance;
 
-  private CharSprite sprite = null;
-
   private static Mob lastTarget = null;
 
   public static void target(final Char target) {
@@ -48,6 +46,8 @@ public class AttackIndicator extends Tag {
   public static void updateState() {
     instance.checkEnemies();
   }
+
+  private CharSprite sprite = null;
 
   private ArrayList<Mob> candidates = new ArrayList<Mob>();
 

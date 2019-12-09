@@ -26,11 +26,11 @@ public class Archs extends Component {
 
   private static final float SCROLL_SPEED = 20f;
 
-  private SkinnedBlock arcsBg;
-  private SkinnedBlock arcsFg;
-
   private static float offsB = 0;
   private static float offsF = 0;
+
+  private SkinnedBlock arcsBg;
+  private SkinnedBlock arcsFg;
 
   public boolean reversed = false;
 

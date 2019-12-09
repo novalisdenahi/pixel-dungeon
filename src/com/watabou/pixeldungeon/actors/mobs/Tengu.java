@@ -47,6 +47,15 @@ public class Tengu extends Mob {
 
   private static final int JUMP_DELAY = 5;
 
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(ToxicGas.class);
+    RESISTANCES.add(Poison.class);
+    RESISTANCES.add(Death.class);
+    RESISTANCES.add(ScrollOfPsionicBlast.class);
+  }
+
   {
     name = Dungeon.depth == Statistics.getDeepestFloor(Dungeon.dungeonType) ? "Tengu"
         : "memory of Tengu";
@@ -61,15 +70,6 @@ public class Tengu extends Mob {
   }
 
   private int timeToJump = JUMP_DELAY;
-
-  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
-
-  static {
-    RESISTANCES.add(ToxicGas.class);
-    RESISTANCES.add(Poison.class);
-    RESISTANCES.add(Death.class);
-    RESISTANCES.add(ScrollOfPsionicBlast.class);
-  }
 
   @Override
   public int attackSkill(final Char target) {

@@ -220,45 +220,45 @@ public abstract class Mob extends Char {
     }
   }
 
-  public MobType mobType = MobType.NONE;
-
   protected static final String TXT_DIED = "You hear something died in the distance";
+
   protected static final String TXT_ECHO = "echo of ";
   protected static final String TXT_NOTICE1 = "?!";
   protected static final String TXT_RAGE = "#$%^";
   protected static final String TXT_EXP = "%+dEXP";
+  protected static final float TIME_TO_WAKE_UP = 1f;
+
+  private static final String STATE = "state";
+
+  private static final String TARGET = "target";
+
+  public MobType mobType = MobType.NONE;
 
   public AiState SLEEPEING = new Sleeping();
-
   public AiState HUNTING = new Hunting();
 
   public AiState WANDERING = new Wandering();
-
   public AiState FLEEING = new Fleeing();
   public AiState PASSIVE = new Passive();
 
   public AiState state = SLEEPEING;
-  public Class<? extends CharSprite> spriteClass;
-  protected int target = -1;
 
+  public Class<? extends CharSprite> spriteClass;
+
+  protected int target = -1;
   protected int defenseSkill = 0;
 
   protected int EXP = 1;
 
   protected int maxLvl = 30;
+
   protected Char enemy;
 
   protected boolean enemySeen;
 
   protected boolean alerted = false;
 
-  protected static final float TIME_TO_WAKE_UP = 1f;
-
   public boolean hostile = true;
-
-  private static final String STATE = "state";
-
-  private static final String TARGET = "target";
 
   protected Object loot = null;
 

@@ -55,6 +55,12 @@ public class Ghost extends NPC {
 
   public static class FetidRat extends Mob {
 
+    private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+    static {
+      IMMUNITIES.add(Paralysis.class);
+    }
+
     {
       name = "fetid rat";
       spriteClass = FetidRatSprite.class;
@@ -66,12 +72,6 @@ public class Ghost extends NPC {
       maxLvl = 5;
 
       state = WANDERING;
-    }
-
-    private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-
-    static {
-      IMMUNITIES.add(Paralysis.class);
     }
 
     @Override
@@ -277,15 +277,6 @@ public class Ghost extends NPC {
     }
   }
 
-  {
-    name = "sad ghost";
-    spriteClass = GhostSprite.class;
-
-    flying = true;
-
-    state = WANDERING;
-  }
-
   private static final String TXT_ROSE1 =
       "Hello adventurer... Once I was like you - strong and confident... " +
           "And now I'm dead... But I can't leave this place... Not until I have my _dried rose_... "
@@ -308,6 +299,15 @@ public class Ghost extends NPC {
   static {
     IMMUNITIES.add(Paralysis.class);
     IMMUNITIES.add(Roots.class);
+  }
+
+  {
+    name = "sad ghost";
+    spriteClass = GhostSprite.class;
+
+    flying = true;
+
+    state = WANDERING;
   }
 
   public Ghost() {

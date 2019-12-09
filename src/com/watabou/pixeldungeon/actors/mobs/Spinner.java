@@ -44,6 +44,18 @@ public class Spinner extends Mob {
     }
   }
 
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(Poison.class);
+  }
+
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(Roots.class);
+  }
+
   {
     name = "cave spinner";
     spriteClass = SpinnerSprite.class;
@@ -58,18 +70,6 @@ public class Spinner extends Mob {
     lootChance = 0.125f;
 
     FLEEING = new Fleeing();
-  }
-
-  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
-
-  static {
-    RESISTANCES.add(Poison.class);
-  }
-
-  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-
-  static {
-    IMMUNITIES.add(Roots.class);
   }
 
   @Override

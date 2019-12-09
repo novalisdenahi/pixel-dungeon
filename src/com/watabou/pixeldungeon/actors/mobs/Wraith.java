@@ -36,19 +36,6 @@ public class Wraith extends Mob {
 
   private static final float SPAWN_DELAY = 2f;
 
-  private int level;
-
-  {
-    name = "wraith";
-    spriteClass = WraithSprite.class;
-
-    mobType = MobType.UNDEAD;
-    HP = HT = 1;
-    EXP = 0;
-
-    flying = true;
-  }
-
   private static final String LEVEL = "level";
 
   private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
@@ -85,6 +72,19 @@ public class Wraith extends Mob {
     } else {
       return null;
     }
+  }
+
+  private int level;
+
+  {
+    name = "wraith";
+    spriteClass = WraithSprite.class;
+
+    mobType = MobType.UNDEAD;
+    HP = HT = 1;
+    EXP = 0;
+
+    flying = true;
   }
 
   public void adjustStats(final int level) {

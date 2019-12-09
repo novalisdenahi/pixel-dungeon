@@ -19,8 +19,6 @@ package com.watabou.pixeldungeon.effects;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import android.opengl.GLES20;
-
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
@@ -31,22 +29,24 @@ import com.watabou.pixeldungeon.levels.Level;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
+import android.opengl.GLES20;
+
 public class Lightning extends Group {
 
   private static final float DURATION = 0.3f;
 
-  private float life;
+  private static final double A = 180 / Math.PI;
 
+  private float life;
   private int length;
   private float[] cx;
-  private float[] cy;
 
+  private float[] cy;
   private Image[] arcsS;
+
   private Image[] arcsE;
 
   private Callback callback;
-
-  private static final double A = 180 / Math.PI;
 
   public Lightning(final int[] cells, final int length, final Callback callback) {
 

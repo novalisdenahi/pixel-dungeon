@@ -1,13 +1,13 @@
 package com.watabou.pixeldungeon;
 
-import android.graphics.Bitmap;
-
 import com.watabou.gltextures.SmartTexture;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.glwrap.Texture;
 import com.watabou.noosa.Image;
 import com.watabou.pixeldungeon.levels.Level;
 import com.watabou.utils.Random;
+
+import android.graphics.Bitmap;
 
 public class LightMap extends Image {
 

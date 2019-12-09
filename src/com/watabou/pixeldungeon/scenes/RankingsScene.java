@@ -17,8 +17,6 @@
  */
 package com.watabou.pixeldungeon.scenes;
 
-import hu.denahi.pixeldungeon.holy.quest.DungeonType;
-
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.BitmapTextMultiline;
 import com.watabou.noosa.Camera;
@@ -40,6 +38,8 @@ import com.watabou.pixeldungeon.ui.Icons;
 import com.watabou.pixeldungeon.ui.Window;
 import com.watabou.pixeldungeon.windows.WndError;
 import com.watabou.pixeldungeon.windows.WndRanking;
+
+import hu.denahi.pixeldungeon.holy.quest.DungeonType;
 
 public class RankingsScene extends PixelScene {
   private class DungeonTypeItem extends Button {

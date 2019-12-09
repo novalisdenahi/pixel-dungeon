@@ -19,8 +19,6 @@ package com.watabou.pixeldungeon.levels;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import android.opengl.GLES20;
-
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Scene;
@@ -31,6 +29,8 @@ import com.watabou.pixeldungeon.DungeonTilemap;
 import com.watabou.pixeldungeon.items.Torch;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
+
+import android.opengl.GLES20;
 
 public class HallsLevel extends RegularLevel {
 

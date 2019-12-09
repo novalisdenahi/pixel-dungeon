@@ -33,6 +33,10 @@ public class Blob extends Actor {
   public static final int HEIGHT = Level.HEIGHT;
   public static final int LENGTH = Level.LENGTH;
 
+  private static final String CUR = "cur";
+
+  private static final String START = "start";
+
   @SuppressWarnings("unchecked")
   public static <T extends Blob> T seed(final int cell, final int amount, final Class<T> type) {
     try {
@@ -54,14 +58,11 @@ public class Blob extends Actor {
   }
 
   public int volume = 0;
+
   public int[] cur;
 
   protected int[] off;
-
   public BlobEmitter emitter;
-
-  private static final String CUR = "cur";
-  private static final String START = "start";
 
   protected Blob() {
 

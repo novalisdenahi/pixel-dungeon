@@ -30,13 +30,15 @@ public class BadgeBanner extends Image {
     FADE_IN, STATIC, FADE_OUT
   };
 
-  private State state;
-
   private static final float DEFAULT_SCALE = 3;
 
   private static final float FADE_IN_TIME = 0.2f;
+
   private static final float STATIC_TIME = 1f;
   private static final float FADE_OUT_TIME = 1.0f;
+  private static TextureFilm atlas;
+
+  private static BadgeBanner current;
 
   public static void highlight(final Image image, final int index) {
 
@@ -207,13 +209,11 @@ public class BadgeBanner extends Image {
     return (current = new BadgeBanner(image));
   }
 
+  private State state;
+
   private int index;
 
   private float time;
-
-  private static TextureFilm atlas;
-
-  private static BadgeBanner current;
 
   private BadgeBanner(final int index) {
 

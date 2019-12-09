@@ -102,24 +102,35 @@ public abstract class Level implements Bundlable {
   public static boolean resizingNeeded;
   public static int loadedMapSize;
 
-  public int[] map;
-  public boolean[] visited;
-  public boolean[] mapped;
-
-  public int viewDistance = Dungeon.isChallenged(Challenges.DARKNESS) ? 3 : 8;
-
   public static boolean[] fieldOfView = new boolean[LENGTH];
-
   public static boolean[] passable = new boolean[LENGTH];
   public static boolean[] losBlocking = new boolean[LENGTH];
+
   public static boolean[] flamable = new boolean[LENGTH];
+
   public static boolean[] secret = new boolean[LENGTH];
+
   public static boolean[] solid = new boolean[LENGTH];
   public static boolean[] avoid = new boolean[LENGTH];
   public static boolean[] water = new boolean[LENGTH];
   public static boolean[] pit = new boolean[LENGTH];
-
   public static boolean[] discoverable = new boolean[LENGTH];
+  protected static boolean pitRoomNeeded = false;
+  protected static boolean weakFloorCreated = false;
+  private static final String MAP = "map";
+
+  private static final String VISITED = "visited";
+
+  private static final String MAPPED = "mapped";
+
+  private static final String ENTRANCE = "entrance";
+
+  private static final String EXIT = "exit";
+
+  private static final String HEAPS = "heaps";
+  private static final String PLANTS = "plants";
+  private static final String MOBS = "mobs";
+  private static final String BLOBS = "blobs";
 
   public static boolean adjacent(final int a, final int b) {
     int diff = Math.abs(a - b);
@@ -148,34 +159,24 @@ public abstract class Level implements Bundlable {
     water[cell] = (terrain == Terrain.WATER) || (terrain >= Terrain.WATER_TILES);
   }
 
+  public int[] map;
+  public boolean[] visited;
+
+  public boolean[] mapped;
+  public int viewDistance = Dungeon.isChallenged(Challenges.DARKNESS) ? 3 : 8;
   public Feeling feeling = Feeling.NONE;
   public int entrance;
   public int exit;
   public HashSet<Mob> mobs;
-
   public SparseArray<Heap> heaps;
-
   public HashMap<Class<? extends Blob>, Blob> blobs;
   public SparseArray<Plant> plants;
 
   protected ArrayList<Item> itemsToSpawn = new ArrayList<Item>();
+
   public int color1 = 0x004400;
 
   public int color2 = 0x88CC44;
-  protected static boolean pitRoomNeeded = false;
-  protected static boolean weakFloorCreated = false;
-  private static final String MAP = "map";
-  private static final String VISITED = "visited";
-  private static final String MAPPED = "mapped";
-  private static final String ENTRANCE = "entrance";
-  private static final String EXIT = "exit";
-  private static final String HEAPS = "heaps";
-
-  private static final String PLANTS = "plants";
-
-  private static final String MOBS = "mobs";
-
-  private static final String BLOBS = "blobs";
 
   public void addItemToSpawn(final Item item) {
     if (item != null) {

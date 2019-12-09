@@ -58,20 +58,6 @@ public class Yog extends Mob {
 
   public static class BurningFist extends Mob {
 
-    {
-      name = "burning fist";
-      spriteClass = BurningFistSprite.class;
-
-      mobType = MobType.DEMON;
-
-      HP = HT = 200;
-      defenseSkill = 25;
-
-      EXP = 0;
-
-      state = WANDERING;
-    }
-
     private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
 
     static {
@@ -87,6 +73,20 @@ public class Yog extends Mob {
       IMMUNITIES.add(Sleep.class);
       IMMUNITIES.add(Terror.class);
       IMMUNITIES.add(Burning.class);
+    }
+
+    {
+      name = "burning fist";
+      spriteClass = BurningFistSprite.class;
+
+      mobType = MobType.DEMON;
+
+      HP = HT = 200;
+      defenseSkill = 25;
+
+      EXP = 0;
+
+      state = WANDERING;
     }
 
     public BurningFist() {
@@ -216,20 +216,6 @@ public class Yog extends Mob {
 
     private static final int REGENERATION = 4;
 
-    {
-      name = "rotting fist";
-      spriteClass = RottingFistSprite.class;
-
-      mobType = MobType.DEMON;
-
-      HP = HT = 300;
-      defenseSkill = 25;
-
-      EXP = 0;
-
-      state = WANDERING;
-    }
-
     private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
 
     static {
@@ -246,6 +232,20 @@ public class Yog extends Mob {
       IMMUNITIES.add(Terror.class);
       IMMUNITIES.add(Poison.class);
       IMMUNITIES.add(Vertigo.class);
+    }
+
+    {
+      name = "rotting fist";
+      spriteClass = RottingFistSprite.class;
+
+      mobType = MobType.DEMON;
+
+      HP = HT = 300;
+      defenseSkill = 25;
+
+      EXP = 0;
+
+      state = WANDERING;
     }
 
     public RottingFist() {
@@ -312,18 +312,6 @@ public class Yog extends Mob {
     }
   }
 
-  {
-    name = Dungeon.depth == Statistics.getDeepestFloor(Dungeon.dungeonType) ? "Yog-Dzewa"
-        : "echo of Yog-Dzewa";
-    spriteClass = YogSprite.class;
-
-    HP = HT = 300;
-
-    EXP = 50;
-
-    state = PASSIVE;
-  }
-
   private static final String TXT_DESC =
       "Yog-Dzewa is an Old God, a powerful entity from the realms of chaos. A century ago, the ancient dwarves "
           +
@@ -345,6 +333,18 @@ public class Yog extends Mob {
     IMMUNITIES.add(Burning.class);
     IMMUNITIES.add(ToxicGas.class);
     IMMUNITIES.add(ScrollOfPsionicBlast.class);
+  }
+
+  {
+    name = Dungeon.depth == Statistics.getDeepestFloor(Dungeon.dungeonType) ? "Yog-Dzewa"
+        : "echo of Yog-Dzewa";
+    spriteClass = YogSprite.class;
+
+    HP = HT = 300;
+
+    EXP = 50;
+
+    state = PASSIVE;
   }
 
   public Yog() {

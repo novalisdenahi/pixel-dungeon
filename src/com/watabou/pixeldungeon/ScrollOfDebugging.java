@@ -8,12 +8,12 @@ import com.watabou.pixeldungeon.items.scrolls.ScrollOfEnchantment;
 
 public class ScrollOfDebugging extends Item {
 
+  public static final String AC_READ = "READ";
+
   {
     name = "Scroll of Debugging";
     image = 40;
   }
-
-  public static final String AC_READ = "READ";
 
   @Override
   public ArrayList<String> actions(final Hero hero) {

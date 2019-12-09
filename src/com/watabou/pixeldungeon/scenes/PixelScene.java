@@ -19,8 +19,6 @@ package com.watabou.pixeldungeon.scenes;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import android.opengl.GLES20;
-
 import com.watabou.input.Touchscreen;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.BitmapText.Font;
@@ -35,6 +33,8 @@ import com.watabou.pixeldungeon.Badges;
 import com.watabou.pixeldungeon.PixelDungeon;
 import com.watabou.pixeldungeon.effects.BadgeBanner;
 import com.watabou.utils.BitmapCache;
+
+import android.opengl.GLES20;
 
 public class PixelScene extends Scene {
 

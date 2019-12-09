@@ -45,6 +45,13 @@ public class Goo extends Mob {
 
   private static final float PUMP_UP_DELAY = 2f;
 
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(ToxicGas.class);
+    RESISTANCES.add(Death.class);
+    RESISTANCES.add(ScrollOfPsionicBlast.class);
+  }
   {
     name =
         Dungeon.depth == Statistics.getDeepestFloor(Dungeon.dungeonType) ? "Goo" : "spawn of Goo";
@@ -59,15 +66,8 @@ public class Goo extends Mob {
   }
 
   private boolean pumpedUp = false;
+
   private boolean jumped = false;
-
-  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
-
-  static {
-    RESISTANCES.add(ToxicGas.class);
-    RESISTANCES.add(Death.class);
-    RESISTANCES.add(ScrollOfPsionicBlast.class);
-  }
 
   @Override
   public boolean act() {

@@ -33,6 +33,15 @@ import com.watabou.utils.Random;
 
 public class Elemental extends Mob {
 
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(Burning.class);
+    IMMUNITIES.add(Fire.class);
+    IMMUNITIES.add(WandOfFirebolt.class);
+    IMMUNITIES.add(ScrollOfPsionicBlast.class);
+  }
+
   {
     name = "fire elemental";
     spriteClass = ElementalSprite.class;
@@ -47,15 +56,6 @@ public class Elemental extends Mob {
 
     loot = new PotionOfLiquidFlame();
     lootChance = 0.1f;
-  }
-
-  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-
-  static {
-    IMMUNITIES.add(Burning.class);
-    IMMUNITIES.add(Fire.class);
-    IMMUNITIES.add(WandOfFirebolt.class);
-    IMMUNITIES.add(ScrollOfPsionicBlast.class);
   }
 
   @Override

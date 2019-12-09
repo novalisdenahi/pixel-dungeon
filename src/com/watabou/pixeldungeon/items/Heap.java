@@ -59,6 +59,12 @@ public class Heap implements Bundlable {
 
   private static final int SEEDS_TO_POTION = 3;
 
+  private static final String POS = "pos";
+
+  private static final String TYPE = "type";
+
+  private static final String ITEMS = "items";
+
   public static void burnFX(final int pos) {
     CellEmitter.get(pos).burst(ElmoParticle.FACTORY, 6);
     Sample.INSTANCE.play(Assets.SND_BURNING);
@@ -75,12 +81,6 @@ public class Heap implements Bundlable {
   public ItemSprite sprite;
 
   public LinkedList<Item> items = new LinkedList<Item>();
-
-  private static final String POS = "pos";
-
-  private static final String TYPE = "type";
-
-  private static final String ITEMS = "items";
 
   public void burn() {
 

@@ -46,12 +46,6 @@ public class SpellSprite extends Image {
 
   private static TextureFilm film;
 
-  private Char target;
-
-  private Phase phase;
-  private float duration;
-  private float passed;
-
   private static HashMap<Char, SpellSprite> all = new HashMap<Char, SpellSprite>();
 
   public static void show(final Char ch, final int index) {
@@ -71,6 +65,13 @@ public class SpellSprite extends Image {
     sprite.target = ch;
     all.put(ch, sprite);
   }
+
+  private Char target;
+  private Phase phase;
+
+  private float duration;
+
+  private float passed;
 
   public SpellSprite() {
     super(Assets.SPELL_ICONS);

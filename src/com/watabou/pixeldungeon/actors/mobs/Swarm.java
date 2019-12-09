@@ -37,6 +37,10 @@ import com.watabou.utils.Random;
 
 public class Swarm extends Mob {
 
+  private static final float SPLIT_DELAY = 1f;
+
+  private static final String GENERATION = "generation";
+
   {
     name = "swarm of flies";
     spriteClass = SwarmSprite.class;
@@ -49,11 +53,7 @@ public class Swarm extends Mob {
     flying = true;
   }
 
-  private static final float SPLIT_DELAY = 1f;
-
   int generation = 0;
-
-  private static final String GENERATION = "generation";
 
   @Override
   public int attackSkill(final Char target) {

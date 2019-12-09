@@ -53,6 +53,13 @@ public class King extends Mob {
 
     public static int count = 0;
 
+    private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+    static {
+      IMMUNITIES.add(Death.class);
+      IMMUNITIES.add(Paralysis.class);
+    }
+
     {
       name = "undead dwarf";
       spriteClass = UndeadSprite.class;
@@ -65,13 +72,6 @@ public class King extends Mob {
       EXP = 0;
 
       state = WANDERING;
-    }
-
-    private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-
-    static {
-      IMMUNITIES.add(Death.class);
-      IMMUNITIES.add(Paralysis.class);
     }
 
     @Override
@@ -147,6 +147,24 @@ public class King extends Mob {
 
   private static final int MAX_ARMY_SIZE = 5;
 
+  private static final String PEDESTAL = "pedestal";
+
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(ToxicGas.class);
+    RESISTANCES.add(Death.class);
+    RESISTANCES.add(ScrollOfPsionicBlast.class);
+    RESISTANCES.add(WandOfDisintegration.class);
+  }
+
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(Paralysis.class);
+    IMMUNITIES.add(Vertigo.class);
+  }
+
   {
 
     name = Dungeon.depth == Statistics.getDeepestFloor(Dungeon.dungeonType) ? "King of Dwarves"
@@ -165,24 +183,6 @@ public class King extends Mob {
   }
 
   private boolean nextPedestal = true;
-
-  private static final String PEDESTAL = "pedestal";
-
-  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
-
-  static {
-    RESISTANCES.add(ToxicGas.class);
-    RESISTANCES.add(Death.class);
-    RESISTANCES.add(ScrollOfPsionicBlast.class);
-    RESISTANCES.add(WandOfDisintegration.class);
-  }
-
-  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-
-  static {
-    IMMUNITIES.add(Paralysis.class);
-    IMMUNITIES.add(Vertigo.class);
-  }
 
   @Override
   public boolean attack(final Char enemy) {

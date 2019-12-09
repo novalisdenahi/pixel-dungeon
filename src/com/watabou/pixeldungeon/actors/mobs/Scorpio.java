@@ -35,6 +35,13 @@ import com.watabou.utils.Random;
 
 public class Scorpio extends Mob {
 
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(Leech.class);
+    RESISTANCES.add(Poison.class);
+  }
+
   {
     name = "scorpio";
     spriteClass = ScorpioSprite.class;
@@ -50,13 +57,6 @@ public class Scorpio extends Mob {
 
     loot = new PotionOfHealing();
     lootChance = 0.125f;
-  }
-
-  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
-
-  static {
-    RESISTANCES.add(Leech.class);
-    RESISTANCES.add(Poison.class);
   }
 
   @Override

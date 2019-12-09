@@ -107,17 +107,17 @@ public class Armor extends EquipableItem {
   private static final String TXT_INCOMPATIBLE =
       "Interaction of different types of magic has erased the glyph on this armor!";
 
+  private static final String UNFAMILIRIARITY = "unfamiliarity";
+  private static final String GLYPH = "glyph";
+
   public int tier;
+
   public int STR;
 
   public int DR;
 
   private int hitsToKnow = HITS_TO_KNOW;
-
   public Glyph glyph;
-
-  private static final String UNFAMILIRIARITY = "unfamiliarity";
-  private static final String GLYPH = "glyph";
 
   public Armor(final int tier) {
 

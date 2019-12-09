@@ -33,6 +33,12 @@ public class Brute extends Mob {
 
   private static final String TXT_ENRAGED = "%s becomes enraged!";
 
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(Terror.class);
+  }
+
   {
     name = "gnoll brute";
     spriteClass = BruteSprite.class;
@@ -48,12 +54,6 @@ public class Brute extends Mob {
   }
 
   private boolean enraged = false;
-
-  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-
-  static {
-    IMMUNITIES.add(Terror.class);
-  }
 
   @Override
   public int attackSkill(final Char target) {

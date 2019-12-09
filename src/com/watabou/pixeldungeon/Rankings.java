@@ -17,8 +17,6 @@
  */
 package com.watabou.pixeldungeon;
 
-import hu.denahi.pixeldungeon.holy.quest.DungeonType;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,14 +24,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import android.content.Context;
-
 import com.watabou.noosa.Game;
 import com.watabou.pixeldungeon.actors.hero.HeroClass;
 import com.watabou.pixeldungeon.utils.Utils;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.SystemTime;
+
+import android.content.Context;
+import hu.denahi.pixeldungeon.holy.quest.DungeonType;
 
 public enum Rankings {
 
@@ -90,23 +89,23 @@ public enum Rankings {
   public static final String RANKINGS_FILE_MAGE = "rankings_mage.dat";
 
   public static final String DETAILS_FILE = "game_%d.dat";
-  public ArrayList<Record> records;
-  public int lastRecord;
-  public int totalNumber;
-
-  public int wonNumber;
-
   private static final String RECORDS = "records";
-
   private static final String LATEST = "latest";
   private static final String TOTAL = "total";
+
   private static final String WON = "won";
+
   private static final Comparator<Record> scoreComparator = new Comparator<Rankings.Record>() {
     @Override
     public int compare(final Record lhs, final Record rhs) {
       return (int) Math.signum(rhs.score - lhs.score);
     }
   };
+
+  public ArrayList<Record> records;
+  public int lastRecord;
+  public int totalNumber;
+  public int wonNumber;
 
   public void load(final int dungeonType) {
     // TODO always reload

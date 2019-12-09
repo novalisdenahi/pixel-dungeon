@@ -36,18 +36,19 @@ import com.watabou.utils.Random;
 
 public class CityBossLevel extends Level {
 
-  {
-    color1 = 0x4b6636;
-    color2 = 0xf2f2f2;
-  }
-
   private static final int TOP = 2;
+
   private static final int HALL_WIDTH = 7;
   private static final int HALL_HEIGHT = 15;
   private static final int CHAMBER_HEIGHT = 3;
-
   private static final int LEFT = (WIDTH - HALL_WIDTH) / 2;
+
   private static final int CENTER = LEFT + (HALL_WIDTH / 2);
+  private static final String DOOR = "door";
+
+  private static final String ENTERED = "entered";
+
+  private static final String DROPPED = "droppped";
 
   public static int pedestal(final boolean left) {
     if (left) {
@@ -57,15 +58,15 @@ public class CityBossLevel extends Level {
     }
   }
 
+  {
+    color1 = 0x4b6636;
+    color2 = 0xf2f2f2;
+  }
+
   private int arenaDoor;
+
   private boolean enteredArena = false;
-
   private boolean keyDropped = false;
-
-  private static final String DOOR = "door";
-
-  private static final String ENTERED = "entered";
-  private static final String DROPPED = "droppped";
 
   @Override
   public void addVisuals(final Scene scene) {

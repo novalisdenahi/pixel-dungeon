@@ -41,23 +41,23 @@ import com.watabou.utils.Random;
 
 public class PrisonBossLevel extends RegularLevel {
 
+  private static final String ARENA = "arena";
+
+  private static final String DOOR = "door";
+  private static final String ENTERED = "entered";
+
+  private static final String DROPPED = "droppped";
   {
     color1 = 0x6a723d;
     color2 = 0x88924c;
   }
 
   private Room anteroom;
+
   private int arenaDoor;
 
   private boolean enteredArena = false;
   private boolean keyDropped = false;
-
-  private static final String ARENA = "arena";
-
-  private static final String DOOR = "door";
-
-  private static final String ENTERED = "entered";
-  private static final String DROPPED = "droppped";
 
   @Override
   public void addVisuals(final Scene scene) {

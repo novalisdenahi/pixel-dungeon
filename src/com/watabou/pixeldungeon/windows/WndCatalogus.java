@@ -101,13 +101,13 @@ public class WndCatalogus extends WndTabbed {
   private static final String TXT_SCROLLS = "Scrolls";
 
   private static final String TXT_TITLE = "Catalogus";
+  private static boolean showPotions = true;
+
   private BitmapText txtTitle;
 
   private ScrollPane list;
 
   private ArrayList<ListItem> items = new ArrayList<WndCatalogus.ListItem>();
-
-  private static boolean showPotions = true;
 
   public WndCatalogus() {
 

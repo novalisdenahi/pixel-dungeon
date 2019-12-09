@@ -17,8 +17,6 @@
  */
 package com.watabou.pixeldungeon.sprites;
 
-import android.graphics.Bitmap;
-
 import com.watabou.gltextures.TextureCache;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.MovieClip;
@@ -37,6 +35,8 @@ import com.watabou.pixeldungeon.levels.Terrain;
 import com.watabou.pixeldungeon.scenes.GameScene;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
+
+import android.graphics.Bitmap;
 
 public class ItemSprite extends MovieClip {
 

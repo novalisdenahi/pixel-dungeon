@@ -35,9 +35,6 @@ public class SewerLevel extends RegularLevel {
 
   private static class Sink extends Emitter {
 
-    private int pos;
-    private float rippleDelay = 0;
-
     private static final Emitter.Factory factory = new Factory() {
 
       @Override
@@ -46,6 +43,9 @@ public class SewerLevel extends RegularLevel {
         p.reset(x, y);
       }
     };
+    private int pos;
+
+    private float rippleDelay = 0;
 
     public Sink(final int pos) {
       super();

@@ -24,14 +24,14 @@ import com.watabou.utils.Bundle;
 
 public class Charm extends FlavourBuff {
 
-  public int object = 0;
-
   private static final String OBJECT = "object";
 
   public static float durationFactor(final Char ch) {
     Resistance r = ch.buff(Resistance.class);
     return r != null ? r.durationFactor() : 1;
   }
+
+  public int object = 0;
 
   @Override
   public int icon() {

@@ -36,16 +36,6 @@ import com.watabou.utils.Random;
 
 public class Statue extends Mob {
 
-  {
-    name = "animated statue";
-    spriteClass = StatueSprite.class;
-
-    EXP = 0;
-    state = PASSIVE;
-  }
-
-  private Weapon weapon;
-
   private static final String WEAPON = "weapon";
 
   private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
@@ -59,6 +49,16 @@ public class Statue extends Mob {
     RESISTANCES.add(ScrollOfPsionicBlast.class);
     IMMUNITIES.add(Leech.class);
   }
+
+  {
+    name = "animated statue";
+    spriteClass = StatueSprite.class;
+
+    EXP = 0;
+    state = PASSIVE;
+  }
+
+  private Weapon weapon;
 
   public Statue() {
     super();

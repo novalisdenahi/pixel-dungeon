@@ -42,6 +42,20 @@ public class Eye extends Mob {
 
   private static final String TXT_DEATHGAZE_KILLED = "%s's deathgaze killed you...";
 
+  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  static {
+    RESISTANCES.add(WandOfDisintegration.class);
+    RESISTANCES.add(Death.class);
+    RESISTANCES.add(Leech.class);
+  }
+
+  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
+
+  static {
+    IMMUNITIES.add(Terror.class);
+  }
+
   {
     name = "evil eye";
     spriteClass = EyeSprite.class;
@@ -62,20 +76,6 @@ public class Eye extends Mob {
   }
 
   private int hitCell;
-
-  private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
-
-  static {
-    RESISTANCES.add(WandOfDisintegration.class);
-    RESISTANCES.add(Death.class);
-    RESISTANCES.add(Leech.class);
-  }
-
-  private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
-
-  static {
-    IMMUNITIES.add(Terror.class);
-  }
 
   @Override
   public boolean attack(final Char enemy) {

@@ -25,6 +25,8 @@ public class Terror extends FlavourBuff {
 
   public static final float DURATION = 10f;
 
+  private static final String OBJECT = "object";
+
   public static void recover(final Char target) {
     Terror terror = target.buff(Terror.class);
     if ((terror != null) && (terror.cooldown() < DURATION)) {
@@ -33,8 +35,6 @@ public class Terror extends FlavourBuff {
   }
 
   public int object = 0;
-
-  private static final String OBJECT = "object";
 
   @Override
   public int icon() {
