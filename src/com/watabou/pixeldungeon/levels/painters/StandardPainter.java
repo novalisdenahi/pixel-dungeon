@@ -132,8 +132,8 @@ public class StandardPainter extends Painter {
     } else if (door1.x == door2.x) {
 
       Painter.fill(level, door1.x == room.left ? room.left + 1 : room.right - 1,
-          Math.min(door1.y, door2.y), 1,
-          Math.abs(door1.y - door2.y) + 1, Terrain.EMPTY_SP);
+          Math.min(door1.y, door2.y),
+          1, Math.abs(door1.y - door2.y) + 1, Terrain.EMPTY_SP);
 
     } else if (door1.y == door2.y) {
 
@@ -204,9 +204,11 @@ public class StandardPainter extends Painter {
 
     int shift = Random.Int(2);
     for (int i = 0; i < nGraves; i++) {
-      int pos = w > h
-          ? room.left + 1 + shift + (i * 2) + ((room.top + 2 + Random.Int(h - 2)) * Level.WIDTH)
-          : (room.left + 2 + Random.Int(w - 2)) + ((room.top + 1 + shift + (i * 2)) * Level.WIDTH);
+      int pos =
+          w > h
+              ? room.left + 1 + shift + (i * 2) + ((room.top + 2 + Random.Int(h - 2)) * Level.WIDTH)
+              : (room.left + 2 + Random.Int(w - 2))
+                  + ((room.top + 1 + shift + (i * 2)) * Level.WIDTH);
       level.drop(i == index ? Generator.random() : new Gold(), pos).type = Heap.Type.TOMB;
     }
   }

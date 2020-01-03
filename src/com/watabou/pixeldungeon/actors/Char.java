@@ -76,7 +76,6 @@ public abstract class Char extends Actor {
   private static final String POS = "pos";
 
   private static final String TAG_HP = "HP";
-
   private static final String TAG_HT = "HT";
 
   private static final String BUFFS = "buffs";

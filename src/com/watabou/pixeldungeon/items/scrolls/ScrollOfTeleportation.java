@@ -80,7 +80,7 @@ public class ScrollOfTeleportation extends Scroll {
     ScrollOfTeleportation.teleportHero(curUser);
     setKnown();
 
-    curUser.spendAndNext(TIME_TO_READ);
+    readAnimation();
   }
 
   @Override

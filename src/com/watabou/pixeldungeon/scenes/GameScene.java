@@ -90,6 +90,7 @@ public class GameScene extends PixelScene {
 
   static GameScene scene;
 
+  private static CellSelector cellSelector;
   private static final CellSelector.Listener defaultCellListener = new CellSelector.Listener() {
     @Override
     public void onSelect(final Integer cell) {
@@ -103,8 +104,6 @@ public class GameScene extends PixelScene {
       return null;
     }
   };
-
-  private static CellSelector cellSelector;
 
   public static void add(final Blob gas) {
     Actor.add(gas);
@@ -370,7 +369,6 @@ public class GameScene extends PixelScene {
 
   @Override
   public void create() {
-
     Music.INSTANCE.play(Assets.TUNE, true);
     Music.INSTANCE.volume(1f);
 
@@ -484,32 +482,6 @@ public class GameScene extends PixelScene {
     log.setRect(0, toolbar.top(), attack.left(), 0);
     add(log);
 
-    if (Dungeon.depth < Statistics.getDeepestFloor(Dungeon.dungeonType)) {
-      GLog.i(TXT_WELCOME_BACK, Dungeon.depth);
-    } else {
-      GLog.i(TXT_WELCOME, Dungeon.depth);
-      Sample.INSTANCE.play(Assets.SND_DESCEND);
-    }
-    switch (Dungeon.level.feeling) {
-      case CHASM:
-        GLog.w(TXT_CHASM);
-        break;
-      case WATER:
-        GLog.w(TXT_WATER);
-        break;
-      case GRASS:
-        GLog.w(TXT_GRASS);
-        break;
-      default:
-    }
-    if ((Dungeon.level instanceof RegularLevel) &&
-        (((RegularLevel) Dungeon.level).secretDoors > Random.IntRange(3, 4))) {
-      GLog.w(TXT_SECRETS);
-    }
-    if (Dungeon.nightMode && !Dungeon.bossLevel()) {
-      GLog.w(TXT_NIGHT_MODE);
-    }
-
     busy = new BusyIndicator();
     busy.camera = uiCamera;
     busy.x = 1;
@@ -568,7 +540,38 @@ public class GameScene extends PixelScene {
     }
 
     Camera.main.target = hero;
-    fadeIn();
+
+    if (InterlevelScene.mode != InterlevelScene.Mode.NONE) {
+      if (Dungeon.depth < Statistics.getDeepestFloor(Dungeon.dungeonType)) {
+        GLog.h(TXT_WELCOME_BACK, Dungeon.depth);
+      } else {
+        GLog.h(TXT_WELCOME, Dungeon.depth);
+        Sample.INSTANCE.play(Assets.SND_DESCEND);
+      }
+      switch (Dungeon.level.feeling) {
+        case CHASM:
+          GLog.w(TXT_CHASM);
+          break;
+        case WATER:
+          GLog.w(TXT_WATER);
+          break;
+        case GRASS:
+          GLog.w(TXT_GRASS);
+          break;
+        default:
+      }
+      if ((Dungeon.level instanceof RegularLevel) &&
+          (((RegularLevel) Dungeon.level).secretDoors > Random.IntRange(3, 4))) {
+        GLog.w(TXT_SECRETS);
+      }
+      if (Dungeon.nightMode && !Dungeon.bossLevel()) {
+        GLog.w(TXT_NIGHT_MODE);
+      }
+
+      InterlevelScene.mode = InterlevelScene.Mode.NONE;
+
+      fadeIn();
+    }
   }
 
   @Override

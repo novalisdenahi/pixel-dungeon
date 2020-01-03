@@ -73,11 +73,9 @@ public class Painter {
   }
 
   public static void fill(final Level level, final Rect rect, final int l, final int t, final int r,
-      final int b,
-      final int value) {
+      final int b, final int value) {
     Painter.fill(level, rect.left + l, rect.top + t, (rect.width() + 1) - (l + r),
-        (rect.height() + 1) - (t + b),
-        value);
+        (rect.height() + 1) - (t + b), value);
   }
 
   public static void set(final Level level, final int cell, final int value) {

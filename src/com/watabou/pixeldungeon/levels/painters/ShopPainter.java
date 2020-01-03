@@ -222,6 +222,7 @@ public class ShopPainter extends Painter {
       return (room.right - xy.x - 1) + pasWidth + pasHeight;
 
     } else /* if (xy.x == room.left) */ {
+
       if (xy.y == (room.top + 1)) {
         return 0;
       } else {

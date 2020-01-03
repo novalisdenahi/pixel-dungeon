@@ -26,6 +26,7 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.BitmaskEmitter;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.ui.Button;
 import com.watabou.pixeldungeon.Assets;
@@ -162,7 +163,9 @@ public class StartScene extends PixelScene {
       name = PixelScene.createText(9);
       add(name);
 
-      emitter = new Emitter();
+      // emitter = new Emitter();
+      emitter = new BitmaskEmitter(avatar);
+
       add(emitter);
     }
 
@@ -189,7 +192,7 @@ public class StartScene extends PixelScene {
       name.x = PixelScene.align(x + ((width - name.width()) / 2));
       name.y = avatar.y + avatar.height() + SCALE;
 
-      emitter.pos(avatar.x, avatar.y, avatar.width(), avatar.height());
+      // emitter.pos(avatar.x, avatar.y, avatar.width(), avatar.height());
     }
 
     @Override

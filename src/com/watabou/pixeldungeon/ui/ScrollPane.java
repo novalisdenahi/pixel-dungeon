@@ -19,6 +19,7 @@ package com.watabou.pixeldungeon.ui;
 
 import com.watabou.input.Touchscreen.Touch;
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.TouchArea;
 import com.watabou.noosa.ui.Component;
 import com.watabou.pixeldungeon.scenes.PixelScene;
@@ -45,6 +46,7 @@ public class ScrollPane extends Component {
       if (dragging) {
 
         dragging = false;
+        thumb.am = THUMB_ALPHA;
 
       } else {
 
@@ -74,20 +76,27 @@ public class ScrollPane extends Component {
           c.scroll.y = 0;
         }
 
+        thumb.y = y + ((height * c.scroll.y) / content.height());
+
         lastPos.set(t.current);
 
       } else if (PointF.distance(t.current, t.start) > dragThreshold) {
 
         dragging = true;
         lastPos.set(t.current);
+        thumb.am = 1;
 
       }
     }
   }
 
-  protected TouchController controller;
+  protected static final int THUMB_COLOR = 0xFF7b8073;
 
+  protected static final float THUMB_ALPHA = 0.5f;
+  protected TouchController controller;
   protected Component content;
+
+  protected ColorBlock thumb;
   protected float minX;
   protected float minY;
   protected float maxX;
@@ -115,6 +124,10 @@ public class ScrollPane extends Component {
   protected void createChildren() {
     controller = new TouchController();
     add(controller);
+
+    thumb = new ColorBlock(1, 1, THUMB_COLOR);
+    thumb.am = THUMB_ALPHA;
+    add(thumb);
   }
 
   @Override
@@ -137,6 +150,13 @@ public class ScrollPane extends Component {
     cs.x = p.x;
     cs.y = p.y;
     cs.resize((int) width, (int) height);
+
+    thumb.visible = height < content.height();
+    if (thumb.visible) {
+      thumb.scale.set(2, (height * height) / content.height());
+      thumb.x = right() - thumb.width();
+      thumb.y = y;
+    }
   }
 
   public void onClick(final float x, final float y) {

@@ -143,7 +143,6 @@ public class PrisonBossLevel extends RegularLevel {
 
   @Override
   protected void createItems() {
-
     int keyPos = anteroom.random();
     while (!passable[keyPos]) {
       keyPos = anteroom.random();

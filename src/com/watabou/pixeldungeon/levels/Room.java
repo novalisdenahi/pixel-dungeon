@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import com.watabou.pixeldungeon.PixelDungeon;
+import com.watabou.pixeldungeon.levels.painters.AltarPainter;
 import com.watabou.pixeldungeon.levels.painters.ArmoryPainter;
 import com.watabou.pixeldungeon.levels.painters.BlacksmithPainter;
 import com.watabou.pixeldungeon.levels.painters.BossExitPainter;
@@ -90,7 +91,8 @@ public class Room extends Rect implements Graph.Node, Bundlable {
                                     GardenPainter.class), CRYPT(CryptPainter.class), STATUE(
                                         StatuePainter.class), POOL(PoolPainter.class), RAT_KING(
                                             RatKingPainter.class), WEAK_FLOOR(
-                                                WeakFloorPainter.class), PIT(PitPainter.class);
+                                                WeakFloorPainter.class), PIT(
+                                                    PitPainter.class), ALTAR(AltarPainter.class);
 
     private Method paint;
 
@@ -115,7 +117,8 @@ public class Room extends Rect implements Graph.Node, Bundlable {
 
       Type.ARMORY, Type.WEAK_FLOOR, Type.MAGIC_WELL, Type.CRYPT, Type.POOL, Type.GARDEN,
       Type.LIBRARY,
-      Type.TREASURY, Type.TRAPS, Type.STORAGE, Type.STATUE, Type.LABORATORY, Type.VAULT));
+      Type.TREASURY, Type.TRAPS, Type.STORAGE, Type.STATUE, Type.LABORATORY, Type.VAULT,
+      Type.ALTAR));
 
   private static final String ROOMS = "rooms";
 

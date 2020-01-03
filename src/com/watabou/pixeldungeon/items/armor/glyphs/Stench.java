@@ -47,7 +47,7 @@ public class Stench extends Glyph {
   @Override
   public int proc(final Armor armor, final Char attacker, final Char defender, final int damage) {
 
-    int level = Math.max(0, armor.level);
+    int level = Math.max(0, armor.effectiveLevel());
 
     if (Level.adjacent(attacker.pos, defender.pos) && (Random.Int(level + 5) >= 4)) {
 

@@ -39,12 +39,11 @@ public class Bounce extends Glyph {
   @Override
   public int proc(final Armor armor, final Char attacker, final Char defender, final int damage) {
 
-    int level = Math.max(0, armor.level);
+    int level = Math.max(0, armor.effectiveLevel());
 
     if (Level.adjacent(attacker.pos, defender.pos) && (Random.Int(level + 5) >= 4)) {
 
-      for (int i = 0; i < Level.NEIGHBOURS8.length; i++) {
-        int ofs = Level.NEIGHBOURS8[i];
+      for (int ofs : Level.NEIGHBOURS8) {
         if ((attacker.pos - defender.pos) == ofs) {
           int newPos = attacker.pos + ofs;
           if ((Level.passable[newPos] || Level.avoid[newPos]) && (Actor.findChar(newPos) == null)) {

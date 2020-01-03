@@ -63,9 +63,11 @@ public class BuffIndicator extends Component {
   public static final int MARK = 27;
   public static final int DEFERRED = 28;
   public static final int VERTIGO = 29;
-  public static final int BLESS = 30;
-  public static final int FEAR = 31;
-  public static final int DRUNK = 32;
+  public static final int RAGE = 30;
+  public static final int SACRIFICE = 31;
+  public static final int BLESS = 33;
+  public static final int FEAR = 34;
+  public static final int DRUNK = 35;
 
   public static final int SIZE = 7;
 

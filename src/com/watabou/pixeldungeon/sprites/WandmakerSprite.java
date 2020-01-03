@@ -21,6 +21,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import com.watabou.noosa.Game;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.actors.Char;
 import com.watabou.pixeldungeon.effects.Halo;
@@ -106,6 +107,10 @@ public class WandmakerSprite extends MobSprite {
       shield.putOut();
     }
     emitter().start(ElmoParticle.FACTORY, 0.03f, 60);
+
+    if (visible) {
+      Sample.INSTANCE.play(Assets.SND_BURNING);
+    }
   }
 
   @Override

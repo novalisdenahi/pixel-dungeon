@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.Badges;
 import com.watabou.pixeldungeon.Dungeon;
@@ -52,12 +53,14 @@ import com.watabou.utils.Random;
 public class Heap implements Bundlable {
 
   public enum Type {
-    HEAP, FOR_SALE, CHEST, LOCKED_CHEST, CRYSTAL_CHEST, TOMB, SKELETON, MIMIC
+    HEAP, FOR_SALE, CHEST, LOCKED_CHEST, CRYSTAL_CHEST, TOMB, SKELETON, MIMIC, HIDDEN
   }
 
   private static final String TXT_MIMIC = "This is a mimic!";
 
   private static final int SEEDS_TO_POTION = 3;
+
+  private static final float FADE_TIME = 0.6f;
 
   private static final String POS = "pos";
 
@@ -219,6 +222,8 @@ public class Heap implements Bundlable {
         return ItemSpriteSheet.TOMB;
       case SKELETON:
         return ItemSpriteSheet.BONES;
+      case HIDDEN:
+        return ItemSpriteSheet.HIDDEN;
       default:
         return 0;
     }
@@ -253,6 +258,10 @@ public class Heap implements Bundlable {
             break;
           }
         }
+        break;
+      case HIDDEN:
+        sprite.alpha(0);
+        sprite.parent.add(new AlphaTweener(sprite, 1, FADE_TIME));
         break;
       default:
     }

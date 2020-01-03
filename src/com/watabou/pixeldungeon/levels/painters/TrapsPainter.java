@@ -94,7 +94,7 @@ public class TrapsPainter extends Painter {
       Item another = Generator.random(Random.oneOf(
           Generator.Category.WEAPON,
           Generator.Category.ARMOR));
-      if (another.level > prize.level) {
+      if (another.level() > prize.level()) {
         prize = another;
       }
     }

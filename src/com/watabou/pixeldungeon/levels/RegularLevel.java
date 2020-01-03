@@ -83,11 +83,6 @@ public abstract class RegularLevel extends Level {
 
             r.type = Type.LABORATORY;
 
-          } else if ((Dungeon.depth >= Dungeon.transmutation)
-              && specials.contains(Type.MAGIC_WELL)) {
-
-            r.type = Type.MAGIC_WELL;
-
           } else {
 
             int n = specials.size();
@@ -202,7 +197,6 @@ public abstract class RegularLevel extends Level {
 
     int nConnected = (int) (rooms.size() * Random.Float(0.5f, 0.7f));
     while (connected.size() < nConnected) {
-
       Room cr = Random.element(connected);
       Room or = Random.element(cr.neigbours);
       if (!connected.contains(or)) {
@@ -434,6 +428,7 @@ public abstract class RegularLevel extends Level {
           break;
         case HIDDEN:
           map[door] = Terrain.SECRET_DOOR;
+          secretDoors++;
           break;
         case BARRICADE:
           map[door] = Random.Int(3) == 0 ? Terrain.BOOKSHELF : Terrain.BARRICADE;
@@ -663,8 +658,8 @@ public abstract class RegularLevel extends Level {
       split(new Rect(rect.left, vh, rect.right, rect.bottom));
 
     } else if (((Math.random() <= ((minRoomSize * minRoomSize) / rect.square()))
-        && (w <= maxRoomSize) && (h <= maxRoomSize))
-        || (w < minRoomSize) || (h < minRoomSize)) {
+        && (w <= maxRoomSize)
+        && (h <= maxRoomSize)) || (w < minRoomSize) || (h < minRoomSize)) {
 
       rooms.add((Room) new Room().set(rect));
 

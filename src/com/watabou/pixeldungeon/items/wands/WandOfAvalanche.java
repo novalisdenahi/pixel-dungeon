@@ -26,11 +26,13 @@ import com.watabou.pixeldungeon.actors.Actor;
 import com.watabou.pixeldungeon.actors.Char;
 import com.watabou.pixeldungeon.actors.buffs.Buff;
 import com.watabou.pixeldungeon.actors.buffs.Paralysis;
+import com.watabou.pixeldungeon.actors.mobs.Mob;
 import com.watabou.pixeldungeon.effects.CellEmitter;
 import com.watabou.pixeldungeon.effects.MagicMissile;
 import com.watabou.pixeldungeon.effects.Speck;
 import com.watabou.pixeldungeon.levels.Level;
 import com.watabou.pixeldungeon.mechanics.Ballistica;
+import com.watabou.pixeldungeon.scenes.GameScene;
 import com.watabou.pixeldungeon.utils.BArray;
 import com.watabou.pixeldungeon.utils.GLog;
 import com.watabou.pixeldungeon.utils.Utils;
@@ -62,13 +64,14 @@ public class WandOfAvalanche extends Wand {
 
     Sample.INSTANCE.play(Assets.SND_ROCKS);
 
-    int level = level();
+    int level = power();
 
     Ballistica.distance = Math.min(Ballistica.distance, 8 + level);
 
     int size = 1 + (level / 3);
     PathFinder.buildDistanceMap(cell, BArray.not(Level.solid, null), size);
 
+    int shake = 0;
     for (int i = 0; i < Level.LENGTH; i++) {
 
       int d = PathFinder.distance[i];
@@ -79,7 +82,6 @@ public class WandOfAvalanche extends Wand {
         if (ch != null) {
 
           ch.sprite.flash();
-
           ch.damage(Random.Int(2, 6 + ((size - d) * 2)), this);
 
           if (ch.isAlive() && (Random.Int(2 + d) == 0)) {
@@ -87,9 +89,28 @@ public class WandOfAvalanche extends Wand {
           }
         }
 
-        CellEmitter.get(i).start(Speck.factory(Speck.ROCK), 0.07f, 3 + (size - d));
-        Camera.main.shake(3, 0.07f * (3 + (size - d)));
+        if ((ch != null) && ch.isAlive()) {
+          if (ch instanceof Mob) {
+            Dungeon.level.mobPress((Mob) ch);
+          } else {
+            Dungeon.level.press(i, ch);
+          }
+        } else {
+          Dungeon.level.press(i, null);
+        }
+
+        if (Dungeon.visible[i]) {
+          CellEmitter.get(i).start(Speck.factory(Speck.ROCK), 0.07f, 3 + (size - d));
+          if (Level.water[i]) {
+            GameScene.ripple(i);
+          }
+          if (shake < (size - d)) {
+            shake = size - d;
+          }
+        }
       }
+
+      Camera.main.shake(3, 0.07f * (3 + shake));
     }
 
     if (!curUser.isAlive()) {

@@ -167,26 +167,23 @@ public class WndBag extends WndTabbed {
         if (item.name() == null) {
           enable(false);
         } else {
-          enable(((mode == Mode.QUICKSLOT) && (item.defaultAction != null))
-              ||
-              ((mode == Mode.FOR_SALE) && (item.price() > 0)
-                  && (!item.isEquipped(Dungeon.hero) || !item.cursed))
-              ||
-              ((mode == Mode.UPGRADEABLE) && item.isUpgradable())
-              ||
-              ((mode == Mode.UNIDENTIFED) && !item.isIdentified())
-              ||
-              ((mode == Mode.WEAPON)
-                  && ((item instanceof MeleeWeapon) || (item instanceof Boomerang)))
-              ||
-              ((mode == Mode.ARMOR) && (item instanceof Armor))
-              ||
-              ((mode == Mode.ENCHANTABLE) && ((item instanceof MeleeWeapon)
-                  || (item instanceof Boomerang) || (item instanceof Armor)))
-              ||
-              ((mode == Mode.WAND) && (item instanceof Wand)) ||
-              ((mode == Mode.SEED) && (item instanceof Seed)) ||
-              (mode == Mode.ALL));
+          enable(
+              ((mode == Mode.QUICKSLOT) && (item.defaultAction != null)) ||
+                  ((mode == Mode.FOR_SALE) && (item.price() > 0)
+                      && (!item.isEquipped(Dungeon.hero) || !item.cursed))
+                  ||
+                  ((mode == Mode.UPGRADEABLE) && item.isUpgradable()) ||
+                  ((mode == Mode.UNIDENTIFED) && !item.isIdentified()) ||
+                  ((mode == Mode.WEAPON)
+                      && ((item instanceof MeleeWeapon) || (item instanceof Boomerang)))
+                  ||
+                  ((mode == Mode.ARMOR) && (item instanceof Armor)) ||
+                  ((mode == Mode.ENCHANTABLE) && ((item instanceof MeleeWeapon)
+                      || (item instanceof Boomerang) || (item instanceof Armor)))
+                  ||
+                  ((mode == Mode.WAND) && (item instanceof Wand)) ||
+                  ((mode == Mode.SEED) && (item instanceof Seed)) ||
+                  (mode == Mode.ALL));
         }
       } else {
         bg.color(NORMAL);
@@ -283,7 +280,6 @@ public class WndBag extends WndTabbed {
   protected static final int TAB_WIDTH = 25;
 
   protected static final int TITLE_HEIGHT = 12;
-
   private static Mode lastMode;
 
   private static Bag lastBag;

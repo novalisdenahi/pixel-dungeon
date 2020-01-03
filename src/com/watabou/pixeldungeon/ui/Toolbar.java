@@ -194,7 +194,6 @@ public class Toolbar extends Component {
   }
 
   private static Toolbar instance;
-
   private static CellSelector.Listener informer = new CellSelector.Listener() {
     @Override
     public void onSelect(final Integer cell) {
@@ -226,7 +225,7 @@ public class Toolbar extends Component {
       }
 
       Heap heap = Dungeon.level.heaps.get(cell);
-      if (heap != null) {
+      if ((heap != null) && (heap.type != Heap.Type.HIDDEN)) {
         if ((heap.type == Heap.Type.FOR_SALE) && (heap.size() == 1) && (heap.peek().price() > 0)) {
           GameScene.show(new WndTradeItem(heap, false));
         } else {
@@ -288,7 +287,7 @@ public class Toolbar extends Component {
   @Override
   protected void createChildren() {
 
-    add(btnWait = new Tool(0, 7, 20, 24) {
+    add(btnWait = new Tool(0, 7, 20, 25) {
       @Override
       protected void onClick() {
         Dungeon.hero.rest(false);
@@ -301,21 +300,21 @@ public class Toolbar extends Component {
       };
     });
 
-    add(btnSearch = new Tool(20, 7, 20, 24) {
+    add(btnSearch = new Tool(20, 7, 20, 25) {
       @Override
       protected void onClick() {
         Dungeon.hero.search(true);
       }
     });
 
-    add(btnInfo = new Tool(40, 7, 21, 24) {
+    add(btnInfo = new Tool(40, 7, 21, 25) {
       @Override
       protected void onClick() {
         GameScene.selectCell(informer);
       }
     });
 
-    add(btnInventory = new Tool(60, 7, 23, 24) {
+    add(btnInventory = new Tool(60, 7, 23, 25) {
       private GoldIndicator gold;
 
       @Override
@@ -343,8 +342,8 @@ public class Toolbar extends Component {
       };
     });
 
-    add(btnQuick1 = new QuickslotTool(83, 7, 22, 24, true));
-    add(btnQuick2 = new QuickslotTool(83, 7, 22, 24, false));
+    add(btnQuick1 = new QuickslotTool(83, 7, 22, 25, true));
+    add(btnQuick2 = new QuickslotTool(83, 7, 22, 25, false));
     btnQuick2.visible = (QuickSlot.secondaryValue != null);
 
     add(pickedUp = new PickedUpItem());
@@ -373,6 +372,7 @@ public class Toolbar extends Component {
   @Override
   public void update() {
     super.update();
+
     if (lastEnabled != Dungeon.hero.ready) {
       lastEnabled = Dungeon.hero.ready;
 
@@ -382,6 +382,7 @@ public class Toolbar extends Component {
         }
       }
     }
+
     if (!Dungeon.hero.isAlive()) {
       btnInventory.enable(true);
     }

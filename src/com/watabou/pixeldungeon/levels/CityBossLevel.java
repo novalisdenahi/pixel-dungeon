@@ -47,7 +47,6 @@ public class CityBossLevel extends Level {
   private static final String DOOR = "door";
 
   private static final String ENTERED = "entered";
-
   private static final String DROPPED = "droppped";
 
   public static int pedestal(final boolean left) {
@@ -105,7 +104,7 @@ public class CityBossLevel extends Level {
         Terrain.BOOKSHELF);
 
     entrance = ((TOP + HALL_HEIGHT + 2 + Random.Int(CHAMBER_HEIGHT - 1)) * WIDTH) + LEFT
-        + (/* 1 + */Random.Int(HALL_WIDTH - 2));
+        + (/* 1 + */ Random.Int(HALL_WIDTH - 2));
     map[entrance] = Terrain.ENTRANCE;
 
     return true;

@@ -254,6 +254,7 @@ public class SurfaceScene extends PixelScene {
   private static final int FRAME_MARGIN_X = 4;
 
   private static final int BUTTON_HEIGHT = 20;
+
   private static final int SKY_WIDTH = 80;
 
   private static final int SKY_HEIGHT = 112;
@@ -312,8 +313,9 @@ public class SurfaceScene extends PixelScene {
 
     float range = (SKY_HEIGHT * 2) / 3;
     for (int i = 0; i < NCLOUDS; i++) {
-      Cloud cloud = new Cloud(
-          ((NCLOUDS - 1 - i) * (range / NCLOUDS)) + Random.Float(range / NCLOUDS), dayTime);
+      Cloud cloud =
+          new Cloud(((NCLOUDS - 1 - i) * (range / NCLOUDS)) + Random.Float(range / NCLOUDS),
+              dayTime);
       window.add(cloud);
     }
 

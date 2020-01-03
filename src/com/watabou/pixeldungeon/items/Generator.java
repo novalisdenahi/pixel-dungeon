@@ -21,7 +21,6 @@ import java.util.HashMap;
 
 import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.actors.hero.Hero;
-import com.watabou.pixeldungeon.actors.mobs.npcs.Wandmaker.Rotberry;
 import com.watabou.pixeldungeon.items.armor.Armor;
 import com.watabou.pixeldungeon.items.armor.ClothArmor;
 import com.watabou.pixeldungeon.items.armor.LeatherArmor;
@@ -81,9 +80,9 @@ import com.watabou.pixeldungeon.items.wands.WandOfFlock;
 import com.watabou.pixeldungeon.items.wands.WandOfLightning;
 import com.watabou.pixeldungeon.items.wands.WandOfMagicMissile;
 import com.watabou.pixeldungeon.items.wands.WandOfPoison;
+import com.watabou.pixeldungeon.items.wands.WandOfReach;
 import com.watabou.pixeldungeon.items.wands.WandOfRegrowth;
 import com.watabou.pixeldungeon.items.wands.WandOfSlowness;
-import com.watabou.pixeldungeon.items.wands.WandOfTelekinesis;
 import com.watabou.pixeldungeon.items.wands.WandOfTeleportation;
 import com.watabou.pixeldungeon.items.weapon.Weapon;
 import com.watabou.pixeldungeon.items.weapon.melee.BattleAxe;
@@ -113,6 +112,7 @@ import com.watabou.pixeldungeon.plants.Fadeleaf;
 import com.watabou.pixeldungeon.plants.Firebloom;
 import com.watabou.pixeldungeon.plants.Icecap;
 import com.watabou.pixeldungeon.plants.Plant;
+import com.watabou.pixeldungeon.plants.Rotberry;
 import com.watabou.pixeldungeon.plants.Sorrowmoss;
 import com.watabou.pixeldungeon.plants.Sungrass;
 import com.watabou.utils.Random;
@@ -194,7 +194,7 @@ public class Generator {
         WandOfBlink.class,
         WandOfLightning.class,
         WandOfAmok.class,
-        WandOfTelekinesis.class,
+        WandOfReach.class,
         WandOfFlock.class,
         WandOfMagicMissile.class,
         WandOfDisintegration.class,

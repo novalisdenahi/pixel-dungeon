@@ -26,7 +26,6 @@ import com.watabou.pixeldungeon.effects.BlobEmitter;
 import com.watabou.pixeldungeon.effects.particles.FlameParticle;
 import com.watabou.pixeldungeon.items.Heap;
 import com.watabou.pixeldungeon.levels.Level;
-import com.watabou.pixeldungeon.levels.Terrain;
 import com.watabou.pixeldungeon.scenes.GameScene;
 
 public class Fire extends Blob {
@@ -65,7 +64,7 @@ public class Fire extends Blob {
         if ((fire <= 0) && flamable[pos]) {
 
           int oldTile = Dungeon.level.map[pos];
-          Level.set(pos, Terrain.EMBERS);
+          Dungeon.level.destroy(pos);
 
           observe = true;
           GameScene.updateMap(pos);
@@ -76,9 +75,8 @@ public class Fire extends Blob {
 
       } else {
 
-        if (flamable[pos]
-            && ((cur[pos - 1] > 0) || (cur[pos + 1] > 0) || (cur[pos - WIDTH] > 0)
-                || (cur[pos + WIDTH] > 0))) {
+        if (flamable[pos] && ((cur[pos - 1] > 0) || (cur[pos + 1] > 0) || (cur[pos - WIDTH] > 0)
+            || (cur[pos + WIDTH] > 0))) {
           fire = 4;
           burn(pos);
         } else {

@@ -37,9 +37,6 @@ public class IncendiaryDart extends MissileWeapon {
     image = ItemSpriteSheet.INCENDIARY_DART;
 
     STR = 12;
-
-    MIN = 1;
-    MAX = 2;
   }
 
   public IncendiaryDart() {
@@ -55,6 +52,16 @@ public class IncendiaryDart extends MissileWeapon {
   public String desc() {
     return "The spike on each of these darts is designed to pin it to its target " +
         "while the unstable compounds strapped to its length burst into brilliant flames.";
+  }
+
+  @Override
+  public int max() {
+    return 2;
+  }
+
+  @Override
+  public int min() {
+    return 1;
   }
 
   @Override

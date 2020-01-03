@@ -31,7 +31,7 @@ import com.watabou.utils.Random;
 
 public class Shock extends Weapon.Enchantment {
 
-  private static final String TXT_SHOCKING = "Shocking %s";
+  private static final String TXT_SHOCKING = "shocking %s";
 
   private ArrayList<Char> affected = new ArrayList<Char>();
 
@@ -55,8 +55,8 @@ public class Shock extends Weapon.Enchantment {
     points[nPoints++] = ch.pos;
 
     HashSet<Char> ns = new HashSet<Char>();
-    for (int i = 0; i < Level.NEIGHBOURS8.length; i++) {
-      Char n = Actor.findChar(ch.pos + Level.NEIGHBOURS8[i]);
+    for (int element : Level.NEIGHBOURS8) {
+      Char n = Actor.findChar(ch.pos + element);
       if ((n != null) && !affected.contains(n)) {
         ns.add(n);
       }
@@ -78,7 +78,7 @@ public class Shock extends Weapon.Enchantment {
     // lvl 0 - 25%
     // lvl 1 - 40%
     // lvl 2 - 50%
-    int level = Math.max(0, weapon.level);
+    int level = Math.max(0, weapon.effectiveLevel());
 
     if (Random.Int(level + 4) >= 3) {
 

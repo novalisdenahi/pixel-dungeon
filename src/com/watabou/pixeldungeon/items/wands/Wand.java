@@ -74,7 +74,7 @@ public abstract class Wand extends KindOfWeapon {
 
     protected void delay() {
       float time2charge = ((Hero) target).heroClass == HeroClass.MAGE
-          ? TIME_TO_CHARGE / (float) Math.sqrt(1 + level)
+          ? TIME_TO_CHARGE / (float) Math.sqrt(1 + effectiveLevel())
           : TIME_TO_CHARGE;
       spend(time2charge);
     }
@@ -96,7 +96,6 @@ public abstract class Wand extends KindOfWeapon {
   private static final String TXT_IDENTIFY = "You are now familiar enough with your %s.";
 
   private static final float TIME_TO_ZAP = 1f;
-
   private static final Class<?>[] wands = {
       WandOfTeleportation.class,
       WandOfSlowness.class,
@@ -106,7 +105,7 @@ public abstract class Wand extends KindOfWeapon {
       WandOfBlink.class,
       WandOfLightning.class,
       WandOfAmok.class,
-      WandOfTelekinesis.class,
+      WandOfReach.class,
       WandOfFlock.class,
       WandOfDisintegration.class,
       WandOfAvalanche.class
@@ -230,8 +229,6 @@ public abstract class Wand extends KindOfWeapon {
   public Wand() {
     super();
 
-    calculateDamage();
-
     try {
       image = handler.image(this);
       wood = handler.label(this);
@@ -256,12 +253,6 @@ public abstract class Wand extends KindOfWeapon {
   @Override
   public void activate(final Hero hero) {
     charge(hero);
-  }
-
-  private void calculateDamage() {
-    int tier = 1 + (level / 3);
-    MIN = tier;
-    MAX = ((((tier * tier) - tier) + 10) / 2) + level;
   }
 
   public void charge(final Char owner) {
@@ -336,7 +327,8 @@ public abstract class Wand extends KindOfWeapon {
     if (Dungeon.hero.heroClass == HeroClass.MAGE) {
       info.append("\n\n");
       if (levelKnown) {
-        info.append(String.format(TXT_DAMAGE, MIN + ((MAX - MIN) / 2)));
+        int min = min();
+        info.append(String.format(TXT_DAMAGE, min + ((max() - min) / 2)));
       } else {
         info.append(String.format(TXT_WEAPON));
       }
@@ -357,18 +349,22 @@ public abstract class Wand extends KindOfWeapon {
     return handler.isKnown(this);
   }
 
-  public int level() {
-    if (charger != null) {
-      Power power = charger.target.buff(Power.class);
-      return power == null ? level : Math.max(level + power.level, 0);
-    } else {
-      return level;
-    }
+  @Override
+  public int max() {
+    int level = effectiveLevel();
+    int tier = 1 + (level / 3);
+    return ((((tier * tier) - tier) + 10) / 2) + level;
   }
 
   @Override
   public int maxDurability(final int lvl) {
-    return 5 * (lvl < 16 ? 16 - lvl : 1);
+    return 6 * (lvl < 16 ? 16 - lvl : 1);
+  }
+
+  @Override
+  public int min() {
+    int tier = 1 + (effectiveLevel() / 3);
+    return tier;
   }
 
   @Override
@@ -383,23 +379,19 @@ public abstract class Wand extends KindOfWeapon {
 
   protected abstract void onZap(int cell);
 
+  public int power() {
+    int eLevel = effectiveLevel();
+    if (charger != null) {
+      Power power = charger.target.buff(Power.class);
+      return power == null ? eLevel : Math.max(eLevel + power.level, 0);
+    } else {
+      return eLevel;
+    }
+  }
+
   @Override
   public int price() {
-    int price = 50;
-    if (cursed && cursedKnown) {
-      price /= 2;
-    }
-    if (levelKnown) {
-      if (level > 0) {
-        price *= (level + 1);
-      } else if (level < 0) {
-        price /= (1 - level);
-      }
-    }
-    if (price < 1) {
-      price = 1;
-    }
-    return price;
+    return considerState(50);
   }
 
   @Override
@@ -468,14 +460,16 @@ public abstract class Wand extends KindOfWeapon {
       sb.append(" (" + status + ")");
     }
 
+    if (isBroken()) {
+      sb.insert(0, "broken ");
+    }
+
     return sb.toString();
   }
 
   protected void updateLevel() {
-    maxCharges = Math.min(initialCharges() + level, 9);
+    maxCharges = Math.min(initialCharges() + level(), 9);
     curCharges = Math.min(curCharges, maxCharges);
-
-    calculateDamage();
   }
 
   @Override

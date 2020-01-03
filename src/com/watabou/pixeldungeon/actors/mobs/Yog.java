@@ -182,6 +182,8 @@ public class Yog extends Mob {
       name = "god's larva";
       spriteClass = LarvaSprite.class;
 
+      mobType = MobType.DEMON;
+
       HP = HT = 25;
       defenseSkill = 20;
 

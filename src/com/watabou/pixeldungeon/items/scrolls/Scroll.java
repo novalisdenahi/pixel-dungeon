@@ -25,6 +25,7 @@ import com.watabou.pixeldungeon.actors.buffs.Blindness;
 import com.watabou.pixeldungeon.actors.hero.Hero;
 import com.watabou.pixeldungeon.items.Item;
 import com.watabou.pixeldungeon.items.ItemStatusHandler;
+import com.watabou.pixeldungeon.sprites.HeroSprite;
 import com.watabou.pixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.pixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
@@ -173,6 +174,12 @@ public abstract class Scroll extends Item {
   @Override
   public int price() {
     return 15 * quantity;
+  }
+
+  protected void readAnimation() {
+    curUser.spend(TIME_TO_READ);
+    curUser.busy();
+    ((HeroSprite) curUser.sprite).read();
   }
 
   public void setKnown() {

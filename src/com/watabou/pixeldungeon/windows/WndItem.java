@@ -49,10 +49,12 @@ public class WndItem extends Window {
     titlebar.setRect(0, 0, WIDTH, 0);
     add(titlebar);
 
-    if (item.levelKnown && (item.level > 0)) {
-      titlebar.color(ItemSlot.UPGRADED);
-    } else if (item.levelKnown && (item.level < 0)) {
-      titlebar.color(ItemSlot.DEGRADED);
+    if (item.levelKnown) {
+      if (item.level() < 0) {
+        titlebar.color(ItemSlot.DEGRADED);
+      } else if (item.level() > 0) {
+        titlebar.color(item.isBroken() ? ItemSlot.WARNING : ItemSlot.UPGRADED);
+      }
     }
 
     BitmapTextMultiline info = PixelScene.createMultiline(item.info(), 6);

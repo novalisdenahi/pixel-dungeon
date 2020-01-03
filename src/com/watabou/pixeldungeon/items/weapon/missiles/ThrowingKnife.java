@@ -29,9 +29,6 @@ public class ThrowingKnife extends MissileWeapon {
 
     STR = 12;
 
-    MIN = 2;
-    MAX = 5;
-
     DLY = 0.5f;
   }
 
@@ -48,6 +45,16 @@ public class ThrowingKnife extends MissileWeapon {
   public String desc() {
     return "Lightweight knife without handle. It is not easy to deal with, but is in good hands" +
         " is dangerous. They can be thrown at very high rate.";
+  }
+
+  @Override
+  public int max() {
+    return 5;
+  }
+
+  @Override
+  public int min() {
+    return 2;
   }
 
   @Override

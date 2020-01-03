@@ -19,6 +19,8 @@ package com.watabou.pixeldungeon.actors.mobs;
 
 import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.actors.Char;
+import com.watabou.pixeldungeon.actors.mobs.Yog.BurningFist;
+import com.watabou.pixeldungeon.actors.mobs.Yog.RottingFist;
 import com.watabou.utils.Random;
 
 import hu.denahi.pixeldungeon.holy.quest.DungeonType;
@@ -26,8 +28,14 @@ import hu.denahi.pixeldungeon.holy.quest.DungeonType;
 public class Bestiary {
 
   public static boolean isBoss(final Char mob) {
-    return (mob instanceof Goo) || (mob instanceof Tengu) || (mob instanceof DM300)
-        || (mob instanceof King) || (mob instanceof Yog) || (mob instanceof AlphaWorg)
+    return (mob instanceof Goo)
+        || (mob instanceof Tengu)
+        || (mob instanceof DM300)
+        || (mob instanceof King)
+        || (mob instanceof Yog)
+        || (mob instanceof BurningFist)
+        || (mob instanceof RottingFist)
+        || (mob instanceof AlphaWorg)
         || (mob instanceof GoblinKing);
   }
 

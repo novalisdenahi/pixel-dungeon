@@ -55,9 +55,9 @@ public class Item implements Bundlable {
 
   private static final String TXT_PACK_FULL = "Your pack is too full for the %s";
 
-  private static final String TXT_DEGRADED = "Because of frequent use, your %s has degraded.";
-  private static final String TXT_GONNA_DEGRADE =
-      "Because of frequent use, your %s is going to degrade soon.";
+  private static final String TXT_BROKEN = "Because of frequent use, your %s has broken.";
+  private static final String TXT_GONNA_BREAK =
+      "Because of frequent use, your %s is going to break soon.";
 
   private static final String TXT_TO_STRING = "%s";
   private static final String TXT_TO_STRING_X = "%s x%d";
@@ -236,6 +236,27 @@ public class Item implements Bundlable {
     }
   }
 
+  public int considerState(int price) {
+    if (cursed && cursedKnown) {
+      price /= 2;
+    }
+    if (levelKnown) {
+      if (level > 0) {
+        price *= (level + 1);
+        if (isBroken()) {
+          price /= 2;
+        }
+      } else if (level < 0) {
+        price /= (1 - level);
+      }
+    }
+    if (price < 1) {
+      price = 1;
+    }
+
+    return price;
+  }
+
   public Item degrade() {
 
     level--;
@@ -326,6 +347,10 @@ public class Item implements Bundlable {
     return durability;
   }
 
+  public int effectiveLevel() {
+    return isBroken() ? 0 : level;
+  }
+
   public void execute(final Hero hero) {
     execute(hero, defaultAction);
   }
@@ -350,6 +375,9 @@ public class Item implements Bundlable {
     durability = maxDurability();
   }
 
+  public void getBroken() {
+  }
+
   public ItemSprite.Glowing glowing() {
     return null;
   }
@@ -370,6 +398,10 @@ public class Item implements Bundlable {
     return desc();
   }
 
+  public boolean isBroken() {
+    return durability <= 0;
+  }
+
   public boolean isEquipped(final Hero hero) {
     return false;
   }
@@ -380,6 +412,14 @@ public class Item implements Bundlable {
 
   public boolean isUpgradable() {
     return true;
+  }
+
+  public int level() {
+    return level;
+  }
+
+  public void level(final int value) {
+    level = value;
   }
 
   final public int maxDurability() {
@@ -522,15 +562,15 @@ public class Item implements Bundlable {
   }
 
   public void use() {
-    if (level > 0) {
+    if ((level > 0) && !isBroken()) {
       int threshold = (int) (maxDurability() * DURABILITY_WARNING_LEVEL);
-      if ((durability-- >= threshold) && (threshold > durability)) {
-        GLog.w(TXT_GONNA_DEGRADE, name());
+      if ((durability-- >= threshold) && (threshold > durability) && levelKnown) {
+        GLog.w(TXT_GONNA_BREAK, name());
       }
-      if (durability <= 0) {
-        degrade();
+      if (isBroken()) {
+        getBroken();
         if (levelKnown) {
-          GLog.n(TXT_DEGRADED, name());
+          GLog.n(TXT_BROKEN, name());
           Dungeon.hero.interrupt();
 
           CharSprite sprite = Dungeon.hero.sprite;
@@ -548,6 +588,10 @@ public class Item implements Bundlable {
         }
       }
     }
+  }
+
+  public boolean visiblyBroken() {
+    return levelKnown && isBroken();
   }
 
   public boolean visiblyCursed() {

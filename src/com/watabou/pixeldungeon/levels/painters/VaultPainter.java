@@ -32,7 +32,8 @@ public class VaultPainter extends Painter {
   public static void paint(final Level level, final Room room) {
 
     Painter.fill(level, room, Terrain.WALL);
-    Painter.fill(level, room, 1, Terrain.EMPTY);
+    Painter.fill(level, room, 1, Terrain.EMPTY_SP);
+    Painter.fill(level, room, 2, Terrain.EMPTY);
 
     int cx = (room.left + room.right) / 2;
     int cy = (room.top + room.bottom) / 2;
@@ -46,8 +47,7 @@ public class VaultPainter extends Painter {
         break;
 
       case 1:
-        Item i1,
-            i2;
+        Item i1, i2;
         do {
           i1 = VaultPainter.prize(level);
           i2 = VaultPainter.prize(level);

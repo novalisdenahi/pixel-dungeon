@@ -309,6 +309,7 @@ public class King extends Mob {
     }
 
     int undeadsToSummon = (maxArmySize() - Undead.count);
+
     PathFinder.buildDistanceMap(pos, passable, undeadsToSummon);
     PathFinder.distance[pos] = Integer.MAX_VALUE;
     int dist = 1;

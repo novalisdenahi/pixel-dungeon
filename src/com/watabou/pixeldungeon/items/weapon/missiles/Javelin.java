@@ -31,9 +31,6 @@ public class Javelin extends MissileWeapon {
     image = ItemSpriteSheet.JAVELIN;
 
     STR = 15;
-
-    MIN = 2;
-    MAX = 15;
   }
 
   public Javelin() {
@@ -49,6 +46,16 @@ public class Javelin extends MissileWeapon {
   public String desc() {
     return "This length of metal is weighted to keep the spike " +
         "at its tip foremost as it sails through the air.";
+  }
+
+  @Override
+  public int max() {
+    return 15;
+  }
+
+  @Override
+  public int min() {
+    return 2;
   }
 
   @Override

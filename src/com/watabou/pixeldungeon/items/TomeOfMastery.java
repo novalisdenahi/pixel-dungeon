@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.Badges;
+import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.actors.buffs.Blindness;
 import com.watabou.pixeldungeon.actors.buffs.Buff;
 import com.watabou.pixeldungeon.actors.buffs.Fury;
@@ -45,7 +46,9 @@ public class TomeOfMastery extends Item {
 
   {
     stackable = false;
-    name = "Tome of Mastery";
+    name =
+        (Dungeon.hero != null) && (Dungeon.hero.subClass != HeroSubClass.NONE) ? "Tome of Remastery"
+            : "Tome of Mastery";
     image = ItemSpriteSheet.MASTERY;
 
     unique = true;
@@ -96,36 +99,26 @@ public class TomeOfMastery extends Item {
 
       curUser = hero;
 
-      HeroSubClass way1 = null;
-      HeroSubClass way2 = null;
       switch (hero.heroClass) {
         case WARRIOR:
-          way1 = HeroSubClass.GLADIATOR;
-          way2 = HeroSubClass.BERSERKER;
+          read(hero, HeroSubClass.GLADIATOR, HeroSubClass.BERSERKER);
           break;
         case MAGE:
-          way1 = HeroSubClass.BATTLEMAGE;
-          way2 = HeroSubClass.WARLOCK;
+          read(hero, HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK);
           break;
         case ROGUE:
-          way1 = HeroSubClass.FREERUNNER;
-          way2 = HeroSubClass.ASSASSIN;
+          read(hero, HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER);
           break;
         case HUNTRESS:
-          way1 = HeroSubClass.SNIPER;
-          way2 = HeroSubClass.WARDEN;
+          read(hero, HeroSubClass.SNIPER, HeroSubClass.WARDEN);
           break;
         case PRIEST:
-          way1 = HeroSubClass.PALADIN;
-          way2 = HeroSubClass.HIGHPRIEST;
+          read(hero, HeroSubClass.PALADIN, HeroSubClass.HIGHPRIEST);
           break;
       }
-      GameScene.show(new WndChooseWay(this, way1, way2));
 
     } else {
-
       super.execute(hero, action);
-
     }
   }
 
@@ -144,5 +137,15 @@ public class TomeOfMastery extends Item {
   @Override
   public boolean isUpgradable() {
     return false;
+  }
+
+  private void read(final Hero hero, final HeroSubClass sc1, final HeroSubClass sc2) {
+    if (hero.subClass == sc1) {
+      GameScene.show(new WndChooseWay(this, sc2));
+    } else if (hero.subClass == sc2) {
+      GameScene.show(new WndChooseWay(this, sc1));
+    } else {
+      GameScene.show(new WndChooseWay(this, sc1, sc2));
+    }
   }
 }

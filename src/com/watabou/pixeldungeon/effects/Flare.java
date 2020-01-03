@@ -27,8 +27,10 @@ import javax.microedition.khronos.opengles.GL10;
 import com.watabou.gltextures.Gradient;
 import com.watabou.gltextures.SmartTexture;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.Group;
 import com.watabou.noosa.NoosaScript;
 import com.watabou.noosa.Visual;
+import com.watabou.utils.PointF;
 
 import android.annotation.SuppressLint;
 import android.opengl.GLES20;
@@ -132,6 +134,15 @@ public class Flare extends Visual {
 
     script.camera(camera);
     script.drawElements(vertices, indices, nRays * 3);
+  }
+
+  public Flare show(final Group parent, final PointF pos, final float duration) {
+    point(pos);
+    parent.add(this);
+
+    lifespan = this.duration = duration;
+
+    return this;
   }
 
   public Flare show(final Visual visual, final float duration) {

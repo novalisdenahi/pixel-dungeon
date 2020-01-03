@@ -25,15 +25,12 @@ import com.watabou.pixeldungeon.ui.QuickSlot;
 import com.watabou.pixeldungeon.utils.GLog;
 import com.watabou.utils.Random;
 
-public class KindOfWeapon extends EquipableItem {
+abstract public class KindOfWeapon extends EquipableItem {
 
   private static final String TXT_EQUIP_CURSED =
       "you wince as your grip involuntarily tightens around your %s";
 
   protected static final float TIME_TO_EQUIP = 1f;
-
-  public int MIN = 0;
-  public int MAX = 1;
 
   @Override
   public ArrayList<String> actions(final Hero hero) {
@@ -50,7 +47,7 @@ public class KindOfWeapon extends EquipableItem {
   }
 
   public int damageRoll(final Hero owner) {
-    return Random.NormalIntRange(MIN, MAX);
+    return Random.NormalIntRange(min(), max());
   }
 
   @Override
@@ -99,6 +96,10 @@ public class KindOfWeapon extends EquipableItem {
   public boolean isEquipped(final Hero hero) {
     return hero.belongings.weapon == this;
   }
+
+  abstract public int max();
+
+  abstract public int min();
 
   public void proc(final Char attacker, final Char defender, final int damage) {
   }

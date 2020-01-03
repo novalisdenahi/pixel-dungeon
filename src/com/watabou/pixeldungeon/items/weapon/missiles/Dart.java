@@ -26,9 +26,6 @@ public class Dart extends MissileWeapon {
   {
     name = "dart";
     image = ItemSpriteSheet.DART;
-
-    MIN = 1;
-    MAX = 4;
   }
 
   public Dart() {
@@ -44,6 +41,16 @@ public class Dart extends MissileWeapon {
   public String desc() {
     return "These simple metal spikes are weighted to fly true and " +
         "sting their prey with a flick of the wrist.";
+  }
+
+  @Override
+  public int max() {
+    return 4;
+  }
+
+  @Override
+  public int min() {
+    return 1;
   }
 
   @Override

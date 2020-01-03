@@ -52,7 +52,11 @@ public class ScrollOfUpgrade extends InventoryScroll {
   protected void onItemSelected(final Item item) {
 
     ScrollOfRemoveCurse.uncurse(Dungeon.hero, item);
-    item.upgrade();
+    if (item.isBroken()) {
+      item.fix();
+    } else {
+      item.upgrade();
+    }
 
     ScrollOfUpgrade.upgrade(curUser);
     GLog.p(TXT_LOOKS_BETTER, item.name());

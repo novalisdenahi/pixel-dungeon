@@ -48,7 +48,7 @@ public class Affection extends Glyph {
   @Override
   public int proc(final Armor armor, final Char attacker, final Char defender, final int damage) {
 
-    int level = (int) GameMath.gate(0, armor.level, 6);
+    int level = (int) GameMath.gate(0, armor.effectiveLevel(), 6);
 
     if (Level.adjacent(attacker.pos, defender.pos) && (Random.Int((level / 2) + 5) >= 4)) {
 

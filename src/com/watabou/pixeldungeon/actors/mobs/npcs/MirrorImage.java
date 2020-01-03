@@ -49,7 +49,6 @@ public class MirrorImage extends NPC {
     spriteClass = MirrorSprite.class;
 
     state = HUNTING;
-
   }
   public int tier;
 

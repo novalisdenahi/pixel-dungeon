@@ -199,8 +199,10 @@ public enum Rankings {
     output.close();
   }
 
-  private int score(final boolean win) {
-    return (Statistics.goldCollected + (Dungeon.hero.lvl * Dungeon.depth * 100)) * (win ? 2 : 1);
+  private int score(final boolean win, final int dungeonType) {
+    return (Statistics.goldCollected
+        + (Dungeon.hero.lvl * Statistics.getDeepestFloor(dungeonType) * 100))
+        * (win ? 2 : 1);
   }
 
   public void submit(final boolean win) {
@@ -213,7 +215,7 @@ public enum Rankings {
     rec.win = win;
     rec.heroClass = Dungeon.hero.heroClass;
     rec.armorTier = Dungeon.hero.tier();
-    rec.score = score(win);
+    rec.score = score(win, Dungeon.dungeonType);
 
     String gameFile = Utils.format(DETAILS_FILE, SystemTime.now);
     try {

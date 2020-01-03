@@ -413,9 +413,10 @@ public abstract class Mob extends Char {
         Badges.validateNightHunter();
       }
 
-      if ((Dungeon.hero.lvl <= maxLvl) && (EXP > 0)) {
-        Dungeon.hero.sprite.showStatus(CharSprite.POSITIVE, TXT_EXP, EXP);
-        Dungeon.hero.earnExp(EXP);
+      int exp = exp();
+      if (exp > 0) {
+        Dungeon.hero.sprite.showStatus(CharSprite.POSITIVE, TXT_EXP, exp);
+        Dungeon.hero.earnExp(exp);
       }
     }
   }
@@ -468,6 +469,10 @@ public abstract class Mob extends Char {
       }
       Dungeon.level.drop(item, pos).sprite.drop();
     }
+  }
+
+  public int exp() {
+    return Dungeon.hero.lvl <= maxLvl ? EXP : 0;
   }
 
   protected boolean getCloser(final int target) {

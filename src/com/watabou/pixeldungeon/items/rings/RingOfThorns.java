@@ -57,7 +57,7 @@ public class RingOfThorns extends Ring {
 
   @Override
   public Item random() {
-    level = +1;
+    level(+1);
     return this;
   }
 

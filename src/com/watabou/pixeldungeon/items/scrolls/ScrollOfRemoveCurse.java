@@ -38,8 +38,8 @@ public class ScrollOfRemoveCurse extends Scroll {
   public static boolean uncurse(final Hero hero, final Item... items) {
 
     boolean procced = false;
-    for (int i = 0; i < items.length; i++) {
-      Item item = items[i];
+    for (Item item2 : items) {
+      Item item = item2;
       if ((item != null) && item.cursed) {
         item.cursed = false;
         procced = true;
@@ -89,7 +89,7 @@ public class ScrollOfRemoveCurse extends Scroll {
 
     setKnown();
 
-    curUser.spendAndNext(TIME_TO_READ);
+    readAnimation();
   }
 
   @Override

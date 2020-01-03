@@ -23,7 +23,7 @@ import com.watabou.pixeldungeon.Assets;
 public class BannerSprites {
 
   public enum Type {
-    PIXEL_DUNGEON, BOSS_SLAIN, GAME_OVER, SELECT_YOUR_HERO, SELECT_DUNGEON
+    PIXEL_DUNGEON, BOSS_SLAIN, GAME_OVER, SELECT_YOUR_HERO, SELECT_DUNGEON, PIXEL_DUNGEON_SIGNS
   };
 
   public static Image get(final Type type) {
@@ -43,6 +43,8 @@ public class BannerSprites {
         break;
       case SELECT_DUNGEON:
         icon.frame(icon.texture.uvRect(0, 161, 128, 181));
+      case PIXEL_DUNGEON_SIGNS:
+        icon.frame(icon.texture.uvRect(0, 161, 128, 218));
         break;
     }
     return icon;

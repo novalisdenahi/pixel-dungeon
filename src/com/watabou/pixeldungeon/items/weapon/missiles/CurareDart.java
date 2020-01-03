@@ -33,9 +33,6 @@ public class CurareDart extends MissileWeapon {
     image = ItemSpriteSheet.CURARE_DART;
 
     STR = 14;
-
-    MIN = 1;
-    MAX = 3;
   }
 
   public CurareDart() {
@@ -51,6 +48,16 @@ public class CurareDart extends MissileWeapon {
   public String desc() {
     return "These little evil darts don't do much damage but they can paralyze " +
         "the target leaving it helpless and motionless for some time.";
+  }
+
+  @Override
+  public int max() {
+    return 3;
+  }
+
+  @Override
+  public int min() {
+    return 1;
   }
 
   @Override

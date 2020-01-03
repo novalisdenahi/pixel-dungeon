@@ -45,7 +45,7 @@ public class Ring extends EquipableItem {
     public int level;
 
     public RingBuff() {
-      level = Ring.this.level;
+      level = Ring.this.effectiveLevel();
     }
 
     @Override
@@ -107,8 +107,7 @@ public class Ring extends EquipableItem {
   };
   private static final String[] gems =
       { "diamond", "opal", "garnet", "ruby", "amethyst", "topaz", "onyx", "tourmaline", "emerald",
-          "sapphire", "quartz",
-          "agate" };
+          "sapphire", "quartz", "agate" };
   private static final Integer[] images = {
       ItemSpriteSheet.RING_DIAMOND,
       ItemSpriteSheet.RING_OPAL,
@@ -173,23 +172,6 @@ public class Ring extends EquipableItem {
   }
 
   @Override
-  public Item degrade() {
-
-    super.degrade();
-
-    if (buff != null) {
-
-      Char owner = buff.target;
-      buff.detach();
-      if ((buff = buff()) != null) {
-        buff.attachTo(owner);
-      }
-    }
-
-    return this;
-  }
-
-  @Override
   public String desc() {
     return "This metal band is adorned with a large " + gem + " gem " +
         "that glitters in the darkness. Who knows what effect it has when worn?";
@@ -238,7 +220,7 @@ public class Ring extends EquipableItem {
 
       cursedKnown = true;
       if (cursed) {
-        EquipableItem.equipCursed(hero);
+        equipCursed(hero);
         GLog.n("your " + this + " tightens around your finger painfully");
       }
 
@@ -269,6 +251,23 @@ public class Ring extends EquipableItem {
       return false;
 
     }
+  }
+
+  @Override
+  public int effectiveLevel() {
+    return isBroken() ? 1 : level();
+  }
+
+  @Override
+  public void fix() {
+    super.fix();
+    renewBuff();
+  }
+
+  @Override
+  public void getBroken() {
+    renewBuff();
+    super.getBroken();
   }
 
   @Override
@@ -314,7 +313,7 @@ public class Ring extends EquipableItem {
     if (lvl <= 1) {
       return Integer.MAX_VALUE;
     } else {
-      return 80 * (lvl < 16 ? 16 - lvl : 1);
+      return 100 * (lvl < 16 ? 16 - lvl : 1);
     }
   }
 
@@ -325,21 +324,7 @@ public class Ring extends EquipableItem {
 
   @Override
   public int price() {
-    int price = 80;
-    if (cursed && cursedKnown) {
-      price /= 2;
-    }
-    if (levelKnown) {
-      if (level > 0) {
-        price *= (level + 1);
-      } else if (level < 0) {
-        price /= (1 - level);
-      }
-    }
-    if (price < 1) {
-      price = 1;
-    }
-    return price;
+    return considerState(80);
   }
 
   @Override
@@ -352,6 +337,16 @@ public class Ring extends EquipableItem {
       upgrade(lvl);
     }
     return this;
+  }
+
+  private void renewBuff() {
+    if (buff != null) {
+      Char owner = buff.target;
+      buff.detach();
+      if ((buff = buff()) != null) {
+        buff.attachTo(owner);
+      }
+    }
   }
 
   @Override
@@ -382,19 +377,7 @@ public class Ring extends EquipableItem {
   }
 
   @Override
-  public Item upgrade() {
-
-    super.upgrade();
-
-    if (buff != null) {
-
-      Char owner = buff.target;
-      buff.detach();
-      if ((buff = buff()) != null) {
-        buff.attachTo(owner);
-      }
-    }
-
-    return this;
+  public String toString() {
+    return levelKnown && isBroken() ? "broken " + super.toString() : super.toString();
   }
 }

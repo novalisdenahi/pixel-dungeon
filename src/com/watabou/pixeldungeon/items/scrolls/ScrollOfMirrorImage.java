@@ -47,8 +47,8 @@ public class ScrollOfMirrorImage extends Scroll {
 
     ArrayList<Integer> respawnPoints = new ArrayList<Integer>();
 
-    for (int i = 0; i < Level.NEIGHBOURS8.length; i++) {
-      int p = curUser.pos + Level.NEIGHBOURS8[i];
+    for (int element : Level.NEIGHBOURS8) {
+      int p = curUser.pos + element;
       if ((Actor.findChar(p) == null) && (Level.passable[p] || Level.avoid[p])) {
         respawnPoints.add(p);
       }
@@ -74,6 +74,6 @@ public class ScrollOfMirrorImage extends Scroll {
     Sample.INSTANCE.play(Assets.SND_READ);
     Invisibility.dispel();
 
-    curUser.spendAndNext(TIME_TO_READ);
+    readAnimation();
   }
 }

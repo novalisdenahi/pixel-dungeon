@@ -61,6 +61,8 @@ public class HeroSprite extends CharSprite {
 
   private Animation fly;
 
+  private Animation read;
+
   public HeroSprite() {
     super();
 
@@ -91,6 +93,17 @@ public class HeroSprite extends CharSprite {
   public void place(final int p) {
     super.place(p);
     Camera.main.target = this;
+  }
+
+  public void read() {
+    animCallback = new Callback() {
+      @Override
+      public void call() {
+        idle();
+        ch.onOperateComplete();
+      }
+    };
+    play(read);
   }
 
   public boolean sprint(final boolean on) {
@@ -129,5 +142,8 @@ public class HeroSprite extends CharSprite {
 
     fly = new Animation(1, true);
     fly.frames(film, 18);
+
+    read = new Animation(20, false);
+    read.frames(film, 19, 20, 20, 20, 20, 20, 20, 20, 20, 19);
   }
 }

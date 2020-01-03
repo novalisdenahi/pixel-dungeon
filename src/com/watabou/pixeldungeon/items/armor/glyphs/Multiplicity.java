@@ -51,7 +51,7 @@ public class Multiplicity extends Glyph {
   @Override
   public int proc(final Armor armor, final Char attacker, final Char defender, final int damage) {
 
-    int level = Math.max(0, armor.level);
+    int level = Math.max(0, armor.effectiveLevel());
 
     if (Random.Int((level / 2) + 6) >= 5) {
 

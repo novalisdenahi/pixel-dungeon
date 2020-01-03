@@ -29,9 +29,6 @@ public class Shuriken extends MissileWeapon {
 
     STR = 13;
 
-    MIN = 2;
-    MAX = 6;
-
     DLY = 0.5f;
   }
 
@@ -48,6 +45,16 @@ public class Shuriken extends MissileWeapon {
   public String desc() {
     return "Star-shaped pieces of metal with razor-sharp blades do significant damage " +
         "when they hit a target. They can be thrown at very high rate.";
+  }
+
+  @Override
+  public int max() {
+    return 6;
+  }
+
+  @Override
+  public int min() {
+    return 2;
   }
 
   @Override

@@ -60,8 +60,6 @@ public class Pickaxe extends Weapon {
     defaultAction = AC_MINE;
 
     STR = 14;
-    MIN = 3;
-    MAX = 12;
   }
 
   public boolean bloodStained = false;
@@ -150,6 +148,16 @@ public class Pickaxe extends Weapon {
   @Override
   public boolean isUpgradable() {
     return false;
+  }
+
+  @Override
+  public int max() {
+    return 12;
+  }
+
+  @Override
+  public int min() {
+    return 3;
   }
 
   @Override

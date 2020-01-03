@@ -102,9 +102,8 @@ public class WndHero extends WndTabbed {
           GameScene.show(new WndCatalogus());
         }
       };
-      btnCatalogus
-          .setRect(0, title.y + title.height(), btnCatalogus.reqWidth() + 2,
-              btnCatalogus.reqHeight() + 2);
+      btnCatalogus.setRect(0, title.y + title.height(), btnCatalogus.reqWidth() + 2,
+          btnCatalogus.reqHeight() + 2);
       add(btnCatalogus);
 
       RedButton btnJournal = new RedButton(TXT_JOURNAL) {

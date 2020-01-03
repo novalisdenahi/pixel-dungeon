@@ -56,12 +56,14 @@ abstract public class ClassArmor extends Armor {
     }
 
     classArmor.STR = armor.STR;
-    classArmor.DR = armor.DR;
+    classArmor.DR = armor.DR();
 
     classArmor.inscribe(armor.glyph);
 
     return classArmor;
   }
+
+  private int DR;
 
   {
     levelKnown = true;
@@ -88,6 +90,11 @@ abstract public class ClassArmor extends Armor {
   }
 
   abstract public void doSpecial();
+
+  @Override
+  public int DR() {
+    return DR;
+  }
 
   @Override
   public void execute(final Hero hero, final String action) {

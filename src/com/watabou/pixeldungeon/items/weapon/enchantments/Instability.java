@@ -23,7 +23,7 @@ import com.watabou.pixeldungeon.items.weapon.Weapon.Enchantment;
 
 public class Instability extends Weapon.Enchantment {
 
-  private static final String TXT_UNSTABLE = "Unstable %s";
+  private static final String TXT_UNSTABLE = "unstable %s";
 
   @Override
   public String name(final String weaponName) {

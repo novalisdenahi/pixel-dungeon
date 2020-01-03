@@ -65,10 +65,9 @@ public class Statue extends Mob {
 
     do {
       weapon = (Weapon) Generator.random(Generator.Category.WEAPON);
-    } while (!(weapon instanceof MeleeWeapon) || (weapon.level < 0));
+    } while (!(weapon instanceof MeleeWeapon) || (weapon.level() < 0));
 
     weapon.identify();
-
     weapon.enchant();
 
     HP = HT = 15 + (Dungeon.depth * 5);
@@ -116,7 +115,7 @@ public class Statue extends Mob {
 
   @Override
   public int damageRoll() {
-    return Random.NormalIntRange(weapon.MIN, weapon.MAX);
+    return Random.NormalIntRange(weapon.min(), weapon.max());
   }
 
   @Override

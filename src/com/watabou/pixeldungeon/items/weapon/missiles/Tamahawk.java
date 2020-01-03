@@ -31,9 +31,6 @@ public class Tamahawk extends MissileWeapon {
     image = ItemSpriteSheet.TOMAHAWK;
 
     STR = 17;
-
-    MIN = 4;
-    MAX = 20;
   }
 
   public Tamahawk() {
@@ -49,6 +46,16 @@ public class Tamahawk extends MissileWeapon {
   public String desc() {
     return "This throwing axe is not that heavy, but it still " +
         "requires significant strength to be used effectively.";
+  }
+
+  @Override
+  public int max() {
+    return 20;
+  }
+
+  @Override
+  public int min() {
+    return 4;
   }
 
   @Override

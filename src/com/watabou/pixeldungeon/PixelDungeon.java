@@ -161,8 +161,9 @@ public class PixelDungeon extends Game {
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                View.SYSTEM_UI_FLAG_FULLSCREEN |
-                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                View.SYSTEM_UI_FLAG_FULLSCREEN
+                // |
+                // View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                 : 0);
       } catch (Exception e) {
         PixelDungeon.reportException(e);
@@ -191,7 +192,7 @@ public class PixelDungeon extends Game {
         com.watabou.pixeldungeon.items.rings.RingOfMending.class,
         "com.watabou.pixeldungeon.items.rings.RingOfRejuvenation");
     com.watabou.utils.Bundle.addAlias(
-        com.watabou.pixeldungeon.items.wands.WandOfTelekinesis.class,
+        com.watabou.pixeldungeon.items.wands.WandOfReach.class,
         "com.watabou.pixeldungeon.items.wands.WandOfTelekenesis");
     com.watabou.utils.Bundle.addAlias(
         com.watabou.pixeldungeon.actors.blobs.Foliage.class,
@@ -214,7 +215,7 @@ public class PixelDungeon extends Game {
         "com.watabou.pixeldungeon.items.DriedRose");
     com.watabou.utils.Bundle.addAlias(
         com.watabou.pixeldungeon.actors.mobs.npcs.MirrorImage.class,
-        "com.watabou.pixeldungeon.items.scrolls.ScrollOfMirrorImage.MirrorImage");
+        "com.watabou.pixeldungeon.items.scrolls.ScrollOfMirrorImage$MirrorImage");
     // 1.6.4
     com.watabou.utils.Bundle.addAlias(
         com.watabou.pixeldungeon.items.rings.RingOfElements.class,
@@ -249,6 +250,20 @@ public class PixelDungeon extends Game {
     com.watabou.utils.Bundle.addAlias(
         com.watabou.pixeldungeon.items.scrolls.ScrollOfEnchantment.class,
         "com.watabou.pixeldungeon.items.Stylus");
+    // 1.8.0
+    com.watabou.utils.Bundle.addAlias(
+        com.watabou.pixeldungeon.actors.mobs.FetidRat.class,
+        "com.watabou.pixeldungeon.actors.mobs.npcs.Ghost$FetidRat");
+    com.watabou.utils.Bundle.addAlias(
+        com.watabou.pixeldungeon.plants.Rotberry.class,
+        "com.watabou.pixeldungeon.actors.mobs.npcs.Wandmaker$Rotberry");
+    com.watabou.utils.Bundle.addAlias(
+        com.watabou.pixeldungeon.plants.Rotberry.Seed.class,
+        "com.watabou.pixeldungeon.actors.mobs.npcs.Wandmaker$Rotberry$Seed");
+    // 1.9.0
+    com.watabou.utils.Bundle.addAlias(
+        com.watabou.pixeldungeon.items.wands.WandOfReach.class,
+        "com.watabou.pixeldungeon.items.wands.WandOfTelekinesis");
   }
 
   @Override

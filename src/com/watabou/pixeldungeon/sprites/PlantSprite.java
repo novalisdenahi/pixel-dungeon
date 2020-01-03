@@ -33,6 +33,7 @@ public class PlantSprite extends Image {
   }
 
   private static final float DELAY = 0.2f;
+
   private static TextureFilm frames;
   private State state = State.NORMAL;
 
@@ -44,7 +45,6 @@ public class PlantSprite extends Image {
     super(Assets.PLANTS);
 
     if (frames == null) {
-
       frames = new TextureFilm(texture, 16, 16);
     }
 

@@ -34,14 +34,12 @@ import com.watabou.pixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.watabou.pixeldungeon.items.wands.Wand;
 import com.watabou.pixeldungeon.items.weapon.melee.BattleAxe;
 import com.watabou.pixeldungeon.items.weapon.melee.Dagger;
-import com.watabou.pixeldungeon.items.weapon.melee.Falchion;
 import com.watabou.pixeldungeon.items.weapon.melee.Glaive;
 import com.watabou.pixeldungeon.items.weapon.melee.Knuckles;
 import com.watabou.pixeldungeon.items.weapon.melee.Longsword;
 import com.watabou.pixeldungeon.items.weapon.melee.Mace;
 import com.watabou.pixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.watabou.pixeldungeon.items.weapon.melee.Quarterstaff;
-import com.watabou.pixeldungeon.items.weapon.melee.Rapier;
 import com.watabou.pixeldungeon.items.weapon.melee.Spear;
 import com.watabou.pixeldungeon.items.weapon.melee.Sword;
 import com.watabou.pixeldungeon.items.weapon.melee.WarHammer;
@@ -100,9 +98,9 @@ public class WaterOfTransmutation extends WellWater {
       n = (Ring) Generator.random(Category.RING);
     } while (n.getClass() == r.getClass());
 
-    n.level = 0;
+    n.level(0);
 
-    int level = r.level;
+    int level = r.level();
     if (level > 0) {
       n.upgrade(level);
     } else if (level < 0) {
@@ -153,8 +151,8 @@ public class WaterOfTransmutation extends WellWater {
       n = (Wand) Generator.random(Category.WAND);
     } while (n.getClass() == w.getClass());
 
-    n.level = 0;
-    n.upgrade(w.level);
+    n.level(0);
+    n.upgrade(w.level());
 
     n.levelKnown = w.levelKnown;
     n.cursedKnown = w.cursedKnown;
@@ -191,12 +189,6 @@ public class WaterOfTransmutation extends WellWater {
       n = new Longsword();
     }
 
-    else if (w instanceof Falchion) {
-      n = new Rapier();
-    } else if (w instanceof Rapier) {
-      n = new Falchion();
-    }
-
     else if (w instanceof Glaive) {
       n = new WarHammer();
     } else if (w instanceof WarHammer) {
@@ -205,7 +197,7 @@ public class WaterOfTransmutation extends WellWater {
 
     if (n != null) {
 
-      int level = w.level;
+      int level = w.level();
       if (level > 0) {
         n.upgrade(level);
       } else if (level < 0) {

@@ -142,7 +142,6 @@ public class Imp extends NPC {
 
   private static final String TXT_GOLEMS1 =
       "Are you an adventurer? I love adventurers! You can always rely on them " +
-
           "if something needs to be killed. Am I right? For a bounty, of course ;)\n" +
           "In my case this is _golems_ who need to be killed. You see, I'm going to start a " +
           "little business here, but these stupid golems are bad for business! " +

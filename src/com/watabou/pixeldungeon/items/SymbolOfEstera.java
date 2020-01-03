@@ -39,6 +39,7 @@ import com.watabou.pixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 
 public class SymbolOfEstera extends Item {
+  // TODO total refactor on this
   protected class Charger extends Buff {
     // TODO this Charger can be refactored to normal class. ! in that case the delay change!
     private static final float TIME_TO_CHARGE = 40f;

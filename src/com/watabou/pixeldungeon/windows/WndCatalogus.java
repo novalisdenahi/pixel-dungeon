@@ -198,5 +198,6 @@ public class WndCatalogus extends WndTabbed {
     }
 
     content.setSize(width, pos);
+    list.setSize(list.width(), list.height());
   }
 }
