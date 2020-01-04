@@ -1,0 +1,185 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+* .gitignore
+* LICENSE.txt
+* README.md
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+* E:\dev\PD-classes\ => app\src\main\java\
+* E:\dev\PD-classes\LICENSE.txt => app\src\main\resources\LICENSE.txt
+* E:\dev\PD-classes\README.md => app\src\main\resources\README.md
+* AndroidManifest.xml => app\src\main\AndroidManifest.xml
+* assets\ => app\src\main\java\
+* assets\alphaworg.png => app\src\main\resources\alphaworg.png
+* assets\amulet.png => app\src\main\resources\amulet.png
+* assets\arcs1.png => app\src\main\resources\arcs1.png
+* assets\arcs2.png => app\src\main\resources\arcs2.png
+* assets\avatars.png => app\src\main\resources\avatars.png
+* assets\badges.png => app\src\main\resources\badges.png
+* assets\banners.png => app\src\main\resources\banners.png
+* assets\bat.png => app\src\main\resources\bat.png
+* assets\bee.png => app\src\main\resources\bee.png
+* assets\blacksmith.png => app\src\main\resources\blacksmith.png
+* assets\brute.png => app\src\main\resources\brute.png
+* assets\buffs.png => app\src\main\resources\buffs.png
+* assets\burning_fist.png => app\src\main\resources\burning_fist.png
+* assets\chrome.png => app\src\main\resources\chrome.png
+* assets\crab.png => app\src\main\resources\crab.png
+* assets\dashboard.png => app\src\main\resources\dashboard.png
+* assets\demon.png => app\src\main\resources\demon.png
+* assets\dm300.png => app\src\main\resources\dm300.png
+* assets\effects.png => app\src\main\resources\effects.png
+* assets\elemental.png => app\src\main\resources\elemental.png
+* assets\exp_bar.png => app\src\main\resources\exp_bar.png
+* assets\eye.png => app\src\main\resources\eye.png
+* assets\fireball.png => app\src\main\resources\fireball.png
+* assets\font15x.png => app\src\main\resources\font15x.png
+* assets\font1x.png => app\src\main\resources\font1x.png
+* assets\font25x.png => app\src\main\resources\font25x.png
+* assets\font2x.png => app\src\main\resources\font2x.png
+* assets\font3x.png => app\src\main\resources\font3x.png
+* assets\game.mp3 => app\src\main\resources\game.mp3
+* assets\ghost.png => app\src\main\resources\ghost.png
+* assets\gnoll.png => app\src\main\resources\gnoll.png
+* assets\goblin.png => app\src\main\resources\goblin.png
+* assets\goblinash.png => app\src\main\resources\goblinash.png
+* assets\goblinchampion.png => app\src\main\resources\goblinchampion.png
+* assets\goblinkeeper.png => app\src\main\resources\goblinkeeper.png
+* assets\goblinking.png => app\src\main\resources\goblinking.png
+* assets\goblinmage.png => app\src\main\resources\goblinmage.png
+* assets\goblinpirate.png => app\src\main\resources\goblinpirate.png
+* assets\goblinrider.png => app\src\main\resources\goblinrider.png
+* assets\golem.png => app\src\main\resources\golem.png
+* assets\goo.png => app\src\main\resources\goo.png
+* assets\hp_bar.png => app\src\main\resources\hp_bar.png
+* assets\icons.png => app\src\main\resources\icons.png
+* assets\items.png => app\src\main\resources\items.png
+* assets\king.png => app\src\main\resources\king.png
+* assets\large_buffs.png => app\src\main\resources\large_buffs.png
+* assets\larva.png => app\src\main\resources\larva.png
+* assets\locked_badge.png => app\src\main\resources\locked_badge.png
+* assets\mage.png => app\src\main\resources\mage.png
+* assets\mimic.png => app\src\main\resources\mimic.png
+* assets\monk.png => app\src\main\resources\monk.png
+* assets\pet.png => app\src\main\resources\pet.png
+* assets\piranha.png => app\src\main\resources\piranha.png
+* assets\plants.png => app\src\main\resources\plants.png
+* assets\priest.png => app\src\main\resources\priest.png
+* assets\questboard.png => app\src\main\resources\questboard.png
+* assets\ranger.png => app\src\main\resources\ranger.png
+* assets\rat.png => app\src\main\resources\rat.png
+* assets\ratking.png => app\src\main\resources\ratking.png
+* assets\rogue.png => app\src\main\resources\rogue.png
+* assets\rotting_fist.png => app\src\main\resources\rotting_fist.png
+* assets\scorpio.png => app\src\main\resources\scorpio.png
+* assets\shadow.png => app\src\main\resources\shadow.png
+* assets\shaman.png => app\src\main\resources\shaman.png
+* assets\sheep.png => app\src\main\resources\sheep.png
+* assets\shopkeeper.png => app\src\main\resources\shopkeeper.png
+* assets\skeleton.png => app\src\main\resources\skeleton.png
+* assets\snd_alert.mp3 => app\src\main\resources\snd_alert.mp3
+* assets\snd_badge.mp3 => app\src\main\resources\snd_badge.mp3
+* assets\snd_beacon.mp3 => app\src\main\resources\snd_beacon.mp3
+* assets\snd_bee.mp3 => app\src\main\resources\snd_bee.mp3
+* assets\snd_blast.mp3 => app\src\main\resources\snd_blast.mp3
+* assets\snd_bones.mp3 => app\src\main\resources\snd_bones.mp3
+* assets\snd_boss.mp3 => app\src\main\resources\snd_boss.mp3
+* assets\snd_burning.mp3 => app\src\main\resources\snd_burning.mp3
+* assets\snd_challenge.mp3 => app\src\main\resources\snd_challenge.mp3
+* assets\snd_charms.mp3 => app\src\main\resources\snd_charms.mp3
+* assets\snd_click.mp3 => app\src\main\resources\snd_click.mp3
+* assets\snd_cursed.mp3 => app\src\main\resources\snd_cursed.mp3
+* assets\snd_death.mp3 => app\src\main\resources\snd_death.mp3
+* assets\snd_degrade.mp3 => app\src\main\resources\snd_degrade.mp3
+* assets\snd_descend.mp3 => app\src\main\resources\snd_descend.mp3
+* assets\snd_dewdrop.mp3 => app\src\main\resources\snd_dewdrop.mp3
+* assets\snd_door_open.mp3 => app\src\main\resources\snd_door_open.mp3
+* assets\snd_drink.mp3 => app\src\main\resources\snd_drink.mp3
+* assets\snd_eat.mp3 => app\src\main\resources\snd_eat.mp3
+* assets\snd_evoke.mp3 => app\src\main\resources\snd_evoke.mp3
+* assets\snd_falling.mp3 => app\src\main\resources\snd_falling.mp3
+* assets\snd_ghost.mp3 => app\src\main\resources\snd_ghost.mp3
+* assets\snd_gold.mp3 => app\src\main\resources\snd_gold.mp3
+* assets\snd_hit.mp3 => app\src\main\resources\snd_hit.mp3
+* assets\snd_item.mp3 => app\src\main\resources\snd_item.mp3
+* assets\snd_levelup.mp3 => app\src\main\resources\snd_levelup.mp3
+* assets\snd_lightning.mp3 => app\src\main\resources\snd_lightning.mp3
+* assets\snd_lullaby.mp3 => app\src\main\resources\snd_lullaby.mp3
+* assets\snd_mastery.mp3 => app\src\main\resources\snd_mastery.mp3
+* assets\snd_meld.mp3 => app\src\main\resources\snd_meld.mp3
+* assets\snd_mimic.mp3 => app\src\main\resources\snd_mimic.mp3
+* assets\snd_miss.mp3 => app\src\main\resources\snd_miss.mp3
+* assets\snd_plant.mp3 => app\src\main\resources\snd_plant.mp3
+* assets\snd_puff.mp3 => app\src\main\resources\snd_puff.mp3
+* assets\snd_ray.mp3 => app\src\main\resources\snd_ray.mp3
+* assets\snd_read.mp3 => app\src\main\resources\snd_read.mp3
+* assets\snd_rocks.mp3 => app\src\main\resources\snd_rocks.mp3
+* assets\snd_secret.mp3 => app\src\main\resources\snd_secret.mp3
+* assets\snd_shatter.mp3 => app\src\main\resources\snd_shatter.mp3
+* assets\snd_step.mp3 => app\src\main\resources\snd_step.mp3
+* assets\snd_teleport.mp3 => app\src\main\resources\snd_teleport.mp3
+* assets\snd_tomb.mp3 => app\src\main\resources\snd_tomb.mp3
+* assets\snd_trap.mp3 => app\src\main\resources\snd_trap.mp3
+* assets\snd_unlock.mp3 => app\src\main\resources\snd_unlock.mp3
+* assets\snd_water.mp3 => app\src\main\resources\snd_water.mp3
+* assets\snd_zap.mp3 => app\src\main\resources\snd_zap.mp3
+* assets\specks.png => app\src\main\resources\specks.png
+* assets\spell_icons.png => app\src\main\resources\spell_icons.png
+* assets\spinner.png => app\src\main\resources\spinner.png
+* assets\statue.png => app\src\main\resources\statue.png
+* assets\status_pane.png => app\src\main\resources\status_pane.png
+* assets\succubus.png => app\src\main\resources\succubus.png
+* assets\surface.mp3 => app\src\main\resources\surface.mp3
+* assets\surface.png => app\src\main\resources\surface.png
+* assets\swarm.png => app\src\main\resources\swarm.png
+* assets\tengu.png => app\src\main\resources\tengu.png
+* assets\theme.mp3 => app\src\main\resources\theme.mp3
+* assets\thief.png => app\src\main\resources\thief.png
+* assets\tiles0.png => app\src\main\resources\tiles0.png
+* assets\tiles1.png => app\src\main\resources\tiles1.png
+* assets\tiles2.png => app\src\main\resources\tiles2.png
+* assets\tiles3.png => app\src\main\resources\tiles3.png
+* assets\tiles4.png => app\src\main\resources\tiles4.png
+* assets\title_hq0.png => app\src\main\resources\title_hq0.png
+* assets\title_hq1.png => app\src\main\resources\title_hq1.png
+* assets\toolbar.png => app\src\main\resources\toolbar.png
+* assets\undead.png => app\src\main\resources\undead.png
+* assets\wandmaker.png => app\src\main\resources\wandmaker.png
+* assets\warlock.png => app\src\main\resources\warlock.png
+* assets\warrior.png => app\src\main\resources\warrior.png
+* assets\water0.png => app\src\main\resources\water0.png
+* assets\water1.png => app\src\main\resources\water1.png
+* assets\water2.png => app\src\main\resources\water2.png
+* assets\water3.png => app\src\main\resources\water3.png
+* assets\water4.png => app\src\main\resources\water4.png
+* assets\worg.png => app\src\main\resources\worg.png
+* assets\wraith.png => app\src\main\resources\wraith.png
+* assets\yog.png => app\src\main\resources\yog.png
+* res\ => app\src\main\res\
+* src\ => app\src\main\java\
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)
