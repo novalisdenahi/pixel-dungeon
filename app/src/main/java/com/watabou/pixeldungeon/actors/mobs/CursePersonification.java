@@ -36,7 +36,7 @@ public class CursePersonification extends Mob {
 
   private static final HashSet<Class<?>> IMMUNITIES = new HashSet<Class<?>>();
 
-  // TODO Add mobtype
+
   static {
     IMMUNITIES.add(Death.class);
     IMMUNITIES.add(Terror.class);
@@ -47,6 +47,8 @@ public class CursePersonification extends Mob {
   {
     name = "curse personification";
     spriteClass = CursePersonificationSprite.class;
+
+    mobType = MobType.DEMON;
 
     HP = HT = 10 + (Dungeon.depth * 3);
     defenseSkill = 10 + Dungeon.depth;

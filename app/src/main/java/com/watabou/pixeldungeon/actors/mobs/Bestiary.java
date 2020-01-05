@@ -54,7 +54,7 @@ public class Bestiary {
       case DungeonType.YOG:
         return Bestiary.mobClassYog(depth);
       case DungeonType.GOBLIN:
-        return Bestiary.mobClassGoblin(depth); // TODO add mad_mage
+        return Bestiary.mobClassGoblin(depth);
       default:
         return Bestiary.mobClassYog(depth); // as always Yog_dungeon is the default
     }
