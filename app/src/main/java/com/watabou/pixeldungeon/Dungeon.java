@@ -539,9 +539,6 @@ public class Dungeon {
       case DungeonType.GOBLIN:
         level = Dungeon.newGoblinLevel();
         break;
-      case DungeonType.MAD_MAGE:
-        level = Dungeon.newYogLevel(); // TODO replace with mad_mage
-        break;
       default:
         // DEFAULT is YOG
         level = Dungeon.newYogLevel();
@@ -743,9 +740,7 @@ public class Dungeon {
   }
 
   public static boolean shopOnLevel() {
-    // TODO add dungeon type too
-    // TODO depth 1 is just test
-    return (depth == 1) || (depth == 6) || (depth == 11) || (depth == 16);
+    return  (depth == 6) || (depth == 11) || (depth == 16);
   }
 
   public static boolean soeNeeded() {

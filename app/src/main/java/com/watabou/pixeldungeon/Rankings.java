@@ -150,9 +150,6 @@ public enum Rankings {
       case DungeonType.GOBLIN:
         input = Game.instance.openFileInput(RANKINGS_FILE_GOBLIN);
         break;
-      case DungeonType.MAD_MAGE:
-        input = Game.instance.openFileInput(RANKINGS_FILE_MAGE);
-        break;
       default:
         // as always YOG
         input = Game.instance.openFileInput(RANKINGS_FILE_YOG);
@@ -185,9 +182,6 @@ public enum Rankings {
         break;
       case DungeonType.GOBLIN:
         output = Game.instance.openFileOutput(RANKINGS_FILE_GOBLIN, Context.MODE_PRIVATE);
-        break;
-      case DungeonType.MAD_MAGE:
-        output = Game.instance.openFileOutput(RANKINGS_FILE_MAGE, Context.MODE_PRIVATE);
         break;
       default:
         // as always YOG

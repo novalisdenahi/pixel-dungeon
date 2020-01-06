@@ -62,8 +62,6 @@ public class Statistics {
         return deepestFloorGoblin--;
       case DungeonType.YOG:
         return deepestFloor--;
-      case DungeonType.MAD_MAGE:
-        return deepestFloorMadMage--;
       default:
         return deepestFloor--;
     }
@@ -75,8 +73,6 @@ public class Statistics {
         return deepestFloorGoblin;
       case DungeonType.YOG:
         return deepestFloor;
-      case DungeonType.MAD_MAGE:
-        return deepestFloorMadMage;
       default:
         return deepestFloor;
     }
@@ -126,9 +122,6 @@ public class Statistics {
       case DungeonType.YOG:
         deepestFloor = newDepth;
         return deepestFloor;
-      case DungeonType.MAD_MAGE:
-        deepestFloorMadMage = newDepth;
-        return deepestFloorMadMage;
       default:
         return deepestFloor;
     }

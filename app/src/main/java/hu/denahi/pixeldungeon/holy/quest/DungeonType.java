@@ -21,5 +21,4 @@ public final class DungeonType {
 
   public static final int YOG = 0;
   public static final int GOBLIN = 1;
-  public static final int MAD_MAGE = 2;
 }

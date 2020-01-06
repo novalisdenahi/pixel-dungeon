@@ -18,7 +18,7 @@ package hu.denahi.pixeldungeon.holy.quest;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 public class DungeonTips {
-  // TODO ADD MAD MAGE
+
   private static final String[] TIPS_GOBLIN = {
       "Don't overestimate your strength, use weapons and armor you can handle.",
       "Not all doors in the dungeon are visible at first sight. If you are stuck, search for hidden doors.",

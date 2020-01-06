@@ -355,15 +355,11 @@ public class RankingsScene extends PixelScene {
     add(yogDungeonTypeItem);
     DungeonTypeItem goblinDungeonTypeItem = new DungeonTypeItem(DungeonType.GOBLIN);
     add(goblinDungeonTypeItem);
-    DungeonTypeItem mageDungeonTypeItem = new DungeonTypeItem(DungeonType.MAD_MAGE);
-    add(mageDungeonTypeItem);
 
     float dungeonTypeItemsY = title.y + GAP + title.height();
     yogDungeonTypeItem.setPos((w / 2) - (DungeonTypeItem.SIZE / 2) - DungeonTypeItem.SIZE,
         dungeonTypeItemsY);
     goblinDungeonTypeItem.setPos((w / 2) - (DungeonTypeItem.SIZE / 2), dungeonTypeItemsY);
-    mageDungeonTypeItem.setPos(((w / 2) - (DungeonTypeItem.SIZE / 2)) + DungeonTypeItem.SIZE,
-        dungeonTypeItemsY);
     // TODO this is so much inelegant
     pages[DungeonType.YOG] = new RankingListPage(DungeonType.YOG);
     add(pages[DungeonType.YOG]);
@@ -371,9 +367,6 @@ public class RankingsScene extends PixelScene {
     pages[DungeonType.GOBLIN] = new RankingListPage(DungeonType.GOBLIN);
     add(pages[DungeonType.GOBLIN]);
     pages[DungeonType.GOBLIN].visible = false;
-    pages[DungeonType.MAD_MAGE] = new RankingListPage(DungeonType.MAD_MAGE);
-    add(pages[DungeonType.MAD_MAGE]);
-    pages[DungeonType.MAD_MAGE].visible = false;
     selected = Dungeon.dungeonType;
     pages[selected].visible = true;
 

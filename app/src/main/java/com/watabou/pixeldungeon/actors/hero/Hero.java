@@ -295,7 +295,7 @@ public class Hero extends Char {
       Fear fear = buff(Fear.class);
       if ((fear != null) && !(curAction instanceof HeroAction.Move)) {
         int calculateRunAway = calculateRunAway(fear);
-        curAction = new HeroAction.Move(calculateRunAway);// TODO test this
+        curAction = new HeroAction.Move(calculateRunAway);
       }
 
       if (curAction instanceof HeroAction.Move) {

@@ -38,7 +38,6 @@ public class IntroScene extends PixelScene {
   @Override
   public void create() {
     super.create();
-    // TODO ADD MAD MAGE
     switch (QuestChooseScene.curDungeonType) {
       case DungeonType.YOG:
         add(createDungeonWndStory(TEXT));

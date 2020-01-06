@@ -210,8 +210,6 @@ public class Room extends Rect implements Graph.Node, Bundlable {
     return neigbours;
   }
 
-  // FIXME: use proper string constants
-
   public Door entrance() {
     return connected.values().iterator().next();
   }

@@ -118,7 +118,7 @@ public class GoblinSewerBossLevel extends RegularLevel {
     paintWater();
     paintGrass();
 
-    // TODO traps in this level?
+    // no traps on this level
     // placeTraps();
 
     return true;
