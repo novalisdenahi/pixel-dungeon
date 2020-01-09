@@ -36,7 +36,7 @@ public class Rum extends Item {
 
   // TODO add throw and shutter effect
   public String message =
-      "Ahh! This is strong! You feel yourself brave enough to fight with anything.";
+      "Ahh! This is strong! You feel brave enough to fight with anything.";
 
   {
     stackable = true;

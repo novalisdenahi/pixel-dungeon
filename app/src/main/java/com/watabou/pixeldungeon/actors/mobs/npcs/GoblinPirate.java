@@ -109,8 +109,9 @@ public class GoblinPirate extends NPC {
     }
 
     public static void spawn(final Collection<Room> rooms) {
-      if (!spawned && (Dungeon.depth == 6)) {
-
+     // if (!spawned && (Dungeon.depth == 6)) {
+      //TODO this is test
+      if (!spawned && (Dungeon.depth == 2)) {
         Room goblinPirate = null;
         for (Room r : rooms) {
           if ((r.type == Type.STANDARD) && (r.width() > 4) && (r.height() > 4)) {
@@ -192,17 +193,16 @@ public class GoblinPirate extends NPC {
   }
 
   private static final String TXT_RUM =
-      "Yo Ho Ho! Come closer and don't be afraid. Yeah! I'm a Pirate Capt'n and a Goblin but not your enemy adventurer. "
-          + " My bloody crew sailling out without me! Arrgh! Maybe I was drunk. But I never said am a perfect Capt'n, "
-          + "therefore they will walk the plank! "
-          + "Maybe we could be partnets too. Aye! You don't have to do nothing else, just bring me "
-          + Quest.RUM_NECCESARY
-          + " bottles of _Goblin Rum_. I will pay the price. Just hurry! This old bones really thirsty. ";
+      "Yo Ho Ho! Come closer and don't be afraid. Yeah! I'm a Pirate Capt'n and a Goblin, but not your enemy adventurer. "
+          + " My bloody crew sailed out without me! Arrgh! Maybe I was drunk.... a bit. I never said am the perfect Capt'n. "
+          + "Therefore they will walk the plank! "
+          + "Maybe, we could help each other. Aye! You just have to bring me " + Quest.RUM_NECCESARY
+          + " bottles of _Goblin Rum_. I will pay the price. Just hurry! This old bones of mine are really thirsty. ";
   private static final String TXT_RUM_1 =
-      "Aaarrgghh! Matey it's not enough! But it will be enough until you bring more.";
+      "Aaarrgghh! Matey it's not enough! It will be enough until you bring more.";
 
   private static final String TXT_RUM_2 =
-      "What are you doing here without my _Rum_?! You will feed the fish!";
+      "What are you doing here without my _Rum_?! I'll feed you the fish if you just play with me!";
 
   private static final String TXT_RUM_3 =
       "I need more _Rum_ or no business! Don't come here empty handed you land lubber!";
@@ -246,8 +246,8 @@ public class GoblinPirate extends NPC {
 
   @Override
   public String description() {
-    return "He's a goblin. He's a pirate. He isn't ordinary. You can talk to him, "
-        + "it's worth a shot. Worst case you run away, he will never catch you with a wooden leg.";
+    return "It's a goblin. It's a pirate. He is a Goblin Pirate!. You can talk to him, "
+        + "it's worth a shot. Worst case? You run away, he will never catch you with his wooden leg.";
   }
 
   @Override
@@ -265,15 +265,18 @@ public class GoblinPirate extends NPC {
       Item item = Dungeon.hero.belongings.getItem(Rum.class);
 
       if (item != null) {
-        if ((item.quantity() + Quest.counter) >= Quest.RUM_NECCESARY) {
+
+        int detachAmount = getDetachNumber(item.quantity());
+        while (detachAmount > 0) {
           item.detach(Dungeon.hero.belongings.backpack);
+          Quest.counter++;
+          detachAmount--;
+        }
+        if (Quest.counter >= Quest.RUM_NECCESARY) {
 
           GameScene.show(new WndGoblinPirate(this, item));
-
         } else {
           tell(TXT_RUM_1);
-          Quest.counter += item.quantity();
-          item.detachAll(Dungeon.hero.belongings.backpack);
         }
       } else {
         if (Quest.counter == 0) {
@@ -289,6 +292,11 @@ public class GoblinPirate extends NPC {
 
       Journal.add(Journal.Feature.PIRATE);
     }
+  }
+
+  private final int getDetachNumber(final int quantity){
+    int stillNeed = Quest.RUM_NECCESARY - Quest.counter;
+    return Math.min(quantity, stillNeed);
   }
 
   @Override

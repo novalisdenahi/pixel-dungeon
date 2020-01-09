@@ -80,19 +80,32 @@ public class Room extends Rect implements Graph.Node, Bundlable {
   }
 
   public static enum Type {
-    NULL(null), STANDARD(StandardPainter.class), ENTRANCE(EntrancePainter.class), EXIT(
-        ExitPainter.class), BOSS_EXIT(BossExitPainter.class), TUNNEL(TunnelPainter.class), PASSAGE(
-            PassagePainter.class), SHOP(ShopPainter.class), BLACKSMITH(
-                BlacksmithPainter.class), GOBLIN_PIRATE(GoblinPiratePainter.class), TREASURY(
-                    TreasuryPainter.class), ARMORY(ArmoryPainter.class), LIBRARY(
-                        LibraryPainter.class), LABORATORY(LaboratoryPainter.class), VAULT(
-                            VaultPainter.class), TRAPS(TrapsPainter.class), STORAGE(
-                                StoragePainter.class), MAGIC_WELL(MagicWellPainter.class), GARDEN(
-                                    GardenPainter.class), CRYPT(CryptPainter.class), STATUE(
-                                        StatuePainter.class), POOL(PoolPainter.class), RAT_KING(
-                                            RatKingPainter.class), WEAK_FLOOR(
-                                                WeakFloorPainter.class), PIT(
-                                                    PitPainter.class), ALTAR(AltarPainter.class);
+    NULL(null),
+    STANDARD(StandardPainter.class),
+    ENTRANCE(EntrancePainter.class),
+    EXIT(ExitPainter.class),
+    BOSS_EXIT(BossExitPainter.class),
+    TUNNEL(TunnelPainter.class),
+    PASSAGE(PassagePainter.class),
+    SHOP(ShopPainter.class),
+    BLACKSMITH(BlacksmithPainter.class),
+    GOBLIN_PIRATE(GoblinPiratePainter.class),
+    TREASURY(TreasuryPainter.class),
+    ARMORY(ArmoryPainter.class),
+    LIBRARY(LibraryPainter.class),
+    LABORATORY(LaboratoryPainter.class),
+    VAULT(VaultPainter.class),
+    TRAPS(TrapsPainter.class),
+    STORAGE(StoragePainter.class),
+    MAGIC_WELL(MagicWellPainter.class),
+    GARDEN(GardenPainter.class),
+    CRYPT(CryptPainter.class),
+    STATUE(StatuePainter.class),
+    POOL(PoolPainter.class),
+    RAT_KING(RatKingPainter.class),
+    WEAK_FLOOR(WeakFloorPainter.class),
+    PIT(PitPainter.class),
+    ALTAR(AltarPainter.class);
 
     private Method paint;
 

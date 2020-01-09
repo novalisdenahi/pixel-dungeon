@@ -32,16 +32,15 @@ import com.watabou.pixeldungeon.utils.Utils;
 
 public class WndAsh extends Window {
   private static final String TXT_PAN =
-      "Yes! Yes!!! Finaly! Please give it to me! " +
-          "Sit down and wait a minute. I'll make something for you. " +
+      "Yes! Finally! Please hand it to me! " +
+          "Just wait a minute. I'll make something for you. " +
           "Something soo good like no one ever tasted.";
   private static final String TXT_MUSHROOM =
-      "Beautiful mature piece of mushroom. I hope you have not tasted it, " +
-          "because of its toxicity. This is a challenge for me. If I wanna be the very best cook then "
-          +
-          "every challenge along the way with courage I will face. I'll make something for you.";
+      "What a beautiful piece of mushroom. I hope you didn't tried it, " +
+          "because it's toxicity. This is a challenge for me. If I wanna be the best chef then "
+          + "I have to face every challenge along the way with courage. I'll make something for you.";
   private static final String TXT_BROTH = "Goblin Broth";
-  private static final String TXT_STEW = "Hushroom Stew";
+  private static final String TXT_STEW = "Mushroom Stew";
 
   private static final int WIDTH = 120;
   private static final int BTN_HEIGHT = 20;
@@ -97,7 +96,7 @@ public class WndAsh extends Window {
       Dungeon.level.drop(reward, ash.pos).sprite.drop();
     }
 
-    ash.yell("Goodbye! and Bon appetit!");
+    ash.yell("Goodbye! and Bon appetite!");
 
     GoblinAsh.Quest.complete();
   }

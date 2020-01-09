@@ -32,13 +32,13 @@ import com.watabou.pixeldungeon.utils.Utils;
 public class WndGoblinPirate extends Window {
 
   private static final String TXT_MESSAGE =
-      "Blimey! Aye! You are a the pirate! If my crew come back i'll count you in if you want it. "
-          + "Aaarrgghhh! Don't say am  cheat out belongings from you. Choose your price!";
+      "Blimey! Aye! If will have a ship again, I'll count you in! If you want it. "
+          + "Aaarrgghhh! Don't say am cheating out all the RUMs from you. Name your price!";
   private static final String TXT_BOOTY = "Pirate Booty";
   private static final String TXT_CUTLASS = "The Capt'n's cutlass";
 
   private static final String TXT_FARAWELL =
-      "Farewll matey! *hic* Don't forgett, you can join to my crew anytime!";
+      "Farewell matey! *hic* Don't forget, you can join to my crew anytime!";
 
   private static final int WIDTH = 120;
   private static final int BTN_HEIGHT = 18;
@@ -84,8 +84,6 @@ public class WndGoblinPirate extends Window {
   private void selectReward(final GoblinPirate goblinPirate, final Item item, final Item reward) {
 
     hide();
-
-    item.detach(Dungeon.hero.belongings.backpack);
 
     reward.identify();
     if (reward.doPickUp(Dungeon.hero)) {

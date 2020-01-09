@@ -192,25 +192,24 @@ public class GoblinAsh extends NPC {
   }
 
   private static final String TXT_COMPLETED =
-      "Please do not bother me! I'm working on a new recipient.";
+      "Sorry. I'm busy. I'm working on a new recipe.";
 
   private static final String TXT_NICE2MEETYOU =
-      "Nice to meet you! My name is Ash. I'am not like the other goblins. "
-          + " I'am not into bad things more like into cooking. I wana be a chef. \n"
-          +
-          "I wanna be the very best, \n Like no one ever was. \n To cook all food is my real test, \n To cook them well is my cause. \n";
+      "Nice to meet you! My name is Ash. I'm not like the other goblins. "
+          + " I don't like bad things, I'm more interested in cooking. I wanna be a chef. \n"
+          + "I wanna be the very best, \n Like no one ever was. \n To cook all food is my real test, \n To cook them well is my cause. \n";
 
   private static final String TXT_PAN1 = TXT_NICE2MEETYOU
-      + "But the other goblins hate me, and they stolen my favorite _pan_. Please bring it back to me. My precious! I will be thankful.";
+  + "but that's why the other goblins hate me and they stolen my favorite _pan_. Please, bring it back to me. I'll be thankful.";
 
   private static final String TXT_MUSHROOM1 = TXT_NICE2MEETYOU
-      + "But in order to be the best, the best wages on groceries I need. Please bring me _purple magic mushroom_ .";
+      + "But in order to be the best chef, I need the best ingredients. Please, bring me _purple magic mushroom_ .";
   private static final String TXT_PAN2 =
-      "Nothing yet? Please find further! I hope they don't use my _pan_ , in particular, don't use like a hat!";
+      "Nothing yet? Please, don't give up the search! I hope they don't use my _pan_ , as a hat!";
   private static final String TXT_MUSHROOM2 =
-      "No _hushroom_ yet? I need it if I wanna make the most special food. ";
+      "Did you found the mushroom? I need it if I want to make the most special food ever! ";
   {
-    name = "Ash the goblin cook";
+    name = "Ash, the goblin Escuelerie";
     spriteClass = GoblinAshSprite.class;
   }
 
@@ -240,7 +239,7 @@ public class GoblinAsh extends NPC {
 
   @Override
   public String description() {
-    return "What a strange dressing. I've never seen such a hat. This goblin does not seem dangerous, but rather funny.";
+    return "What a strange clothing in a dungeon. I've never seen a hat like that. This goblin doesn't seem dangerous, rather funny.";
   }
 
   @Override

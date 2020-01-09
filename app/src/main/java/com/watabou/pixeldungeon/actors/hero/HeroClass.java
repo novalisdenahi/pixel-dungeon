@@ -24,6 +24,7 @@ import com.watabou.pixeldungeon.items.TomeOfMastery;
 import com.watabou.pixeldungeon.items.armor.ClothArmor;
 import com.watabou.pixeldungeon.items.bags.Keyring;
 import com.watabou.pixeldungeon.items.food.Food;
+import com.watabou.pixeldungeon.items.food.Rum;
 import com.watabou.pixeldungeon.items.potions.PotionOfHealing;
 import com.watabou.pixeldungeon.items.potions.PotionOfStrength;
 import com.watabou.pixeldungeon.items.rings.RingOfShadows;
@@ -129,6 +130,12 @@ public enum HeroClass {
     symbolOfEstera.identify().collect();
 
     new Sword().collect();
+
+    new Rum().collect();
+    new Rum().collect();
+    new Rum().collect();
+    new Rum().collect();
+    new Rum().collect();
 
     new ScrollOfMagicMapping().collect();
 
