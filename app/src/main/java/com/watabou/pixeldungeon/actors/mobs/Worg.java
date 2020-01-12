@@ -56,9 +56,9 @@ public class Worg extends Mob {
 
   @Override
   public String description() {
-    return "Worgs are like the surface wolf. Except they are bigger, strongger and more bloodthirsty. "
-        + "The goblins often tame them with the purpose of riding. The worg meat is not realy tasty, "
-        + "but eatable if you are hungry. ";
+    return "Worgs just only look like wolfs. They are bigger, stronger and more bloodthirsty. "
+        + "The goblins often tame them with the purpose of riding. " +
+            "The meat of a worg is eatable but not really tasty.";
   }
 
   @Override

@@ -62,10 +62,11 @@ public class AlphaWorg extends Mob {
   }
 
   @Override
-  public String description() { // TODO FIXME
-    return "Worgs are like the surface wolf. Except they are bigger, strongger and more bloodthirsty. "
-        + "The goblins often tame them with the purpose of riding. The worg meat is not realy tasty, "
-        + "but eatable if you are hungry. ";
+  public String description() {
+    return "The Alpha is the leader of these evil predators. "
+            + "Not many worgs dare to challenge the leader. "
+            + "The howling of the Alpha can scare the cowards away. "
+            + "Only the Goblin King can ride on the Alpha Worg.";
   }
 
   @Override
