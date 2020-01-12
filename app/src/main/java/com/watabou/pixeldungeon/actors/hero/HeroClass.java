@@ -30,6 +30,7 @@ import com.watabou.pixeldungeon.items.potions.PotionOfStrength;
 import com.watabou.pixeldungeon.items.rings.RingOfShadows;
 import com.watabou.pixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.watabou.pixeldungeon.items.scrolls.ScrollOfMagicMapping;
+import com.watabou.pixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.watabou.pixeldungeon.items.wands.WandOfFirebolt;
 import com.watabou.pixeldungeon.items.wands.WandOfMagicMissile;
 import com.watabou.pixeldungeon.items.weapon.melee.Dagger;
@@ -128,16 +129,6 @@ public enum HeroClass {
 
     SymbolOfEstera symbolOfEstera = new SymbolOfEstera();
     symbolOfEstera.identify().collect();
-
-    new Sword().collect();
-
-    new Rum().collect();
-    new Rum().collect();
-    new Rum().collect();
-    new Rum().collect();
-    new Rum().collect();
-
-    new ScrollOfMagicMapping().collect();
 
     new PotionOfHealing().setKnown();
   }

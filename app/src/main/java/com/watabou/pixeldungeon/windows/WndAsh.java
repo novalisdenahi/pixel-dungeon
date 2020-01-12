@@ -37,7 +37,7 @@ public class WndAsh extends Window {
           "Something soo good like no one ever tasted.";
   private static final String TXT_MUSHROOM =
       "What a beautiful piece of mushroom. I hope you didn't tried it, " +
-          "because it's toxicity. This is a challenge for me. If I wanna be the best chef then "
+          "because it's toxic. This is a challenge for me. If I wanna be the best chef then "
           + "I have to face every challenge along the way with courage. I'll make something for you.";
   private static final String TXT_BROTH = "Goblin Broth";
   private static final String TXT_STEW = "Mushroom Stew";
