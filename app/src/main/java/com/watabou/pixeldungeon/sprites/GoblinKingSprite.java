@@ -23,13 +23,13 @@ import com.watabou.utils.Random;
 
 public class GoblinKingSprite extends MobSprite {
 
-  public GoblinKingSprite() {
+  public GoblinKingSprite(int goblinKingType) {
     super();
 
     texture(Assets.GOBLIN_KING);
 
-    // 18 is the frames length 0-17: club, 18-35: sword, 36-53: axe
-    int randomKingTexture = 16 * Random.Int(3);
+    // 16 is the frames length 0-16: club, 17-33: sword, 34-50: axe
+    int randomKingTexture = 16 * goblinKingType;
 
     TextureFilm frames = new TextureFilm(texture, 13, 16);
 

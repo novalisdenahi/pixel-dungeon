@@ -30,12 +30,15 @@ import com.watabou.pixeldungeon.actors.buffs.Paralysis;
 import com.watabou.pixeldungeon.items.keys.SkeletonKey;
 import com.watabou.pixeldungeon.items.weapon.enchantments.Death;
 import com.watabou.pixeldungeon.scenes.GameScene;
+import com.watabou.pixeldungeon.sprites.CharSprite;
 import com.watabou.pixeldungeon.sprites.GoblinKingSprite;
 import com.watabou.utils.Random;
 
 public class GoblinKing extends Mob {
 
   private static final HashSet<Class<?>> RESISTANCES = new HashSet<Class<?>>();
+
+  int goblinKingType = 0;
 
   static {
     RESISTANCES.add(Death.class);
@@ -50,6 +53,12 @@ public class GoblinKing extends Mob {
     EXP = 20;
     defenseSkill = 18;
 
+    goblinKingType = Random.Int(3);
+  }
+
+  @Override
+  public CharSprite sprite() {
+    return new GoblinKingSprite(goblinKingType);
   }
 
   @Override
