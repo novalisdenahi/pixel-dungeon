@@ -64,9 +64,9 @@ public class GoblinFireMage extends GoblinMage implements Callback {
 
   @Override
   public String description() {
-    return "The goblin mage is a honored member of the tribe. "
-        + " But there are a few exception, like a goblin fire mage. These goblin mages glorify the fire so that "
-        + "it is often their own tribe to serve as the flames.";
+    return "A goblin mage is an honoured member of the tribe. The craziest mage's magic is mostly "
+            + "based on fire. For some reason, the goblins like to burn things, "
+            + "and the fire mages are really good at it.";
   }
 
   @Override

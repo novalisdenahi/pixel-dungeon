@@ -44,7 +44,7 @@ public class GoblinBroth extends Food {
 
   @Override
   public String info() {
-    return "Our little chefs put everything into this broth. Every good adventurer should taste the soup once.";
+    return "Our little chef put everything into this broth. Every good adventurer should taste the soup once.";
   }
 
   @Override

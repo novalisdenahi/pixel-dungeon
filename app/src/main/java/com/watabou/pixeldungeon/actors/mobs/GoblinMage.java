@@ -72,9 +72,9 @@ public class GoblinMage extends Mob implements Callback {
 
   @Override
   public String description() {
-    return "The goblin mage is a honored member of the tribe. "
-        + " The tribe fears and respects the mage, not only because of the knowledge of magic, "
-        + "but also because of the cunning and meanness.";
+    return "A goblin mage is an honoured member of the tribe. "
+            + "The goblins fears and respects the mages, not only because of their power but also "
+            + "because of the cunning and evilness of the goblin mages.";
   }
 
   @Override

@@ -50,7 +50,7 @@ public class MushroomStew extends Food {
 
   @Override
   public String info() {
-    return "This stew made from purple magic mushroom. Smells good, looks... not bad. The cook said fine, worth a try.";
+    return "This stew is made from the purple magic mushroom. Smells good, looks... maybe it's not bad. Worth a try.";
   }
 
   @Override

@@ -43,7 +43,7 @@ public class GoblinKing extends Mob {
 
   {
     name = Dungeon.depth == Statistics.getDeepestFloor(Dungeon.dungeonType) ? "King of the Goblins"
-        : "Usurper Goblin King";
+        : "Descendant of the Goblin King";
     spriteClass = GoblinKingSprite.class;
 
     HP = HT = 100;
@@ -59,7 +59,7 @@ public class GoblinKing extends Mob {
 
   @Override
   public int attackProc(final Char enemy, final int damage) {
-    int dice = Random.Int(6);
+    int dice = Random.Int(10);
     switch (dice) {
       case 0:
         Buff.affect(enemy, Bleeding.class).set(damage);
@@ -71,7 +71,7 @@ public class GoblinKing extends Mob {
         Buff.affect(enemy, Cripple.class);
         return damage;
       case 3:
-        // TODO add yell and laught
+        yell("Die human!!!");
         return damage;
       default:
         return damage;
@@ -90,7 +90,8 @@ public class GoblinKing extends Mob {
 
   @Override
   public String description() {
-    return ""; // TODO add goblin king description
+    return "The crown is worn. The weapon is rusty. This is the superiority of the goblin king. "
+            + "But be careful, to be the Goblin King the goblin must be the wildest and worst goblin.";
   }
 
   @Override
@@ -102,8 +103,7 @@ public class GoblinKing extends Mob {
     Dungeon.level.drop(new SkeletonKey(), pos).sprite.drop();
 
     Badges.validateBossSlain();
-    // TODO yell something
-    yell("");
+    yell("My crown! No!");
   }
 
   @Override
@@ -119,8 +119,7 @@ public class GoblinKing extends Mob {
   @Override
   public void notice() {
     super.notice();
-    // TODO yell something like. who is brave enough to face the king
-    yell("");
+    yell("Who is brave enough to face me? The King!");
   }
 
   @Override

@@ -43,8 +43,8 @@ public class ThrowingKnife extends MissileWeapon {
 
   @Override
   public String desc() {
-    return "Lightweight knife without handle. It is not easy to deal with, but is in good hands" +
-        " is dangerous. They can be thrown at very high rate.";
+    return "Lightweight knife without a handle. It's not easy to deal with, but in good hands "
+            + "could be dangerous. They can be thrown at very high rate.";
   }
 
   @Override

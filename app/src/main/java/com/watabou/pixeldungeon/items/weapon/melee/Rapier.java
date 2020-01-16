@@ -32,6 +32,6 @@ public class Rapier extends MeleeWeapon {
 
   @Override
   public String desc() {
-    return "A thin, light, sharp-pointed sword used for thrusting.";
+    return "Thin, light, sharp and pointy swords, used mainly for stabbing.";
   }
 }

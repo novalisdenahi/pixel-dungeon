@@ -42,7 +42,7 @@ public class GoblinChampion extends Mob {
 
   @Override
   public int attackSkill(final Char target) {
-    return 16; // TODO not too much
+    return 13;
   }
 
   @Override
@@ -52,9 +52,9 @@ public class GoblinChampion extends Mob {
 
   @Override
   public String description() {
-    // TODO FIX desc
-    return "Goblins are small goblinoids. They organized in tribes living under the surface. If you see one goblin "
-        + "you can be sure there are more of them. The goblins sneaking into villages and towns by night to take what they can. ";
+    return "There are a few goblins, which are more vicious than the others. "
+            + "They take their chances and become the Champion of the tribe. "
+            + "The Champions has better armours and weapons than the others.";
   }
 
   @Override

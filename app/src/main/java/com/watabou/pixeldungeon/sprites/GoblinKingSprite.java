@@ -29,7 +29,7 @@ public class GoblinKingSprite extends MobSprite {
     texture(Assets.GOBLIN_KING);
 
     // 18 is the frames length 0-17: club, 18-35: sword, 36-53: axe
-    int randomKingTexture = 18 * Random.Int(3);
+    int randomKingTexture = 16 * Random.Int(3);
 
     TextureFilm frames = new TextureFilm(texture, 13, 16);
 
