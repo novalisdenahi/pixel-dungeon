@@ -19,6 +19,7 @@ package com.watabou.pixeldungeon.actors.mobs;
 
 import java.util.HashSet;
 
+import com.watabou.pixeldungeon.Badges;
 import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.ResultDescriptions;
 import com.watabou.pixeldungeon.actors.Char;
@@ -119,5 +120,12 @@ public class GoblinFireMage extends GoblinMage implements Callback {
     } else {
       enemy.sprite.showStatus(CharSprite.NEUTRAL, enemy.defenseVerb());
     }
+  }
+
+  @Override
+  public void die(Object cause) {
+    super.die(cause);
+    //TODO rare Goblin fire mage
+    //Badges.validateRare(this);
   }
 }
