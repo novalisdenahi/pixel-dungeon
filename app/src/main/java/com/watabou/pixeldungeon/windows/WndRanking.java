@@ -40,6 +40,7 @@ import com.watabou.pixeldungeon.ui.ItemSlot;
 import com.watabou.pixeldungeon.ui.QuickSlot;
 import com.watabou.pixeldungeon.ui.RedButton;
 import com.watabou.pixeldungeon.ui.ScrollPane;
+import com.watabou.pixeldungeon.utils.GLog;
 import com.watabou.pixeldungeon.utils.Utils;
 
 public class WndRanking extends WndTabbed {
@@ -99,7 +100,6 @@ public class WndRanking extends WndTabbed {
     protected void layout() {
       bg.x = x;
       bg.y = y;
-
       slot.setRect(x, y, SIZE, SIZE);
 
       super.layout();
@@ -358,7 +358,9 @@ public class WndRanking extends WndTabbed {
 
   public WndRanking(final String gameFile) {
 
+
     super();
+
     resize(WIDTH, HEIGHT);
 
     thread = new Thread() {
@@ -404,7 +406,6 @@ public class WndRanking extends WndTabbed {
   @Override
   public void update() {
     super.update();
-
     if ((thread != null) && !thread.isAlive()) {
       thread = null;
       if (error == null) {

@@ -95,7 +95,6 @@ public class TitleScene extends PixelScene {
   private static final String TXT_PLAY = "Play";
   private static final String TXT_HIGHSCORES = "Rankings";
   private static final String TXT_BADGES = "Badges";
-
   private static final String TXT_ABOUT = "About";
 
   @Override
@@ -127,25 +126,6 @@ public class TitleScene extends PixelScene {
     placeTorch(title.x + 18, title.y + 20);
     placeTorch((title.x + title.width) - 18, title.y + 20);
 
-    Image signs = new Image(BannerSprites.get(BannerSprites.Type.PIXEL_DUNGEON_SIGNS)) {
-      private float time = 0;
-
-      @Override
-      public void draw() {
-        GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
-        super.draw();
-        GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-      }
-
-      @Override
-      public void update() {
-        super.update();
-        am = (float) Math.sin(-(time += Game.elapsed));
-      }
-    };
-    signs.x = title.x;
-    signs.y = title.y;
-    add(signs);
 
     DashboardItem btnBadges = new DashboardItem(TXT_BADGES, 3) {
       @Override

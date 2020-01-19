@@ -95,7 +95,6 @@ public class QuestChooseScene extends PixelScene {
 
   private static final String TXT_DUNGEON_YOG_DZEWA = "Dungeon Of Yog-Dzewa";
   private static final String TXT_DUNGEON_GOBLINS = "Dungeon Of Goblins";
-  private static final String TXT_DUNGEON_MAD_MAGE = "Dungeon Of The Made Mage";
 
   @Override
   public void create() {

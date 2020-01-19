@@ -86,7 +86,6 @@ public enum Rankings {
   public static final int TABLE_SIZE = 6;
   public static final String RANKINGS_FILE_YOG = "rankings.dat";
   public static final String RANKINGS_FILE_GOBLIN = "rankings_goblin.dat";
-  public static final String RANKINGS_FILE_MAGE = "rankings_mage.dat";
 
   public static final String DETAILS_FILE = "game_%d.dat";
   private static final String RECORDS = "records";
@@ -102,17 +101,17 @@ public enum Rankings {
     }
   };
 
-  public ArrayList<Record> records;
+  private ArrayList<Record> records;
+
+  public ArrayList<Record> gerRecords(){
+    return records;
+  }
+
   public int lastRecord;
   public int totalNumber;
   public int wonNumber;
 
   public void load(final int dungeonType) {
-    // TODO always reload
-    // if (records != null) {
-    // return;
-    // }
-
     records = new ArrayList<Rankings.Record>();
 
     try {

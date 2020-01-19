@@ -17,6 +17,7 @@
  */
 package com.watabou.pixeldungeon.scenes;
 
+import com.watabou.input.Touchscreen;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.BitmapTextMultiline;
 import com.watabou.noosa.Camera;
@@ -49,7 +50,7 @@ public class RankingsScene extends PixelScene {
     private static final int IMAGE_SIZE = 32;
 
     private Image image;
-    private int dungeonType;
+    public int dungeonType;
 
     public DungeonTypeItem(final int dungeonType) {
       super();
@@ -81,8 +82,13 @@ public class RankingsScene extends PixelScene {
       image.brightness(1.5f);
       Sample.INSTANCE.play(Assets.SND_CLICK, 1, 1, 0.8f);
       pages[selected].visible = false;
+      icons[selected].image.scale.scale(0.9f);
       selected = dungeonType;
+      this.remove(pages[selected]);
+      pages[selected] = new RankingListPage(selected);
+      add(pages[selected]);
       pages[selected].visible = true;
+      icons[selected].image.scale.invScale(0.9f);
     }
 
     @Override
@@ -96,15 +102,15 @@ public class RankingsScene extends PixelScene {
     public RankingListPage(final int dungeonType) {
       Rankings.INSTANCE.load(dungeonType);
 
-      if (Rankings.INSTANCE.records.size() > 0) {
+      if (Rankings.INSTANCE.gerRecords().size() > 0) {
         float rowHeight = PixelDungeon.landscape() ? ROW_HEIGHT_L : ROW_HEIGHT_P;
 
         float left = ((w - Math.min(MAX_ROW_WIDTH, w)) / 2) + GAP;
         float top = PixelScene.align((h - ((rowHeight * MAX_ROW_NUMBER))) / 2);
         int pos = 0;
 
-        for (Rankings.Record rec : Rankings.INSTANCE.records) {
-          Record row = new Record(pos, pos == Rankings.INSTANCE.lastRecord, rec);
+        for (Rankings.Record rec : Rankings.INSTANCE.gerRecords()) {
+          Record row = new Record(pos, pos == Rankings.INSTANCE.lastRecord, rec, dungeonType);
           row.setRect(left, top + (pos * rowHeight), w - (left * 2), rowHeight);
           add(row);
 
@@ -150,60 +156,6 @@ public class RankingsScene extends PixelScene {
 
   }
 
-  // private void createDungeonTypeRankingList(final int dungeonType) {
-  // Rankings.INSTANCE.load(dungeonType);
-  //
-  // if (Rankings.INSTANCE.records.size() > 0) {
-  // float rowHeight = PixelDungeon.landscape() ? ROW_HEIGHT_L : ROW_HEIGHT_P;
-  //
-  // float left = ((w - Math.min(MAX_ROW_WIDTH, w)) / 2) + GAP;
-  // float top = PixelScene.align((h - ((rowHeight * MAX_ROW_NUMBER))) / 2);
-  // int pos = 0;
-  //
-  // for (Rankings.Record rec : Rankings.INSTANCE.records) {
-  // Record row = new Record(pos, pos == Rankings.INSTANCE.lastRecord, rec);
-  // row.setRect(left, top + (pos * rowHeight), w - (left * 2), rowHeight);
-  // add(row);
-  //
-  // pos++;
-  // }
-  //
-  // if (Rankings.INSTANCE.totalNumber >= Rankings.TABLE_SIZE) {
-  // BitmapText label = PixelScene.createText(TXT_TOTAL, 8);
-  // label.hardlight(DEFAULT_COLOR);
-  // label.measure();
-  // add(label);
-  //
-  // BitmapText won = PixelScene.createText(Integer.toString(Rankings.INSTANCE.wonNumber), 8);
-  // won.hardlight(Window.TITLE_COLOR);
-  // won.measure();
-  // add(won);
-  //
-  // BitmapText total = PixelScene.createText("/" + Rankings.INSTANCE.totalNumber, 8);
-  // total.hardlight(DEFAULT_COLOR);
-  // total.measure();
-  // total.x = PixelScene.align((w - total.width()) / 2);
-  // total.y = PixelScene.align(top + (pos * rowHeight) + GAP);
-  // add(total);
-  //
-  // float tw = label.width() + won.width() + total.width();
-  // label.x = PixelScene.align((w - tw) / 2);
-  // won.x = label.x + label.width();
-  // total.x = won.x + won.width();
-  // label.y = won.y = total.y = PixelScene.align(top + (pos * rowHeight) + GAP);
-  // }
-  //
-  // } else {
-  //
-  // BitmapText titleNoGames = PixelScene.createText(TXT_NO_GAMES, 8);
-  // titleNoGames.hardlight(DEFAULT_COLOR);
-  // titleNoGames.measure();
-  // titleNoGames.x = PixelScene.align((w - titleNoGames.width()) / 2);
-  // titleNoGames.y = PixelScene.align((h - titleNoGames.height()) / 2);
-  // add(titleNoGames);
-  //
-  // }
-  // }
 
   public static class Record extends Button {
 
@@ -214,7 +166,7 @@ public class RankingsScene extends PixelScene {
     private static final int FLARE_WIN = 0x888866;
     private static final int FLARE_LOSE = 0x666666;
 
-    private Rankings.Record rec;
+    private String gameFileName;
 
     private ItemSprite shield;
     private Flare flare;
@@ -222,10 +174,10 @@ public class RankingsScene extends PixelScene {
     private BitmapTextMultiline desc;
     private Image classIcon;
 
-    public Record(final int pos, final boolean latest, final Rankings.Record rec) {
+    public Record(final int pos, final boolean latest, final Rankings.Record rec, final int dungeonType) {
       super();
 
-      this.rec = rec;
+      gameFileName = rec.gameFile;
 
       if (latest) {
         flare = new Flare(6, 24);
@@ -241,7 +193,12 @@ public class RankingsScene extends PixelScene {
       desc.measure();
 
       if (rec.win) {
-        shield.view(ItemSpriteSheet.AMULET, null);
+
+        if(dungeonType == DungeonType.GOBLIN){
+          shield.view(ItemSpriteSheet.SYMBOLOFESTERA, null);
+        }else{
+          shield.view(ItemSpriteSheet.AMULET, null);
+        }
         position.hardlight(TEXT_WIN);
         desc.hardlight(TEXT_WIN);
       } else {
@@ -296,8 +253,8 @@ public class RankingsScene extends PixelScene {
 
     @Override
     protected void onClick() {
-      if (rec.gameFile.length() > 0) {
-        parent.add(new WndRanking(rec.gameFile));
+      if (this.gameFileName.length() > 0) {
+        parent.add(new WndRanking(gameFileName));
       } else {
         parent.add(new WndError(TXT_NO_INFO));
       }
@@ -323,17 +280,33 @@ public class RankingsScene extends PixelScene {
   private static final float GAP = 4;
 
   private Archs archs;
-  private int w = Camera.main.width;
 
-  private int h = Camera.main.height;
+  private int w;
+
+  private int h;
 
   private int selected;
-  private Group[] pages = new Group[3];
+
+  private DungeonTypeItem[] icons = new DungeonTypeItem[2];
+  private Group[] pages = new Group[2];
+
+  @Override
+  protected void onMenuPressed() {
+    super.onMenuPressed();
+  }
+
+  @Override
+  public void update() {
+    super.update();
+  }
 
   @Override
   public void create() {
 
     super.create();
+
+    w = Camera.main.width;
+    h = Camera.main.height;
 
     Music.INSTANCE.play(Assets.THEME, true);
     Music.INSTANCE.volume(1f);
@@ -353,14 +326,17 @@ public class RankingsScene extends PixelScene {
 
     DungeonTypeItem yogDungeonTypeItem = new DungeonTypeItem(DungeonType.YOG);
     add(yogDungeonTypeItem);
+    icons[DungeonType.YOG] = yogDungeonTypeItem;
     DungeonTypeItem goblinDungeonTypeItem = new DungeonTypeItem(DungeonType.GOBLIN);
     add(goblinDungeonTypeItem);
+    icons[DungeonType.GOBLIN] = goblinDungeonTypeItem;
 
     float dungeonTypeItemsY = title.y + GAP + title.height();
-    yogDungeonTypeItem.setPos((w / 2) - (DungeonTypeItem.SIZE / 2) - DungeonTypeItem.SIZE,
+    yogDungeonTypeItem.setPos((w / 2) - (DungeonTypeItem.SIZE / 2) - (DungeonTypeItem.SIZE / 2) - GAP,
         dungeonTypeItemsY);
-    goblinDungeonTypeItem.setPos((w / 2) - (DungeonTypeItem.SIZE / 2), dungeonTypeItemsY);
-    // TODO this is so much inelegant
+    goblinDungeonTypeItem.setPos((w / 2) - (DungeonTypeItem.SIZE / 2) + (DungeonTypeItem.SIZE / 2)+ GAP,
+            dungeonTypeItemsY);
+
     pages[DungeonType.YOG] = new RankingListPage(DungeonType.YOG);
     add(pages[DungeonType.YOG]);
     pages[DungeonType.YOG].visible = false;
@@ -369,6 +345,8 @@ public class RankingsScene extends PixelScene {
     pages[DungeonType.GOBLIN].visible = false;
     selected = Dungeon.dungeonType;
     pages[selected].visible = true;
+    icons[selected].image.scale.invScale(0.9f);
+    this.bringToFront(pages[selected]);
 
     ExitButton btnExit = new ExitButton();
     btnExit.setPos(Camera.main.width - btnExit.width(), 0);
