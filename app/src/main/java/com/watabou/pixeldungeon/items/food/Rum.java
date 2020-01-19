@@ -21,10 +21,15 @@ import java.util.ArrayList;
 
 import com.watabou.noosa.audio.Sample;
 import com.watabou.pixeldungeon.Assets;
+import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.actors.buffs.Buff;
 import com.watabou.pixeldungeon.actors.buffs.Drunk;
 import com.watabou.pixeldungeon.actors.hero.Hero;
+import com.watabou.pixeldungeon.effects.Splash;
 import com.watabou.pixeldungeon.items.Item;
+import com.watabou.pixeldungeon.levels.Level;
+import com.watabou.pixeldungeon.levels.Terrain;
+import com.watabou.pixeldungeon.sprites.ItemSprite;
 import com.watabou.pixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.pixeldungeon.utils.GLog;
 
@@ -36,7 +41,7 @@ public class Rum extends Item {
 
   // TODO add throw and shutter effect
   public String message =
-      "Ahh! This is strong! You feel brave enough to fight with anything.";
+      "Ahh! This is strong! You feel dizzy and brave enough to fight with anyone.";
 
   {
     stackable = true;
@@ -74,8 +79,8 @@ public class Rum extends Item {
 
   @Override
   public String info() {
-    return "Not smells good, and the quality of this rum is much worse than you hope. "
-        + "Remember! Drink responsibly!";
+    return "Smell's bad. It's alcohol, but it has no connection to the Dwarfs beer or the Elves wine."
+        + "Remember: Drink responsibly!";
   }
 
   @Override
@@ -91,5 +96,31 @@ public class Rum extends Item {
   @Override
   public int price() {
     return 5 * quantity;
+  }
+
+  @Override
+  protected void onThrow(final int cell) {
+    if ((Dungeon.level.map[cell] == Terrain.WELL) || Level.pit[cell]) {
+
+      super.onThrow(cell);
+
+    } else {
+
+      shatter(cell);
+
+    }
+  }
+
+  public void shatter(final int cell) {
+    if (Dungeon.visible[cell]) {
+      GLog.i("The bottle shatters and the RUM splashes harmlessly.");
+      Sample.INSTANCE.play(Assets.SND_SHATTER);
+      splash(cell);
+    }
+  }
+
+  protected void splash(final int cell) {
+    final int color = ItemSprite.pick(image, 8, 10);
+    Splash.at(cell, color, 5);
   }
 }

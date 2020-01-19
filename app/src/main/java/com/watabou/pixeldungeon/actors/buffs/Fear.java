@@ -24,7 +24,7 @@ public class Fear extends FlavourBuff {
 
   public static final float DURATION = 3f;
 
-  public static final String NO_WAY_TO_RUN = "AAAAAAAA!!!!";
+  public static final String NO_WAY_TO_RUN = "AAAAaaaAAaa!!!!";
 
   public static float duration(final Char ch) {
     return DURATION;

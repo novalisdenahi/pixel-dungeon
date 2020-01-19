@@ -26,7 +26,9 @@ import com.watabou.pixeldungeon.items.armor.MailArmor;
 import com.watabou.pixeldungeon.items.bags.Keyring;
 import com.watabou.pixeldungeon.items.food.Food;
 import com.watabou.pixeldungeon.items.food.Rum;
+import com.watabou.pixeldungeon.items.potions.PotionOfExperience;
 import com.watabou.pixeldungeon.items.potions.PotionOfHealing;
+import com.watabou.pixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.watabou.pixeldungeon.items.potions.PotionOfStrength;
 import com.watabou.pixeldungeon.items.rings.RingOfShadows;
 import com.watabou.pixeldungeon.items.scrolls.ScrollOfEnchantment;
@@ -127,10 +129,18 @@ public enum HeroClass {
     new Dart(5).identify().collect();
     QuickSlot.primaryValue = Dart.class;
 
+
     SymbolOfEstera symbolOfEstera = new SymbolOfEstera();
     symbolOfEstera.identify().collect();
 
+    new PotionOfHealing().collect();
+    new PotionOfExperience().collect();
+    new PotionOfLiquidFlame().collect();
     new PotionOfHealing().setKnown();
+    new PotionOfExperience().setKnown();
+    new PotionOfLiquidFlame().setKnown();
+    new Rum().collect();
+    new Rum().collect();
   }
 
   private static void initRogue(final Hero hero) {

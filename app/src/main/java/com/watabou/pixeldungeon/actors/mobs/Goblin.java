@@ -74,7 +74,7 @@ public class Goblin extends Mob {
       lootChance = 0.5f;
     } else {
       loot = Rum.class;
-      lootChance = 0.3f;
+      lootChance = 0.5f;
     }
 
   }
