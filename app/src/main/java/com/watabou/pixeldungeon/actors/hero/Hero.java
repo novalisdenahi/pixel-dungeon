@@ -511,7 +511,7 @@ public class Hero extends Char {
 
     } else {
       if (Dungeon.level.map[pos] == Terrain.SIGN) {
-        Sign.read(pos);
+        Sign.read(pos,Dungeon.dungeonType);
       }
       ready();
 

@@ -28,10 +28,31 @@ import com.watabou.pixeldungeon.scenes.GameScene;
 import com.watabou.pixeldungeon.utils.GLog;
 import com.watabou.pixeldungeon.windows.WndMessage;
 
+import hu.denahi.pixeldungeon.holy.quest.DungeonType;
+
 public class Sign {
 
   private static final String TXT_DEAD_END =
       "What are you doing here?!";
+
+  private static final String[] TIPS_GOBLIN = {
+          "Don't overestimate your strength, use weapons and armor you can handle.",
+          "Not all doors in the dungeon are visible at first sight. If you are stuck, search for hidden doors.",
+          "Remember, that raising your strength is not the only way to access better equipment, you can go "
+                  + "the other way lowering its strength requirement with Scrolls of Upgrade.",
+          "You can spend your gold in shops on deeper levels of the dungeon. The first one is on the 6th level.",
+
+          "The air filled with terror. The Alpha Worg is near!",
+
+          "Goblin-Mart - all you need for successful adventure!",
+          "Identify your potions and scrolls as soon as possible. Don't put it off to the moment " +
+                  "when you actually need them.",
+          "Being hungry doesn't hurt, but starving does hurt.",
+          "Surprise attack has a better chance to hit. For example, you can ambush your enemy behind " +
+                  "a closed door when you know it is approaching.",
+
+          "There's a reason why he's the Goblin King! Don't let your guard down!"
+  };
 
   private static final String[] TIPS = {
       "Don't overestimate your strength, use weapons and armor you can handle.",
@@ -72,7 +93,7 @@ public class Sign {
   private static final String TXT_BURN =
       "As you try to read the sign it bursts into greenish flames.";
 
-  public static void read(final int pos) {
+  public static void read(final int pos, final int dungeonType) {
 
     if (Dungeon.level instanceof DeadEndLevel) {
 
@@ -81,21 +102,32 @@ public class Sign {
     } else {
 
       int index = Dungeon.depth - 1;
-
-      if (index < TIPS.length) {
-        GameScene.show(new WndMessage(TIPS[index]));
-      } else {
-
-        Dungeon.level.destroy(pos);
-        GameScene.updateMap(pos);
-        GameScene.discoverTile(pos, Terrain.SIGN);
-
-        CellEmitter.get(pos).burst(ElmoParticle.FACTORY, 6);
-        Sample.INSTANCE.play(Assets.SND_BURNING);
-
-        GLog.w(TXT_BURN);
-
+      String[] tips;
+      if(DungeonType.GOBLIN == dungeonType){
+        tips = TIPS_GOBLIN;
+      }else{
+        tips = TIPS;
       }
+      readDungeonSign(index, pos, tips);
+
+
+    }
+  }
+
+  private static  void readDungeonSign(final int index, final int pos,final String[] tips){
+    if (index < tips.length) {
+      GameScene.show(new WndMessage(tips[index]));
+    } else {
+
+      Dungeon.level.destroy(pos);
+      GameScene.updateMap(pos);
+      GameScene.discoverTile(pos, Terrain.SIGN);
+
+      CellEmitter.get(pos).burst(ElmoParticle.FACTORY, 6);
+      Sample.INSTANCE.play(Assets.SND_BURNING);
+
+      GLog.w(TXT_BURN);
+
     }
   }
 }

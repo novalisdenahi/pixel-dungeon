@@ -35,6 +35,7 @@ import com.watabou.pixeldungeon.actors.hero.Hero;
 import com.watabou.pixeldungeon.actors.hero.HeroClass;
 import com.watabou.pixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.watabou.pixeldungeon.actors.mobs.npcs.Ghost;
+import com.watabou.pixeldungeon.actors.mobs.npcs.GoblinAsh;
 import com.watabou.pixeldungeon.actors.mobs.npcs.GoblinPirate;
 import com.watabou.pixeldungeon.actors.mobs.npcs.Imp;
 import com.watabou.pixeldungeon.actors.mobs.npcs.Wandmaker;
@@ -183,6 +184,7 @@ public class Dungeon {
   private static final String QUESTS = "quests";
 
   private static final String BADGES = "badges";
+
   private static boolean[] passable = new boolean[Level.LENGTH];
 
   public static boolean bossLevel() {
@@ -357,6 +359,7 @@ public class Dungeon {
     Blacksmith.Quest.reset();
     Imp.Quest.reset();
     GoblinPirate.Quest.reset();
+    GoblinAsh.Quest.reset();
 
     Room.shuffleTypes();
 
