@@ -114,8 +114,6 @@ public enum HeroClass {
 
     WandOfMagicMissile wand = new WandOfMagicMissile();
     wand.identify().collect();
-    WandOfFirebolt wand2 = new WandOfFirebolt();
-    wand2.identify().collect();
 
     QuickSlot.primaryValue = wand;
 
@@ -133,14 +131,8 @@ public enum HeroClass {
     SymbolOfEstera symbolOfEstera = new SymbolOfEstera();
     symbolOfEstera.identify().collect();
 
-    new PotionOfHealing().collect();
-    new PotionOfExperience().collect();
-    new PotionOfLiquidFlame().collect();
     new PotionOfHealing().setKnown();
-    new PotionOfExperience().setKnown();
-    new PotionOfLiquidFlame().setKnown();
-    new Rum().collect();
-    new Rum().collect();
+
   }
 
   private static void initRogue(final Hero hero) {
