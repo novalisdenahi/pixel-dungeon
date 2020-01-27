@@ -273,7 +273,7 @@ public class GoblinCavesLevel extends RegularLevel {
 
   @Override
   public String tilesTex() {
-    return Assets.TILES_CAVES;
+    return Assets.TILES_GOBLIN_CAVES;
   }
 
   @Override
