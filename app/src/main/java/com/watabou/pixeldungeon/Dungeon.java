@@ -106,24 +106,6 @@ public class Dungeon {
 
   public static int depth;
 
-  // public static String tip() {
-  //
-  // if (level instanceof DeadEndLevel) {
-  //
-  // return TXT_DEAD_END;
-  //
-  // } else {
-  //
-  // int index = depth - 1;
-  //
-  // if (index < tips.length) {
-  // return tips[index];
-  // } else {
-  // return NO_TIPS;
-  // }
-  // }
-  // }
-
   public static int gold;
 
   public static String resultDescription;

@@ -75,6 +75,8 @@ import com.watabou.pixeldungeon.windows.WndGame;
 import com.watabou.pixeldungeon.windows.WndStory;
 import com.watabou.utils.Random;
 
+import hu.denahi.pixeldungeon.holy.quest.DungeonType;
+
 public class GameScene extends PixelScene {
 
   private static final String TXT_WELCOME = "Welcome to the level %d of Pixel Dungeon!";
@@ -500,22 +502,33 @@ public class GameScene extends PixelScene {
         Chasm.heroLand();
         break;
       case DESCEND:
-        switch (Dungeon.depth) {
-          case 1:
-            WndStory.showChapter(WndStory.ID_SEWERS);
-            break;
-          case 6:
-            WndStory.showChapter(WndStory.ID_PRISON);
-            break;
-          case 11:
-            WndStory.showChapter(WndStory.ID_CAVES);
-            break;
-          case 16:
-            WndStory.showChapter(WndStory.ID_METROPOLIS);
-            break;
-          case 22:
-            WndStory.showChapter(WndStory.ID_HALLS);
-            break;
+        if(DungeonType.GOBLIN == Dungeon.dungeonType){
+          switch (Dungeon.depth) {
+            case 1:
+              WndStory.showChapter(WndStory.ID_HQ_SEWER);
+              break;
+            case 6:
+              WndStory.showChapter(WndStory.ID_HQ_CAVES);
+              break;
+          }
+        }else{
+          switch (Dungeon.depth) {
+            case 1:
+              WndStory.showChapter(WndStory.ID_SEWERS);
+              break;
+            case 6:
+              WndStory.showChapter(WndStory.ID_PRISON);
+              break;
+            case 11:
+              WndStory.showChapter(WndStory.ID_CAVES);
+              break;
+            case 16:
+              WndStory.showChapter(WndStory.ID_METROPOLIS);
+              break;
+            case 22:
+             WndStory.showChapter(WndStory.ID_HALLS);
+              break;
+          }
         }
         if (Dungeon.hero.isAlive() && (Dungeon.depth != 22)) {
           Badges.validateNoKilling();

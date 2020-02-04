@@ -41,9 +41,10 @@ public class WndStory extends Window {
   public static final int ID_CAVES = 2;
   public static final int ID_METROPOLIS = 3;
   public static final int ID_HALLS = 4;
+  public static final int ID_HQ_SEWER = 5;
+  public static final int ID_HQ_CAVES = 6;
 
   private static final SparseArray<String> CHAPTERS = new SparseArray<String>();
-  /// TODO GOBLIN?
   static {
     CHAPTERS.put(ID_SEWERS,
         "The Dungeon lies right beneath the City, its upper levels actually constitute the City's sewer system. "
@@ -84,6 +85,16 @@ public class WndStory extends Window {
             +
             "and now it's called Demon Halls.\n\n" +
             "Very few adventurers have ever descended this far...");
+
+    CHAPTERS.put(ID_HQ_SEWER,
+            "The Dungeon lies right beneath the Temple, its upper levels actually constitute the City's sewer system. "
+                    + "The Goblins use these channels to get into the city and plunder. No one will call it a safe place, "
+                    + "but your path leads in that direction. Follow the kidnappers. ");
+
+    CHAPTERS.put(ID_HQ_CAVES,
+            "Follow the trail to the goblins' cave from the channels. You are now completely in goblin territory. "
+                    + "The goblins live in these caves where the Goblin King reigns over them. "
+                    + "You have to go through the whole Goblin society to find the kidnapped priestess.");
   };
 
   public static void showChapter(final int id) {

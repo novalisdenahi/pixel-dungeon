@@ -433,6 +433,7 @@ public class Badges {
     }
 
     public static void validateBossSlain() {
+        //TODO dungeon type
         Badge badge = null;
         switch (Dungeon.depth) {
         case 5:

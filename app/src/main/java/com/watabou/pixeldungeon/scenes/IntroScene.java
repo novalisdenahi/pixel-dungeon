@@ -31,9 +31,11 @@ public class IntroScene extends PixelScene {
           + "It's time to start your own adventure!";
 
   private static final String TEXT_GOBLIN =
-      "You was passing the Temple of Estera when a priestess running out. She told you the temple was attacked by goblins. "
-          + "The goblins not left empty-handed the palce. They captured one of the High Priest Of Estera. "
-          + "";
+      "You were passing by the Temple of Estera when a priestess running to you from the Temple. She tells you the temple "
+              + "was attacked by goblins. The goblins took one of the High Priest Of Estera. \n\n"
+              + "The church is asking for your help. Until they knock the last goblin out of the temple. "
+              + "You need to follow the kidnappers. The priestess lost the symbol of the goddess during the fight. "
+              + "Without the symbol, she has little chance of freedom.";
 
   @Override
   public void create() {
