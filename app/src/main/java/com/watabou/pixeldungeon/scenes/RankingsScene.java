@@ -344,8 +344,13 @@ public class RankingsScene extends PixelScene {
     add(pages[DungeonType.GOBLIN]);
     pages[DungeonType.GOBLIN].visible = false;
     selected = Dungeon.dungeonType;
+
+    this.remove(pages[selected]);
+    pages[selected] = new RankingListPage(selected);
+    add(pages[selected]);
     pages[selected].visible = true;
     icons[selected].image.scale.invScale(0.9f);
+
     this.bringToFront(pages[selected]);
 
     ExitButton btnExit = new ExitButton();
