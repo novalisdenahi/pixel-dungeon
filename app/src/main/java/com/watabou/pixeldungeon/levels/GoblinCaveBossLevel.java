@@ -26,8 +26,10 @@ import com.watabou.pixeldungeon.actors.Actor;
 import com.watabou.pixeldungeon.actors.Char;
 import com.watabou.pixeldungeon.actors.mobs.Bestiary;
 import com.watabou.pixeldungeon.actors.mobs.Mob;
+import com.watabou.pixeldungeon.actors.mobs.npcs.KidnappedPriest;
 import com.watabou.pixeldungeon.items.Heap;
 import com.watabou.pixeldungeon.items.Item;
+import com.watabou.pixeldungeon.items.keys.Key;
 import com.watabou.pixeldungeon.items.keys.SkeletonKey;
 import com.watabou.pixeldungeon.levels.painters.Painter;
 import com.watabou.pixeldungeon.scenes.GameScene;
@@ -41,6 +43,7 @@ public class GoblinCaveBossLevel extends Level {
   private static final int HALL_WIDTH = 8;
   private static final int HALL_HEIGHT = 8;
   private static final int CHAMBER_HEIGHT = 3;
+  private static final int PRISON_HEIGHT = 3;
   private static final int LEFT = (WIDTH - HALL_WIDTH) / 2;
 
   private static final int CENTER = LEFT + (HALL_WIDTH / 2);
@@ -64,6 +67,7 @@ public class GoblinCaveBossLevel extends Level {
   }
 
   private int arenaDoor;
+  private int prisonDoor;
 
   private boolean enteredArena = false;
   private boolean keyDropped = false;
@@ -76,30 +80,43 @@ public class GoblinCaveBossLevel extends Level {
   @Override
   protected boolean build() {
 
-    Painter.fill(this, LEFT, TOP, HALL_WIDTH, HALL_HEIGHT, Terrain.EMPTY);
+    //PRISON
+    Painter.fill(this, LEFT, TOP , HALL_WIDTH, PRISON_HEIGHT, Terrain.EMPTY);
+    Painter.fill(this, LEFT, TOP , 3, PRISON_HEIGHT, Terrain.WALL);
+    Painter.fill(this, (LEFT + HALL_WIDTH) - 2, TOP , 1, CHAMBER_HEIGHT, Terrain.WALL);
 
-    int y = (TOP + HALL_HEIGHT) - 2;
+    Mob priestOfEstera = new KidnappedPriest();
+
+    priestOfEstera.pos = ((TOP + PRISON_HEIGHT -2) * WIDTH) + CENTER;
+
+    this.mobs.add(priestOfEstera);
+
+    //KING HALL
+    Painter.fill(this, LEFT, TOP + PRISON_HEIGHT + 1, HALL_WIDTH, HALL_HEIGHT, Terrain.EMPTY);
+    int y = (TOP + PRISON_HEIGHT + HALL_HEIGHT) - 2;
     map[((y * WIDTH) + CENTER) - 2] = Terrain.STATUE;
     map[(y * WIDTH) + CENTER + 2] = Terrain.STATUE;
-    y = TOP + 2;
+    y = TOP  + PRISON_HEIGHT + 2;
     map[((y * WIDTH) + CENTER) - 2] = Terrain.STATUE;
     map[(y * WIDTH) + CENTER + 2] = Terrain.STATUE;
 
-    y = (TOP + (HALL_HEIGHT / 2));
+    y = (TOP + PRISON_HEIGHT + (HALL_HEIGHT / 2));
     map[(y * WIDTH) + CENTER] = Terrain.PEDESTAL;
 
-    exit = ((TOP - 1) * WIDTH) + CENTER;
-    map[exit] = Terrain.LOCKED_EXIT;
+    prisonDoor = ((TOP + PRISON_HEIGHT) * WIDTH) + CENTER;
+    map[prisonDoor] = Terrain.LOCKED_EXIT;
 
-    arenaDoor = ((TOP + HALL_HEIGHT) * WIDTH) + CENTER;
+    arenaDoor = ((TOP + PRISON_HEIGHT + HALL_HEIGHT + 1) * WIDTH) + CENTER;
     map[arenaDoor] = Terrain.DOOR;
 
-    Painter.fill(this, LEFT, TOP + HALL_HEIGHT + 1, HALL_WIDTH, CHAMBER_HEIGHT, Terrain.EMPTY);
-    Painter.fill(this, LEFT, TOP + HALL_HEIGHT + 1, 1, CHAMBER_HEIGHT, Terrain.WALL);
-    Painter.fill(this, (LEFT + HALL_WIDTH) - 1, TOP + HALL_HEIGHT + 1, 1, CHAMBER_HEIGHT,
+    //ENTERING CHAMBER
+    Painter.fill(this, LEFT, TOP + PRISON_HEIGHT + HALL_HEIGHT + 2, HALL_WIDTH, CHAMBER_HEIGHT, Terrain.EMPTY);
+
+    Painter.fill(this, LEFT, TOP + PRISON_HEIGHT + HALL_HEIGHT + 2, 1, CHAMBER_HEIGHT, Terrain.WALL);
+    Painter.fill(this, (LEFT + HALL_WIDTH) - 1, TOP +PRISON_HEIGHT+ HALL_HEIGHT + 2, 1, CHAMBER_HEIGHT,
         Terrain.WALL);
 
-    entrance = ((TOP + HALL_HEIGHT + 2 + Random.Int(CHAMBER_HEIGHT - 1)) * WIDTH) + LEFT
+    entrance = ((TOP  +PRISON_HEIGHT + HALL_HEIGHT + 2 + Random.Int(CHAMBER_HEIGHT - 1)) * WIDTH) + LEFT
         + (/* 1 + */Random.Int(HALL_WIDTH - 2));
     map[entrance] = Terrain.ENTRANCE;
 
@@ -114,7 +131,7 @@ public class GoblinCaveBossLevel extends Level {
       do {
         pos =
             Random.IntRange(LEFT + 1, (LEFT + HALL_WIDTH) - 2) +
-                (Random.IntRange(TOP + HALL_HEIGHT + 1, TOP + HALL_HEIGHT + CHAMBER_HEIGHT)
+                (Random.IntRange(TOP + PRISON_HEIGHT + HALL_HEIGHT + 2, TOP + PRISON_HEIGHT + HALL_HEIGHT + CHAMBER_HEIGHT)
                     * WIDTH);
       } while ((pos == entrance) || (map[pos] == Terrain.SIGN));
       drop(item, pos).type = Heap.Type.SKELETON;
@@ -143,7 +160,7 @@ public class GoblinCaveBossLevel extends Level {
   @Override
   public Heap drop(final Item item, final int cell) {
 
-    if (!keyDropped && (item instanceof SkeletonKey)) {
+    if (!keyDropped && (item instanceof Key)) {
 
       keyDropped = true;
 
@@ -157,6 +174,10 @@ public class GoblinCaveBossLevel extends Level {
 
   private boolean outsideEntraceRoom(final int cell) {
     return (cell / WIDTH) < (arenaDoor / WIDTH);
+  }
+
+  private boolean insidePrisonRoom(final int cell) {
+    return (cell / WIDTH) > (prisonDoor / WIDTH);
   }
 
   @Override
@@ -174,7 +195,7 @@ public class GoblinCaveBossLevel extends Level {
       do {
         boss.pos = Random.Int(LENGTH);
       } while (!passable[boss.pos] ||
-          !outsideEntraceRoom(boss.pos) ||
+          !outsideEntraceRoom(boss.pos) || !insidePrisonRoom(boss.pos) ||
           (Dungeon.visible[boss.pos] && (count++ < 20)));
       GameScene.add(boss);
 

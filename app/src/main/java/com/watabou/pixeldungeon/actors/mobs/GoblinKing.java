@@ -27,6 +27,8 @@ import com.watabou.pixeldungeon.actors.buffs.Bleeding;
 import com.watabou.pixeldungeon.actors.buffs.Buff;
 import com.watabou.pixeldungeon.actors.buffs.Cripple;
 import com.watabou.pixeldungeon.actors.buffs.Paralysis;
+import com.watabou.pixeldungeon.items.keys.IronKey;
+import com.watabou.pixeldungeon.items.keys.Key;
 import com.watabou.pixeldungeon.items.keys.SkeletonKey;
 import com.watabou.pixeldungeon.items.weapon.enchantments.Death;
 import com.watabou.pixeldungeon.scenes.GameScene;
@@ -49,7 +51,7 @@ public class GoblinKing extends Mob {
         : "Descendant of the Goblin King";
     spriteClass = GoblinKingSprite.class;
 
-    HP = HT = 100;
+    HP = HT = 2; //100
     EXP = 20;
     defenseSkill = 18;
 
