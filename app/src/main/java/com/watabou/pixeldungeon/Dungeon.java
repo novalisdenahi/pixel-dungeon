@@ -473,8 +473,6 @@ public class Dungeon {
     Level level;
     switch (depth) {
       case 1:
-        level = new GoblinCaveBossLevel();
-        break;
       case 2:
       case 3:
       case 4:
@@ -764,7 +762,7 @@ public class Dungeon {
   public static void win(final String desc) {
 
     hero.belongings.identify();
-
+    //todo Dungeon Type? validation for badges?
     if (challenges != 0) {
       Badges.validateChampion();
     }

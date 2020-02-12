@@ -51,7 +51,7 @@ public class GoblinKing extends Mob {
         : "Descendant of the Goblin King";
     spriteClass = GoblinKingSprite.class;
 
-    HP = HT = 2; //100
+    HP = HT = 100;
     EXP = 20;
     defenseSkill = 18;
 

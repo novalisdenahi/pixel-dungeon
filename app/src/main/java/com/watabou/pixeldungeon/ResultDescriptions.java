@@ -41,4 +41,5 @@ public class ResultDescriptions {
   public static final String FALL = "Fell to death on level %d";
 
   public static final String WIN = "Obtained the Amulet of Yendor";
+  public static final String WIN_GOBLIN = "Freed high priest of Estera";
 }

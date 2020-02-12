@@ -17,16 +17,21 @@
  */
 package com.watabou.pixeldungeon.actors.mobs.npcs;
 
+import com.watabou.noosa.Game;
 import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.actors.Char;
 import com.watabou.pixeldungeon.actors.buffs.Buff;
+import com.watabou.pixeldungeon.scenes.AmuletScene;
+import com.watabou.pixeldungeon.scenes.GoblinEndScene;
 import com.watabou.pixeldungeon.sprites.KidnappedSprite;
 import com.watabou.pixeldungeon.sprites.RatKingSprite;
+
+import java.io.IOException;
 
 public class KidnappedPriest extends NPC {
 
   {
-    name = "priest of estera";
+    name = "priest of Estera";
     spriteClass = KidnappedSprite.class;
 
   }
@@ -51,15 +56,23 @@ public class KidnappedPriest extends NPC {
 
   @Override
   public String description() {
-    return "The kidnapped High Priest Of Estera. It looks like she's in a bad shape.";
+    return "The kidnapped Priestess Of Estera. It looks like she's in a bad shape.";
   }
 
   @Override
   public void interact() {
     sprite.turnTo(pos, Dungeon.hero.pos);
     yell("Help! Thanks to Estera! My prayer has been answered!");
-    //TODO open window ... like the amulett , contains big talk...adn WIN the game
+    showGoblinEnsScene();
 
+  }
+
+  private void showGoblinEnsScene() {
+    try {
+      Dungeon.saveAll();
+      Game.switchScene(GoblinEndScene.class);
+    } catch (IOException e) {
+    }
   }
 
   @Override
