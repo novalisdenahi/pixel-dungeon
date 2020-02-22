@@ -283,8 +283,12 @@ public class StartScene extends PixelScene {
   private static final String TXT_UNLOCK =
       "To unlock this character class, slay the 3rd boss with any other class";
 
+  private static final String TXT_UNLOCK_PRIEST =
+          "To unlock this character class, finish the Dungeon of Goblins with any other class";
+
   private static final String TXT_WIN_THE_GAME =
       "To unlock \"Challenges\", win the game with any character class.";
+
   private static final float WIDTH_P = 116;
   private static final float HEIGHT_P = 220;
 
@@ -302,8 +306,11 @@ public class StartScene extends PixelScene {
   private GameButton btnNewGame;
 
   private boolean huntressUnlocked;
+  private boolean priestUnlocked;
 
   private Group unlock;
+  private Group unlockPriest;
+
 
   @Override
   public void create() {
@@ -425,8 +432,9 @@ public class StartScene extends PixelScene {
 
     unlock = new Group();
     add(unlock);
+    huntressUnlocked = Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_3);
 
-    if (!(huntressUnlocked = Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_3))) {
+    if (!(huntressUnlocked)) {
 
       BitmapTextMultiline text = PixelScene.createMultiline(TXT_UNLOCK, 9);
       text.maxWidth = (int) width;
@@ -439,6 +447,27 @@ public class StartScene extends PixelScene {
         line.x = PixelScene.align((w / 2) - (line.width() / 2));
         line.y = PixelScene.align(pos);
         unlock.add(line);
+
+        pos += line.height();
+      }
+    }
+    unlockPriest = new Group();
+    add(unlockPriest);
+
+    priestUnlocked = Badges.isUnlocked(Badges.Badge.HQ_VICTORY);
+    if (!(priestUnlocked)) {
+
+      BitmapTextMultiline text = PixelScene.createMultiline(TXT_UNLOCK_PRIEST, 9);
+      text.maxWidth = (int) width;
+      text.measure();
+
+      float pos = (bottom - BUTTON_HEIGHT) + ((BUTTON_HEIGHT - text.height()) / 2);
+      for (BitmapText line : text.new LineSplitter().split()) {
+        line.measure();
+        line.hardlight(0xFFFF00);
+        line.x = PixelScene.align((w / 2) - (line.width() / 2));
+        line.y = PixelScene.align(pos);
+        unlockPriest.add(line);
 
         pos += line.height();
       }
@@ -492,10 +521,20 @@ public class StartScene extends PixelScene {
       shields.get(curClass).highlight(false);
     }
     shields.get(curClass = cl).highlight(true);
-
-    if ((cl != HeroClass.HUNTRESS) || huntressUnlocked) {
-
+    if(cl == HeroClass.HUNTRESS && !huntressUnlocked){
+      unlock.visible = true;
+      unlockPriest.visible = false;
+      btnLoad.visible = false;
+      btnNewGame.visible = false;
+    }else if(cl == HeroClass.PRIEST && !priestUnlocked){
       unlock.visible = false;
+      unlockPriest.visible = true;
+      btnLoad.visible = false;
+      btnNewGame.visible = false;
+    }else{
+      unlock.visible = false;
+      unlockPriest.visible = false;
+
 
       GamesInProgress.Info info = GamesInProgress.check(curClass);
       if (info != null) {
@@ -520,12 +559,6 @@ public class StartScene extends PixelScene {
         btnNewGame.secondary(null, false);
         btnNewGame.setRect(buttonX, buttonY, Camera.main.width - (buttonX * 2), BUTTON_HEIGHT);
       }
-
-    } else {
-
-      unlock.visible = true;
-      btnLoad.visible = false;
-      btnNewGame.visible = false;
 
     }
   }

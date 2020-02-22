@@ -127,7 +127,6 @@ public enum HeroClass {
     new Dart(5).identify().collect();
     QuickSlot.primaryValue = Dart.class;
 
-
     SymbolOfEstera symbolOfEstera = new SymbolOfEstera();
     symbolOfEstera.identify().collect();
 

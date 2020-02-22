@@ -263,6 +263,7 @@ public class Badges {
         Badges.leaveBest(filtered, Badge.GAMES_PLAYED_1, Badge.GAMES_PLAYED_2, Badge.GAMES_PLAYED_3,
                 Badge.GAMES_PLAYED_4);
         Badges.leaveBest(filtered, Badge.HQ_BOSS_SLAIN_1, Badge.HQ_BOSS_SLAIN_2);
+        Badges.leaveBest(filtered, Badge.HQ_VICTORY, Badge.HQ_VICTORY_ALL_CLASSES);
 
         ArrayList<Badge> list = new ArrayList<Badge>(filtered);
         Collections.sort(list);
