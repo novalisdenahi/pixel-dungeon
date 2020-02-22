@@ -32,6 +32,7 @@ import com.watabou.noosa.Game;
 import com.watabou.pixeldungeon.actors.mobs.Acidic;
 import com.watabou.pixeldungeon.actors.mobs.Albino;
 import com.watabou.pixeldungeon.actors.mobs.Bandit;
+import com.watabou.pixeldungeon.actors.mobs.GoblinFireMage;
 import com.watabou.pixeldungeon.actors.mobs.Mob;
 import com.watabou.pixeldungeon.actors.mobs.Senior;
 import com.watabou.pixeldungeon.actors.mobs.Shielded;
@@ -90,7 +91,7 @@ public class Badges {
         BOSS_SLAIN_2("2nd boss slain", 13),
         BOSS_SLAIN_3("3rd boss slain", 14),
         BOSS_SLAIN_4("4th boss slain", 15),
-        BOSS_SLAIN_1_ALL_CLASSES("1st boss slain by Warrior, Mage, Rogue & Huntress", 32, true),
+        BOSS_SLAIN_1_ALL_CLASSES("1st boss slain by Warrior, Mage, Rogue,Priest & Huntress", 32, true),
         BOSS_SLAIN_3_GLADIATOR,
         BOSS_SLAIN_3_BERSERKER,
         BOSS_SLAIN_3_WARLOCK,
@@ -102,7 +103,7 @@ public class Badges {
         BOSS_SLAIN_3_PALADIN,
         BOSS_SLAIN_3_HIGHPRIEST,
         BOSS_SLAIN_3_ALL_SUBCLASSES(
-                "3rd boss slain by Gladiator, Berserker, Warlock, Battlemage, Freerunner, Assassin, Sniper & Warden",
+                "3rd boss slain by Gladiator, Berserker, Warlock, Battlemage, Freerunner, Assassin, Paladin, High Priest, Sniper & Warden",
                 33, true),
                 RING_OF_HAGGLER("Ring of Haggler obtained", 20),
                 RING_OF_THORNS("Ring of Thorns obtained", 21),
@@ -128,6 +129,7 @@ public class Badges {
                 RARE_SHIELDED,
                 RARE_SENIOR,
                 RARE_ACIDIC,
+                RARE_FIRE_MAGE,
                 RARE("All rare monsters slain", 37, true),
                 VICTORY_WARRIOR,
                 VICTORY_MAGE,
@@ -135,7 +137,7 @@ public class Badges {
                 VICTORY_HUNTRESS,
                 VICTORY_PRIEST,
                 VICTORY("Amulet of Yendor obtained", 22),
-                VICTORY_ALL_CLASSES("Amulet of Yendor obtained by Warrior, Mage, Rogue & Huntress", 36, true),
+                VICTORY_ALL_CLASSES("Amulet of Yendor obtained by Warrior, Mage, Rogue, Priest & Huntress", 36, true),
                 MASTERY_COMBO("7-hit combo", 56),
                 POTIONS_COOKED_1("3 potions cooked", 52),
                 POTIONS_COOKED_2("6 potions cooked", 53),
@@ -151,7 +153,16 @@ public class Badges {
                 GAMES_PLAYED_4("2000 games played", 63, true),
                 HAPPY_END("Happy end", 38),
                 CHAMPION("Challenge won", 39, true),
-                SUPPORTER("Thanks for your support!", 31, true);
+                SUPPORTER("Thanks for your support!", 31, true),
+        HQ_BOSS_SLAIN_1("Holy Quest 1st boss slain", 64),
+        HQ_BOSS_SLAIN_2("Holy Quest 2nd boss slain", 65),
+        HQ_VICTORY_WARRIOR,
+        HQ_VICTORY_MAGE,
+        HQ_VICTORY_ROGUE,
+        HQ_VICTORY_HUNTRESS,
+        HQ_VICTORY_PRIEST,
+        HQ_VICTORY("The kidnapped priest is set free", 66),
+        HQ_VICTORY_ALL_CLASSES("The kidnapped priest is set free by Warrior, Mage, Rogue, Priest & Huntress", 67, true);
 
         public boolean meta;
 
@@ -251,6 +262,7 @@ public class Badges {
         Badges.leaveBest(filtered, Badge.VICTORY, Badge.VICTORY_ALL_CLASSES);
         Badges.leaveBest(filtered, Badge.GAMES_PLAYED_1, Badge.GAMES_PLAYED_2, Badge.GAMES_PLAYED_3,
                 Badge.GAMES_PLAYED_4);
+        Badges.leaveBest(filtered, Badge.HQ_BOSS_SLAIN_1, Badge.HQ_BOSS_SLAIN_2);
 
         ArrayList<Badge> list = new ArrayList<Badge>(filtered);
         Collections.sort(list);
@@ -432,8 +444,24 @@ public class Badges {
         }
     }
 
+    public static void validateGoblinBossSlain() {
+        Badge badge = null;
+        switch (Dungeon.depth) {
+            case 5:
+                badge = Badge.HQ_BOSS_SLAIN_1;
+                break;
+            case 10:
+                badge = Badge.HQ_BOSS_SLAIN_2;
+                break;
+        }
+
+        if (badge != null) {
+            local.add(badge);
+            Badges.displayBadge(badge);
+        }
+    }
+
     public static void validateBossSlain() {
-        //TODO dungeon type
         Badge badge = null;
         switch (Dungeon.depth) {
         case 5:
@@ -854,6 +882,8 @@ public class Badges {
             badge = Badge.RARE_SENIOR;
         } else if (mob instanceof Acidic) {
             badge = Badge.RARE_ACIDIC;
+        } else if (mob instanceof GoblinFireMage) {
+            badge = Badge.RARE_FIRE_MAGE;
         }
         if (!global.contains(badge)) {
             global.add(badge);
@@ -864,7 +894,8 @@ public class Badges {
                 global.contains(Badge.RARE_BANDIT) &&
                 global.contains(Badge.RARE_SHIELDED) &&
                 global.contains(Badge.RARE_SENIOR) &&
-                global.contains(Badge.RARE_ACIDIC)) {
+                global.contains(Badge.RARE_ACIDIC)&&
+                global.contains(Badge.RARE_FIRE_MAGE)) {
 
             badge = Badge.RARE;
             Badges.displayBadge(badge);
@@ -953,6 +984,45 @@ public class Badges {
                 global.contains(Badge.VICTORY_PRIEST)) {
 
             badge = Badge.VICTORY_ALL_CLASSES;
+            Badges.displayBadge(badge);
+        }
+    }
+
+    public static void validateHolyQuestVictory() {
+
+        Badge badge = Badge.HQ_VICTORY;
+        Badges.displayBadge(badge);
+
+        switch (Dungeon.hero.heroClass) {
+            case WARRIOR:
+                badge = Badge.HQ_VICTORY_WARRIOR;
+                break;
+            case MAGE:
+                badge = Badge.HQ_VICTORY_MAGE;
+                break;
+            case ROGUE:
+                badge = Badge.HQ_VICTORY_ROGUE;
+                break;
+            case HUNTRESS:
+                badge = Badge.HQ_VICTORY_HUNTRESS;
+                break;
+            case PRIEST:
+                badge = Badge.HQ_VICTORY_PRIEST;
+                break;
+        }
+        local.add(badge);
+        if (!global.contains(badge)) {
+            global.add(badge);
+            saveNeeded = true;
+        }
+
+        if (global.contains(Badge.HQ_VICTORY_WARRIOR) &&
+                global.contains(Badge.HQ_VICTORY_MAGE) &&
+                global.contains(Badge.HQ_VICTORY_ROGUE) &&
+                global.contains(Badge.HQ_VICTORY_HUNTRESS) &&
+                global.contains(Badge.HQ_VICTORY_PRIEST)) {
+
+            badge = Badge.HQ_VICTORY_ALL_CLASSES;
             Badges.displayBadge(badge);
         }
     }

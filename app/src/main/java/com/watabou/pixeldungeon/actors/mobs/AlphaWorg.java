@@ -17,6 +17,7 @@
  */
 package com.watabou.pixeldungeon.actors.mobs;
 
+import com.watabou.pixeldungeon.Badges;
 import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.Statistics;
 import com.watabou.pixeldungeon.actors.Char;
@@ -79,7 +80,7 @@ public class AlphaWorg extends Mob {
     GameScene.bossSlain();
     Dungeon.level.drop(new SkeletonKey(), pos).sprite.drop();
 
-    // Badges.validateBossSlain(); // TODO fix
+    Badges.validateGoblinBossSlain();
 
     yell("AWOOUUuuuu...");
   }

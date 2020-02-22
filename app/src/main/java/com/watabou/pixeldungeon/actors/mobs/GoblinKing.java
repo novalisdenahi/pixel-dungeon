@@ -113,7 +113,7 @@ public class GoblinKing extends Mob {
     GameScene.bossSlain();
     Dungeon.level.drop(new SkeletonKey(), pos).sprite.drop();
 
-    Badges.validateBossSlain();
+    Badges.validateGoblinBossSlain();
     yell("My crown! No!");
   }
 

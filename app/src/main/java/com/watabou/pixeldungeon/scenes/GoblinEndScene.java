@@ -22,6 +22,7 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.pixeldungeon.Assets;
+import com.watabou.pixeldungeon.Badges;
 import com.watabou.pixeldungeon.Dungeon;
 import com.watabou.pixeldungeon.ResultDescriptions;
 import com.watabou.pixeldungeon.effects.Flare;
@@ -91,6 +92,7 @@ public class GoblinEndScene extends PixelScene {
   }
 
   private void win(){
+    Badges.validateHolyQuestVictory();
     Dungeon.win(ResultDescriptions.WIN_GOBLIN);
     Dungeon.deleteGame(Dungeon.hero.heroClass, true);
     Game.switchScene(RankingsScene.class);

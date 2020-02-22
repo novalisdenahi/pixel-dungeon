@@ -125,7 +125,6 @@ public class GoblinFireMage extends GoblinMage implements Callback {
   @Override
   public void die(Object cause) {
     super.die(cause);
-    //TODO rare Goblin fire mage
-    //Badges.validateRare(this);
+    Badges.validateRare(this);
   }
 }
