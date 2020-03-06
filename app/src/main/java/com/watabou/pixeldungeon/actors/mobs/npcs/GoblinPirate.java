@@ -80,7 +80,6 @@ public class GoblinPirate extends NPC {
       item1 = null;
       item2 = null;
 
-      // TODO add Badge validition
       Journal.remove(Journal.Feature.PIRATE);
     }
 
@@ -110,8 +109,7 @@ public class GoblinPirate extends NPC {
 
     public static void spawn(final Collection<Room> rooms) {
      // if (!spawned && (Dungeon.depth == 6)) {
-      //TODO this is test
-      if (!spawned && (Dungeon.depth == 2)) {
+      if (!spawned && (Dungeon.depth == 6) && Random.Int(2) == 0) {
         Room goblinPirate = null;
         for (Room r : rooms) {
           if ((r.type == Type.STANDARD) && (r.width() > 4) && (r.height() > 4)) {
@@ -161,7 +159,7 @@ public class GoblinPirate extends NPC {
             }
             item2.upgrade(Random.Int(2, 4));
 
-            // lucky day bonus - maybe the random shuold be 365 :)
+            // lucky day bonus - maybe the random should be 365 :)
             if (Random.Int(10) == 0) {
               item1.upgrade(2);
               ((MeleeWeapon) (item2)).enchant();

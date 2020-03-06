@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import android.content.Context;
 
@@ -168,6 +169,7 @@ public class Badges {
 
         public String description;
         public int image;
+        public boolean showable;
 
         private Badge() {
             this("", -1);
@@ -181,6 +183,7 @@ public class Badges {
             this.description = description;
             this.image = image;
             this.meta = meta;
+            this.showable = image == -1 ? false : true;
         }
     }
 
@@ -264,6 +267,15 @@ public class Badges {
                 Badge.GAMES_PLAYED_4);
         Badges.leaveBest(filtered, Badge.HQ_BOSS_SLAIN_1, Badge.HQ_BOSS_SLAIN_2);
         Badges.leaveBest(filtered, Badge.HQ_VICTORY, Badge.HQ_VICTORY_ALL_CLASSES);
+
+        //remove not showable badges
+        Iterator<Badge> iterator = filtered.iterator();
+        while (iterator.hasNext()) {
+            Badge badge = iterator.next();
+            if (!badge.showable) {
+                iterator.remove();
+            }
+        }
 
         ArrayList<Badge> list = new ArrayList<Badge>(filtered);
         Collections.sort(list);
